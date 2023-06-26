@@ -39,7 +39,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('justice', 'assets/justice.png');
         this.load.image('diplomacy', 'assets/diplomacy_un2.png');
         this.load.image('military', 'assets/military.png');
-        this.load.image('wokeBase', 'assets/wokebase.png');
+        this.load.image('wokeBase', 'assets/wokebase2.png');
         this.load.image('putieBase', 'assets/putin_2.png');
         this.load.image('alienBase', 'assets/threat.png');
         this.load.image('threat', 'assets/threat.png');
