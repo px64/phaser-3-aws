@@ -20,15 +20,15 @@ var justiceStrength = 50;
 var charVal = {};
 
 export default class BaseScene extends Phaser.Scene {
-/* 
+/*
     constructor() {
         super();
-    
+
         this.MAGAness = 0;
         this.Wokeness = 0;
     }
  */
-    
+
     preload() {
         this.load.image('track', 'assets/track.png');
         this.load.image('handle', 'assets/handle.png');
@@ -39,7 +39,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('justice', 'assets/justice.png');
         this.load.image('diplomacy', 'assets/diplomacy_un2.png');
         this.load.image('military', 'assets/military.png');
-        this.load.image('wokeBase', 'assets/wokebase5.png');
+        this.load.image('wokeBase', 'assets/wokebase.png');
         this.load.image('putieBase', 'assets/putin_2.png');
         this.load.image('alienBase', 'assets/threat.png');
         this.load.image('threat', 'assets/threat.png');
@@ -50,7 +50,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('scale_body', 'assets/scale_body2.png');
 
     }
-    
+
     initializeIcons() {
             let xStart = 70;
             let xOffset = 200;
@@ -61,11 +61,11 @@ export default class BaseScene extends Phaser.Scene {
             this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0); // 1
             this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 1, 16, 0); // 1
      }
-    
+
     //====================================================================================
-    //              
-    // createIconWithGauges 
-    // 
+    //
+    // createIconWithGauges
+    //
     //====================================================================================
     createIconWithGauges = (xPos, yPos, scaleFactor, iconName, maga, woke, health, textBody, healthScale, textSize, shieldStrength)  => {
         let icon = this.physics.add.sprite(xPos, yPos, iconName).setAlpha(.8).setScale(scaleFactor);
@@ -74,12 +74,12 @@ export default class BaseScene extends Phaser.Scene {
         let scaleSprite = this.physics.add.sprite(xPos+60, yPos+48, 'scale_body').setScale(0.06).setDepth(1).setAlpha(1);
         let gaugeMaga = this.physics.add.sprite(xPos+60, yPos+48, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(1);
         let gaugeWoke = gaugeMaga;
-        
+
         let gaugeHealth = this.add.graphics();
         let shieldVisible = true;
 
         icon.iconName = iconName;
-        
+
         this.drawGauges(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite);
         //this.drawBalance(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth);
 
@@ -93,10 +93,10 @@ export default class BaseScene extends Phaser.Scene {
         shieldWoke.setImmovable(true);
         shieldWoke.shieldStrength = shieldStrength;
         if (!shieldVisible) shieldWoke.setAlpha(0);
-        
+
         icon.shieldMaga = shieldMaga;
         icon.shieldWoke = shieldWoke;
-        
+
         // Add shields to their respective groups
         this.shieldsMaga.add(shieldMaga);
         this.shieldsWoke.add(shieldWoke);
@@ -107,21 +107,21 @@ export default class BaseScene extends Phaser.Scene {
         let iconText = this.add.text(xPos - (textSize / 2) - 50, yPos - /*75*/85, textBody + healthText, { fontSize: textSize + 'px', fill: '#fff' });
         return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite};
     }
-    
+
     //====================================================================================
-    //              
-    // drawBalance 
-    // 
-    //==================================================================================== 
+    //
+    // drawBalance
+    //
+    //====================================================================================
     drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite) => {
         // 'track' is the scale object (could be a sprite or any game object)
         console.log('x,y = ' + x + ',' + y);
-        
+
         this.drawHealthGauge(0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite);
         this.drawHealthGauge(health/healthScale/100,x,y, 'Health', gaugeHealth);
-        gaugeHealth.setAlpha(.7);    
+        gaugeHealth.setAlpha(.7);
 
-/*      
+/*
         let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
         let balance;
         if (totalValue == 0) {
@@ -131,7 +131,7 @@ export default class BaseScene extends Phaser.Scene {
         }
         let rotationAngle = balance * Math.PI / 4; // This will give an angle between -45 and 45 degrees
         gaugeMaga.setRotation(rotationAngle);
-        
+
         // Determine the tint based on the balance
         // If balance is 0, color is neutral (no tint). If balance is positive, color goes towards red. If balance is negative, color goes towards blue.
         let color;
@@ -184,7 +184,7 @@ export default class BaseScene extends Phaser.Scene {
             }
             let rotationAngle = balance * Math.PI / 4; // This will give an angle between -45 and 45 degrees
             healthGauge.setRotation(rotationAngle);
-            
+
             // Determine the tint based on the balance
             // If balance is 0, color is neutral (no tint). If balance is positive, color goes towards red. If balance is negative, color goes towards blue.
             let color;
@@ -206,13 +206,13 @@ export default class BaseScene extends Phaser.Scene {
             scaleSprite.setTint(color);
         }
         return healthGauge;
-        
+
     }
-/* 
+/*
     //====================================================================================
-    //              
-    // drawGauges 
-    // 
+    //
+    // drawGauges
+    //
     //====================================================================================
     drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth) => {
         this.drawHealthGauge(maga/100,x,y, 'Maga', gaugeMaga);
@@ -229,7 +229,7 @@ export default class BaseScene extends Phaser.Scene {
     //      drawHealthGauge(percentage, posX, posY, style, healthGauge)
     //
     //====================================================================================
-/* 
+/*
     drawHealthGauge(percentage, posX, posY, style, healthGauge) {
         let ringNum;
         let color;
@@ -248,35 +248,35 @@ export default class BaseScene extends Phaser.Scene {
         healthGauge.beginPath();
         healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
         healthGauge.strokePath();
-        
+
         return healthGauge;
     }
  */
     //====================================================================================
     //
-    //          drawHealthBar(percentage, posX, posY, style, healthBar) 
+    //          drawHealthBar(percentage, posX, posY, style, healthBar)
     //
     //====================================================================================
-/* 
+/*
     drawHealthBar(percentage, posX, posY, style, healthBar) {
         let ringNum;
         let color;
         if (style == 'Maga') {color = 0xff0000; ringNum = 3;}
         if (style == 'Woke') {color = 0x0000ff; ringNum = 1;}
         if (style == 'Health') {color = 0xffffff; ringNum = 2;}
-        
+
         healthBar.clear();
-    
+
         //this.healthBar.fillStyle(0x2ecc71, 1);
         healthBar.fillStyle(color, 1);
 
         var width = 5;
         var height = 80;
-    
+
         healthBar.fillRect(posX, posY - percentage*height, width, percentage*height);
     }
  */
- 
+
     createThreat(territory, faction, icon, numThreats) {
         for (let i = 0; i < numThreats; i++) {
             let attackerTerritory = territory;
@@ -285,14 +285,14 @@ export default class BaseScene extends Phaser.Scene {
             if (faction == '') {
                 faction = attackerTerritory.faction;
             }
-            
-            let threatIcon = faction === 'maga' 
-                ? 'magaBase' 
-                : faction === 'woke' 
-                    ? 'wokeBase' 
+
+            let threatIcon = faction === 'maga'
+                ? 'magaBase'
+                : faction === 'woke'
+                    ? 'wokeBase'
                     : 'putieBase';
 
-            let threatGroup = faction == 'maga' 
+            let threatGroup = faction == 'maga'
                 ? this.magaThreats
                 : faction == 'woke'
                     ? this.wokeThreats
@@ -309,7 +309,7 @@ export default class BaseScene extends Phaser.Scene {
                 threat.setCollideWorldBounds(true);
 
                 // Enable world bounds event for this body
-                threat.body.onWorldBounds = true; 
+                threat.body.onWorldBounds = true;
 
                 // Listen for the event
                 this.physics.world.on('worldbounds', (body) => {
@@ -334,24 +334,24 @@ export default class BaseScene extends Phaser.Scene {
             });
         }
     }
-    
+
     returnThreat(territory, faction, icon, numThreats) {
         for (let i = 0; i < numThreats; i++) {
             let attackerTerritory = territory;
             let territoryWidth = this.sys.game.config.width / territories.length;
             let returnedIcon = icon.icon;
-            
+
             if (faction == '') {
                 faction = attackerTerritory.faction;
             }
-            
-            let threatIcon = faction === 'maga' 
-                ? 'magaBase' 
-                : faction === 'woke' 
-                    ? 'wokeBase' 
+
+            let threatIcon = faction === 'maga'
+                ? 'magaBase'
+                : faction === 'woke'
+                    ? 'wokeBase'
                     : 'putieBase';
 
-            let threatGroup = faction == 'maga' 
+            let threatGroup = faction == 'maga'
                 ? this.magaReturns
                 : faction == 'woke'
                     ? this.wokeReturns
@@ -367,7 +367,7 @@ export default class BaseScene extends Phaser.Scene {
                 threat.setCollideWorldBounds(true);
 
                 // Enable world bounds event for this body
-                threat.body.onWorldBounds = true; 
+                threat.body.onWorldBounds = true;
                 icon[faction] -= 10;
                 this.drawGauges(icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth);
 
@@ -386,12 +386,12 @@ export default class BaseScene extends Phaser.Scene {
             });
         }
     }
-    
+
     createTerritories()
     {
         console.log('Putie Territories = ' + this.putieTerritories);
-        
-        // Make sure Putie Territories are up to date 
+
+        // Make sure Putie Territories are up to date
         let testTerritory = territories.length - 1; // Arrays are 0-indexed
         let putieCount = 0; // Counter to track how many territories have been changed
 
@@ -406,18 +406,18 @@ export default class BaseScene extends Phaser.Scene {
         }
 
         this.territoryWidth = this.sys.game.config.width  / territories.length;
-        
+
         territories.forEach((territory, index) => {
             territory.y = this.game.config.height - 20;
             territory.x = this.territoryWidth * index;
         });
-        
+
         for (let i = 0; i < territories.length; i++) {
             let territoryGraphics = this.add.graphics();
             let territory = territories[i];
             territoryGraphics.fillStyle(territory.color, 1.0);
             territoryGraphics.fillRect(i * this.territoryWidth, this.game.config.height - 30, this.territoryWidth, 30);
-             
+
             let baseFaction;
             // Add a base icon to the territory
             if (territory.faction == 'maga') {
@@ -430,12 +430,12 @@ export default class BaseScene extends Phaser.Scene {
                 baseFaction = 'alienBase';
             }
             this.physics.add.sprite(territory.x + this.territoryWidth/2, territory.y-30, baseFaction ).setScale(0.1).setAlpha(0.8);
-        
+
             // Create territory name
             let nameText = this.add.text(
-              territory.x + this.territoryWidth/2, 
-              territory.y, 
-              territory.name, 
+              territory.x + this.territoryWidth/2,
+              territory.y,
+              territory.name,
               { font: '16px Arial', fill: '#ffffff', align: 'center' }
             );
 
@@ -452,16 +452,16 @@ export default class BaseScene extends Phaser.Scene {
             graphics.closePath();
             graphics.strokePath();
         }
-    }      
+    }
 }
-//    1. Character creates a barricade 
+//    1. Character creates a barricade
 //    2. Character "creates" a new power token (called powerToken).
 //       --These tokens can also be used to boost the strength of an icon, but increases maga or wokeness of another icon when it's done.
 //    3. Character "creates" a shield around an icon.  Same thing: power token boosts shield
-//    5. This is automatically is directed to a predetermined icon.  
+//    5. This is automatically is directed to a predetermined icon.
 // I think we need to have several characters produce 2 outcomes, not just one.
 // economy calming measures? what is that?? union/ strike negotiators helps social justice
-// environment calming measures, opening new oil fields vs. polar bears? green energy! 
+// environment calming measures, opening new oil fields vs. polar bears? green energy!
 // government calming measures,  repubs and dems bipartisan legislation
 // social justice calming measures?  morality police?  supreme court progress?  Stop the shooting?
 // international relations calming measures?  maga: build a wall, woke: world peace!  maga big: hits economy
@@ -682,7 +682,7 @@ export const characters = [
 {
         name: "Rene Stellar",
         faction: "woke",
-        backstory: [ 
+        backstory: [
             "A visionary rocket scientist and a fervent advocate for LGBTQ+ rights. Rene is recognized not only for their expertise in rocketry but also",
             "their work in promoting inclusivity and representation within STEM fields."
         ],
@@ -727,7 +727,7 @@ export const characters = [
 //        - faster missiles
 //        - improved accuracy
 //        - bigger explosions (would need to add missile detonation at destination and an explosion)
-//        - more frequent reload (would need to add a time delay between missile launches) 
+//        - more frequent reload (would need to add a time delay between missile launches)
 
 export const militaryAssets = [
     {
