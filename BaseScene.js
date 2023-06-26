@@ -48,6 +48,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('independent', 'assets/IPNY_Logo.png');
         this.load.image('scale_arms', 'assets/scale_arms2.png');
         this.load.image('scale_body', 'assets/scale_body2.png');
+        this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
 
     }
 

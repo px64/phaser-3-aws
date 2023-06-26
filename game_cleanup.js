@@ -71,6 +71,19 @@ var yearText;
 class TitleScene extends Phaser.Scene {
     constructor () {
         super({ key: 'titlescene'});
+        this.sharedData = {
+            icons: {},
+            MAGAness: 0,
+            Wokeness: 0,
+            putieTerritories: 0,
+            alienTerritories: 0,
+            year: 2023,
+            misinformation: {},
+            helperTokens: {},
+            ideology: 'maga',
+            thisRoundAlienAttacks: 1,
+            thisRoundTerritoriesWithMissiles: 6
+        };
     }
 
     create() {
@@ -111,18 +124,26 @@ class TitleScene extends Phaser.Scene {
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Skip to the next scene
+            this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
             this.scene.start('ChooseYourIdeologyScene');
         }, this);
 
+        if (this.sys.game.config.width < 704) {
+            this.sharedData.fontSize = '24px';
+            this.sharedData.medFont = '18px';
+        } else {
+          this.sharedData.fontSize = '48px';
+          this.sharedData.medFont = '32px';
+        }
         // For each line of text...
         for (let i = 0; i < storyLines.length; i++) {
             // ...create a timed event that waits i*1000 milliseconds, then...
             this.time.addEvent({
-                delay: i * 1000,
+                delay: i * 1400,
                 callback: () => {
                     // Create the text line
-                    let text = this.add.text(this.cameras.main.centerX, 750 + i * 5, storyLines[i], {
-                            font: 'bold 48px Arial',
+                    let text = this.add.text(this.cameras.main.centerX, this.sys.game.config.height /* + i * 5 */, storyLines[i], {
+                            font: 'bold ' + this.sharedData.fontSize + ' Arial',
                             fill: '#ffffff',
                             align: 'center'
                         });
@@ -143,6 +164,9 @@ class TitleScene extends Phaser.Scene {
                         y: '-=1050',
                         scaleX: '-=0.7',
                         scaleY: '-=0.7',
+                        // y: '-=700',
+                        // scaleX: '-=0.35',
+                        // scaleY: '-=0.35',
                         ease: 'Linear',
                         duration: 33000,
                         repeat: 0,
@@ -174,7 +198,9 @@ export class ChooseYourIdeologyScene extends BaseScene {
             year: 2023,
             misinformation: {},
             helperTokens: {},
-            ideology: 'maga'
+            ideology: 'maga',
+            thisRoundAlienAttacks: 1,
+            thisRoundTerritoriesWithMissiles: 6
         };
     }
     setup(data) {
@@ -218,7 +244,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         },
  */
         {
-            name: "Not interested in politics/ Hoping to be abducted", color: '#00ff00',
+            name: "Not interested in politics/\n  Hoping to be abducted", color: '#00ff00',
             icon: 'threat',
             faction: 'none'
         }
@@ -303,258 +329,7 @@ class VictoryScene extends Phaser.Scene {
     create(data) {
         // Create a text object to display a victory message
         let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, data.message, {
-            font: 'bold 64px Arial',
-            fill: '#ffffff',
-            align: 'center'
-        });
-
-        victoryText.setOrigin(0.5);  // Center align the text
-
-        // Optionally, display a victory image
-        let victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'victory');
-        victoryImage.setScale(0.5);  // Scale down the image
-        victoryImage.setAlpha(0.4);  // Make the image semi-transparent
-
-        // Bring the text to the top
-        victoryText.setDepth(1);
-
-        // Input event listener
-        this.input.on('pointerdown', function (pointer) {
-            // Switch to the next scene
-            this.scene.get('politics').setup(this.sharedData);
-            this.scene.start('politics');
-        }, this);
-    }
-}
-
-/*
-export class EnvironmentalPolicyScene extends BaseScene {
-    constructor() {
-        super({ key: 'environmentalPolicy' });
-        this.sharedData = {
-            icons: {},
-            MAGAness: 0,
-            Wokeness: 0,
-            putieTerritories: 0,
-            alienTerritories: 0,
-            year: 2023
-        };
-    }
-    setup(data) {
-            Object.assign(this.sharedData, data);
-    }
-    preload() {
-        // Preload an image for the victory scene
-        this.load.image('victory', 'assets/aliencrash.png');
-    }
-
-/*
-    create() {
-
-        //this.sharedData = sharedData;
-
-        // Create a semi-transparent background for the text
-        let graphics = this.add.graphics();
-        graphics.fillStyle(0x000000, 0.5); // black color, half transparency
-        graphics.fillRect(10, 10, this.cameras.main.width - 20, this.cameras.main.height - 20);
-
-        // Scenario description
-        let scenarioDescription = [
-        "A corporation wants to build a large factory that will provide jobs",
-        "and boost the economy. However, environmentalists argue this could",
-        "seriously harm the local environment. What will you do?"
-        ].join('\n');
-
-        this.add.bitmapText(20, 20, 'fontKey', scenarioDescription, 16); // Replace 'fontKey' with the key for your bitmap font
-
-        // Create the options and assign them an action
-        let allowBuildOption = this.add.bitmapText(20, 120, 'fontKey', 'Allow the Corporation to Build', 20)
-            .setTint(0xff0000) // red color
-            .setInteractive()
-            .on('pointerdown', () => this.chooseOption('maga'));
-
-        let denyProposalOption = this.add.bitmapText(20, 160, 'fontKey', 'Deny the Corporation\'s Proposal', 20)
-            .setTint(0x0000ff) // blue color
-            .setInteractive()
-            .on('pointerdown', () => this.chooseOption('woke'));
-
-
-    create() {
-        // Create a semi-transparent background for the text
-        let graphics = this.add.graphics();
-        graphics.fillStyle(0x000000, 0.5); // black color, half transparency
-        graphics.fillRect(10, 10, this.cameras.main.width - 20, this.cameras.main.height - 20);
-
-        // This one is easy:
-        // MAGA: economy+, environment gets blue woke hats,
-        // Woke: economy-, MAGA hats go to.. environment?  or economy?
-        //    Woke Alternative: no change in economy health, but MAGAs hit both econ and env.
-        //        -- definitely MAGAs on env makes the most sense but from gameplay maybe both.
-        let scenarioDescription = [
-            "A major corporation wants to establish a new industrial plant in your region.",
-            "This would undoubtedly boost the economy, creating jobs and potentially leading",
-            "to prosperity. However, environmental activists are concerned that this",
-            "development would cause significant harm to local ecosystems and contribute",
-            "to climate change."
-        ];
-
-        // This one is harder: enact: social justice+, MAGAs hit social justice!
-        // don't enact: social justice- (or same), Wokes hit social justice!
-        let scenarioDescription2 = [
-            "In recent times, tensions have been growing in our society, fanned by an increase",
-            "in online hate speech. Citizens are increasingly reporting that they feel targeted,",
-            "unsafe, and marginalized by the inflammatory rhetoric. A groundswell of support has",
-            "gathered behind a new piece of legislation designed to crack down on hate speech,",
-            "with advocates arguing that it is necessary to protect the rights and emotional wellbeing",
-            "of all citizens, particularly those belonging to minority groups. They believe the",
-            "enforcement of such a law could potentially reduce social unrest and contribute to",
-            "a safer, more harmonious society.",
-
-            "However, there is a strong counter-argument being raised by free speech proponents.",
-            "They contend that the proposed legislation is tantamount to censorship, stifling citizens'",
-            "right to express their views freely, however unpopular those views may be. They argue that",
-            "it's a dangerous precedent to give the government such broad powers over determining what",
-            "constitutes 'acceptable speech'. Some of these citizens fear the slippery slope of censorship",
-            "and the potential for the government to misuse the legislation for political gains.",
-
-            "As the leader, it's up to you to make a difficult decision. Do you support the legislation",
-            "and crack down on hate speech, potentially reducing social unrest (Woke perspective)? Or do",
-            "you uphold the sanctity of free speech, despite the potential for it to be used irresponsibly",
-            "(MAGA perspective)?"
-    ];
-
-
-        let formattedScenario = insertLineBreaks(scenarioDescription.join(' '), 44);
-        let scenarioText = this.add.text(10, 10, formattedScenario, { font: '20px Arial', fill: '#ffffff' });
-
- ////====
- //====
- //====
-             // Create the options and assign them an action
-            let choices = [
-                'Enact the legislation without changes',
-                'Reject the legislation completely',
-                'Modify the legislation to be less stringent',
-                'Modify the legislation to be more stringent',
-                'Postpone the decision and gather more information'
-            ];
-
-            choices.forEach((choice, index) => {
-                this.add.bitmapText(10, 100 + index * 40, 'fontKey', choice, 20)
-                    .setInteractive()
-                    .on('pointerdown', () => this.chooseOption(index));
-            });
-        }
-
-        chooseOption(index) {
-            // Implement the results of the chosen option here. How this is done will depend on your game's mechanics.
-            switch(index) {
-                case 0:
-                    // Enact the legislation without changes
-                    break;
-                case 1:
-                    // Reject the legislation completely
-                    break;
-                case 2:
-                    // Modify the legislation to be less stringent
-                    break;
-                case 3:
-                    // Modify the legislation to be more stringent
-                    break;
-                case 4:
-                    // Postpone the decision and gather more information
-                    break;
-            }
-        }
-////====
-
-        // Format the text to be centered and with the color based on the affiliation
-        let formattedBackstory = insertLineBreaks(scenarioDescription.join(' '), 44);
-        this.add.text(this.sys.game.config.width/2 - 300, 100, formattedBackstory, { color: '#ffffff', fontSize: '36px',fontFamily: 'Roboto'});
-
-        // Create the options and assign them an action
-        let allowBuildOption = this.add.text(this.sys.game.config.width/2 - 300, 500, 'Allow the Corporation to Build', { color: '#ff0000', fontSize: '36px',fontFamily: 'Roboto' })
-            .setInteractive()
-            .on('pointerdown', () => this.chooseOption('maga'));
-
-        let denyProposalOption = this.add.text(this.sys.game.config.width/2 - 300, 540, 'Deny the Corporation\'s Proposal', { color: '#0000ff', fontSize: '36px' ,fontFamily: 'Roboto'})
-            .setInteractive()
-            .on('pointerdown', () => this.chooseOption('woke'));
-
-
-
-        //====================================================================================
-        //    function insertLineBreaks(str, charsPerLine) {
-        //====================================================================================
-        function insertLineBreaks(str, charsPerLine) {
-            let words = str.split(' ');
-            let lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            lines.push(currentLine);
-
-            return lines.join('\n');
-        }
-    }
-
-    chooseOption(faction) {
-        if (faction === 'maga') {
-            // Increase economy strength, maybe decrease environmental health?
-            this.sharedData.icons['economy'].health += 20;
-            this.sharedData.icons['environment'].health -= 10;
-
-            // Increase MAGAness
-            this.sharedData.MAGAness += 20;
-        } else if (faction === 'woke') {
-            // Decrease economy strength, increase environmental health
-            this.sharedData.icons['economy'].health -= 10;
-            this.sharedData.icons['environment'].health += 20;
-
-            // Increase Wokeness
-            this.sharedData.Wokeness += 20;
-        }
-
-        // Then return to the previous scene or update the game state in some other way
-            this.scene.get('politics').setup(this.sharedData);
-            this.scene.start('politics');
-    }
-
-}
- */
-
-export class DecisionScene extends BaseScene {
-    constructor() {
-        super({ key: 'DecisionScene' });
-        this.sharedData = {
-            icons: {},
-            MAGAness: 0,
-            Wokeness: 0,
-            putieTerritories: 0,
-            alienTerritories: 0,
-            year: 2023
-        };
-    }
-    setup(data) {
-            Object.assign(this.sharedData, data);
-            console.log('victory in year ' + this.sharedData.year);
-    }
-    preload() {
-        // Preload an image for the victory scene
-        this.load.image('victory', 'assets/aliencrash.png');
-    }
-
-    create(data) {
-        // Create a text object to display a victory message
-        let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, data.message, {
-            font: 'bold 64px Arial',
+            font: 'bold '+ this.sharedData.fontSize + ' Arial',
             fill: '#ffffff',
             align: 'center'
         });
@@ -602,8 +377,19 @@ class AliensAttack extends Phaser.Scene {
 
     create() {
         // Create a text object to display a victory message
-        let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Alien Invasion!  You need to defend America!', {
-            font: 'bold 48px Arial',
+        let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
+        let health = 1;
+        let healthScale = 1;
+        if (this.sharedData.icons['military']) {
+          health = this.sharedData.icons['military'].health;
+          healthScale = this.sharedData.icons['military'].healthScale;
+        }
+        let healthText = capitalizeFirstLetter(healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)]);
+
+        let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY,
+           'Alien Invasion!\n You need to defend America from\n' + this.sharedData.thisRoundAlienAttacks +
+           ' alien Attack' + ((this.sharedData.thisRoundAlienAttacks > 1) ? 's': '') +'!\nYour Alien Defense is: ' + healthText, {
+            font: 'bold ' + this.sharedData.fontSize + ' Arial',
             fill: '#ffffff',
             align: 'center'
         });
@@ -625,6 +411,9 @@ class AliensAttack extends Phaser.Scene {
             console.log('back on cover screen sharedData has been sent.  Now start scene2');
             this.scene.start('scene2');
         }, this);
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
     }
 }
 class TutorialScene extends Phaser.Scene {
@@ -652,7 +441,7 @@ class TutorialScene extends Phaser.Scene {
     create(data) {
         // Use data.message as the message text
         let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, data.message,  {
-            font: 'bold 48px Arial',
+            font: 'bold ' + this.sharedData.fontSize + ' Arial',
             fill: '#ffffff',
             align: 'center'
         });
@@ -735,8 +524,7 @@ export class Scene2 extends BaseScene {
             ideology: 'maga'
         };
 
-        this.thisRoundAlienAttacks = 1;
-        this.thisRoundTerritoriesWithMissiles = 6;
+
 
     }
     // Alien Invasion
@@ -764,8 +552,8 @@ export class Scene2 extends BaseScene {
         this.MAGAness = this.sharedData.MAGAness;
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
-        this.totalAlienAttacks = this.thisRoundAlienAttacks;
-        this.thisRoundAlienAttacks += 2; // each round 2 more alien attacks
+        this.totalAlienAttacks = this.sharedData.thisRoundAlienAttacks;
+        this.sharedData.thisRoundAlienAttacks += 2; // each round 2 more alien attacks
         this.icons = this.sharedData.icons;
 
         console.log('MAGA: ' + this.MAGAness + 'Woke: ' + this.Wokeness);
@@ -778,7 +566,7 @@ export class Scene2 extends BaseScene {
 
         let totalCapital = this.MAGAness + this.Wokeness;
 
-        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
+        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
 
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
@@ -787,7 +575,7 @@ export class Scene2 extends BaseScene {
         //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
 
         // Create Year text
-        yearText = this.add.text(1000, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
+        yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
 
 /*
         let offsetIndex = Phaser.Math.Between(0, territories.length - 1) + territories.length / 2;
@@ -865,20 +653,24 @@ export class Scene2 extends BaseScene {
         }, this);
 
         this.physics.add.overlap(this.missilesMaga, this.threats, function (missile, threat) {
+            this.explode(missile, 3);
             missile.destroy();
             threat.hitpoints -= 9;
             if (threat.hitpoints <= 0) {
                 this.MAGAness += threat.score;
                 polCapText.setText('Political Capital ' + (this.MAGAness + this.Wokeness).toString());
+                this.explode(threat, threat.score == 1 ? 5: 10);
                 threat.destroy();
             }
         }, null, this);
         this.physics.add.overlap(this.missilesWoke, this.threats, function (missile, threat) {
+            this.explode(missile, 1);
             missile.destroy();
             threat.hitpoints -= 3;
             if (threat.hitpoints <= 0) {
                 this.Wokeness += threat.score;
                 polCapText.setText('Political Capital: ' + (this.MAGAness + this.Wokeness).toString());
+                this.explode(threat, threat.score == 1 ? 5: 10);
                 threat.destroy();
             }
         }, null, this);
@@ -901,6 +693,59 @@ export class Scene2 extends BaseScene {
         }
         this.physics.moveTo(missileNum, pointer.x+offset, pointer.y-offset, missileSpeed);
         return {missileNum: missileNum};
+    }
+
+    explode(object, size) {
+      let numExplosions = 8;
+      let lifeSpan = 400;
+      let volume = 25;
+      let delay = 20;
+      switch(size) {
+          case 1:
+              numExplosions = 4;
+              lifeSpan = 200;
+              break;
+          case 2:
+              numExplosions = 8;
+              lifeSpan = 400;
+              break;
+          case 3:
+              numExplosions = 10;
+              lifeSpan = 600;
+              break;
+          case 4:
+              numExplosions = 14;
+              lifeSpan = 800;
+              break;
+          case 5:
+              numExplosions = 16;
+              lifeSpan = 4000;
+              volume = 50;
+              delay = 50;
+              break;
+          case 10:
+              numExplosions = 40;
+              lifeSpan = 6000;
+              volume = 100;
+              delay = 100;
+              break;
+      }
+      for (let i = 0; i < numExplosions; i++) {
+          setTimeout(() => {
+              let emitter = this.add.particles(400, 250, 'flares', {
+                  frame: [ 'red', 'yellow', 'green' ],
+                  lifespan: lifeSpan,
+                  speed: { min: 225-size*20, max: 375-size*20 }, // Reduced speed values
+                  scale: { start: 0.25, end: 0 }, // Reduced scale values
+                  gravityY: 250,
+                  blendMode: 'ADD',
+                  emitting: false
+              });
+              emitter.setPosition(object.x + Phaser.Math.Between(-volume, volume),
+                                  object.y + Phaser.Math.Between(-volume,volume));
+              emitter.explode(16);
+          }, i * delay); // Delay in milliseconds
+      }
     }
 
     update() {
@@ -936,9 +781,11 @@ export class Scene2 extends BaseScene {
             this.sharedData.Wokeness = this.Wokeness;
             this.sharedData.MAGAness = this.MAGAness;
             this.sharedData.icons = this.icons;
-
-            this.scene.get('VictoryScene').setup(this.sharedData);
-            this.scene.start('VictoryScene', { message: 'Alien attack deterred!\nYou get great publicity.\nPolitical Capital raised by 10 points!'});
+            this.cameras.main.fadeOut(3000, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                this.scene.get('VictoryScene').setup(this.sharedData);
+                this.scene.start('VictoryScene', { message: 'Alien attack deterred!\nYou get great publicity.\nPolitical Capital raised by 10 points!'});
+            });
         }
         // Check all alien objects
         this.threats.children.each(function(alien) {
@@ -1021,29 +868,5 @@ let config = {
         DilemmaScene
     ]
 };
-
-/*
-var config = {
-    type: Phaser.AUTO,
-    parent: 'game',
-    width: 1280,
-    height: 830,
-    physics: {
-        default: 'arcade',
-    },
-    scene: [
-        TitleScene,
-        ChooseYourIdeologyScene,
-        Insurrection,
-        Politics,
-        AliensAttack,
-        Scene2,
-        VictoryScene,
-        TutorialScene,
-        MilitaryAllocation,
-        DilemmaScene
-    ]
-};
- */
 
 var game = new Phaser.Game(config);

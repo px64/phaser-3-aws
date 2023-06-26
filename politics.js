@@ -243,7 +243,7 @@ export class Politics extends BaseScene {
 
         let totalCapital = this.MAGAness + this.Wokeness;
 
-        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
+        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
 
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
@@ -252,7 +252,7 @@ export class Politics extends BaseScene {
         //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
 
         // Create Year text
-        yearText = this.add.text(1000, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
+        yearText = this.add.text(1000, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
 
 
         //this.envHealthBarMaga = this.add.graphics();
@@ -1140,7 +1140,7 @@ export class Politics extends BaseScene {
                 }
 
                 polCapText.setText('Political Capital ' + (tmpMAG+tmpWok).toString());
-                polCapText.setColor('#ffffff'); // Change text color back to white
+                polCapText.setColor('#00ff00'); // Change text color back to green
                 polCapText.setBackgroundColor('#000000'); // Change background color back to black
 
  /*
