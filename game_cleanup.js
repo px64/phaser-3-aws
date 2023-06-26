@@ -10,15 +10,15 @@
 //            - faster missiles
 //            - improved accuracy
 //            - bigger explosions (would need to add missile detonation at destination and an explosion)
-//            - more frequent reload (would need to add a time delay between missile launches) 
+//            - more frequent reload (would need to add a time delay between missile launches)
 //                  -- idea that also impacts putieville: perhaps each territory has a launch delay and
 //                  -- it automatically round-robins between territories so the delay can catch up when returning to territory #1
 //        -- How does user get to add to the military strength (or defense) aspects?
 //            -- easiest: round robin: but doesn't make much sense
 //            -- another scene that has slider bars for all of the aspects: the best but more work. Yes but need to wait for insurrectionists to finish.
 //            -- a popup overlay when military health is boosted?
-//    3. Need to come up with some negative impact of Putieville on the aliens attack screen.  
-//        -- See above on the round-robin reload idea for fewer bases to fire from  
+//    3. Need to come up with some negative impact of Putieville on the aliens attack screen.
+//        -- See above on the round-robin reload idea for fewer bases to fire from
 //        -- putieville can launch it's own 'decoy puties' that can impact or deflect your missiles but don't harm aliens
 //            -- this might be pretty easy to implement
 //    6. Need to add general rules for all gauges:
@@ -29,10 +29,10 @@
 // Problem: when we go to alien attack screen, we never encounter the insurrection screen!
 //  you should always go to insurrectionist attack.  Actually go to the military allocation screen, then insurrectionists attack, then aliens attack
 
-// Two player game: 
-// one player plays MAGA, the other plays Woke.  
-// During politics, each allocates capital to their own people only.  
-//  -- MAGA spends capital building better alien attacks and defenses.  
+// Two player game:
+// one player plays MAGA, the other plays Woke.
+// During politics, each allocates capital to their own people only.
+//  -- MAGA spends capital building better alien attacks and defenses.
 //  -- Woke spends capital building better infrastructure against collapse/ insurrection
 
 // NEW IDEA: have social justice only improve by answering difficult questions.
@@ -41,12 +41,12 @@
 
 // Done:
 //    add a 'quit' button to insurrection screen so it can end in case there are only a few threats floating around (maybe a timer?  30 secs?)
-//          -- Have a Putie-ville (and China) that grow across the country 
+//          -- Have a Putie-ville (and China) that grow across the country
 //
 //            -- If difference between Maga and Woke is large: Need an indicator of this difference on the gauge!
 //                 - fix gauge color so it stays the color of the greatest of maga or woke
 
-import BaseScene from './BaseScene.js'; 
+import BaseScene from './BaseScene.js';
 import {Politics} from './politics.js';
 import {DilemmaScene} from './dilemma.js';
 import {Insurrection} from './insurrection.js';
@@ -72,7 +72,7 @@ class TitleScene extends Phaser.Scene {
     constructor () {
         super({ key: 'titlescene'});
     }
-    
+
     create() {
         // The story text
         let storyLines = [
@@ -107,13 +107,13 @@ class TitleScene extends Phaser.Scene {
 
         // Create a group to hold your text lines
         let textGroup = this.add.group();
-        
+
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Skip to the next scene
             this.scene.start('ChooseYourIdeologyScene');
         }, this);
-        
+
         // For each line of text...
         for (let i = 0; i < storyLines.length; i++) {
             // ...create a timed event that waits i*1000 milliseconds, then...
@@ -146,11 +146,11 @@ class TitleScene extends Phaser.Scene {
                         ease: 'Linear',
                         duration: 33000,
                         repeat: 0,
-                        onComplete: function () { 
+                        onComplete: function () {
                             text.destroy(); // destroy the text once it's off the screen
                             if (i === storyLines.length - 1) {
                                 this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
-                                this.scene.start('ChooseYourIdeologyScene'); 
+                                this.scene.start('ChooseYourIdeologyScene');
                             }
                         }, callbackScope: this
                     });
@@ -166,7 +166,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
     constructor() {
         super({ key: 'ChooseYourIdeologyScene' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -183,7 +183,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
     preload() {
         // Call BaseScene's preload
         super.preload();
-        
+
         this.load.image('background', 'assets/aliencrash.png');
     }
 
@@ -205,7 +205,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             icon: 'wokeBase',
             faction: 'woke'
         },
-/* 
+/*
         {
             name: "Libertarian RINO", color: '#ff00ff',
             icon: 'libertarian',
@@ -261,11 +261,11 @@ export class ChooseYourIdeologyScene extends BaseScene {
             this.sharedData.MAGAness += 5;
             this.sharedData.Wokeness += 5;
         }
-        
+
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.scene.get('politics').setup(this.sharedData);
-            this.scene.start('politics');
+            this.scene.get('AliensAttack').setup(this.sharedData);
+            this.scene.start('AliensAttack');
             });
     }
 
@@ -283,7 +283,7 @@ class VictoryScene extends Phaser.Scene {
     constructor() {
         super({ key: 'VictoryScene' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -317,7 +317,7 @@ class VictoryScene extends Phaser.Scene {
 
         // Bring the text to the top
         victoryText.setDepth(1);
-        
+
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Switch to the next scene
@@ -327,12 +327,12 @@ class VictoryScene extends Phaser.Scene {
     }
 }
 
-/* 
+/*
 export class EnvironmentalPolicyScene extends BaseScene {
     constructor() {
         super({ key: 'environmentalPolicy' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -347,7 +347,7 @@ export class EnvironmentalPolicyScene extends BaseScene {
         // Preload an image for the victory scene
         this.load.image('victory', 'assets/aliencrash.png');
     }
-    
+
 /*
     create() {
 
@@ -378,14 +378,14 @@ export class EnvironmentalPolicyScene extends BaseScene {
             .setInteractive()
             .on('pointerdown', () => this.chooseOption('woke'));
 
- 
+
     create() {
         // Create a semi-transparent background for the text
         let graphics = this.add.graphics();
         graphics.fillStyle(0x000000, 0.5); // black color, half transparency
         graphics.fillRect(10, 10, this.cameras.main.width - 20, this.cameras.main.height - 20);
 
-        // This one is easy: 
+        // This one is easy:
         // MAGA: economy+, environment gets blue woke hats,
         // Woke: economy-, MAGA hats go to.. environment?  or economy?
         //    Woke Alternative: no change in economy health, but MAGAs hit both econ and env.
@@ -397,7 +397,7 @@ export class EnvironmentalPolicyScene extends BaseScene {
             "development would cause significant harm to local ecosystems and contribute",
             "to climate change."
         ];
-        
+
         // This one is harder: enact: social justice+, MAGAs hit social justice!
         // don't enact: social justice- (or same), Wokes hit social justice!
         let scenarioDescription2 = [
@@ -422,7 +422,7 @@ export class EnvironmentalPolicyScene extends BaseScene {
             "you uphold the sanctity of free speech, despite the potential for it to be used irresponsibly",
             "(MAGA perspective)?"
     ];
-    
+
 
         let formattedScenario = insertLineBreaks(scenarioDescription.join(' '), 44);
         let scenarioText = this.add.text(10, 10, formattedScenario, { font: '20px Arial', fill: '#ffffff' });
@@ -438,7 +438,7 @@ export class EnvironmentalPolicyScene extends BaseScene {
                 'Modify the legislation to be more stringent',
                 'Postpone the decision and gather more information'
             ];
-    
+
             choices.forEach((choice, index) => {
                 this.add.bitmapText(10, 100 + index * 40, 'fontKey', choice, 20)
                     .setInteractive()
@@ -480,7 +480,7 @@ export class EnvironmentalPolicyScene extends BaseScene {
         let denyProposalOption = this.add.text(this.sys.game.config.width/2 - 300, 540, 'Deny the Corporation\'s Proposal', { color: '#0000ff', fontSize: '36px' ,fontFamily: 'Roboto'})
             .setInteractive()
             .on('pointerdown', () => this.chooseOption('woke'));
- 
+
 
 
         //====================================================================================
@@ -534,7 +534,7 @@ export class DecisionScene extends BaseScene {
     constructor() {
         super({ key: 'DecisionScene' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -568,7 +568,7 @@ export class DecisionScene extends BaseScene {
 
         // Bring the text to the top
         victoryText.setDepth(1);
-        
+
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Switch to the next scene
@@ -582,7 +582,7 @@ class AliensAttack extends Phaser.Scene {
     constructor() {
         super({ key: 'AliensAttack' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -594,7 +594,7 @@ class AliensAttack extends Phaser.Scene {
             Object.assign(this.sharedData, data);
             console.log('Aliens Attack cover screen in year ' + this.sharedData.year);
     }
-    
+
     preload() {
         // Preload an image for the aliens attack scene
         this.load.image('attack', 'assets/aliencrash.png');
@@ -617,7 +617,7 @@ class AliensAttack extends Phaser.Scene {
 
         // Bring the text to the top
         victoryText.setDepth(1);
-        
+
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Switch to the next scene
@@ -631,7 +631,7 @@ class TutorialScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TutorialScene' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -639,7 +639,7 @@ class TutorialScene extends Phaser.Scene {
             year: 2023
         };
     }
-    
+
     setup(data) {
             Object.assign(this.sharedData, data);
     }
@@ -666,9 +666,9 @@ class TutorialScene extends Phaser.Scene {
 
         // Bring the text to the top
         victoryText.setDepth(1);
-        
+
         console.log('year is '+ this.sharedData.year);
-        
+
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Switch to the next scene
@@ -686,7 +686,7 @@ class TutorialScene extends Phaser.Scene {
 //             Missile Attack
 //
 //         The idea is that each round, n more aliens attack.  Each territory gets some
-//         number of missiles.  A territory shoots all of its missiles before the game 
+//         number of missiles.  A territory shoots all of its missiles before the game
 //         moves on to the next territory.  Early in the game, only 1 territory has
 //         missiles.  As the game progresses, more territories have missiles.  It is done
 //         this way because we want the player to be able to take multiple shots from
@@ -724,7 +724,7 @@ export class Scene2 extends BaseScene {
     constructor() {
         super({ key: 'scene2' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -734,7 +734,7 @@ export class Scene2 extends BaseScene {
             helperTokens: {},
             ideology: 'maga'
         };
-        
+
         this.thisRoundAlienAttacks = 1;
         this.thisRoundTerritoriesWithMissiles = 6;
 
@@ -743,7 +743,7 @@ export class Scene2 extends BaseScene {
     setup(data) {
         console.log(' scene2: setup is loading sharedData');
             Object.assign(this.sharedData, data);
-            
+
             console.log('scene2 in year '+ this.sharedData.year);
             this.icons = this.sharedData.icons;
             this.MAGAness = this.sharedData.MAGAness;
@@ -770,26 +770,26 @@ export class Scene2 extends BaseScene {
 
         console.log('MAGA: ' + this.MAGAness + 'Woke: ' + this.Wokeness);
         territories.forEach((territory, index) => {
-            territory.y = this.game.config.height - 50;    
+            territory.y = this.game.config.height - 50;
         });
         this.territoryWidth = this.sys.game.config.width / territories.length;
-        
+
         this.createTerritories();
-        
+
         let totalCapital = this.MAGAness + this.Wokeness;
-        
+
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
-        
+
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
-    
+
         // Create Wokeness text
         //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
-    
+
         // Create Year text
         yearText = this.add.text(1000, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
-        
-/* 
+
+/*
         let offsetIndex = Phaser.Math.Between(0, territories.length - 1) + territories.length / 2;
         this.attackIndex = Phaser.Math.Wrap(offsetIndex, 0, territories.length);
  */
@@ -809,7 +809,7 @@ export class Scene2 extends BaseScene {
                 break;
             } // something went wrong: can only find putieVille everywhere
         }
-        
+
         //this.magaBase = this.physics.add.sprite(100, this.sys.game.config.height - 100, 'magaBase').setScale(0.1);
         //this.wokeBase = this.physics.add.sprite(this.sys.game.config.width - 100, this.sys.game.config.height - 100, 'wokeBase').setScale(0.1);
 
@@ -888,7 +888,7 @@ export class Scene2 extends BaseScene {
         }
 
     } // end of create()
-    
+
     fireMissile(base, angle, pointer, offset, scale, missileSpeed, missileSprite) {
         let missileNum = missileSprite.create(base.x+this.territoryWidth/2, base.y, 'missile').setScale(scale);
         missileNum.setRotation(angle);
@@ -902,7 +902,7 @@ export class Scene2 extends BaseScene {
         this.physics.moveTo(missileNum, pointer.x+offset, pointer.y-offset, missileSpeed);
         return {missileNum: missileNum};
     }
-    
+
     update() {
         // game loop
         // This is called 60 times per second. Put game logic here.
@@ -936,9 +936,9 @@ export class Scene2 extends BaseScene {
             this.sharedData.Wokeness = this.Wokeness;
             this.sharedData.MAGAness = this.MAGAness;
             this.sharedData.icons = this.icons;
-            
+
             this.scene.get('VictoryScene').setup(this.sharedData);
-            this.scene.start('VictoryScene', { message: 'Alien attack deterred!\nYou get great publicity.\nPolitical Capital raised by 10 points!'}); 
+            this.scene.start('VictoryScene', { message: 'Alien attack deterred!\nYou get great publicity.\nPolitical Capital raised by 10 points!'});
         }
         // Check all alien objects
         this.threats.children.each(function(alien) {
@@ -975,25 +975,25 @@ export class Scene2 extends BaseScene {
 
                 this.attackedTerritory.faction = 'alien';
                 this.attackedTerritory.name = "Aliens";
-                this.attackedTerritory.color = '0x123456'; 
-                
+                this.attackedTerritory.color = '0x123456';
+
                 thereBeThreats = 0;
                 this.sharedData.Wokeness = this.Wokeness;
                 this.sharedData.MAGAness = this.MAGAness;
                 this.sharedData.icons = this.icons;
-                
+
                 this.scene.get('politics').setup(this.sharedData);
-                this.scene.start('politics'); 
+                this.scene.start('politics');
             }
             if (alien.x <= 0) {
                 alien.destroy();
             }
         }, this); // 'this' refers to our scene
-        
+
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
-        
+
     }
 }
 
@@ -1006,27 +1006,17 @@ var config = {
         default: 'arcade',
     },
     scene: [
-        TitleScene, 
-        ChooseYourIdeologyScene, 
-        Insurrection, 
-        Politics, 
-        AliensAttack, 
-        Scene2, 
-        VictoryScene, 
-        TutorialScene, 
+        TitleScene,
+        ChooseYourIdeologyScene,
+        Insurrection,
+        Politics,
+        AliensAttack,
+        Scene2,
+        VictoryScene,
+        TutorialScene,
         MilitaryAllocation,
         DilemmaScene
     ]
 };
 
 var game = new Phaser.Game(config);
-
-
-
-
-
-
-
-
-
-
