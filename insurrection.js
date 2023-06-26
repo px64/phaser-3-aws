@@ -180,7 +180,7 @@ export class Insurrection extends BaseScene {
                 let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(iconData.health/iconData.healthScale/20),0,4)];
                 iconData.iconText.setText(iconData.textBody + healthText);
 
-                this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth);
+                this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite);
             }
             
 
@@ -219,7 +219,7 @@ export class Insurrection extends BaseScene {
                     this.sharedData.icons['government'].iconText.setText(gov.textBody + healthText);
                 }
 
-                this.drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth);
+                this.drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite);
             }
         }
         //====================================================================================
