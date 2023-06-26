@@ -749,7 +749,7 @@ export class Politics extends BaseScene {
                             scene.returnThreat(territory, helper.container.character.faction, helpedIcon, numReturns);
                             //icon[helper.container.character.faction] = icon[otherFaction];
                         }
-                        scene.drawGauges(helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth);
+                        scene.drawGauges(helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth, helpedIcon.scaleSprite);
                         // Delete data from sharedData.helperTokens
                         console.log('delete name ' + helper.container.character.name);
                         delete scene.sharedData.helperTokens[helper.container.character.name];
@@ -758,7 +758,7 @@ export class Politics extends BaseScene {
                         // But we also launch 5 faction threats at the 'hurts' icon
                         console.log('character ' + helper.container.character.name + 'launches 5 threats');
                         scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
-                        scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth);
+                        scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite);
                         tooltip.text.setVisible(true);
                         tooltip.box.setVisible(true);
                         if (icon.iconName == 'military') {
