@@ -997,6 +997,32 @@ export class Scene2 extends BaseScene {
     }
 }
 
+let config = {
+    type: Phaser.AUTO,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: window.innerWidth,
+        height: window.innerHeight
+    },
+    physics: {
+        default: 'arcade',
+    },
+    scene: [
+        TitleScene,
+        ChooseYourIdeologyScene,
+        Insurrection,
+        Politics,
+        AliensAttack,
+        Scene2,
+        VictoryScene,
+        TutorialScene,
+        MilitaryAllocation,
+        DilemmaScene
+    ]
+};
+
+/*
 var config = {
     type: Phaser.AUTO,
     parent: 'game',
@@ -1018,5 +1044,6 @@ var config = {
         DilemmaScene
     ]
 };
+ */
 
 var game = new Phaser.Game(config);

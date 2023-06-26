@@ -307,7 +307,7 @@ export class Politics extends BaseScene {
             }
             else {
                 Wokeindex++;
-                xOffset = 950;
+                xOffset = this.sys.game.config.width * .74;
              }
 
             characterText = this.add.text(50+xOffset, 265 + (rowIndex * 85), character.name + '\nBacking: ' + character.value + '/ 6,\nEndorsement: ' + character.endorsement,
@@ -612,7 +612,7 @@ export class Politics extends BaseScene {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
                     let data = misinformationData[scene.currentMisinformationIndex];
 
-                    let xOffset = data.type === 'maga' ? 500: 800;
+                    let xOffset = data.type === 'maga' ? scene.sys.game.config.width * .39 : scene.sys.game.config.width * .625;
                     let yOffset = data.type === 'maga' ? scene.yMagaOffset: scene.yWokeOffset;
 
                     // Store the position data
