@@ -759,7 +759,8 @@ export class Scene2 extends BaseScene {
 
             this.physics.moveTo(threat, 0, 25, 250); // the speed of the threat.
         }
-        if (Math.random() < 0.01 && this.totalAlienAttacks-- > 0) {
+        if (Math.random() < 0.01 && this.totalAlienAttacks > 0) {
+            this.totalAlienAttacks--;
             let threat = this.threats.create(Math.random() * this.sys.game.config.width, 0, 'threat').setScale(0.1);
             threat.hitpoints = 9;
             threat.score = 1;
@@ -771,7 +772,7 @@ export class Scene2 extends BaseScene {
         if (this.threats.countActive(true) > 0) {
             thereBeThreats = 1;
         }
-        if (this.totalAlienAttacks == 0 && this.threats.countActive(true) == 0) {
+        if (this.totalAlienAttacks < 2 && thereBeThreats == 1 && this.threats.countActive(true) == 0) {
             console.log('All threats have been destroyed!');
             thereBeThreats = 0;
             if (this.attackedTerritory.faction == 'maga') {
