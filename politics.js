@@ -192,7 +192,7 @@ export class Politics extends BaseScene {
             //this.drawHealthBar(1, 100, 100, 'maga', this.envHealthBarMaga);
             //this.drawHealthBar(0.7, 110, 100, 'woke', this.envHealthBarWoke);
 
-            drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth);
+            drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth), env.scaleSprite;
 
             if (0) {//Math.random() < 0.3) {
                 this.scene.get('AliensAttack').setup(this.sharedData);
@@ -221,7 +221,7 @@ export class Politics extends BaseScene {
                 this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
             }
  */
-            drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth);
+            drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite);
 
             //makes no sense with political capital now
 /*

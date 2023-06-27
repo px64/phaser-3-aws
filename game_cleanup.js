@@ -58,7 +58,7 @@ import { militaryAssets } from './BaseScene.js';
 var healthBar;
 var healthBox;
 var healthGauge;
-var thereBeThreats = 0;
+var thereBeThreats;
 let MAGAslider;
 let Wokeslider;
 var foo;
@@ -556,6 +556,7 @@ export class Scene2 extends BaseScene {
         this.sharedData.thisRoundAlienAttacks += 2; // each round 2 more alien attacks
         this.icons = this.sharedData.icons;
 
+        thereBeThreats = 0;
         console.log('MAGA: ' + this.MAGAness + 'Woke: ' + this.Wokeness);
         territories.forEach((territory, index) => {
             territory.y = this.game.config.height - 50;
@@ -770,7 +771,7 @@ export class Scene2 extends BaseScene {
         if (this.threats.countActive(true) > 0) {
             thereBeThreats = 1;
         }
-        if (thereBeThreats == 1 && this.threats.countActive(true) == 0) {
+        if (this.totalAlienAttacks == 0 && this.threats.countActive(true) == 0) {
             console.log('All threats have been destroyed!');
             thereBeThreats = 0;
             if (this.attackedTerritory.faction == 'maga') {
