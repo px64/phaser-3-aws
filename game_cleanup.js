@@ -606,7 +606,7 @@ export class Scene2 extends BaseScene {
         this.threats = this.physics.add.group();
         this.roundRobinLaunch = 0;
         this.missilesPerTerritory = 3;  // hard code missiles per territory to 3 for now
-        this.territoriesWithMissiles = this.thisRoundTerritoriesWithMissiles;
+        this.territoriesWithMissiles = this.sharedData.thisRoundTerritoriesWithMissiles;
 
         this.input.on('pointerdown', function (pointer) {
             //let baseOffset = Phaser.Math.Wrap(this.attackIndex + territories.length/2, 0, territories.length-1);
