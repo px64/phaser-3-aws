@@ -370,7 +370,7 @@ export default class BaseScene extends Phaser.Scene {
                 // Enable world bounds event for this body
                 threat.body.onWorldBounds = true;
                 icon[faction] -= 10;
-                this.drawGauges(icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth);
+                this.drawGauges(icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth), icon.scaleSprite;
 
                 // Listen for the event
                 this.physics.world.on('worldbounds', (body) => {
