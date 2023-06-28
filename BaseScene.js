@@ -60,7 +60,7 @@ export default class BaseScene extends Phaser.Scene {
             this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice: ', 1, 16, 0); //.15
             this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.03, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0); //50
             this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0); // 1
-            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 1, 16, 0); // 1
+            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 4, 16, 0); // 1
      }
 
     //====================================================================================

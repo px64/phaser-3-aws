@@ -325,7 +325,7 @@ export class DilemmaScene extends BaseScene {
             } else {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
             }
-            let resultsText = this.add.text(80, 300, fruit, { font: '48px Arial', fill: '#ffffff' });
+            let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
 
             // Implement the results of the chosen option
             this.icons[choice.helps].health += choice.helpBenefit;
@@ -944,7 +944,6 @@ export class DilemmaScene extends BaseScene {
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
-                console.log(gauge);
                 scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite);
                 scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);

@@ -263,6 +263,20 @@ export class ChooseYourIdeologyScene extends BaseScene {
             radioButton.on('pointerover', () => this.enterButtonHoverState(radioButton));
             radioButton.on('pointerout', () => this.enterButtonRestState(radioButton));
         }
+
+        this.physics.world.gravity.y = 500;
+
+        // Create the sprite at the center of the screen
+        let mySprite = this.physics.add.sprite(this.cameras.main.centerX, this.sys.game.config.height - 100, 'putieBase').setScale(.1);
+
+        // Set the bounce property
+        mySprite.setBounce(1.02);
+
+        // Set the sprite to collide with the world bounds
+        mySprite.setCollideWorldBounds(true);
+
+        // Give the sprite an initial velocity
+        mySprite.setVelocity(100, -20);
     }
 
     selectIdeology(ideology) {
@@ -619,7 +633,7 @@ export class Scene2 extends BaseScene {
 
         this.input.on('pointerdown', function (pointer) {
             let missileLaunchDelayAsset = militaryAssets.find(asset => asset.name === 'Reload Time');
-            let delay = Math.max(2000 - missileLaunchDelayAsset.techLevel*40, 0);
+            let delay = Math.max(1200 - missileLaunchDelayAsset.techLevel*40, 0);
             let currentTime = new Date().getTime();
             if (currentTime - lastClickTime < delay) {
                 return;

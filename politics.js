@@ -224,17 +224,6 @@ export class Politics extends BaseScene {
             }
  */
             drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite);
-
-            //makes no sense with political capital now
-/*
-            if ((governmentSize < 300) || (this.Wokeness + this.MAGAness > 50)) {
-                this.MAGAness = Math.max(0, this.MAGAness-2);
-                MAGAnessText.setText('MAGA Power: ' + this.MAGAness);
-                this.Wokeness = Math.max(0, this.Wokeness-2);
-                WokenessText.setText('Wokeness: ' + this.Wokeness);
-                this.scene.start('TutorialScene', { message: 'Insurrection!  Government collapses!' });
-            }
- */
         }
         //====================================================================================
         //
@@ -246,12 +235,6 @@ export class Politics extends BaseScene {
         let totalCapital = this.MAGAness + this.Wokeness;
 
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
-
-        // Create MAGAness text
-        //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
-
-        // Create Wokeness text
-        //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
 
         // Create Year text
         yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
@@ -287,7 +270,43 @@ export class Politics extends BaseScene {
         let numberOfSteps = 7;
         let defaultValue = 0;
         let characterText;
+        let nextScreenTutorial = [
+            {
+                story: [
+                    "Click on the Earth Icon to",
+                        "move to the next screen"
+                ]
+            },
+            {
+                story: [
+                    "Click on the Earth Icon to",
+                        "move to the next screen"
+                ]
+            }
+        ];
+        // add some helpful text
+        if (!this.hasBeenCreatedBefore) {
+            // Format the text to be centered and with the color based on the affiliation
+            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 35);
+            let backstoryText = this.add.text(nextButton.x-130, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            backstoryText.setOrigin(0.5);
+            backstoryText.setVisible(true);
+            backstoryText.setDepth(2);
 
+            // Add a bounding box for the text, with rounded corners and a semi-transparent background
+            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+            backstoryBox.isStroked = true;
+            backstoryBox.setOrigin(0.5);
+            backstoryBox.setVisible(true);
+            backstoryBox.setDepth(1);
+
+            setTimeout(() => {
+                backstoryText.setVisible(false);
+                backstoryBox.setVisible(false);
+            }, 10000);
+
+        }
 
 
         characters.forEach((character, index) => {
@@ -424,10 +443,14 @@ export class Politics extends BaseScene {
                 //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
                 let helpedIcon = scene.sharedData.icons[character.helps];
                 console.log(helpedIcon);
-                helpedIcon.icon.shieldWoke.setAlpha(0);
+                if (helpedIcon) {
+                    helpedIcon.icon.shieldWoke.setAlpha(0);
+                }
                 let hurtIcon = scene.sharedData.icons[character.hurts];
-                hurtIcon.icon.shieldMaga.setAlpha(0);
-                console.log(hurtIcon);
+                if (hurtIcon) {
+                    hurtIcon.icon.shieldMaga.setAlpha(0);
+                    console.log(hurtIcon);
+                }
             });
             if (character.powerTokenType === 'type_2') {
                 scene.extraMisinformationTokens = 4;
@@ -656,7 +679,6 @@ export class Politics extends BaseScene {
 
         function handleHelperOverlap(icon, base, helper, incrementAmount, faction, gauge, message) {
             let iconColor = faction === 'maga' ? 'red' : 'blue';
-            console.log(helper.container.character.powerTokenType);
             // Do the appropriate thing depending on the helper type
             if (helper.container.character.powerTokenType == 'type_3') {
                 let helpedIcon = icon.icon;
@@ -693,6 +715,7 @@ export class Politics extends BaseScene {
                 });
 
                 if (!helper.isDestroyed) {
+                    console.log(helper.container.character.powerTokenType);
                     delete scene.sharedData.helperTokens[helper.container.character.name];
                     //tooltip.text.setVisible(true);
                     //tooltip.box.setVisible(true);
@@ -727,6 +750,7 @@ export class Politics extends BaseScene {
                     if (!helper.isDestroyed) {
                         // The health of the 'helps' icon is improved
                         icon.health += incrementAmount;
+                        console.log(helper.container.character.powerTokenType);
                         // Check to see if we win
                         let win = true;
                         for (let key in scene.sharedData.icons) {
@@ -800,7 +824,6 @@ export class Politics extends BaseScene {
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
-                console.log(gauge);
                 scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite);
                 scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
@@ -1018,7 +1041,14 @@ export class Politics extends BaseScene {
 
                 // Update the text dynamically as the slider is being dragged
                 characterText.setText(character.name + '\nBacking: ' + closestStep + '/ 6,\nEndorsement: ' + character.endorsement);
-
+                if (character.endorsement + closestStep > 10) {
+                    characterText.setColor('#00ff00');
+                    this.track.setTint(0x00ff00);
+                } else {
+                    let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
+                    characterText.setColor(textColor);
+                    this.track.setTint(0xffffff);
+                }
 
                 // Calculate MAGAupdate/WokeUpdate here
                 if (character.faction == 'maga') {
@@ -1142,6 +1172,15 @@ export class Politics extends BaseScene {
                         characterText.setText(character.name + '\nBacking: ' + value + '/ 6,\nEndorsement: ' + character.endorsement);
                         this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                     }
+                }
+
+                if (character.endorsement + value > 10) {
+                    characterText.setColor('#00ff00');
+                    this.track.setTint(0x00ff00);
+                } else {
+                    let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
+                    characterText.setColor(textColor);
+                    this.track.setTint(0xffffff);
                 }
 
                 polCapText.setText('Political Capital ' + (tmpMAG+tmpWok).toString());
