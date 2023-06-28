@@ -38,7 +38,7 @@ export class DilemmaScene extends BaseScene {
     constructor() {
         super({ key: 'dilemma' });
         this.sharedData = {
-            icons: {}, 
+            icons: {},
             MAGAness: 0,
             Wokeness: 0,
             putieTerritories: 0,
@@ -49,22 +49,22 @@ export class DilemmaScene extends BaseScene {
             militaryAllocation: 0
         };
     }
-    // dilemma 
+    // dilemma
     setup(data) {
-/* 
+/*
         var stack = new Error().stack;
         console.log("Called by: ", stack);
  */
-    
+
         console.log(' Dilemma: setup is loading sharedData');
-        
+
         Object.assign(this.sharedData, data);
 
-        
+
         console.log('MAGA: ' + this.sharedData.MAGAness + ' Woke: ' + this.sharedData.Wokeness);
         console.log(this.sharedData.icons);
     }
-    
+
     preload() {
             //this.load.image('newspaper', 'assets/newspaper-border.png');
             this.load.image('newspaper', 'assets/protest2.jpg');
@@ -72,9 +72,9 @@ export class DilemmaScene extends BaseScene {
     }
 
     //====================================================================================
-    //              
-    // create() 
-    // 
+    //
+    // create()
+    //
     //====================================================================================
     create() {
         console.log(this.sharedData.icons);
@@ -82,7 +82,7 @@ export class DilemmaScene extends BaseScene {
             console.log('new data here in dilemma');
             // initialize icons...
             this.shieldsMaga = this.physics.add.group();
-            this.shieldsWoke = this.physics.add.group(); 
+            this.shieldsWoke = this.physics.add.group();
             this.initializeIcons();
 
             this.icons = this.sharedData.icons;
@@ -90,7 +90,7 @@ export class DilemmaScene extends BaseScene {
             this.Wokeness = this.sharedData.Wokeness;
             this.putieTerritories = this.sharedData.putieTerritories;
             this.extraMisinformationTokens = 0;
-            
+
             // ...similarly for other icons
         } else {
             this.icons = this.sharedData.icons;
@@ -100,8 +100,8 @@ export class DilemmaScene extends BaseScene {
             this.putieTerritories = this.sharedData.putieTerritories;
             console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
             this.shieldsMaga = this.physics.add.group();
-            this.shieldsWoke = this.physics.add.group(); 
-            
+            this.shieldsWoke = this.physics.add.group();
+
             // recreate the icons with the saved state
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
@@ -122,9 +122,9 @@ export class DilemmaScene extends BaseScene {
                 );
             }
         }
-                 
+
         this.totalMilitaryAllocThisScene = 0;
-                 
+
         // Create a button using an image
         let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
@@ -135,13 +135,13 @@ export class DilemmaScene extends BaseScene {
             //this.sharedData.icons = this.icons;
             //this.sharedData.MAGAness = this.MAGAness;
             //this.sharedData.Wokeness = this.Wokeness;
-            
+
             this.scene.get('insurrection').setup(this.sharedData);
             this.scene.start('insurrection');
         });
                   // Add a background
         this.cameras.main.fadeIn(2000, 0, 0, 0);
-        
+
         let image = this.add.image(0,0, 'newspaper').setDepth(-1).setAlpha(.3);
         let scaleX = this.sys.game.config.width / image.width;
         let scaleY = this.sys.game.config.height / image.height;
@@ -153,26 +153,26 @@ export class DilemmaScene extends BaseScene {
         this.roundThreats = 0;
 
         //====================================================================================
-        //              
-        // The main body of create() 
-        // 
+        //
+        // The main body of create()
+        //
         //====================================================================================
         this.createTerritories();
 
         let totalCapital = this.sharedData.MAGAness + this.sharedData.Wokeness;
-        
+
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
-        
+
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
-    
+
         // Create Wokeness text
         //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
-    
-        // Create Year text
-        yearText = this.add.text(1000, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
 
-    
+        // Create Year text
+        yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
+
+
         //this.envHealthBarMaga = this.add.graphics();
         //this.envHealthBarWoke = this.add.graphics();
         //this.drawHealthBar(1, 100, 100, 'maga', this.envHealthBarMaga);
@@ -183,11 +183,11 @@ export class DilemmaScene extends BaseScene {
         this.wokeThreats = this.physics.add.group();
         this.wokeDefenses = this.physics.add.group();
         this.helperIcons = this.physics.add.group();
-        
+
         this.magaReturns = this.physics.add.group();
         this.wokeReturns = this.physics.add.group();
 
-          // This one is easy: 
+          // This one is easy:
         // MAGA: economy+, environment gets blue woke hats,
         // Woke: economy-, MAGA hats go to.. environment?  or economy?
         //    Woke Alternative: no change in economy health, but MAGAs hit both econ and env.
@@ -199,7 +199,7 @@ export class DilemmaScene extends BaseScene {
             "development would cause significant harm to local ecosystems and contribute",
             "to climate change."
         ];
-        
+
         // This one is harder: enact: social justice+, MAGAs hit social justice!
         // don't enact: social justice- (or same), Wokes hit social justice!
         let scenarioDescription3 = [
@@ -232,14 +232,14 @@ export class DilemmaScene extends BaseScene {
             "of all citizens, particularly those belonging to minority groups. They believe the",
             "enforcement of such a law could potentially reduce social unrest and contribute to",
             "a safer, more harmonious society.",
-            "||", 
-            "Opponents argue that this may lead to censorship, infringing upon citizens' right to express unpopular views.", 
+            "||",
+            "Opponents argue that this may lead to censorship, infringing upon citizens' right to express unpopular views.",
             "They argue that",
             "it's a dangerous precedent to give the government such broad powers over determining what",
             "constitutes 'acceptable speech'.",
-            "||", 
-            "As the leader, your decision is crucial. Will you support the legislation,", 
-            "potentially reducing social unrest? Or uphold the sanctity of free speech,", 
+            "||",
+            "As the leader, your decision is crucial. Will you support the legislation,",
+            "potentially reducing social unrest? Or uphold the sanctity of free speech,",
             "despite its potential misuse?"
         ];
 
@@ -262,7 +262,7 @@ export class DilemmaScene extends BaseScene {
             {
                 name: 'Reject the legislation completely',
                 MAGACapRequired: 0,
-                WokeCapRequired: 20,                
+                WokeCapRequired: 20,
                 helps: 'justice',
                 helpBenefit: 0,
                 hurts: 'justice',
@@ -282,7 +282,7 @@ export class DilemmaScene extends BaseScene {
             {
                 name:'Modify the legislation to be more stringent',
                 MAGACapRequired: 30,
-                WokeCapRequired: 0,                
+                WokeCapRequired: 0,
                 helps: 'justice',
                 helpBenefit: 30,
                 hurts: 'justice',
@@ -292,7 +292,7 @@ export class DilemmaScene extends BaseScene {
             {
                 name:'Postpone the decision and gather more information',
                 MAGACapRequired: 0,
-                WokeCapRequired: 0,                
+                WokeCapRequired: 0,
                 helps: 'justice',
                 helpBenefit: 0,
                 hurts: 'government',
@@ -309,11 +309,11 @@ export class DilemmaScene extends BaseScene {
                 .on('pointerover', () => this.enterButtonHoverState(decision))
                 .on('pointerout', () => this.enterButtonRestState(decision))
         });
-        
+
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
-        
+
         let chooseOption = (choice, index) => {
             let healthChange;
             let threats;
@@ -337,8 +337,8 @@ export class DilemmaScene extends BaseScene {
             } else {
                 this.createThreat(territories[3], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
             }
-            
-/* 
+
+/*
             switch(index) {
                 case 0:
                     // Enact the legislation without changes
@@ -383,7 +383,7 @@ export class DilemmaScene extends BaseScene {
 
         }
 ////====
-/* 
+/*
 
         // Format the text to be centered and with the color based on the affiliation
         let formattedBackstory = insertLineBreaks(scenarioDescription.join(' '), 44);
@@ -397,7 +397,7 @@ export class DilemmaScene extends BaseScene {
         let denyProposalOption = this.add.text(this.sys.game.config.width/2 - 300, 540, 'Deny the Corporation\'s Proposal', { color: '#0000ff', fontSize: '36px' ,fontFamily: 'Roboto'})
             .setInteractive()
             .on('pointerdown', () => this.chooseOption('woke'));
- 
+
  */
 
         //====================================================================================
@@ -459,13 +459,13 @@ export class DilemmaScene extends BaseScene {
 
         let scene = this;
 
-/* 
+/*
 
         //====================================================================================
-        //              
+        //
         // The following code block creates characters with slider bars .
         // It also creates (or recreates) helpful tokens if the character is endorsed enough
-        // 
+        //
         //====================================================================================
         this.characterSliders = []; // keep track of the sliders
         this.characterTexts = []; // keep track of character text pointers
@@ -476,9 +476,9 @@ export class DilemmaScene extends BaseScene {
         let numberOfSteps = 7;
         let defaultValue = 0;
         let characterText;
-        
 
-        
+
+
         characters.forEach((character, index) => {
             let matchHelps = false;
             let matchHurts = false;
@@ -500,12 +500,12 @@ export class DilemmaScene extends BaseScene {
                 Wokeindex++;
                 xOffset = 950;
              }
-             
+
             characterText = this.add.text(50+xOffset, 265 + (rowIndex * 85), character.name + '\nBacking: ' + character.value + '/ 6,\nEndorsement: ' + character.endorsement,
                                 { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'center' }).setInteractive();
 
             character.charText = characterText; // back reference to text so we can find the location later
-            
+
             if (!this.hasBeenCreatedBefore) {
                 charVal[character.name] = 250+xOffset;
             } else {
@@ -513,7 +513,7 @@ export class DilemmaScene extends BaseScene {
                 character.prevValue = 0;
                 character.value = 0;
             }
-            
+
             let initialValue = character.value / (numberOfSteps - 1); // character.value should be a number from 0 to numberOfSteps - 1
             let characterSlider = createSlider(this, 150+xOffset, 250 + (rowIndex * 85), character, characterText, value => {
                 charVal[character.name] = characterSlider.slider.x;
@@ -523,8 +523,8 @@ export class DilemmaScene extends BaseScene {
             this.characterSliders.push(characterSlider);
             this.characterTexts.push(characterText);
         });
-        
-        
+
+
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
             for (let key in scene.sharedData.helperTokens) {
@@ -575,14 +575,14 @@ export class DilemmaScene extends BaseScene {
 
             // Store new helpful token data indexed by character.name
             scene.sharedData.helperTokens[character.name] = storedData;
-            
+
             // Create new helpful token
             let size = 'normal';
             if (character.powerTokenType === 'type_2') {
                 size = 'large';
             }
             let helpfulToken = createPowerToken(scene, character.faction, text, xOffset, yOffset, storedData, size, 'normal', false);
-                        
+
             scene.helperIcons.add(helpfulToken.sprite);
             helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
             // link the helpfultoken sprite to with the character
@@ -627,32 +627,32 @@ export class DilemmaScene extends BaseScene {
                     duration: 4000,
                     onComplete: function () {
                         helpfulToken.container.destroy();
-                        delete scene.sharedData.helperTokens[helpfulToken.container.character.name]; 
+                        delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
                         //tooltip.text.setVisible(false);
                         //tooltip.box.setVisible(false);
                     },
                     callbackScope: scene
                 });
             }
-/* 
+/*
             // Add action for specific character's power
             if (character.powerTokenType == 'type_3') {
                 console.log('set environment shield strength to .7');
                 scene.icons['environment'].shieldStrength = .7;
             }
  */
- 
+
         //====================================================================================
-        //              
+        //
         // The following function creates the information/misinformation blockers
-        // 
+        //
         //====================================================================================
         //createMisinformationManagement(this);
-        
+
         //====================================================================================
-        // 
+        //
         // Add overlaps for bouncing or slowdowns between threats and defences
-        // 
+        //
         //====================================================================================
         this.physics.add.overlap(this.magaDefenses, this.wokeThreats, function(defense, threat) {
             threat.destroy();
@@ -673,7 +673,7 @@ export class DilemmaScene extends BaseScene {
                 });
             }
         }, null, this);
-         
+
         this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
             threat.destroy();
             this.roundThreats--;
@@ -685,7 +685,7 @@ export class DilemmaScene extends BaseScene {
                     duration: 500,
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex]; 
+                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                         defense.container.destroy();
                     },
                     callbackScope: scene
@@ -693,11 +693,11 @@ export class DilemmaScene extends BaseScene {
             }
         }, null, this);
 
-     
+
         //====================================================================================
-        // function createMisinformationManagement(scene) 
+        // function createMisinformationManagement(scene)
         // function that creates the information/misinformation blockers
-        // 
+        //
         //====================================================================================
         function createMisinformationManagement(scene) {
             let misinformationData = [
@@ -724,7 +724,7 @@ export class DilemmaScene extends BaseScene {
                 scene.yWokeOffset = 250;
             }
 
-           
+
            if (!scene.currentMisinformationIndex) {
                 scene.currentMisinformationIndex = 0;
             }
@@ -734,19 +734,19 @@ export class DilemmaScene extends BaseScene {
                 numEntries = 2;
             }
             if (scene.hasBeenCreatedBefore) {
-            
+
                 numEntries = scene.extraMisinformationTokens;
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
                 scene.extraMisinformationTokens = 0;
                 if (Math.random < .2) numEntries += 1;
-                /* 
+                /*
                     for (let tmpHelper in scene.helperIcons) {
                         if (tmpHelper.powerTokenType == 'type_2') {
                             tmpHelper.container.destroy();
                         }
                     };
                 */
-                
+
                 // Restore all the old misinformation Tokens first
                 for (let key in scene.sharedData.misinformation) {
                     // Look up the stored data
@@ -766,9 +766,9 @@ export class DilemmaScene extends BaseScene {
                         scene.yMagaOffset += misinformation.container.displayHeight;
                     } else {
                         scene.yWokeOffset += misinformation.container.displayHeight;
-                    }  
+                    }
                 }
-            } 
+            }
 
             // This block should run regardless of whether the scene has been created before
             for (let i = 0; i < numEntries; i++) { // create 2 entries the first time, then some number depending on politics
@@ -786,7 +786,7 @@ export class DilemmaScene extends BaseScene {
                         text: data.text,
                         misinformationIndex: scene.currentMisinformationIndex
                     };
-                
+
                     scene.sharedData.misinformation[scene.currentMisinformationIndex] = storedData;
 
                     let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once');
@@ -802,11 +802,11 @@ export class DilemmaScene extends BaseScene {
                         scene.yMagaOffset += misinformation.container.displayHeight;
                     } else {
                         scene.yWokeOffset += misinformation.container.displayHeight;
-                    }                    
+                    }
                     scene.currentMisinformationIndex++; // increment the index for the next call
                 }
-            }    
-           
+            }
+
 
         }
         //====================================================================================
@@ -837,7 +837,7 @@ export class DilemmaScene extends BaseScene {
 
                     callbackScope: scene
                 });
- 
+
                 scene.tweens.add({
                     targets: helpedIcon.shieldWoke,
                     alpha: 1,
@@ -854,7 +854,7 @@ export class DilemmaScene extends BaseScene {
                 });
 
                 if (!helper.isDestroyed) {
-                    delete scene.sharedData.helperTokens[helper.container.character.name]; 
+                    delete scene.sharedData.helperTokens[helper.container.character.name];
                     //tooltip.text.setVisible(true);
                     //tooltip.box.setVisible(true);
                     helper.isDestroyed = true;
@@ -884,12 +884,12 @@ export class DilemmaScene extends BaseScene {
                         },
                         callbackScope: scene
                     });
-                    
+
                     if (!helper.isDestroyed) {
                         // The health of the 'helps' icon is improved
                         icon.health += incrementAmount;
                         // Bonus: Someone of your own faction can reduce the MAGAness or Wokeness of your own faction.
-                        // Imagine the scenario of a bunch of angry MAGA protesters storming around the environment icon and some 
+                        // Imagine the scenario of a bunch of angry MAGA protesters storming around the environment icon and some
                         // super MAGA supporter shows up and provides an environmental solution they like.  That would reduce MAGAness.
                         let otherFaction = helper.container.character.faction == 'maga' ? 'woke' : 'maga';
                         if (icon[helper.container.character.faction]> icon[otherFaction]) {
@@ -901,7 +901,7 @@ export class DilemmaScene extends BaseScene {
                         scene.drawGauges(helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth);
                         // Delete data from sharedData.helperTokens
                         console.log('delete name ' + helper.container.character.name);
-                        delete scene.sharedData.helperTokens[helper.container.character.name]; 
+                        delete scene.sharedData.helperTokens[helper.container.character.name];
                         let hurtIcon = scene.icons[helper.container.character.hurts];
                         let territory = territories[3]; // arbitrarily picked this territory to launch from
                         // But we also launch 5 faction threats at the 'hurts' icon
@@ -913,13 +913,13 @@ export class DilemmaScene extends BaseScene {
                         if (icon.iconName == 'military') {
                             scene.militaryAllocation = true;
                             scene.totalMilitaryAllocThisScene += 10;
-                        }       
+                        }
                         helper.isDestroyed = true;
                     }
                 }
             }
         }
-        
+
         //
         // Helper function to handle common overlap logic between insurrectionist and icon
         //
@@ -940,7 +940,7 @@ export class DilemmaScene extends BaseScene {
                 icon[type] += incrementAmount;
                 if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
                 else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
-                else if (icon.maga == icon.woke) { 
+                else if (icon.maga == icon.woke) {
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
@@ -950,17 +950,17 @@ export class DilemmaScene extends BaseScene {
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
-                scene.roundThreats--;               
+                scene.roundThreats--;
             }
         }
-        
+
         for (let key in scene.sharedData.icons) {
             let icon = scene.sharedData.icons[key];
             scene.physics.add.overlap(icon.icon, scene.helperIcons, function(base, helper) {
                 handleHelperOverlap(icon, base, helper, 70, '', icon.gaugeWoke, '');
             });
- 
-                
+
+
             scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
                 handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
             });
@@ -979,7 +979,7 @@ export class DilemmaScene extends BaseScene {
             });
         }
         //====================================================================================
-        // function createPowerToken(scene) 
+        // function createPowerToken(scene)
         // function that createPowerToken text, rectangle, and dragability
         //
         // This function can be called to either create a 'misinformation token' or a 'helpful token'
@@ -988,19 +988,19 @@ export class DilemmaScene extends BaseScene {
         // size: 'normal' or 'large'.  Large creates a big box that tweens away slowly
         // hasBeenCreatedBefore: true means that it is static and cannot be dragged around
         // dropOnce: true means that it can be dragged into one position and then can becomes static, no longer can be moved
-        // 
+        //
         //====================================================================================
 
         function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce) {
-            let factionColor = faction === 'maga' 
-                ? '0xff0000' 
-                : faction === 'woke' 
-                    ? '0x0000ff' 
+            let factionColor = faction === 'maga'
+                ? '0xff0000'
+                : faction === 'woke'
+                    ? '0x0000ff'
                     : '0x800080';
-            let fillColor = faction === 'maga' 
-                ? '#ffffff' 
-                : faction === 'woke' 
-                    ? '#ffffff' 
+            let fillColor = faction === 'maga'
+                ? '#ffffff'
+                : faction === 'woke'
+                    ? '#ffffff'
                     : '#80ff80';
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
@@ -1076,13 +1076,13 @@ export class DilemmaScene extends BaseScene {
                 let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
                 rectangle.setFillStyle(0x228B22); // Now the rectangle is red
             }
-            
+
             return {
                 container: misinformation,
                 sprite: misinformationSprite
             };
         }
-        
+
         //====================================================================================
         // Function:
         //      hitIcon()
@@ -1098,7 +1098,7 @@ export class DilemmaScene extends BaseScene {
                 iconText.setColor('white');
             });
         };
-        
+
         //====================================================================================
         // Function:
         //      createSlider
@@ -1110,14 +1110,14 @@ export class DilemmaScene extends BaseScene {
             scene.input.setDraggable(slider);
             // Attach track to slider
             slider.track = track;
-            
+
             let numberOfSteps = 7; // Define the number of steps
             let stepSize = (track.width-20) / (numberOfSteps - 1); // Calculate the size of each step
-            
+
             // Calculate the initial slider position based on the initial value
             let initialStep = Math.round(initialValue * (numberOfSteps - 1));
             slider.x = (track.x - track.width / 2) + (initialStep * stepSize) + 12;
-                        
+
             slider.on('drag', function(pointer, dragX, dragY) {
                 // Calculate the closest step
                 let closestStep = Math.round((dragX - (this.track.x - this.track.width / 2)-12) / stepSize);
@@ -1133,8 +1133,8 @@ export class DilemmaScene extends BaseScene {
 
                 // Update the text dynamically as the slider is being dragged
                 characterText.setText(character.name + '\nBacking: ' + closestStep + '/ 6,\nEndorsement: ' + character.endorsement);
-                
-                
+
+
                 // Calculate MAGAupdate/WokeUpdate here
                 if (character.faction == 'maga') {
                     MAGAupdate = (closestStep - character.prevValue);
@@ -1146,11 +1146,11 @@ export class DilemmaScene extends BaseScene {
                 // Update MAGAnessText and WokenessText here
                 let tmpMAG = scene.MAGAness - MAGAupdate;
                 let tmpWok = scene.Wokeness - WokeUpdate;
-                
+
                 polCapText.setText('Political\ncapital: ' + (tmpMAG+tmpWok).toString());
                 polCapText.setColor('#ff0000'); // Change text color to red
-                polCapText.setBackgroundColor('#ffff00'); // Change background color to yellow               
-/* 
+                polCapText.setBackgroundColor('#ffff00'); // Change background color to yellow
+/*
                 MAGAnessText.setText('MAGA political\ncapital: ' + tmpMAG);
                 MAGAnessText.setColor('#ff0000'); // Change text color to red
                 MAGAnessText.setBackgroundColor('#ffff00'); // Change background color to yellow
@@ -1174,7 +1174,7 @@ export class DilemmaScene extends BaseScene {
 
                 // Update the underlying character's value
                 character.value = value;
-    
+
                 // Calculate MAGAupdate/WokeUpdate here
                 if (character.faction == 'maga') {
                     MAGAupdate = (value - character.prevValue);
@@ -1183,7 +1183,7 @@ export class DilemmaScene extends BaseScene {
                     WokeUpdate = (value - character.prevValue);
                     MAGAupdate = 0;
                 }
-    
+
                 // Update MAGAnessText and WokenessText here
                 let tmpMAG = scene.MAGAness - MAGAupdate;
                 if (tmpMAG < 0) {
@@ -1191,22 +1191,22 @@ export class DilemmaScene extends BaseScene {
                     tmpMAG = 0;
                     value = MAGAupdate + character.prevValue;
                     characterText.setText(character.name + '\nBacking: ' + value + '/ 6,\nEndorsement: ' + character.endorsement);
-                    this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;  
+                    this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                 }
                 let tmpWok = scene.Wokeness - WokeUpdate;
                 if (tmpWok < 0) {
-                    WokeUpdate = scene.Wokeness; 
-                    tmpWok = 0; 
+                    WokeUpdate = scene.Wokeness;
+                    tmpWok = 0;
                     value = WokeUpdate + character.prevValue;
                     characterText.setText(character.name + '\nBacking: ' + value + '/ 6,\nEndorsement: ' + character.endorsement);
-                    this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;  
+                    this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                     }
-                                
+
                 polCapText.setText('Political\ncapital: ' + (tmpMAG+tmpWok).toString());
                 polCapText.setColor('#ffffff'); // Change text color back to white
-                polCapText.setBackgroundColor('#000000'); // Change background color back to black 
-        
- /* 
+                polCapText.setBackgroundColor('#000000'); // Change background color back to black
+
+ /*
                 MAGAnessText.setText('MAGA political\ncapital: ' + tmpMAG);
                 MAGAnessText.setColor('#ffffff'); // Change text color back to white
                 MAGAnessText.setBackgroundColor('#000000'); // Change background color back to black
@@ -1225,11 +1225,11 @@ export class DilemmaScene extends BaseScene {
             });
 
             createCharacterTooltip(scene, character, x, y, slider, characterText);
-    
+
             return {track: track, slider: slider};
 
             //====================================================================================
-            //  function mouseOver() 
+            //  function mouseOver()
             //====================================================================================
 
             function mouseOver() {
@@ -1240,7 +1240,7 @@ export class DilemmaScene extends BaseScene {
                 //scene.govTime.paused = true;
             }
             //====================================================================================
-            //  function mouseOver() 
+            //  function mouseOver()
             //====================================================================================
 
             function mouseOff() {
@@ -1293,18 +1293,18 @@ export class DilemmaScene extends BaseScene {
             backstoryBox.setOrigin(0.5);
             backstoryBox.setVisible(false);
             //backstoryBox.setDepth(1);
-            
+
             return {
-                text: backstoryText, 
+                text: backstoryText,
                 box: backstoryBox
             };
         }
-        
+
         //====================================================================================
         //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
         //====================================================================================
         function createCharacterTooltip(scene, character, x, y, slider, characterText) {
-        
+
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
             let xOffset = character.faction === 'maga' ? 320 : -320;
@@ -1340,11 +1340,11 @@ export class DilemmaScene extends BaseScene {
             slider.on('pointerout', mouseOff);
             characterText.on('pointerout', mouseOff);
         }
-        
+
         // the very end of create()
-        this.hasBeenCreatedBefore = true; 
+        this.hasBeenCreatedBefore = true;
     }
-    
+
     enterButtonHoverState(button) {
         button.setStyle({ fill: '#ff0'}); // change color to yellow
     }
@@ -1352,32 +1352,32 @@ export class DilemmaScene extends BaseScene {
     enterButtonRestState(button) {
         button.setStyle({ fill: '#ff0000'}); // change color back to red
     }
-    
+
     //====================================================================================
     //
-    //        update() 
+    //        update()
     //
     //====================================================================================
     update() {
         // game loop
         // This is called 60 times per second. Put game logic here.
-/* 
+/*
         if (this.roundThreats == 20) {this.scene.start('AliensAttack'); }
         if (Math.random() < 0.01) {
             let attackerIndex = Phaser.Math.Between(0, territories.length - 1);
             let attackerTerritory = territories[attackerIndex];
             let territoryWidth = this.sys.game.config.width / territories.length;
-        
+
             let threatIcon = attackerTerritory.faction === 'maga'? 'magaBase': 'wokeBase';
             let threat;
-            
+
             if (attackerTerritory.faction == 'maga'){
                 threat = this.magaThreats.create(attackerTerritory.x + territoryWidth/2, this.game.config.height-25, threatIcon).setScale(0.1);
             } else {
                 threat = this.wokeThreats.create(attackerTerritory.x + territoryWidth/2, this.game.config.height-25, threatIcon).setScale(0.1);
             }
             threat.setBounce(1);
-            
+
             let keys = Object.keys(this.icons);
             let attackedIconKey = keys[Phaser.Math.Between(0, keys.length - 1)];
             let attackedIcon = this.icons[attackedIconKey].icon;

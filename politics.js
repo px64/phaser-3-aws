@@ -93,6 +93,8 @@ export class Politics extends BaseScene {
     //
     //====================================================================================
     create() {
+        this.input.setDefaultCursor('default');
+
         console.log(this.sharedData.icons);
         if (!Object.keys(this.sharedData.icons).length) {
             console.log('new data here in politics');
@@ -252,7 +254,7 @@ export class Politics extends BaseScene {
         //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
 
         // Create Year text
-        yearText = this.add.text(1000, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
+        yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
 
 
         //this.envHealthBarMaga = this.add.graphics();
@@ -735,8 +737,11 @@ export class Politics extends BaseScene {
                         }
                         if (win == true) {
                             console.log('You Win!');
-                            scene.scene.get('VictoryScene').setup(scene.sharedData);
-                            scene.scene.start('VictoryScene', { message: 'In the year ' + scene.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!\nYou Win!'});
+                            this.cameras.main.fadeOut(3000, 0, 0, 0);
+                            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                                scene.scene.get('VictoryScene').setup(scene.sharedData);
+                                scene.scene.start('VictoryScene', { message: 'You Win!\nIn the year ' + scene.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
+                            });
                             return;
                         }
                         // Bonus: Someone of your own faction can reduce the MAGAness or Wokeness of your own faction.

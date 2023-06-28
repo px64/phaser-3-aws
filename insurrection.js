@@ -51,7 +51,7 @@ export class Insurrection extends BaseScene {
             misinformation: {},
             helperTokens: {}
         };
-        
+
     }
     // insurrection: we had to switch everything to sharedData
         setup(data) {
@@ -61,9 +61,9 @@ export class Insurrection extends BaseScene {
         }
 
         //====================================================================================
-        //              
-        // create() 
-        // 
+        //
+        // create()
+        //
         //====================================================================================
     create() {
         if (!Object.keys(this.sharedData.icons).length) {
@@ -77,10 +77,10 @@ export class Insurrection extends BaseScene {
         } else {
             //this.icons = this.sharedData.icons;
             console.log('insurrection: recreate from saved state');
-            
+
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
-            
+
             // recreate the icons with the saved state
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
@@ -101,36 +101,36 @@ export class Insurrection extends BaseScene {
                 );
             }
         }
-        
+
         this.MAGAness = this.sharedData.MAGAness;
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
         this.roundThreats = 0;
 
         //====================================================================================
-        //              
+        //
         // environmentalImpact inherents 'this' because it is an arrow function
-        // 
+        //
         //====================================================================================
         let environmentalImpact = () => {
-                        
+
             //this.drawHealthBar(1, 100, 100, 'Maga', this.envHealthBarMaga);
             //this.drawHealthBar(0.7, 110, 100, 'woke', this.envHealthBarWoke);
-            
+
             let thisRoundHealthChange = 0;
             if (this.sharedData.putieTerritories < 3 || Math.random() < .5) { // Once Putie dominates, collapse is 50% chance of occurring
                 for (let key in this.sharedData.icons) {
                     let iconData = this.sharedData.icons[key];
-                
+
                     // For each icon, the health is influenced by the amount of MAGA and Wokeness.  If the two factions
                     // are balanced, then health improves.
                     let healthChange = Phaser.Math.Clamp((5 - Math.abs(iconData.maga - iconData.woke))/5, -5, 5);
                     thisRoundHealthChange += healthChange;
-                
+
                     console.log('healthChange = '+ healthChange);
 
                     iconData.health = Phaser.Math.Clamp(iconData.health + healthChange, 0, 100);
-            
+
                     if (iconData.maga > 100 || iconData.woke > 100) {
                         this.sharedData.putieTerritories++;
                         this.putieTerritories = this.sharedData.putieTerritories;
@@ -157,10 +157,10 @@ export class Insurrection extends BaseScene {
                 this.scene.start('AliensAttack');
                 return;
             }
-                
+
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
-            
+
                 if (iconData.health < 1 || iconData.maga > 100 || iconData.woke > 100 || iconData.maga + iconData.woke > 133) {
                     this.sharedData.putieTerritories++;
                     this.putieTerritories = this.sharedData.putieTerritories;
@@ -175,22 +175,22 @@ export class Insurrection extends BaseScene {
                     }
                     return;
                 }
-        
+
                 let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
                 let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(iconData.health/iconData.healthScale/20),0,4)];
                 iconData.iconText.setText(iconData.textBody + healthText);
 
                 this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite);
             }
-            
+
 
             this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
             this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
             console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
-            
+
             polCapText.setText('Political Capital: ' + (this.sharedData.MAGAness + this.sharedData.Wokeness).toString());
 
-/* 
+/*
             MAGAnessText.setText('MAGA political\ncapital: ' + this.sharedData.MAGAness);
 
             WokenessText.setText('Woke political\ncapital: ' + this.sharedData.Wokeness);
@@ -200,13 +200,13 @@ export class Insurrection extends BaseScene {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
         //====================================================================================
-        //              
-        // function governmentGrowth() 
+        //
+        // function governmentGrowth()
         //  Note that it is called with a callbackscope of 'this'
-        // 
+        //
         //====================================================================================
         function governmentGrowth() {
-            if (this.sharedData.icons['government']) 
+            if (this.sharedData.icons['government'])
             {
                 this.sharedData.icons['government'].health += this.sharedData.icons['government'].woke - this.sharedData.icons['government'].maga +3;
                 let gov = this.sharedData.icons['government'];
@@ -223,38 +223,38 @@ export class Insurrection extends BaseScene {
             }
         }
         //====================================================================================
-        //              
-        // The main body of create() 
-        // 
+        //
+        // The main body of create()
+        //
         //====================================================================================
- 
+
         this.createTerritories();
 
         let totalCapital = this.MAGAness + this.Wokeness;
-        
+
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
-        
+
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
-    
+
         // Create Wokeness text
         //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
-    
+
         // Create Year text
-        yearText = this.add.text(500, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
-        
+        yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: '32px', fill: '#fff' });
+
         // Create Shield Icon over environment
         //this.envIcon = this.physics.add.sprite(70, 100, 'shield').setScale(0.5).setAlpha(0.7);
-        
+
         //this.envIcon.setImmovable(true);
-          
+
         //====================================================================================
-        //              
+        //
         // The following function creates the information/misinformation blockers
-        // 
+        //
         //====================================================================================
         createMisinformationManagement(this);
-  
+
         // Timer event to increment the year every second
         this.yearTime = this.time.addEvent({
             delay: 1000,
@@ -262,7 +262,7 @@ export class Insurrection extends BaseScene {
             callbackScope: this,
             loop: true
         });
-    
+
         // Timer event to adjust Environmental impact every 6 seconds
         this.envTime = this.time.addEvent({
             delay: 6000,
@@ -277,11 +277,11 @@ export class Insurrection extends BaseScene {
             callbackScope: this,
             loop: true
         });
-        
+
         //====================================================================================
-        // function createMisinformationManagement(scene) 
+        // function createMisinformationManagement(scene)
         // function that recreates the information/misinformation blockers
-        // 
+        //
         //====================================================================================
         function createMisinformationManagement(scene) {
             scene.misinformationData = [
@@ -324,19 +324,19 @@ export class Insurrection extends BaseScene {
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
-    
+
                 //data.x = xOffset;
                 //data.y = yOffset;
-            }            
-            
+            }
+
             scene.physics.add.collider(scene.magaDefenses, scene.wokeThreats);
             scene.physics.add.collider(scene.wokeDefenses, scene.magaThreats);
 
             //scene.physics.add.collider(scene.envIcon, scene.magaThreats);
             //scene.physics.add.collider(scene.envIcon, scene.wokeThreats);
-            
-                    
-/* 
+
+
+/*
             // this will slow down the threat when it hits an object by reducing its velocity by half.
             // Assuming that each threat and object has a unique 'id' property...
             scene.physics.add.collider(scene.wokeThreats, scene.envIcon, function (threat, object) {
@@ -373,13 +373,13 @@ export class Insurrection extends BaseScene {
             }, null, this);
  */
         //====================================================================================
-        // Add overlaps for bouncing or slowdowns between threats and shields 
+        // Add overlaps for bouncing or slowdowns between threats and shields
         // magaThreatWokeShield(), wokeThreatMagaShield()
-        // 
+        //
         //====================================================================================
             function magaThreatWokeShield(object,threat, shieldStrength)
             {
-/* 
+/*
                 if (threat.body.velocity.x == 0 && threat.body.velocity.y == 0) {
                     console.log('swap object and threat');
                     let temp = threat;
@@ -408,7 +408,7 @@ export class Insurrection extends BaseScene {
                         //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
 
                         // "bounce" and move the threat to territory 1
-                        scene.physics.moveTo(threat, territory.x + territoryWidth/2, scene.game.config.height, 200); 
+                        scene.physics.moveTo(threat, territory.x + territoryWidth/2, scene.game.config.height, 200);
                         object.setTint(0x8080ff).setAlpha(0.9);
                         scene.tweens.add({
                             targets: object,
@@ -425,12 +425,12 @@ export class Insurrection extends BaseScene {
                         threat.body.velocity.y *= 0.3;
                     }
                     }
-                }            
+                }
             }
-            
+
             function wokeThreatMagaShield(object,threat, shieldStrength)
             {
-/* 
+/*
                 if (threat.body.velocity.x == 0 && threat.body.velocity.y == 0) {
                     console.log('swap object and threat');
                     let temp = threat;
@@ -456,7 +456,7 @@ export class Insurrection extends BaseScene {
 
                     if (Math.random() < shieldStrength) {
                         //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
-                        scene.physics.moveTo(threat, territory.x+ territoryWidth/2, scene.sys.game.config.height, 200); 
+                        scene.physics.moveTo(threat, territory.x+ territoryWidth/2, scene.sys.game.config.height, 200);
                         object.setTint(0xff8080).setAlpha(0.9);
                         scene.tweens.add({
                             targets: object,
@@ -489,12 +489,12 @@ export class Insurrection extends BaseScene {
                     let shieldStrength = object.shieldStrength;
                     //console.log('object shieldstrength = '+ shieldStrength);
                     wokeThreatMagaShield(object,threat, shieldStrength);
-                }, null, this);                
+                }, null, this);
 
             //====================================================================================
-            // 
+            //
             // Add overlaps for bouncing or slowdowns between threats and defences
-            // 
+            //
             //====================================================================================
             scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
                 threat.destroy();
@@ -516,7 +516,7 @@ export class Insurrection extends BaseScene {
                     });
                 }
             }, null, this);
-             
+
             scene.physics.add.overlap(scene.wokeDefenses, scene.magaThreats, function(defense, threat) {
                 threat.destroy();
                 this.roundThreats--;
@@ -559,7 +559,7 @@ export class Insurrection extends BaseScene {
                     icon[type] += incrementAmount;
                     if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
                     else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
-                    else if (icon.maga == icon.woke) { 
+                    else if (icon.maga == icon.woke) {
                         icon.health += 1 * icon.healthScale;
                         iconColor = 'purple';
                     }
@@ -593,7 +593,7 @@ export class Insurrection extends BaseScene {
                 scene.physics.add.overlap(icon.icon, scene.putieThreats, function(defense, threat) {
                     // handle the Putin overlap with maga and then increment woke afterward
                     handleOverlap(icon, defense, threat, 2, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
-/* 
+/*
                     if (!threat.isPutieDestroyed) {
                         let message;
                         let iconColor;
@@ -601,7 +601,7 @@ export class Insurrection extends BaseScene {
                         icon['woke'] += 5;
                         if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
                             else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
-                            else if (icon.maga == icon.woke) { 
+                            else if (icon.maga == icon.woke) {
                                 icon.health += 1 * icon.healthScale;
                                 iconColor = 'purple';
                             }
@@ -613,26 +613,26 @@ export class Insurrection extends BaseScene {
                 });
             }
         }
-    
+
         //====================================================================================
-        // function createPowerToken(scene) 
+        // function createPowerToken(scene)
         // function that createPowerToken text, rectangle, and dragability
-        // 
+        //
         //====================================================================================
 
         function createPowerToken(scene, faction, message, x, y, storedData) {
-            let factionColor = faction === 'maga' 
-                ? '0xff0000' 
-                : faction === 'woke' 
-                    ? '0x0000ff' 
+            let factionColor = faction === 'maga'
+                ? '0xff0000'
+                : faction === 'woke'
+                    ? '0x0000ff'
                     : '0x228B22'; // forest green
-                    
-            let fillColor = faction === 'maga' 
-                ? '#ffffff' 
-                : faction === 'woke' 
-                    ? '#ffffff' 
+
+            let fillColor = faction === 'maga'
+                ? '#ffffff'
+                : faction === 'woke'
+                    ? '#ffffff'
                     : '#80ff80';
-                    
+
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
 
@@ -662,7 +662,7 @@ export class Insurrection extends BaseScene {
                 sprite: misinformationSprite
             };
         }
-        
+
         //====================================================================================
         // Function:
         //      hitIcon()
@@ -678,12 +678,12 @@ export class Insurrection extends BaseScene {
                 iconText.setColor('white');
             });
         };
-        
+
     }
- 
+
     //====================================================================================
     //
-    //        update() 
+    //        update()
     //
     //====================================================================================
     update() {
@@ -697,7 +697,7 @@ export class Insurrection extends BaseScene {
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('politics').setup(this.sharedData);
                     this.scene.start('politics');
-                });             
+                });
             });
             this.roundThreats = 1;
 

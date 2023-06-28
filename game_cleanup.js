@@ -327,6 +327,8 @@ class VictoryScene extends Phaser.Scene {
     }
 
     create(data) {
+        this.input.setDefaultCursor('default');
+
         // Create a text object to display a victory message
         let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, data.message, {
             font: 'bold '+ this.sharedData.fontSize + ' Arial',
@@ -338,8 +340,8 @@ class VictoryScene extends Phaser.Scene {
 
         // Optionally, display a victory image
         let victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'victory');
-        victoryImage.setScale(0.5);  // Scale down the image
-        victoryImage.setAlpha(0.4);  // Make the image semi-transparent
+        victoryImage.setScale(1);  // Don't scale down the image
+        victoryImage.setAlpha(0.8);  // Make the image semi-transparent
 
         // Bring the text to the top
         victoryText.setDepth(1);
@@ -376,6 +378,8 @@ class AliensAttack extends Phaser.Scene {
     }
 
     create() {
+        this.input.setDefaultCursor('default');
+
         // Create a text object to display a victory message
         let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
         let health = 1;
@@ -549,6 +553,8 @@ export class Scene2 extends BaseScene {
     create() {
         // set up game objects
         // The 'this' keyword refers to the scene.
+        this.input.setDefaultCursor('crosshair');
+
         this.MAGAness = this.sharedData.MAGAness;
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
@@ -609,12 +615,39 @@ export class Scene2 extends BaseScene {
         this.missilesPerTerritory = 3;  // hard code missiles per territory to 3 for now
         this.territoriesWithMissiles = this.sharedData.thisRoundTerritoriesWithMissiles;
 
+        let lastClickTime = 0;
+
         this.input.on('pointerdown', function (pointer) {
+            let missileLaunchDelayAsset = militaryAssets.find(asset => asset.name === 'Reload Time');
+            let delay = Math.max(2000 - missileLaunchDelayAsset.techLevel*40, 0);
+            let currentTime = new Date().getTime();
+            if (currentTime - lastClickTime < delay) {
+                return;
+            }
+            lastClickTime = currentTime;
             //let baseOffset = Phaser.Math.Wrap(this.attackIndex + territories.length/2, 0, territories.length-1);
             let base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
             let count = 0;
             console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
-            while (base.faction != this.sharedData.ideology.faction) {
+            let thisFaction = this.sharedData.ideology.faction;
+            let otherFaction = this.sharedData.ideology.faction;
+            if (this.sharedData.ideology.faction == 'none') {
+                thisFaction = 'maga';
+                otherFaction = 'woke';
+            }
+            let diplomacy = 0;
+            if (this.sharedData.icons['diplomacy']) {
+                diplomacy = this.sharedData.icons['diplomacy'].health;
+            }
+            // If diplomacy is good, then both MAGA and Woke work together on defending
+            if (this.sharedData.ideology.faction == 'none' || diplomacy > 95) {
+                if (diplomacy < 96) {
+                    this.roundRobinLaunch++;  // if no affiliation and poor diplomacy, random bases fire
+                }
+                otherFaction = (thisFaction == 'maga' ? 'woke': 'maga');
+            }
+            while (base.faction != thisFaction && base.faction != otherFaction) {
+                // pick a new territory
                 this.roundRobinLaunch++;
                 base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
                 console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
@@ -623,32 +656,35 @@ export class Scene2 extends BaseScene {
                     break;
                 }
             }
-            console.log(((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length) + ' ' + this.roundRobinLaunch % territories.length)
+            console.log(((Phaser.Math.Wrap(this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length), 0, territories.length) + ' ' + this.roundRobinLaunch % territories.length)
             if (this.missilesPerTerritory-- <= 0) {
                 if (this.territoriesWithMissiles-- > 0) {
                     this.roundRobinLaunch++;
-                    this.missilesPerTerritory = 3;
-                    }
+                    let missileNumberAsset = militaryAssets.find(asset => asset.name === 'Number of Missiles');
+                    this.missilesPerTerritory = 3 + Math.floor(missileNumberAsset.techLevel/10);
+                } else {
+                    console.log('no more territories have missiles!');
+                }
             }
-            if (this.missilesPerTerritory >= 0) {
+            if (this.missilesPerTerritory > 0) {
                 if (base.faction == 'woke') {
                     // Calculate the angle to the target
                     let angle = Phaser.Math.Angle.Between(base.x+this.territoryWidth/2, base.y, pointer.x, pointer.y);
                     angle += 90*(Math.PI/180);
-                    let missile2 = this.fireMissile(base, angle, pointer, Phaser.Math.Between(-30,30), .03, 150, this.missilesWoke);
+                    let missile2 = this.fireMissile(base, angle, pointer, 30, .03, 150, 3, this.missilesWoke);
                     // Timer event to delay missile firing
                     this.time.delayedCall(400, () => {
                         // Code to fire missile goes here
-                        let missile1 = this.fireMissile(base, angle, pointer, Phaser.Math.Between(0,30), .03, 150, this.missilesWoke)
+                        let missile1 = this.fireMissile(base, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
                     }, [], this);
                     this.time.delayedCall(800, () => {
                         // Code to fire missile goes here
-                        let missile3 = this.fireMissile(base, angle, pointer, Phaser.Math.Between(-30,0), .03, 150, this.missilesWoke)
+                        let missile3 = this.fireMissile(base, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
                     }, [], this);
                 } else if (base.faction == 'maga') {
                     let angle = Phaser.Math.Angle.Between(base.x+this.territoryWidth/2, base.y, pointer.x, pointer.y);
                     angle += 90*(Math.PI/180);
-                    let missile = this.fireMissile(base, angle, pointer, Phaser.Math.Between(-30,30), 0.1, 50, this.missilesMaga);
+                    let missile = this.fireMissile(base, angle, pointer, 30, 0.1, 50, 9, this.missilesMaga);
                 }
             }
         }, this);
@@ -656,7 +692,7 @@ export class Scene2 extends BaseScene {
         this.physics.add.overlap(this.missilesMaga, this.threats, function (missile, threat) {
             this.explode(missile, 3);
             missile.destroy();
-            threat.hitpoints -= 9;
+            threat.hitpoints -= missile.power;
             if (threat.hitpoints <= 0) {
                 this.MAGAness += threat.score;
                 polCapText.setText('Political Capital ' + (this.MAGAness + this.Wokeness).toString());
@@ -667,7 +703,7 @@ export class Scene2 extends BaseScene {
         this.physics.add.overlap(this.missilesWoke, this.threats, function (missile, threat) {
             this.explode(missile, 1);
             missile.destroy();
-            threat.hitpoints -= 3;
+            threat.hitpoints -= missile.power;
             if (threat.hitpoints <= 0) {
                 this.Wokeness += threat.score;
                 polCapText.setText('Political Capital: ' + (this.MAGAness + this.Wokeness).toString());
@@ -682,17 +718,24 @@ export class Scene2 extends BaseScene {
 
     } // end of create()
 
-    fireMissile(base, angle, pointer, offset, scale, missileSpeed, missileSprite) {
-        let missileNum = missileSprite.create(base.x+this.territoryWidth/2, base.y, 'missile').setScale(scale);
+    fireMissile(base, angle, pointer, offset, scale, missileSpeed, missilePower, missileSprite) {
+        let missileNum = missileSprite.create(base.x+this.territoryWidth/2, base.y, 'missile');
         missileNum.setRotation(angle);
+        let missilePowerAsset = militaryAssets.find(asset => asset.name === 'Explosion Size');
+        missileNum.power = missilePower + missilePowerAsset.techLevel/3.3;
+        let size = scale + missilePowerAsset.techLevel/600;
+        missileNum.setScale(size);
         let missileSpeedAsset = militaryAssets.find(asset => asset.name === 'Missile Speed');
-        console.log(missileSpeedAsset);
         if (missileSpeedAsset) {
             missileSpeed += missileSpeedAsset.techLevel * 10;
         } else {
             console.log("'Missile Speed' asset not found");
         }
-        this.physics.moveTo(missileNum, pointer.x+offset, pointer.y-offset, missileSpeed);
+        let missileAccuracyAsset = militaryAssets.find(asset => asset.name === 'Accuracy');
+        if (missileAccuracyAsset.techLevel > 9) {
+            offset = offset*9/missileAccuracyAsset.techLevel;
+        }
+        this.physics.moveTo(missileNum, pointer.x+Phaser.Math.Between(-offset,offset), pointer.y+Phaser.Math.Between(-offset, offset), missileSpeed);
         return {missileNum: missileNum};
     }
 
@@ -701,6 +744,10 @@ export class Scene2 extends BaseScene {
       let lifeSpan = 400;
       let volume = 25;
       let delay = 20;
+      let angleRange = { min: 0, max: 360};
+      let speedRange = { min: 225-size*20, max: 375-size*20 };
+      let velocityRange = {min: 0, max: 0 };
+
       switch(size) {
           case 1:
               numExplosions = 4;
@@ -730,16 +777,28 @@ export class Scene2 extends BaseScene {
               volume = 100;
               delay = 100;
               break;
+          case 20:
+              numExplosions = 16;
+              lifeSpan = 6000;
+              volume = 0;
+              delay = 20;
+              angleRange = { min: 250, max: 290 };
+              speedRange = { min: 300, max: 500 };
+              velocityRange = {min: -100, max: 100 };
+              break;
       }
       for (let i = 0; i < numExplosions; i++) {
           setTimeout(() => {
               let emitter = this.add.particles(400, 250, 'flares', {
                   frame: [ 'red', 'yellow', 'green' ],
                   lifespan: lifeSpan,
-                  speed: { min: 225-size*20, max: 375-size*20 }, // Reduced speed values
+                  speed: speedRange,
                   scale: { start: 0.25, end: 0 }, // Reduced scale values
                   gravityY: 250,
                   blendMode: 'ADD',
+                  angle: angleRange,
+                  velocityX: velocityRange,
+                  velocityY: velocityRange,
                   emitting: false
               });
               emitter.setPosition(object.x + Phaser.Math.Between(-volume, volume),
@@ -754,7 +813,7 @@ export class Scene2 extends BaseScene {
         // This is called 60 times per second. Put game logic here.
         if (Math.random() < 0.001) {
             let threat = this.threats.create(this.sys.game.config.width, 25, 'threat').setScale(0.5);
-            threat.hitpoints = 15;
+            threat.hitpoints = 30;
             threat.score = 8;
 
             this.physics.moveTo(threat, 0, 25, 250); // the speed of the threat.
@@ -797,7 +856,11 @@ export class Scene2 extends BaseScene {
             // If an alien has reached the bottom of the screen
             if (alien.y > this.sys.game.config.height) {
                 console.log('Oh no alien has reached the bottom of the screen!');
+                this.explode(alien, 20);
                 this.sharedData.alienTerritories++;
+                console.log(this.sharedData.putieTerritories);
+                console.log(this.sharedData.alienTerritories);
+
                 if (this.sharedData.alienTerritories + this.sharedData.putieTerritories >= territories.length) {
                     console.log('you lose!');
                     this.scene.get('TutorialScene').setup(this.sharedData);
@@ -822,6 +885,8 @@ export class Scene2 extends BaseScene {
                     this.Wokeness = Math.max(0, this.Wokeness-10);
                 }
 
+                let messageString = 'Aliens have taken over The '+ this.attackedTerritory.name;
+
                 this.attackedTerritory.faction = 'alien';
                 this.attackedTerritory.name = "Aliens";
                 this.attackedTerritory.color = '0x123456';
@@ -831,10 +896,13 @@ export class Scene2 extends BaseScene {
                 this.sharedData.MAGAness = this.MAGAness;
                 this.sharedData.icons = this.icons;
 
-                this.scene.get('politics').setup(this.sharedData);
-                this.scene.start('politics');
+                this.cameras.main.fadeOut(3000, 0, 0, 0);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    this.scene.get('VictoryScene').setup(this.sharedData);
+                    this.scene.start('VictoryScene', { message: messageString});
+                });
             }
-            if (alien.x <= 0) {
+            if (alien.x <= 0 || alien.y > this.sys.game.config.height) {
                 alien.destroy();
             }
         }, this); // 'this' refers to our scene

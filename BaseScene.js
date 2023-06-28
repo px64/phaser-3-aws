@@ -737,7 +737,7 @@ export const militaryAssets = [
         prevValue: 0,
         techLevel: 0,
         shortstory: [
-        "Number of Missiles total that you can fire."
+        "Number of Missiles per Base."
         ],
     },
     {
@@ -746,7 +746,7 @@ export const militaryAssets = [
         prevValue: 0,
         techLevel: 0,
         shortstory: [
-        "Number of Missiles total that you can fire."
+        "Higher the tech level, faster the missile."
         ],
     },
     {
@@ -755,7 +755,7 @@ export const militaryAssets = [
         prevValue: 0,
         techLevel: 0,
         shortstory: [
-        "Number of Missiles total that you can fire."
+        "As tech improves, missile don't vear off course as much."
         ],
     },
     {
@@ -764,7 +764,7 @@ export const militaryAssets = [
         prevValue: 0,
         techLevel: 0,
         shortstory: [
-        "Number of Missiles total that you can fire."
+        "Damage caused by the missile."
         ],
     },
     {
@@ -773,7 +773,7 @@ export const militaryAssets = [
         prevValue: 0,
         techLevel: 0,
         shortstory: [
-        "Number of Missiles total that you can fire."
+        "How frequently missiles can be fired."
         ],
     }
 ];
