@@ -396,6 +396,7 @@ export default class BaseScene extends Phaser.Scene {
         let testTerritory = territories.length - 1; // Arrays are 0-indexed
         let putieCount = 0; // Counter to track how many territories have been changed
 
+        // Make sure number of putie territories is accurate in case an alien claimed something
         while (putieCount < this.putieTerritories && testTerritory >= 0) {
             if (territories[testTerritory].faction !== "alien") {
                 territories[testTerritory].faction = "putieVille";
@@ -418,6 +419,7 @@ export default class BaseScene extends Phaser.Scene {
             let territory = territories[i];
             territoryGraphics.fillStyle(territory.color, 1.0);
             territoryGraphics.fillRect(i * this.territoryWidth, this.game.config.height - 30, this.territoryWidth, 30);
+            territory.graphics = territoryGraphics;  // create reference to graphics so we can modify it later
 
             let baseFaction;
             // Add a base icon to the territory
@@ -440,6 +442,8 @@ export default class BaseScene extends Phaser.Scene {
               { font: '16px Arial', fill: '#ffffff', align: 'center' }
             );
 
+            territory.nameText = nameText; // create reference to nametext so we can modify it later
+
             // Set origin to the center of the text to properly align it
             nameText.setOrigin(0.5, 0.5);
         }
@@ -448,8 +452,8 @@ export default class BaseScene extends Phaser.Scene {
         for (let i = 1; i < territories.length; i++) {
             let territory1 = territories[i];
             graphics.beginPath();
-            graphics.moveTo(territory1.x, this.game.config.height - 30);  // Starting from the top of the game area
-            graphics.lineTo(territory1.x, this.game.config.height);  // Ending at the bottom of the game area
+            graphics.moveTo(territory1.x, this.game.config.height - 30);  // Starting from the top of the territory area
+            graphics.lineTo(territory1.x, this.game.config.height);  // Ending at the bottom of the territory area
             graphics.closePath();
             graphics.strokePath();
         }

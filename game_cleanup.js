@@ -283,9 +283,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
         // Here you would set the player's ideology and move on to the next scene
         console.log(`You chose ${ideology.name}`);
         let textColor = ideology.color;
-        let ideologyText = this.add.text(this.sys.game.config.width/2 - 20, 700, 'You chose '+ ideology.name + '!', { fontSize: '32px', fontFamily: 'Roboto', color: textColor }).setOrigin(0.5);
-        let icon = this.add.sprite(this.sys.game.config.width/2 - 20 - ideologyText.width/2 - 120, 700, ideology.icon).setScale(.3);
-        let icon2 = this.add.sprite(this.sys.game.config.width/2 - 20 + ideologyText.width/2 + 120, 700, ideology.icon).setScale(.3);
+        let height = this.sys.game.config.height*.85;
+        let ideologyText = this.add.text(this.sys.game.config.width/2 - 20, height, 'You chose '+ ideology.name + '!', { fontSize: '32px', fontFamily: 'Roboto', color: textColor }).setOrigin(0.5);
+        let icon = this.add.sprite(this.sys.game.config.width/2 - 20 - ideologyText.width/2 - 120, height, ideology.icon).setScale(.3);
+        let icon2 = this.add.sprite(this.sys.game.config.width/2 - 20 + ideologyText.width/2 + 120, height, ideology.icon).setScale(.3);
 
         this.sharedData.ideology = ideology;
         characters.forEach((character, index) => {
@@ -565,6 +566,80 @@ export class Scene2 extends BaseScene {
         this.load.image('threat', 'assets/threat.png');
     }
     create() {
+        //====================================================================================
+        //
+        //             findValidTerritory(thisFaction, otherFaction)
+        //
+        //====================================================================================
+        let findValidTerritory = (thisFaction, otherFaction) => {
+            let count = 0;
+            let base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
+            while (base.faction != thisFaction && base.faction != otherFaction) {
+                // pick a new territory
+                this.roundRobinLaunch++;
+                base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
+                console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
+                if (count++ > 16) {
+                    console.log('something went wrong.  got stuck in looking for a new territory.');
+                    break;
+                }
+            }
+            return base;
+        }
+
+        //====================================================================================
+        //
+        //             flashBase()
+        //
+        //====================================================================================
+        let flashBase = (base) => {
+            let flashCount = 0;
+            let isGreen = true;
+
+            // Update text with number of missiles
+            base.nameText.setText(base.name + ' ' + numberToBars(this.missilesPerTerritory));
+
+            // Immediately turn it green
+            base.graphics.clear();
+            base.graphics.fillStyle(0x00ff00, 1.0);
+            base.graphics.fillRect(base.x, base.y - 10, this.territoryWidth, 30);
+
+            let flash = this.time.addEvent({
+                delay: 200, // flash every 200ms
+                callback: () => {
+                    base.graphics.clear();
+
+                    if (isGreen) {
+                        base.graphics.fillStyle(base.color, 1.0); // or other color when not flashing
+                        isGreen = false;
+                    } else {
+                        base.graphics.fillStyle(0x00ff00, 1.0);
+                        isGreen = true;
+                    }
+
+                    base.graphics.fillRect(base.x, base.y - 10, this.territoryWidth, 30);
+
+                    flashCount++;
+                    if (flashCount >= 5) { // We stop flashing after 5 changes (2 1/2 full flash cycles)
+                        flash.remove();
+                    }
+                },
+                loop: true // it will loop indefinitely if we don't stop it manually
+            });
+        }
+
+        function numberToBars(number) {
+            let bars = '';
+            for (let i = 0; i < number; i++) {
+                bars += '|';
+            }
+            return bars;
+        }
+        //====================================================================================
+        //
+        //             start of create()
+        //
+        //====================================================================================
         // set up game objects
         // The 'this' keyword refers to the scene.
         this.input.setDefaultCursor('crosshair');
@@ -575,6 +650,15 @@ export class Scene2 extends BaseScene {
         this.totalAlienAttacks = this.sharedData.thisRoundAlienAttacks;
         this.sharedData.thisRoundAlienAttacks += 2; // each round 2 more alien attacks
         this.icons = this.sharedData.icons;
+        this.aliensWin = false;
+        this.attackIndex = 0; // need to start with this pointing to something so missiles can be launched from it
+        this.missilesMaga = this.physics.add.group();
+        this.missilesWoke = this.physics.add.group();
+        this.threats = this.physics.add.group();
+        this.roundRobinLaunch = 0;
+        let missileNumberAsset = militaryAssets.find(asset => asset.name === 'Number of Missiles');
+        this.missilesPerTerritory = 3 + Math.floor(missileNumberAsset.techLevel/10);
+        this.territoriesWithMissiles = this.sharedData.thisRoundTerritoriesWithMissiles;
 
         thereBeThreats = 0;
         console.log('MAGA: ' + this.MAGAness + 'Woke: ' + this.Wokeness);
@@ -588,12 +672,6 @@ export class Scene2 extends BaseScene {
         let totalCapital = this.MAGAness + this.Wokeness;
 
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
-
-        // Create MAGAness text
-        //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
-
-        // Create Wokeness text
-        //WokenessText = this.add.text(1100, 0, 'Wokeness Political\n Capital: ' + this.Wokeness, { fontSize: '16px', fill: '#fff' });
 
         // Create Year text
         yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
@@ -619,15 +697,27 @@ export class Scene2 extends BaseScene {
             } // something went wrong: can only find putieVille everywhere
         }
 
-        //this.magaBase = this.physics.add.sprite(100, this.sys.game.config.height - 100, 'magaBase').setScale(0.1);
-        //this.wokeBase = this.physics.add.sprite(this.sys.game.config.width - 100, this.sys.game.config.height - 100, 'wokeBase').setScale(0.1);
+        let base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
+        let thisFaction = this.sharedData.ideology.faction;
+        let otherFaction = this.sharedData.ideology.faction;
+        if (this.sharedData.ideology.faction == 'none') {
+            thisFaction = 'maga';
+            otherFaction = 'woke';
+        }
+        let diplomacy = 0;
+        if (this.sharedData.icons['diplomacy']) {
+            diplomacy = this.sharedData.icons['diplomacy'].health;
+        }
+        // If diplomacy is good, then both MAGA and Woke work together on defending
+        if (this.sharedData.ideology.faction == 'none' || diplomacy > 95) {
+            if (diplomacy < 96) {
+                this.roundRobinLaunch++;  // if no affiliation and poor diplomacy, random bases fire
+            }
+            otherFaction = (thisFaction == 'maga' ? 'woke': 'maga');
+        }
 
-        this.missilesMaga = this.physics.add.group();
-        this.missilesWoke = this.physics.add.group();
-        this.threats = this.physics.add.group();
-        this.roundRobinLaunch = 0;
-        this.missilesPerTerritory = 3;  // hard code missiles per territory to 3 for now
-        this.territoriesWithMissiles = this.sharedData.thisRoundTerritoriesWithMissiles;
+        base = findValidTerritory(thisFaction, otherFaction);
+        flashBase(base);
 
         let lastClickTime = 0;
 
@@ -641,7 +731,6 @@ export class Scene2 extends BaseScene {
             lastClickTime = currentTime;
             //let baseOffset = Phaser.Math.Wrap(this.attackIndex + territories.length/2, 0, territories.length-1);
             let base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
-            let count = 0;
             console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
             let thisFaction = this.sharedData.ideology.faction;
             let otherFaction = this.sharedData.ideology.faction;
@@ -660,28 +749,17 @@ export class Scene2 extends BaseScene {
                 }
                 otherFaction = (thisFaction == 'maga' ? 'woke': 'maga');
             }
-            while (base.faction != thisFaction && base.faction != otherFaction) {
-                // pick a new territory
-                this.roundRobinLaunch++;
-                base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
-                console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
-                if (count++ > 100) {
-                    console.log('something went wrong.  got stuck in looking for a new territory.');
-                    break;
-                }
-            }
+
+            base = findValidTerritory(thisFaction, otherFaction);
+
+
+
             console.log(((Phaser.Math.Wrap(this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length), 0, territories.length) + ' ' + this.roundRobinLaunch % territories.length)
-            if (this.missilesPerTerritory-- <= 0) {
-                if (this.territoriesWithMissiles-- > 0) {
-                    this.roundRobinLaunch++;
-                    let missileNumberAsset = militaryAssets.find(asset => asset.name === 'Number of Missiles');
-                    this.missilesPerTerritory = 3 + Math.floor(missileNumberAsset.techLevel/10);
-                } else {
-                    console.log('no more territories have missiles!');
-                }
-            }
             if (this.missilesPerTerritory > 0) {
+                this.missilesPerTerritory--; // use up one missile
+                base.nameText.setText(base.name + ' ' + numberToBars(this.missilesPerTerritory));
                 if (base.faction == 'woke') {
+                    let oldBase = base; // need to remember old base because it gets changed below on the last missile launched
                     // Calculate the angle to the target
                     let angle = Phaser.Math.Angle.Between(base.x+this.territoryWidth/2, base.y, pointer.x, pointer.y);
                     angle += 90*(Math.PI/180);
@@ -689,11 +767,11 @@ export class Scene2 extends BaseScene {
                     // Timer event to delay missile firing
                     this.time.delayedCall(400, () => {
                         // Code to fire missile goes here
-                        let missile1 = this.fireMissile(base, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
+                        let missile1 = this.fireMissile(oldBase, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
                     }, [], this);
                     this.time.delayedCall(800, () => {
                         // Code to fire missile goes here
-                        let missile3 = this.fireMissile(base, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
+                        let missile3 = this.fireMissile(oldBase, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
                     }, [], this);
                 } else if (base.faction == 'maga') {
                     let angle = Phaser.Math.Angle.Between(base.x+this.territoryWidth/2, base.y, pointer.x, pointer.y);
@@ -701,6 +779,18 @@ export class Scene2 extends BaseScene {
                     let missile = this.fireMissile(base, angle, pointer, 30, 0.1, 50, 9, this.missilesMaga);
                 }
             }
+
+            if (this.missilesPerTerritory <= 0) {
+                if (this.territoriesWithMissiles-- > 0) { // not quite right because a territory that already spent its missiles can be picked again
+                    this.roundRobinLaunch++;
+                    base = findValidTerritory(thisFaction, otherFaction);
+                    this.missilesPerTerritory = 3 + Math.floor(missileNumberAsset.techLevel/10); // update missiles before flashing Base
+                    flashBase(base);
+                } else {
+                    console.log('no more territories have missiles!');
+                }
+            }
+
         }, this);
 
         this.physics.add.overlap(this.missilesMaga, this.threats, function (missile, threat) {
@@ -868,14 +958,15 @@ export class Scene2 extends BaseScene {
                 alien.angle += 4;
             }
             // If an alien has reached the bottom of the screen
-            if (alien.y > this.sys.game.config.height) {
+            if (this.aliensWin == false && alien.y > this.sys.game.config.height) {
                 console.log('Oh no alien has reached the bottom of the screen!');
                 this.explode(alien, 20);
                 this.sharedData.alienTerritories++;
+                this.aliensWin = true; // aliens can only win once per attack and fadeout allows multiple wins
                 console.log(this.sharedData.putieTerritories);
                 console.log(this.sharedData.alienTerritories);
 
-                if (this.sharedData.alienTerritories + this.sharedData.putieTerritories >= territories.length) {
+                if (this.sharedData.alienTerritories + this.sharedData.putieTerritories > territories.length) {
                     console.log('you lose!');
                     this.scene.get('TutorialScene').setup(this.sharedData);
                     this.scene.start('TutorialScene', { message: 'I have some bad news:\n the Aliens have taken over America\n It looks like you lose.' });
@@ -934,7 +1025,7 @@ let config = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: window.innerWidth,
-        height: window.innerHeight
+        height: Math.min(window.innerWidth,window.innerHeight)
     },
     physics: {
         default: 'arcade',
