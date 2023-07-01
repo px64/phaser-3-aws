@@ -116,7 +116,6 @@ export default class BaseScene extends Phaser.Scene {
     //====================================================================================
     drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite) => {
         // 'track' is the scale object (could be a sprite or any game object)
-        console.log('x,y = ' + x + ',' + y);
 
         this.drawHealthGauge(0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite);
         this.drawHealthGauge(health/healthScale/100,x,y, 'Health', gaugeHealth);
@@ -172,7 +171,7 @@ export default class BaseScene extends Phaser.Scene {
             healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
             healthGauge.strokePath();
         } else {
-            console.log('x,y = ' + posX + ',' + posY + ' maga: ' + maga + ' woke: ' + woke);
+            //console.log('x,y = ' + posX + ',' + posY + ' maga: ' + maga + ' woke: ' + woke);
 
             let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
             let balance;

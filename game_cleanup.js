@@ -82,7 +82,9 @@ class TitleScene extends Phaser.Scene {
             helperTokens: {},
             ideology: 'maga',
             thisRoundAlienAttacks: 1,
-            thisRoundTerritoriesWithMissiles: 6
+            thisRoundTerritoriesWithMissiles: 6,
+            MAGAnessVelocity: 0,
+            WokenessVelocity: 0
         };
     }
 
@@ -917,7 +919,7 @@ export class Scene2 extends BaseScene {
     update() {
         // game loop
         // This is called 60 times per second. Put game logic here.
-        if (Math.random() < 0.001) {
+        if (Math.random() < 0.001 && this.totalAlienAttacks > 0) {
             let threat = this.threats.create(this.sys.game.config.width, 25, 'threat').setScale(0.5);
             threat.hitpoints = 30;
             threat.score = 8;
@@ -956,6 +958,7 @@ export class Scene2 extends BaseScene {
         }
         // Check all alien objects
         this.threats.children.each(function(alien) {
+            // Mothership does not rotate
             if (alien.score  < 3) {
                 alien.angle += 4;
             }

@@ -769,11 +769,12 @@ export class Politics extends BaseScene {
                         }
                         if (win == true) {
                             console.log('You Win!');
-                            scene.cameras.main.fadeOut(3000, 0, 0, 0);
+                            scene.cameras.main.fadeOut(1000, 0, 0, 0);
                             scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                                 scene.scene.get('VictoryScene').setup(scene.sharedData);
                                 scene.scene.start('VictoryScene', { message: 'You Win!\nIn the year ' + scene.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
                             });
+                            helper.isDestroyed = true;
                             return;
                         }
                         // Bonus: Someone of your own faction can reduce the MAGAness or Wokeness of your own faction.
@@ -1208,9 +1209,9 @@ export class Politics extends BaseScene {
                 // Save the previous value for next calculation
                 character.prevValue = value;
 
-                // Update MAGAness and Wokeness with new values
-                scene.MAGAness = tmpMAG;
-                scene.Wokeness = tmpWok;
+                // Update MAGAness and Wokeness with new values.  Make sure they are integers
+                scene.MAGAness = Math.floor(tmpMAG);
+                scene.Wokeness = Math.floor(tmpWok);
             });
 
             createCharacterTooltip(scene, character, x, y, slider, characterText);

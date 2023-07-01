@@ -49,7 +49,12 @@ export class Insurrection extends BaseScene {
             alienTerritories: 0,
             year: 2023,
             misinformation: {},
-            helperTokens: {}
+            helperTokens: {},
+            ideology: 'maga',
+            thisRoundAlienAttacks: 1,
+            thisRoundTerritoriesWithMissiles: 6,
+            MAGAnessVelocity: 0,
+            WokenessVelocity: 0
         };
 
     }
@@ -136,7 +141,8 @@ export class Insurrection extends BaseScene {
 
                 console.log('healthChange = '+ healthChange);
 
-                iconData.health = Phaser.Math.Clamp(iconData.health + healthChange, 0, 100*iconData.healthScale);
+                // Health can grow to be 133% of maximum
+                iconData.health = Phaser.Math.Clamp(iconData.health + healthChange, 0, 133*iconData.healthScale);
             }
             // If Putie has only a few territories, then check collapse all the time
             // If Putie has a lot of territories, then only check for collapse 50% of the time
@@ -197,12 +203,14 @@ export class Insurrection extends BaseScene {
                 this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite);
             }
 
+            thisRoundHealthChange += this.sharedData.MAGAnessVelocity;
+            thisRoundHealthChange += this.sharedData.WokenessVelocity;
 
             this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
             this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
             console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
 
-            polCapText.setText('Political Capital: ' + (this.sharedData.MAGAness + this.sharedData.Wokeness).toString());
+            polCapText.setText('Political Capital: ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
 
 /*
             MAGAnessText.setText('MAGA political\ncapital: ' + this.sharedData.MAGAness);
@@ -244,7 +252,7 @@ export class Insurrection extends BaseScene {
 
         this.createTerritories();
 
-        let totalCapital = this.MAGAness + this.Wokeness;
+        let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
 
@@ -798,4 +806,10 @@ export class Insurrection extends BaseScene {
 function incrementYear() {
     this.sharedData.year++;
     yearText.setText('Year: ' + this.sharedData.year);
+
+    this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + this.sharedData.MAGAnessVelocity, 0, 100);
+    this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + this.sharedData.WokenessVelocity, 0, 100);
+    console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
+
+    polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
 }

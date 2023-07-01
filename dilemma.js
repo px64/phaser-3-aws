@@ -159,7 +159,7 @@ export class DilemmaScene extends BaseScene {
         //====================================================================================
         this.createTerritories();
 
-        let totalCapital = this.sharedData.MAGAness + this.sharedData.Wokeness;
+        let totalCapital = Math.floor(this.sharedData.MAGAness + this.sharedData.Wokeness);
 
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
 
@@ -240,10 +240,11 @@ export class DilemmaScene extends BaseScene {
             "||",
             "As the leader, your decision is crucial. Will you support the legislation,",
             "potentially reducing social unrest? Or uphold the sanctity of free speech,",
-            "despite its potential misuse?"
+            "despite its potential misuse?  If you chose wisely, you will receive a steady",
+            "flow of political capital for quite some time."
         ];
 
-        let formattedScenario = insertLinezBreaks(scenarioDescription2.join(' '), 104);
+        let formattedScenario = insertLinezBreaks(scenarioDescription2.join(' '), 110);
         let titleText = this.add.text(this.sys.game.config.width/2 - 80, 230, 'New Legislation', { font: '48px Arial', fill: '#0ff' });
         let scenarioText = this.add.text(this.sys.game.config.width/2 - 330, 290, formattedScenario, { font: '20px Arial', fill: '#ffffff' });
 
@@ -274,7 +275,7 @@ export class DilemmaScene extends BaseScene {
                 MAGACapRequired: 5,
                 WokeCapRequired: 5,
                 helps: 'justice',
-                helpBenefit: 30,
+                helpBenefit: 10,
                 hurts: 'justice',
                 hurtCost: 2,
                 hurtFaction: 'both'
@@ -284,7 +285,7 @@ export class DilemmaScene extends BaseScene {
                 MAGACapRequired: 30,
                 WokeCapRequired: 0,
                 helps: 'justice',
-                helpBenefit: 30,
+                helpBenefit: 40,
                 hurts: 'justice',
                 hurtCost: 8,
                 hurtFaction: 'maga'
@@ -328,6 +329,8 @@ export class DilemmaScene extends BaseScene {
             let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
 
             // Implement the results of the chosen option
+            this.sharedData.WokenessVelocity = Math.floor(this.sharedData.WokenessVelocity + choice.helpBenefit/40);
+            console.log(this.sharedData.WokenessVelocity);
             this.icons[choice.helps].health += choice.helpBenefit;
             this.drawHealthGauge(this.icons[choice.helps].health/ this.icons[choice.helps].healthScale/ 100, this.icons[choice.helps].icon.x, this.icons[choice.helps].icon.y, 'Health', this.icons[choice.helps].gaugeHealth);
 
