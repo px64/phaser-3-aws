@@ -527,6 +527,8 @@ class TutorialScene extends Phaser.Scene {
 //             message if the aliens captured an opposing territory
 //
 //====================================================================================
+// There needs to be some point where Putie just wins when 3 territories or less.  Game goes on forever
+// when you are losing.  Maybe if total number of insurrectionists > 50 you automatically lose
 export class Scene2 extends BaseScene {
 
     constructor() {
@@ -658,7 +660,7 @@ export class Scene2 extends BaseScene {
         this.roundRobinLaunch = 0;
         let missileNumberAsset = militaryAssets.find(asset => asset.name === 'Number of Missiles');
         this.missilesPerTerritory = 3 + Math.floor(missileNumberAsset.techLevel/10);
-        this.territoriesWithMissiles = this.sharedData.thisRoundTerritoriesWithMissiles;
+        this.territoriesWithMissiles = Math.min(this.sharedData.thisRoundTerritoriesWithMissiles, territories.length - this.sharedData.alienTerritories - this.sharedData.putieTerritories);
 
         thereBeThreats = 0;
         console.log('MAGA: ' + this.MAGAness + 'Woke: ' + this.Wokeness);
@@ -800,7 +802,7 @@ export class Scene2 extends BaseScene {
             if (threat.hitpoints <= 0) {
                 this.MAGAness += threat.score;
                 polCapText.setText('Political Capital ' + (this.MAGAness + this.Wokeness).toString());
-                this.explode(threat, threat.score == 1 ? 5: 10);
+                this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
             }
         }, null, this);
@@ -811,7 +813,7 @@ export class Scene2 extends BaseScene {
             if (threat.hitpoints <= 0) {
                 this.Wokeness += threat.score;
                 polCapText.setText('Political Capital: ' + (this.MAGAness + this.Wokeness).toString());
-                this.explode(threat, threat.score == 1 ? 5: 10);
+                this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
             }
         }, null, this);

@@ -110,6 +110,14 @@ export class Insurrection extends BaseScene {
         //====================================================================================
         //
         // environmentalImpact inherents 'this' because it is an arrow function
+        //     Todo: need some way of indicating that maga and woke may be balanced but there
+        //           is too much of both and the icon is on the verge of collapse.
+        //           One way to do this is to simply reduce health a lot, and it Will
+        //           show up on the health gauge.
+        //           We could just go back to balance and completely eliminate total number
+        //           of protesters.  More realistic to collapse if total is outrageously high?
+        //           I kinda like how it works right now, but need to have some indication
+        //           that things are bad.
         //
         //====================================================================================
         let environmentalImpact = () => {
@@ -118,19 +126,23 @@ export class Insurrection extends BaseScene {
             //this.drawHealthBar(0.7, 110, 100, 'woke', this.envHealthBarWoke);
 
             let thisRoundHealthChange = 0;
-            if (this.sharedData.putieTerritories < 3 || Math.random() < .5) { // Once Putie dominates, collapse is 50% chance of occurring
+            for (let key in this.sharedData.icons) {
+                let iconData = this.sharedData.icons[key];
+
+                // For each icon, the health is influenced by the amount of MAGA and Wokeness.  If the two factions
+                // are balanced, then health improves.
+                let healthChange = Phaser.Math.Clamp((5 - Math.abs(iconData.maga - iconData.woke))/5, -5, 5);
+                thisRoundHealthChange += healthChange;
+
+                console.log('healthChange = '+ healthChange);
+
+                iconData.health = Phaser.Math.Clamp(iconData.health + healthChange, 0, 100*iconData.healthScale);
+            }
+            // If Putie has only a few territories, then check collapse all the time
+            // If Putie has a lot of territories, then only check for collapse 50% of the time
+            if (this.sharedData.putieTerritories < territories.length/2 || Math.random() < .5) {
                 for (let key in this.sharedData.icons) {
                     let iconData = this.sharedData.icons[key];
-
-                    // For each icon, the health is influenced by the amount of MAGA and Wokeness.  If the two factions
-                    // are balanced, then health improves.
-                    let healthChange = Phaser.Math.Clamp((5 - Math.abs(iconData.maga - iconData.woke))/5, -5, 5);
-                    thisRoundHealthChange += healthChange;
-
-                    console.log('healthChange = '+ healthChange);
-
-                    iconData.health = Phaser.Math.Clamp(iconData.health + healthChange, 0, 100);
-
                     if (iconData.maga > 100 || iconData.woke > 100) {
                         this.sharedData.putieTerritories++;
                         this.putieTerritories = this.sharedData.putieTerritories;
@@ -148,7 +160,9 @@ export class Insurrection extends BaseScene {
                 }
             }
             let sanity_check = Math.random();
-            if (this.sharedData.MAGAness == 0 && this.sharedData.Wokeness == 0){
+            // If you spent all your capital and it's early in the game then you need more capital!
+            // Better would be the dilemma screen giving you lots of capital so it doesn't have to be about the aliens
+            if (this.sharedData.MAGAness == 0 && this.sharedData.Wokeness == 0 && this.sharedData.putieTerritories < territories.length/2) {
                 sanity_check = 0;
             }
             console.log('check for alien invasion '+ sanity_check);
@@ -161,7 +175,7 @@ export class Insurrection extends BaseScene {
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
 
-                if (iconData.health < 1 || iconData.maga > 100 || iconData.woke > 100 || iconData.maga + iconData.woke > 133) {
+                if (iconData.health < 1 || iconData.maga > 100 || iconData.woke > 100 || iconData.maga + iconData.woke > 100) {
                     this.sharedData.putieTerritories++;
                     this.putieTerritories = this.sharedData.putieTerritories;
                     iconData.maga = 0;

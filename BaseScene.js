@@ -60,7 +60,7 @@ export default class BaseScene extends Phaser.Scene {
             this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice: ', 1, 16, 0); //.15
             this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.03, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0); //50
             this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0); // 1
-            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 4, 16, 0); // 1
+            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 2, 16, 0); // 1
      }
 
     //====================================================================================
@@ -205,6 +205,22 @@ export default class BaseScene extends Phaser.Scene {
 
             healthGauge.setTint(color);
             scaleSprite.setTint(color);
+
+            // Shimmer effect
+            if (maga > 65 || woke > 65) {
+            let shimmerTween = this.tweens.add({
+                    delay: Phaser.Math.Between(0, 500),
+                    targets: [healthGauge, scaleSprite],
+                    duration: 1000 - maga*5 - woke*5, // Duration of one shimmer
+                    repeat: -1, // -1 for infinite repeats
+                    yoyo: true, // Yoyo makes the tween animate back to its original value after reaching its target.
+                    ease: 'Sine.easeInOut', // Linear easing for a smooth constant transition
+                    alpha: {
+                        start: 1, // Fully visible
+                        to: 0.4  // 50% transparency
+                    }
+                });
+            }
         }
         return healthGauge;
 
@@ -825,4 +841,48 @@ export const territories = [
         backing: 6,
         x: 1000
     }
+    /*
+    {
+        name: 'Texas',
+        faction: 'maga',
+        color: 0xFF0000,
+        backing: 5,
+        x: 1200
+    },
+    {
+        name: 'Southwest',
+        faction: 'woke',
+        color: 0x0000FF,
+        backing: 3,
+        x: 1400
+    },
+    {
+        name: 'Mountain West',
+        faction: 'maga',
+        color: 0xFF0000,
+        backing: 4,
+        x: 1600
+    },
+    {
+        name: 'New England',
+        faction: 'woke',
+        color: 0x0000FF,
+        backing: 6,
+        x: 1800
+    },
+    {
+        name: 'Great Lakes',
+        faction: 'maga',
+        color: 0xFF0000,
+        backing: 5,
+        x: 2000
+    },
+    {
+        name: 'Florida',
+        faction: 'woke',
+        color: 0x0000FF,
+        backing: 4,
+        x: 2200
+    }
+    */
 ];

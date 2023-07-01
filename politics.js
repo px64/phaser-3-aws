@@ -177,7 +177,7 @@ export class Politics extends BaseScene {
         let environmentalImpact = () => {
             let env = this.icons['environment'];
 
-            env.health = Phaser.Math.Clamp(env.health + 5 - Math.abs(env.maga - env.woke), 0, 100);
+            env.health = Phaser.Math.Clamp(env.health + 5 - Math.abs(env.maga - env.woke), 0, 100*env.healthScale);
 
             if (env.health < 1) {
                 this.sharedData.putieTerritories++;
@@ -576,6 +576,12 @@ export class Politics extends BaseScene {
                 {type: 'maga', text: 'Community Outreach'},
                 {type: 'woke', text: 'Inclusive Policies'},
                 {type: 'maga', text: 'Reconciliation\nEfforts'},
+                {type: 'woke', text: 'Bipartisan Efforts'},
+                {type: 'maga', text: 'Civic Engagement'},
+                {type: 'woke', text: 'Cooperative Programs'},
+                {type: 'maga', text: 'Community Outreach'},
+                {type: 'woke', text: 'Inclusive Policies'},
+                {type: 'maga', text: 'Reconciliation\nEfforts'},
             ];
 
             // Initialize the offset if it's not yet set
@@ -587,7 +593,7 @@ export class Politics extends BaseScene {
             }
 
 
-           if (!scene.currentMisinformationIndex) {
+            if (!scene.currentMisinformationIndex) {
                 scene.currentMisinformationIndex = 0;
             }
 
@@ -662,8 +668,10 @@ export class Politics extends BaseScene {
                     // Increment the corresponding offset for next time
                     if (data.type === 'maga') {
                         scene.yMagaOffset += misinformation.container.displayHeight;
+                        scene.yMagaOffset = Phaser.Math.Wrap(scene.yMagaOffset, scene.game.config.height *.2 ,scene.game.config.height * .9);
                     } else {
                         scene.yWokeOffset += misinformation.container.displayHeight;
+                        scene.yWokeOffset = Phaser.Math.Wrap(scene.yWokeOffset, scene.game.config.height *.2 ,scene.game.config.height * .9);
                     }
                     scene.currentMisinformationIndex++; // increment the index for the next call
                 }
@@ -755,14 +763,14 @@ export class Politics extends BaseScene {
                         let win = true;
                         for (let key in scene.sharedData.icons) {
                             let iconData = scene.sharedData.icons[key];
-                            if (iconData.health < 100) {
+                            if (iconData.health/iconData.healthScale < 90) {
                                 win = false;
                             }
                         }
                         if (win == true) {
                             console.log('You Win!');
-                            this.cameras.main.fadeOut(3000, 0, 0, 0);
-                            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                            scene.cameras.main.fadeOut(3000, 0, 0, 0);
+                            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                                 scene.scene.get('VictoryScene').setup(scene.sharedData);
                                 scene.scene.start('VictoryScene', { message: 'You Win!\nIn the year ' + scene.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
                             });
