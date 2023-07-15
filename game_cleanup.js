@@ -937,7 +937,8 @@ export class Scene2 extends BaseScene {
         if (this.threats.countActive(true) > 0) {
             thereBeThreats = 1;
         }
-        if (this.totalAlienAttacks < 2 && thereBeThreats == 1 && this.threats.countActive(true) == 0) {
+        // If aliens have aleady reached the bottom of the screen then you can't have deterred the attack
+        if (this.totalAlienAttacks < 2 && thereBeThreats == 1 && this.threats.countActive(true) == 0 && this.aliensWin == false) {
             console.log('All threats have been destroyed!');
             thereBeThreats = 0;
             if (this.attackedTerritory.faction == 'maga') {
