@@ -290,6 +290,14 @@ export class Insurrection extends BaseScene {
 
         //this.envIcon.setImmovable(true);
 
+        this.magaThreats = this.physics.add.group();
+        this.magaDefenses = this.physics.add.group();
+        this.putieThreats = this.physics.add.group();
+        this.wokeThreats = this.physics.add.group();
+        this.wokeDefenses = this.physics.add.group();
+        this.wokeReturns = this.physics.add.group();
+        this.magaReturns = this.physics.add.group();
+
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
@@ -346,16 +354,6 @@ export class Insurrection extends BaseScene {
             ];
 
 
-
-            scene.magaThreats = scene.physics.add.group();
-            scene.magaDefenses = scene.physics.add.group();
-            scene.putieThreats = scene.physics.add.group();
-            scene.wokeThreats = scene.physics.add.group();
-            scene.wokeDefenses = scene.physics.add.group();
-            scene.wokeReturns = scene.physics.add.group();
-            scene.magaReturns = scene.physics.add.group();
-
-
             // Recreate previously generated misinformation tokens
             for (let key in scene.sharedData.misinformation) {
                 // Look up the stored data
@@ -365,6 +363,7 @@ export class Insurrection extends BaseScene {
                 let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData);
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
+                misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
 
@@ -372,49 +371,6 @@ export class Insurrection extends BaseScene {
                 //data.y = yOffset;
             }
 
-            //scene.physics.add.collider(scene.magaDefenses, scene.wokeThreats);
-            //scene.physics.add.collider(scene.wokeDefenses, scene.magaThreats);
-
-            //scene.physics.add.collider(scene.envIcon, scene.magaThreats);
-            //scene.physics.add.collider(scene.envIcon, scene.wokeThreats);
-
-
-/*
-            // this will slow down the threat when it hits an object by reducing its velocity by half.
-            // Assuming that each threat and object has a unique 'id' property...
-            scene.physics.add.collider(scene.wokeThreats, scene.envIcon, function (threat, object) {
-                // Initialize the set if it doesn't exist yet
-                if (!threat.collidedWith) {
-                    threat.collidedWith = new Set();
-                }
-                console.log('collider wokeland');
-                // If we haven't collided with this object yet...
-                if (!threat.collidedWith.has(object.id)) {
-                    threat.collidedWith.add(object.id);
-                    // Handle collision...
-                    console.log('wokecollide');
-                    threat.body.velocity.x *= 0.5;
-                    threat.body.velocity.y *= 0.5;
-                }
-            }, null, this);
-
-            scene.physics.add.collider(scene.magaThreats, scene.envIcon, function (threat, object) {
-                // Initialize the set if it doesn't exist yet
-                if (!threat.collidedWith) {
-                    threat.collidedWith = new Set();
-                }
-                    console.log('collider magaland');
-
-                // If we haven't collided with this object yet...
-                if (!threat.collidedWith.has(object.id)) {
-                    threat.collidedWith.add(object.id);
-                    // Handle collision...
-                    console.log('magacollide');
-                    threat.body.velocity.x *= 0.5;
-                    threat.body.velocity.y *= 0.5;
-                }
-            }, null, this);
- */
         //====================================================================================
         // Add overlaps for bouncing or slowdowns between threats and shields
         // magaThreatWokeShield(), wokeThreatMagaShield()
@@ -537,7 +493,8 @@ export class Insurrection extends BaseScene {
             //====================================================================================
             //
             // Add overlaps for bouncing or slowdowns between threats and defences
-            //
+            // fixed a bug where roundThreats was undefined so it didn't exit early when all threats were destroyed.
+            // Maybe that's a good thing so time still passes?  Need to test.  I actually don't like it!
             //
             //====================================================================================
             scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
@@ -547,19 +504,21 @@ export class Insurrection extends BaseScene {
                     return;
                 }
                 threat.destroy();
-                this.roundThreats--;
-                console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-                if (this.roundThreats == 1) {
-                    this.scene.get('politics').setup(this.sharedData);
-                    this.scene.start('politics');
+                scene.roundThreats--;
+                console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
+                if (scene.roundThreats == 1) {
+                    consol.log('all threats destroyed but stay here til time ends anyway');
+                    //scene.scene.get('politics').setup(this.sharedData);
+                    //scene.scene.start('politics');
                 }
-                console.log(defense.container);
+                //console.log(defense.container);
                 if (Math.random() < .1) {
                     scene.tweens.add({
                         targets: defense,
                         alpha: 0,
                         duration: 500,
                         onComplete: function () {
+                            console.log('delete index ' + defense.container.misinformationIndex);
                             delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                             defense.container.destroy();
                         },
@@ -575,10 +534,13 @@ export class Insurrection extends BaseScene {
                     return;
                 }
                 threat.destroy();
-                this.roundThreats--;
-                console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-                if (this.roundThreats == 1) {this.scene.get('politics').setup(this.sharedData);this.scene.start('politics');}
-                console.log(defense.container);
+                scene.roundThreats--;
+                console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
+                if (scene.roundThreats == 1) {
+                    console.log('all threats destroyed but stay here til time ends anyway');
+                    //scene.scene.get('politics').setup(scene.sharedData);scene.scene.start('politics');
+                }
+                //console.log(defense.container);
 
                 if (Math.random() < .1) {
                     scene.tweens.add({
@@ -586,6 +548,7 @@ export class Insurrection extends BaseScene {
                         alpha: 0,
                         duration: 500,
                         onComplete: function () {
+                            console.log('delete index ' + defense.container.misinformationIndex);
                             delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                             defense.container.destroy();
                         },

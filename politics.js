@@ -652,7 +652,7 @@ export class Politics extends BaseScene {
                 numEntries = scene.extraMisinformationTokens;
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
                 scene.extraMisinformationTokens = 0;
-                if (Math.random < .2) numEntries += 1;
+// comment out for now because it's too confusing                if (Math.random < .2) numEntries += 1;
                 /*
                     for (let tmpHelper in scene.helperIcons) {
                         if (tmpHelper.powerTokenType == 'type_2') {
@@ -660,7 +660,6 @@ export class Politics extends BaseScene {
                         }
                     };
                 */
-
                 // Restore all the old misinformation Tokens first
                 for (let key in scene.sharedData.misinformation) {
                     // Look up the stored data
@@ -675,22 +674,6 @@ export class Politics extends BaseScene {
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     console.log('restore misinformation index '+ misinformation.container.misinformationIndex);
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
-                    // just keep track of offsets in case the tokens are still in their original positions for below
-                    /* Don't update these again because the new tokens will end up way below the old tokens
-                    if (storedData.type === 'maga') {
-                        scene.yMagaOffset += misinformation.container.displayHeight;
-                        if (scene.yMagaOffset > scene.game.config.height * .9) {
-                            scene.yMagaOffset -= scene.game.config.height * .7;
-                        }
-                        console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
-                    } else {
-                        scene.yWokeOffset += misinformation.container.displayHeight;
-                        if (scene.yWokeOffset > scene.game.config.height * .9) {
-                            scene.yWokeOffset -= scene.game.config.height * .7;
-                        }
-                        console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
-                    }
-                    */
                 }
             }
 
@@ -1047,13 +1030,13 @@ export class Politics extends BaseScene {
                 });
             }
             if (hasBeenCreatedBefore == true) {
-                console.log('hasBeenCreatedBefore, so stop everything');
+                console.log('hasBeenCreatedBefore, so stop Tweening and make position static');
                 outlineTween.stop();
                 rectangleTween.stop();
                 misinformation.disableInteractive();
                 misinformationSprite.setImmovable(true);
                 let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
-                rectangle.setFillStyle(0x228B22); // Now the rectangle is red
+                rectangle.setFillStyle(0x228B22); // Now the rectangle is green
             }
 
             return {
