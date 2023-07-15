@@ -126,20 +126,21 @@ export class DilemmaScene extends BaseScene {
 
         this.totalMilitaryAllocThisScene = 0;
 
-        // Create a button using an image
-        let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
-
-        // When the button is clicked, start the next scene
-        nextButton.on('pointerdown', () => {
-            // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
-            // question: does this scene's sharedData ever even get used?
-            //this.sharedData.icons = this.icons;
-            //this.sharedData.MAGAness = this.MAGAness;
-            //this.sharedData.Wokeness = this.Wokeness;
-
-            this.scene.get('insurrection').setup(this.sharedData);
-            this.scene.start('insurrection');
-        });
+        // Don't allow people to cheat and skip the legislation
+        // // Create a button using an image
+        // let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
+        //
+        // // When the button is clicked, start the next scene
+        // nextButton.on('pointerdown', () => {
+        //     // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
+        //     // question: does this scene's sharedData ever even get used?
+        //     //this.sharedData.icons = this.icons;
+        //     //this.sharedData.MAGAness = this.MAGAness;
+        //     //this.sharedData.Wokeness = this.Wokeness;
+        //
+        //     this.scene.get('insurrection').setup(this.sharedData);
+        //     this.scene.start('insurrection');
+        // });
                   // Add a background
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
@@ -292,7 +293,7 @@ export class DilemmaScene extends BaseScene {
                     MAGACapRequired: 0,
                     WokeCapRequired: 0,
                     helps: 'justice',
-                    helpBenefit: 0,
+                    helpBenefit: -5,
                     hurts: 'government',
                     hurtCost: 5,
                     hurtFaction: 'woke'
@@ -366,7 +367,7 @@ export class DilemmaScene extends BaseScene {
                     MAGACapRequired: 0,
                     WokeCapRequired: 0,
                     helps: 'government',
-                    helpBenefit: 0,
+                    helpBenefit: -5,
                     hurts: 'government',
                     hurtCost: 5,
                     hurtFaction: 'maga'
@@ -441,7 +442,7 @@ export class DilemmaScene extends BaseScene {
                     MAGACapRequired: 0,
                     WokeCapRequired: 0,
                     helps: 'government',
-                    helpBenefit: 0,
+                    helpBenefit: -5,
                     hurts: 'economy',
                     hurtCost: 5,
                     hurtFaction: 'both'
@@ -452,6 +453,46 @@ export class DilemmaScene extends BaseScene {
         // Spell out exactly how many and what kind of insurrectionist will attack which icon
         console.log('this scenario number is ' + this.scenarioNumber);
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
+
+        let nextScreenTutorial = [
+            {
+                story: [
+                    "This screen offers the chance to receive a steady stream of Political Capital for many years to come.",
+                    "But! Be careful how much near term instability it can cause.  The hats on the bottom",
+                    "will flash indicating their anger at the various choices you could make.  One icon at the top will have",
+                    "a shaded outline indicating where the activists will direct their unhappiness."
+                ]
+            },
+            {
+                story: [
+                    "Click on the Earth Icon to",
+                        "move to the next screen"
+                ]
+            }
+        ];
+        // add some helpful text
+        if (!this.hasBeenCreatedBefore) {
+            // Format the text to be centered and with the color based on the affiliation
+            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 55);
+            let backstoryText = this.add.text(300, 150, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#0f0', align: 'center' });
+            backstoryText.setOrigin(0.5);
+            backstoryText.setVisible(true);
+            backstoryText.setDepth(2);
+
+            // Add a bounding box for the text, with rounded corners and a semi-transparent background
+            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            backstoryBox.setStrokeStyle(2, 0x00ff00, 0.8);
+            backstoryBox.isStroked = true;
+            backstoryBox.setOrigin(0.5);
+            backstoryBox.setVisible(true);
+            backstoryBox.setDepth(1);
+
+            setTimeout(() => {
+                backstoryText.setVisible(false);
+                backstoryBox.setVisible(false);
+            }, 20000);
+           this.hasBeenCreatedBefore = true;
+        }
 
         let titleText = this.add.text(0, 0, 'Legislative Reform', { font: '48px Arial', fill: '#0ff' });
         titleText.setPosition(this.sys.game.config.width/2 - titleText.width/2, 230);
@@ -484,12 +525,16 @@ export class DilemmaScene extends BaseScene {
             let fruit;
             if (choice.helpBenefit > 0) {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.helps) + ' gets stronger!\nBut! ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
+                fruit += '\n\nGood news!  Political Capital will be boosted by +'+choice.helpBenefit/40+'/year for many years to come!';
             } else {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
+                fruit += '\n\nBad news!  Political Capital will suffer by '+choice.helpBenefit/40+'/year for many years to come!';
             }
+
             let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
 
-            // Implement the results of the chosen option
+            // Implement the results of the chosen option.  Shortcut: just give velocity to Wokeness to make game design easier for now.
+            // If someday this becomes a 2-person game then the velocities will need to be separated
             this.sharedData.WokenessVelocity = this.sharedData.WokenessVelocity + choice.helpBenefit/40;
             console.log(this.sharedData.WokenessVelocity);
             this.icons[choice.helps].health += choice.helpBenefit;
@@ -514,23 +559,6 @@ export class DilemmaScene extends BaseScene {
             }, [], this);
 
         }
-////====
-/*
-
-        // Format the text to be centered and with the color based on the affiliation
-        let formattedBackstory = insertLineBreaks(scenarioDescription.join(' '), 44);
-        this.add.text(this.sys.game.config.width/2 - 300, 100, formattedBackstory, { color: '#ffffff', fontSize: '36px',fontFamily: 'Roboto'});
-
-        // Create the options and assign them an action
-        let allowBuildOption = this.add.text(this.sys.game.config.width/2 - 300, 500, 'Allow the Corporation to Build', { color: '#ff0000', fontSize: '36px',fontFamily: 'Roboto' })
-            .setInteractive()
-            .on('pointerdown', () => this.chooseOption('maga'));
-
-        let denyProposalOption = this.add.text(this.sys.game.config.width/2 - 300, 540, 'Deny the Corporation\'s Proposal', { color: '#0000ff', fontSize: '36px' ,fontFamily: 'Roboto'})
-            .setInteractive()
-            .on('pointerdown', () => this.chooseOption('woke'));
-
- */
 
         //====================================================================================
         //    insertLinezBreaks(str, charsPerLine) {
@@ -590,189 +618,6 @@ export class DilemmaScene extends BaseScene {
         }
 
         let scene = this;
-
-/*
-
-        //====================================================================================
-        //
-        // The following code block creates characters with slider bars .
-        // It also creates (or recreates) helpful tokens if the character is endorsed enough
-        //
-        //====================================================================================
-        this.characterSliders = []; // keep track of the sliders
-        this.characterTexts = []; // keep track of character text pointers
-
-        let Wokeindex = 0;
-        let MAGAindex = 0;
-        let xOffset = 0;
-        let numberOfSteps = 7;
-        let defaultValue = 0;
-        let characterText;
-
-
-
-        characters.forEach((character, index) => {
-            let matchHelps = false;
-            let matchHurts = false;
-            for (let key in this.sharedData.icons) {
-                let iconData = this.sharedData.icons[key];
-                if (character.helps == iconData.iconName) matchHelps = true;
-                if (character.hurts == iconData.iconName) matchHurts = true;
-            };
-            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true; return;}
-            // Keep separate track of the MAGA and Woke character placement row offsets
-            let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
-            // Set text color based on affiliation
-            let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
-            if (character.faction == 'maga') {
-                MAGAindex++;
-                xOffset = 0;
-            }
-            else {
-                Wokeindex++;
-                xOffset = 950;
-             }
-
-            characterText = this.add.text(50+xOffset, 265 + (rowIndex * 85), character.name + '\nBacking: ' + character.value + '/ 6,\nEndorsement: ' + character.endorsement,
-                                { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'center' }).setInteractive();
-
-            character.charText = characterText; // back reference to text so we can find the location later
-
-            if (!this.hasBeenCreatedBefore) {
-                charVal[character.name] = 250+xOffset;
-            } else {
-                character.endorsement += character.value;
-                character.prevValue = 0;
-                character.value = 0;
-            }
-
-            let initialValue = character.value / (numberOfSteps - 1); // character.value should be a number from 0 to numberOfSteps - 1
-            let characterSlider = createSlider(this, 150+xOffset, 250 + (rowIndex * 85), character, characterText, value => {
-                charVal[character.name] = characterSlider.slider.x;
-                character.value = value;
-            }, initialValue);
-
-            this.characterSliders.push(characterSlider);
-            this.characterTexts.push(characterText);
-        });
-
-
-        if (this.hasBeenCreatedBefore) {
-            // Recreate all previously created helpful tokens that have not been used yet
-            for (let key in scene.sharedData.helperTokens) {
-                // Lookup stored data
-                let storedData = scene.sharedData.helperTokens[key];
-                console.log('helperToken ' + storedData.text + ' has been recreated and the saved index is ' + storedData.helperTokenIndex);
-                let helpfulToken = createPowerToken(scene, storedData.type, storedData.text, storedData.x, storedData.y, storedData);
-                // debug helpfulToken.sprite.setVisible(true);
-                scene.helperIcons.add(helpfulToken.sprite); // This line is supposed to make interactions possible
-                helpfulToken.container.setInteractive({ draggable: true }); // make each defense item draggable
-                helpfulToken.container.character = storedData.character;
-            }
-
-            let helpfulTokenIndex = Object.keys(scene.sharedData.helperTokens).length; // Starting index for new tokens
-            console.log('starting index helpfulTokenIndex is equal to ' + helpfulTokenIndex);
-
-            // Go through each character, recreate the slider and track, and check if any new helpful tokens need to be generated
-            characters.forEach((character, index) => {
-                if (character.dne == true) {return;}
-                // Recreate slider and track here
-                if (character.endorsement > 10) {
-                    // Create new helpful token
-                    createHelpfulToken(this, character, helpfulTokenIndex);
-                    helpfulTokenIndex++;
-                    character.endorsement -= 10;
-                }
-                // Recreate text here
-                character.charText.setText(character.name + '\nBacking: ' + character.value + '/ 6,\nEndorsement: ' + character.endorsement);
-            });
-        }
-
-        function createHelpfulToken(scene, character, helpfulTokenIndex) {
-            let text = character.power;
-            let charText = character.charText;
-
-            let xOffset = charText.x + 50;
-            let yOffset = charText.y + 10;
-
-            // Store position data
-            let storedData = {
-                x: xOffset,
-                y: yOffset,
-                type: character.faction,
-                text: text,
-                character: character,
-                helperTokenIndex: helpfulTokenIndex
-            };
-
-            // Store new helpful token data indexed by character.name
-            scene.sharedData.helperTokens[character.name] = storedData;
-
-            // Create new helpful token
-            let size = 'normal';
-            if (character.powerTokenType === 'type_2') {
-                size = 'large';
-            }
-            let helpfulToken = createPowerToken(scene, character.faction, text, xOffset, yOffset, storedData, size, 'normal', false);
-
-            scene.helperIcons.add(helpfulToken.sprite);
-            helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
-            // link the helpfultoken sprite to with the character
-            helpfulToken.container.character = character;
-            helpfulToken.container.on('pointerdown', function (pointer, dragX, dragY) {
-                //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
-                let helpedColor;
-                let hurtColor;
-                let helpedIcon = scene.sharedData.icons[character.helps];
-                console.log(helpedIcon);
-                if (character.faction == 'maga') {
-                    helpedColor = 0xffffff;
-                    hurtColor = 0xff0000;
-                } else {
-                    helpedColor = 0xffffff;
-                    hurtColor = 0x0000ff;
-                }
-                helpedIcon.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
-                let hurtIcon = scene.sharedData.icons[character.hurts];
-                hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
-                console.log(hurtIcon);
-            });
-            helpfulToken.container.on('pointerup', function (pointer, dragX, dragY) {
-                //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
-                let helpedIcon = scene.sharedData.icons[character.helps];
-                console.log(helpedIcon);
-                helpedIcon.icon.shieldWoke.setAlpha(0);
-                let hurtIcon = scene.sharedData.icons[character.hurts];
-                hurtIcon.icon.shieldMaga.setAlpha(0);
-                console.log(hurtIcon);
-            });
-            if (character.powerTokenType === 'type_2') {
-                scene.extraMisinformationTokens = 4;
-                helpfulToken.container.x = 680;
-                helpfulToken.container.y = 290;
-                helpfulToken.container.setAlpha(.25);
-                scene.tweens.add({
-                    targets: helpfulToken.container,
-                    alpha: .8,
-                    ease: 'Sine.easeInOut',
-                    yoyo: true,
-                    duration: 4000,
-                    onComplete: function () {
-                        helpfulToken.container.destroy();
-                        delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
-                        //tooltip.text.setVisible(false);
-                        //tooltip.box.setVisible(false);
-                    },
-                    callbackScope: scene
-                });
-            }
-/*
-            // Add action for specific character's power
-            if (character.powerTokenType == 'type_3') {
-                console.log('set environment shield strength to .7');
-                scene.icons['environment'].shieldStrength = .7;
-            }
- */
 
         //====================================================================================
         //

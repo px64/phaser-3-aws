@@ -111,6 +111,7 @@ export class Insurrection extends BaseScene {
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
         this.roundThreats = 0;
+        this.switchScene = false;
 
         //====================================================================================
         //
@@ -175,11 +176,14 @@ export class Insurrection extends BaseScene {
             if (this.sharedData.MAGAness == 0 && this.sharedData.Wokeness == 0 && this.sharedData.putieTerritories < territories.length/2) {
                 sanity_check = 0;
             }
-            console.log('check for alien invasion '+ sanity_check);
-            if ((this.sharedData.year > 2030) && (sanity_check < .3)) {
-                this.scene.get('AliensAttack').setup(this.sharedData);
-                this.scene.start('AliensAttack');
-                return;
+            console.log('check for alien invasion '+ sanity_check + ' switchScene = '+ this.switchScene);
+            if ((this.sharedData.year > 2030) && (sanity_check < .3)  && this.switchScene == false) {
+                this.switchScene = true;
+                this.cameras.main.fadeOut(2000, 0, 0, 0);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    this.scene.get('AliensAttack').setup(this.sharedData);
+                    this.scene.start('AliensAttack');
+                });
             }
 
             for (let key in this.sharedData.icons) {
@@ -604,7 +608,10 @@ export class Insurrection extends BaseScene {
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
-                    if (scene.roundThreats == 1) {
+                    console.log('switchScene = '+scene.switchScene);
+                    if (scene.roundThreats == 1 && scene.switchScene == false) {
+                        // fix problem with double scene fades!
+                        scene.switchScene = true;
                         scene.cameras.main.fadeOut(2000, 0, 0, 0);
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                             scene.scene.get('politics').setup(scene.sharedData);
@@ -730,12 +737,17 @@ export class Insurrection extends BaseScene {
         // This is called 60 times per second. Game logic goes here.
         if (this.roundThreats === 0) {
             console.log('launch!');
+            // After 10 seconds we go to politics
             this.time.delayedCall(10000, () => {
-                this.cameras.main.fadeOut(2000, 0, 0, 0);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                    this.scene.get('politics').setup(this.sharedData);
-                    this.scene.start('politics');
-                });
+                console.log('switchScene = ' + this.switchScene);
+                if (this.switchScene == false) {
+                    this.switchScene = true;
+                    this.cameras.main.fadeOut(2000, 0, 0, 0);
+                    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                        this.scene.get('politics').setup(this.sharedData);
+                        this.scene.start('politics');
+                    });
+                }
             });
             this.roundThreats = 1;
 
@@ -790,6 +802,9 @@ export class Insurrection extends BaseScene {
                     message = 'America is at peace.\n MAGA and Woke are balanced\nand content.';
                 } else {
                     message = 'Activists Apply Pressure!';
+                    if (this.putieThreats > 0) {
+                        message += '\nAnd Putie sends his minions to cause instability!';
+                    }
                 }
                 // Create a text object to display a victory message
                 let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, message, {
