@@ -123,6 +123,10 @@ export class Insurrection extends BaseScene {
         //           of protesters.  More realistic to collapse if total is outrageously high?
         //           I kinda like how it works right now, but need to have some indication
         //           that things are bad.
+        //           Came up with the idea of having little hats representing the amount of
+        //           maganess and wokeness.  Health can be adjusted every round, but there needs
+        //           to be a metric of overall health of the icon that incorporates the maga
+        //           and wokeness.
         //
         //====================================================================================
         let environmentalImpact = () => {
@@ -188,7 +192,7 @@ export class Insurrection extends BaseScene {
                     iconData.woke = 0;
                     iconData.health = 5;
                     this.scene.get('TutorialScene').setup(this.sharedData);
-                    if (this.sharedData.putieTerritories < territories.length) {
+                    if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
                         this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
                     } else {
                         this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
@@ -197,20 +201,36 @@ export class Insurrection extends BaseScene {
                 }
 
                 let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
-                let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(iconData.health/iconData.healthScale/20),0,4)];
+                // Need a fancy formula that incorporates maga and wokeness into health.  Need a new benchmark.  There should be current situation
+                // and another that is overall robustness.  This would represent monetary policy of printing a lot of money, that boosts the economy.
+                // stability?
+                let stability = iconData.health/iconData.healthScale;
+                let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
+                let balance;
+                let maga = Math.min(100, iconData.maga); // don't let these go beyond 100
+                let woke = Math.min(100, iconData.woke);
+                if (totalValue == 0) {
+                    balance = 0
+                } else {
+                    balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
+                }
+                stability = stability * (1-balance);
+                let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
                 iconData.iconText.setText(iconData.textBody + healthText);
 
                 this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite);
             }
 
-            thisRoundHealthChange += this.sharedData.MAGAnessVelocity;
-            thisRoundHealthChange += this.sharedData.WokenessVelocity;
+            thisRoundHealthChange += this.sharedData.MAGAnessVelocity/5;
+            console.log(this.sharedData.MAGAnessVelocity + ' ' + thisRoundHealthChange);
+            thisRoundHealthChange += this.sharedData.WokenessVelocity/5;
+            console.log(this.sharedData.WokenessVelocity + ' ' + thisRoundHealthChange);
 
             this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
             this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
             console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
 
-            polCapText.setText('Political Capital: ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
+            polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
 
 /*
             MAGAnessText.setText('MAGA political\ncapital: ' + this.sharedData.MAGAness);
@@ -224,7 +244,7 @@ export class Insurrection extends BaseScene {
         //====================================================================================
         //
         // function governmentGrowth()
-        //  Note that it is called with a callbackscope of 'this'
+        //  Special function that changes the health of the government depending on maga and wokes
         //
         //====================================================================================
         function governmentGrowth() {
@@ -293,12 +313,13 @@ export class Insurrection extends BaseScene {
             loop: true
         });
         // Timer event to adjust Government Size every 7 seconds
-        this.govTime = this.time.addEvent({
-            delay: 7000,
-            callback: governmentGrowth,
-            callbackScope: this,
-            loop: true
-        });
+        // I think government health should not improve if there are more wokes than magas
+        // this.govTime = this.time.addEvent({
+        //     delay: 7000,
+        //     callback: governmentGrowth,
+        //     callbackScope: this,
+        //     loop: true
+        // });
 
         //====================================================================================
         // function createMisinformationManagement(scene)
@@ -351,8 +372,8 @@ export class Insurrection extends BaseScene {
                 //data.y = yOffset;
             }
 
-            scene.physics.add.collider(scene.magaDefenses, scene.wokeThreats);
-            scene.physics.add.collider(scene.wokeDefenses, scene.magaThreats);
+            //scene.physics.add.collider(scene.magaDefenses, scene.wokeThreats);
+            //scene.physics.add.collider(scene.wokeDefenses, scene.magaThreats);
 
             //scene.physics.add.collider(scene.envIcon, scene.magaThreats);
             //scene.physics.add.collider(scene.envIcon, scene.wokeThreats);
@@ -517,8 +538,14 @@ export class Insurrection extends BaseScene {
             //
             // Add overlaps for bouncing or slowdowns between threats and defences
             //
+            //
             //====================================================================================
             scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
+                console.log('icon maganess = ' + threat.icon.maga);
+                if (threat.icon.maga > threat.icon.woke) {
+                    console.log("don't destroy threat: it's going to help!");
+                    return;
+                }
                 threat.destroy();
                 this.roundThreats--;
                 console.log('defense destroyed threat.  Down to ' + this.roundThreats);
@@ -526,12 +553,14 @@ export class Insurrection extends BaseScene {
                     this.scene.get('politics').setup(this.sharedData);
                     this.scene.start('politics');
                 }
+                console.log(defense.container);
                 if (Math.random() < .1) {
                     scene.tweens.add({
                         targets: defense,
                         alpha: 0,
                         duration: 500,
                         onComplete: function () {
+                            delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                             defense.container.destroy();
                         },
                         callbackScope: scene
@@ -540,16 +569,24 @@ export class Insurrection extends BaseScene {
             }, null, this);
 
             scene.physics.add.overlap(scene.wokeDefenses, scene.magaThreats, function(defense, threat) {
+                console.log('icon wokeness = ' +threat.icon.woke);
+                if (threat.icon.woke > threat.icon.maga) {
+                    console.log("don't destroy threat: it's going to help!");
+                    return;
+                }
                 threat.destroy();
                 this.roundThreats--;
                 console.log('defense destroyed threat.  Down to ' + this.roundThreats);
                 if (this.roundThreats == 1) {this.scene.get('politics').setup(this.sharedData);this.scene.start('politics');}
+                console.log(defense.container);
+
                 if (Math.random() < .1) {
                     scene.tweens.add({
                         targets: defense,
                         alpha: 0,
                         duration: 500,
                         onComplete: function () {
+                            delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                             defense.container.destroy();
                         },
                         callbackScope: scene
@@ -586,7 +623,20 @@ export class Insurrection extends BaseScene {
                         iconColor = 'purple';
                     }
                     scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite);
-                    scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+
+                    let stability = icon.health/icon.healthScale;
+                    let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
+                    let balance;
+                    let maga = Math.min(100, icon.maga); // don't let these go beyond 100
+                    let woke = Math.min(100, icon.woke);
+                    if (totalValue == 0) {
+                        balance = 0
+                    } else {
+                        balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
+                    }
+                    stability = stability * (1-balance);
+
+                    scene.drawHealthGauge(stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                     icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
@@ -672,6 +722,9 @@ export class Insurrection extends BaseScene {
 
             // Group the text, outline, and rectangle into a single container
             let misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+
+            // Attach the container to the sprite
+            misinformationSprite.container = misinformation;
 
             // Set the size of the container to match the size of the outline rectangle
             misinformation.setSize(outline.width, outline.height);

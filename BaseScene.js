@@ -49,7 +49,8 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('scale_arms', 'assets/scale_arms2.png');
         this.load.image('scale_body', 'assets/scale_body2.png');
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
-
+        this.load.image('checkboxUnchecked', 'assets/checkboxUnchecked.png');
+        this.load.image('checkboxChecked', 'assets/checkboxChecked.png');
     }
 
     initializeIcons() {
@@ -103,7 +104,19 @@ export default class BaseScene extends Phaser.Scene {
         this.shieldsWoke.add(shieldWoke);
 
         let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
-        let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)];
+        let stability = health/healthScale;
+        let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
+        let balance;
+        maga = Math.min(100, maga); // don't let these go beyond 100
+        woke = Math.min(100, woke);
+        if (totalValue == 0) {
+            balance = 0
+        } else {
+            balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
+        }
+        stability = stability * (1-balance);
+        let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
+        //let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)];
 
         let iconText = this.add.text(xPos - (textSize / 2) - 50, yPos - /*75*/85, textBody + healthText, { fontSize: textSize + 'px', fill: '#fff' });
         return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite};
@@ -118,7 +131,19 @@ export default class BaseScene extends Phaser.Scene {
         // 'track' is the scale object (could be a sprite or any game object)
 
         this.drawHealthGauge(0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite);
-        this.drawHealthGauge(health/healthScale/100,x,y, 'Health', gaugeHealth);
+        let stability = health/healthScale;
+        let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
+        let balance;
+        maga = Math.min(100, maga); // don't let these go beyond 100
+        woke = Math.min(100, woke);
+        if (totalValue == 0) {
+            balance = 0
+        } else {
+            balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
+        }
+        stability = stability * (1-balance);
+
+        this.drawHealthGauge(stability/100,x,y, 'Health', gaugeHealth);
         gaugeHealth.setAlpha(.7);
 
 /*
@@ -153,8 +178,54 @@ export default class BaseScene extends Phaser.Scene {
 
     }
 
+    // So we now have 'health' which can be renamed 'strength' and 'stability'
+    // you're icon may be strong, but not very stable
+
+    drawNewHealthGauge(icon) {
+        const ICON_MARGIN = 10;
+        const GAUGE_HEIGHT = 50;
+        const ICON_SPACING = 10;
+        const ICON_SCALE = 0.03;
+        let posX = icon.icon.x;
+        let posY = icon.icon.y;
+        let healthGauge = icon.gaugeHealth;
+
+        let stability = icon.health/icon.healthScale;
+        let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
+        let balance;
+        let maga = Math.min(100, icon.maga); // don't let these go beyond 100
+        let woke = Math.min(100, icon.woke);
+        if (totalValue == 0) {
+            balance = 0
+        } else {
+            balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
+        }
+        stability = stability * (1-balance);
+        let percentage = stability/ 100;
+
+        let color = 0xffffff; let ringNum = 1;
+        healthGauge.clear();
+        // Draw full gray gauge (background)
+        healthGauge.lineStyle(7, 0x404040);
+        healthGauge.beginPath();
+        healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), false);
+        healthGauge.strokePath();
+
+        // Draw the health gauge with an arc, with the angle proportional to the health
+        healthGauge.lineStyle(7, color);
+        healthGauge.beginPath();
+        healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
+        healthGauge.strokePath();
+    }
+
+    // // TODO: Add little hat icons for every 10 magas or wokes accumulated
+
     drawHealthGauge(percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite) {
         // 'track' is the scale object (could be a sprite or any game object)
+        const ICON_MARGIN = 10;
+        const GAUGE_HEIGHT = 50;
+        const ICON_SPACING = 10;
+        const ICON_SCALE = 0.03;
 
         if (style == 'Health') {
             let color = 0xffffff; let ringNum = 1;
@@ -220,8 +291,23 @@ export default class BaseScene extends Phaser.Scene {
                     }
                 });
             }
+            // Assuming the icons should appear below the health gauge
+            let iconY = posY + GAUGE_HEIGHT + ICON_MARGIN;
+            drawIcons(this, posX-20, iconY, maga/5, 'magaBase');
+            drawIcons(this, posX-20, iconY + ICON_SPACING, woke/5, 'wokeBase'); // Offset the Y position for the second row of icons
+
         }
         return healthGauge;
+
+        function drawIcons(scene, x, y, count, texture) {
+            for (let i = 0; i < count; i++) {
+                // Each icon will be positioned slightly to the right of the previous one
+                let icon = scene.add.image(x + i * ICON_SPACING, y, texture);
+
+                // Adjust the size of the icons if necessary
+                icon.setScale(ICON_SCALE);
+            }
+        }
 
     }
 /*
@@ -333,7 +419,6 @@ export default class BaseScene extends Phaser.Scene {
                     if (body.gameObject === threat) {
                         body.gameObject.destroy();
                         this.roundThreats--;
-                        console.log('left screen.  threats is down to ' + this.roundThreats);
                         if (this.roundThreats == 1) {
                             this.cameras.main.fadeOut(2000, 0, 0, 0);
                             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
@@ -344,7 +429,8 @@ export default class BaseScene extends Phaser.Scene {
                     }
                 }, this);
 
-                let attackedIcon = icon.icon; //220
+                let attackedIcon = icon.icon;
+                threat.icon = icon;
                 this.physics.moveTo(threat, attackedIcon.x, attackedIcon.y, 220); // 100 is the speed of the threat.
                 this.roundThreats++;
             });
@@ -447,7 +533,7 @@ export default class BaseScene extends Phaser.Scene {
             } else if (territory.faction == 'alien') {
                 baseFaction = 'alienBase';
             }
-            this.physics.add.sprite(territory.x + this.territoryWidth/2, territory.y-30, baseFaction ).setScale(0.1).setAlpha(0.8);
+            territory.sprite = this.physics.add.sprite(territory.x + this.territoryWidth/2, territory.y-30, baseFaction ).setScale(0.1).setAlpha(0.8);
 
             // Create territory name
             let nameText = this.add.text(
@@ -511,8 +597,8 @@ export const characters = [
         powerTokenType: 'type_5', //  automatically directed to a predetermined icon: economy
         helps: 'economy',
         hurts: 'environment',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -534,8 +620,8 @@ export const characters = [
         powerTokenType: 'type_5',  //  automatically directed to a predetermined icon: military
         helps: 'military',
         hurts: 'government',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -557,8 +643,8 @@ export const characters = [
         powerTokenType: 'type_5',  //  automatically directed to a predetermined icon: military
         helps: 'military',
         hurts: 'justice',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -580,8 +666,8 @@ export const characters = [
         powerTokenType: 'type_5',  // automatically directed to a predetermined icon: environment
         helps: 'environment',
         hurts: 'diplomacy',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -604,8 +690,8 @@ export const characters = [
         powerTokenType: 'type_5',  //  automatically is directed to a predetermined icon: diplomacy
         helps: 'diplomacy',
         hurts: 'military',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -628,8 +714,8 @@ export const characters = [
         powerTokenType: 'type_5',  // automatically is directed to a predetermined icon: environment
         helps: 'environment',
         hurts: 'justice',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -649,8 +735,8 @@ export const characters = [
         faction: 'woke',
         power: 'Maya Rodriguez is\nBuilding Bridges',
         powerTokenType: 'type_2', // When power token is dropped into an icon, the maga and wokeness go down
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -670,8 +756,8 @@ export const characters = [
         faction: 'woke',
         power: 'Expand Diversity,\nEquality and\nInclusivity',
         powerTokenType: 'type_3',  // Creates a shield around any icon
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
     },
@@ -694,8 +780,8 @@ export const characters = [
         powerTokenType: 'type_5',
         helps: 'government',
         hurts: 'justice',
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
 },
@@ -715,13 +801,13 @@ export const characters = [
         helps: 'military',
         hurts: 'economy',
         powerTokenType: "type_5",
-        value: 3,
-        prevValue: 3,
+        value: 0,
+        prevValue: 0,
         endorsement: 5,
         dne: false
 },
 {
-    name: "Supreme Court Justice Benjamin Harmon",
+    name: "Justice Benjamin Harmon",
     faction: "maga",
     backstory: [
         "A retired Supreme court judge, respected philanthropist and community leader. Ben has dedicated his life to social reform and bridging cultural divides.",
@@ -735,11 +821,92 @@ export const characters = [
     helps: 'justice',
     hurts: 'economy',
     powerTokenType: "type_5",
-    value: 3,
-    prevValue: 3,
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false
+},
+{
+    name: "Professor Isabelle Martinez",
+    faction: "woke",
+    backstory: [
+        "A leading sociologist renowned for her research on social inequality. Isabelle's work has had a profound influence on policies and initiatives aimed at",
+        "addressing disparities in income, education, and healthcare."
+    ],
+    shortstory: [
+        "Isabelle's insights help to promote social justice and reduce inequality. However, her progressive social policies require",
+        "significant investment, putting pressure on the economy."
+    ],
+    power: 'Sociology and\nSocial Justice',
+    helps: 'justice',
+    hurts: 'economy',
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false
+},
+{
+    name: "Dr. Laura Franklin",
+    faction: "woke",
+    backstory: [
+        "A globally recognized climatologist and passionate environmental activist. Dr. Franklin's work in understanding and mitigating climate change has won her",
+        "numerous accolades and she has become a leading voice in the global environmental movement."
+    ],
+    shortstory: [
+        "Dr. Franklin's focus on climate change research and environmental preservation improves the overall health of the planet,",
+        "but her efforts can be expensive and put a significant strain on the economy."
+    ],
+    power: 'Climatology\nand Environmental Activism',
+    helps: 'environment',
+    hurts: 'economy',
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false
+},
+{
+    name: "Senator John Caldwell",
+    faction: "maga",
+    backstory: [
+        "A seasoned senator with a strong focus on fiscal responsibility. Senator Caldwell is known for his rigorous approach to economic policy and",
+        "his persistent efforts to reduce government spending and taxes."
+    ],
+    shortstory: [
+        "Senator Caldwell's expertise in fiscal policy strengthens the economy. However, his focus on reducing government spending can often",
+        "come at the expense of government services."
+    ],
+    power: 'Fiscal Policy\nand Economic Management',
+    helps: 'economy',
+    hurts: 'government',
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false
+},
+{
+    name: "Ambassador Charlotte Grant",
+    faction: "woke",
+    backstory: [
+        "A distinguished diplomat with decades of experience in foreign policy. Ambassador Grant's skilled diplomacy and negotiation tactics have",
+        "helped foster peace and strong international relations for the country."
+    ],
+    shortstory: [
+        "Ambassador Grant's diplomatic skills improve international relations, enhancing global diplomacy. However, her focus on maintaining good relations",
+        "can sometimes come at the cost of military readiness."
+    ],
+    power: 'Diplomacy\nand International Relations',
+    helps: 'diplomacy',
+    hurts: 'military',
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
     endorsement: 5,
     dne: false
 }
+
 
 
 ];

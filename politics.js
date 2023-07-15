@@ -68,7 +68,7 @@ export class Politics extends BaseScene {
         };
         // hack: decrease all character's endorsements by 3
         characters.forEach((character, index) => {
-            character.endorsement -= 3;
+            character.endorsement = 0;
         });
     }
     // politics
@@ -95,9 +95,7 @@ export class Politics extends BaseScene {
     create() {
         this.input.setDefaultCursor('default');
 
-        console.log(this.sharedData.icons);
         if (!Object.keys(this.sharedData.icons).length) {
-            console.log('new data here in politics');
             // initialize icons...
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
@@ -112,7 +110,6 @@ export class Politics extends BaseScene {
             // ...similarly for other icons
         } else {
             //this.icons = this.sharedData.icons;
-            console.log('already have shared data to use.');
             this.MAGAness = this.sharedData.MAGAness;
             this.Wokeness = this.sharedData.Wokeness;
             this.putieTerritories = this.sharedData.putieTerritories;
@@ -123,7 +120,7 @@ export class Politics extends BaseScene {
             // recreate the icons with the saved state
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
-                console.log(key + ' shieldStrength = ', iconData.shieldStrength);
+                //console.log(key + ' shieldStrength = ', iconData.shieldStrength);
                 let fontSize = parseInt(iconData.iconText.style.fontSize, 10);
                 this.icons[key] = this.createIconWithGauges(
                     iconData.icon.x,
@@ -141,8 +138,27 @@ export class Politics extends BaseScene {
             }
         }
 
+        let scene = this;
+
         this.totalMilitaryAllocThisScene = 0;
 
+        // Check if you won as soon as you enter politics because we don't check during insurrection or dilemma
+        let win = true;
+        for (let key in this.sharedData.icons) {
+            let iconData = this.sharedData.icons[key];
+            if (iconData.health/iconData.healthScale < 90) {
+                win = false;
+            }
+        }
+        if (win == true) {
+            console.log('You Win!');
+            this.cameras.main.fadeOut(1000, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                this.scene.get('VictoryScene').setup(this.sharedData);
+                this.scene.start('VictoryScene', { message: 'You Win!\nIn the year ' + this.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
+            });
+            return;
+        }
         // Create a button using an image
         let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
@@ -232,7 +248,7 @@ export class Politics extends BaseScene {
         //====================================================================================
         this.createTerritories();
 
-        let totalCapital = this.MAGAness + this.Wokeness;
+        let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
 
@@ -308,6 +324,9 @@ export class Politics extends BaseScene {
 
         }
 
+        // We have a problem where we are creating the characters and the checkboxes here, but that also includes
+        // recreating the characters and keeping the checkbox settings from the previous round.
+        // There is a catch-22 where we think the endorsement is 2, so we color it green, but then it gets set to zero.
 
         characters.forEach((character, index) => {
             let matchHelps = false;
@@ -331,30 +350,34 @@ export class Politics extends BaseScene {
                 xOffset = this.sys.game.config.width * .74;
              }
 
-            characterText = this.add.text(50+xOffset, 265 + (rowIndex * 85), character.name + '\nBacking: ' + character.value + '/ 6,\nEndorsement: ' + character.endorsement,
-                                { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'center' }).setInteractive();
+             if (!this.hasBeenCreatedBefore) {
+                 charVal[character.name] = 250+xOffset;
+             } else {
+                 character.endorsement += character.value;
+                 character.prevValue = 0;
+                 character.backing = character.value;
+                 //character.value = 0;
+             }
+
+            characterText = this.add.text(50+xOffset, 250 + (rowIndex * 60), character.name +'\nBacking: ' + character.endorsement,
+                                { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
             character.charText = characterText; // back reference to text so we can find the location later
 
-            if (!this.hasBeenCreatedBefore) {
-                charVal[character.name] = 250+xOffset;
-            } else {
-                character.endorsement += character.value;
-                character.prevValue = 0;
-                character.value = 0;
-            }
-
-            let initialValue = character.value / (numberOfSteps - 1); // character.value should be a number from 0 to numberOfSteps - 1
-            let characterSlider = createSlider(this, 150+xOffset, 250 + (rowIndex * 85), character, characterText, value => {
-                charVal[character.name] = characterSlider.slider.x;
-                character.value = value;
-            }, initialValue);
-
-            this.characterSliders.push(characterSlider);
-            this.characterTexts.push(characterText);
+            createCheckbox(this, 20+xOffset, 270 + (rowIndex * 60), character, characterText, function(character, backing) {
+                character.backing = backing;
+            }, character.backing);
+            //
+            // let initialValue = character.value / (numberOfSteps - 1); // character.value should be a number from 0 to numberOfSteps - 1
+            // let characterSlider = createSlider(this, 150+xOffset, 250 + (rowIndex * 85), character, characterText, value => {
+            //     charVal[character.name] = characterSlider.slider.x;
+            //     character.value = value;
+            // }, initialValue);
+            //
+            // this.characterSliders.push(characterSlider);
+            // this.characterTexts.push(characterText);
         });
 
-        let scene = this;
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
@@ -376,23 +399,40 @@ export class Politics extends BaseScene {
             characters.forEach((character, index) => {
                 if (character.dne == true) {return;}
                 // Recreate slider and track here
-                if (character.endorsement > 10) {
+                if (character.endorsement > 1) {
                     // Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
-                    character.endorsement -= 10;
+                    character.endorsement -= 2;
                 }
                 // Recreate text here
-                character.charText.setText(character.name + '\nBacking: ' + character.value + '/ 6,\nEndorsement: ' + character.endorsement);
+                character.charText.setText(character.name + '\nEndorsed: ' + (character.value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + character.value));
+                // Make sure color of text is normal
+                if (character.faction == 'maga') {
+                    character.charText.setColor('#ff8080');
+                } else {
+                    character.charText.setColor('#8080ff');
+                }
+                if ((character.endorsement + character.value) > 1){
+                    character.charText.setColor('#0f0');
+                }
             });
         }
 
+        // // TODO: Add a character power type that "calms down" insurrectionists and gets them to go home.
+        // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
+        // just reduce whichever is largest
         function createHelpfulToken(scene, character, helpfulTokenIndex) {
             let text = character.power;
             let charText = character.charText;
+            let xOffset, yOffset;
+            if (character.faction === 'maga') {
+                xOffset = charText.x + 250;
+            } else {
+                xOffset = charText.x - 140;
+            }
 
-            let xOffset = charText.x + 50;
-            let yOffset = charText.y + 10;
+            yOffset = charText.y + 25;
 
             // Store position data
             let storedData = {
@@ -424,7 +464,7 @@ export class Politics extends BaseScene {
                 let hurtColor;
                 if (character.powerTokenType == 'type_5') {
                     let helpedIcon = scene.sharedData.icons[character.helps];
-                    console.log(helpedIcon);
+                    //console.log(helpedIcon);
                     if (character.faction == 'maga') {
                         helpedColor = 0xffffff;
                         hurtColor = 0xff0000;
@@ -436,20 +476,18 @@ export class Politics extends BaseScene {
                     helpedIcon.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                     let hurtIcon = scene.sharedData.icons[character.hurts];
                     hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
-                    console.log(hurtIcon);
+                    //console.log(hurtIcon);
                 }
             });
             helpfulToken.container.on('pointerup', function (pointer, dragX, dragY) {
                 //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
                 let helpedIcon = scene.sharedData.icons[character.helps];
-                console.log(helpedIcon);
                 if (helpedIcon) {
                     helpedIcon.icon.shieldWoke.setAlpha(0);
                 }
                 let hurtIcon = scene.sharedData.icons[character.hurts];
                 if (hurtIcon) {
                     hurtIcon.icon.shieldMaga.setAlpha(0);
-                    console.log(hurtIcon);
                 }
             });
             if (character.powerTokenType === 'type_2') {
@@ -493,6 +531,10 @@ export class Politics extends BaseScene {
         //
         //====================================================================================
         this.physics.add.overlap(this.magaDefenses, this.wokeThreats, function(defense, threat) {
+            if (threat.icon.maga > threat.icon.woke) {
+                console.log("don't destroy threat: it's going to help!");
+                return;
+            }
             threat.destroy();
             this.roundThreats--;
             //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
@@ -513,6 +555,10 @@ export class Politics extends BaseScene {
         }, null, this);
 
         this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
+            if (threat.icon.woke > threat.icon.maga) {
+                console.log("don't destroy threat: it's going to help!");
+                return;
+            }
             threat.destroy();
             this.roundThreats--;
             console.log('defense destroyed threat.  Down to ' + this.roundThreats);
@@ -630,11 +676,21 @@ export class Politics extends BaseScene {
                     console.log('restore misinformation index '+ misinformation.container.misinformationIndex);
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
                     // just keep track of offsets in case the tokens are still in their original positions for below
+                    /* Don't update these again because the new tokens will end up way below the old tokens
                     if (storedData.type === 'maga') {
                         scene.yMagaOffset += misinformation.container.displayHeight;
+                        if (scene.yMagaOffset > scene.game.config.height * .9) {
+                            scene.yMagaOffset -= scene.game.config.height * .7;
+                        }
+                        console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                     } else {
                         scene.yWokeOffset += misinformation.container.displayHeight;
+                        if (scene.yWokeOffset > scene.game.config.height * .9) {
+                            scene.yWokeOffset -= scene.game.config.height * .7;
+                        }
+                        console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                     }
+                    */
                 }
             }
 
@@ -668,10 +724,17 @@ export class Politics extends BaseScene {
                     // Increment the corresponding offset for next time
                     if (data.type === 'maga') {
                         scene.yMagaOffset += misinformation.container.displayHeight;
-                        scene.yMagaOffset = Phaser.Math.Wrap(scene.yMagaOffset, scene.game.config.height *.2 ,scene.game.config.height * .9);
+                        if (scene.yMagaOffset > scene.game.config.height * .9) {
+                            scene.yMagaOffset -= scene.game.config.height * .7;
+                        }
+                        console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                     } else {
                         scene.yWokeOffset += misinformation.container.displayHeight;
-                        scene.yWokeOffset = Phaser.Math.Wrap(scene.yWokeOffset, scene.game.config.height *.2 ,scene.game.config.height * .9);
+                        if (scene.yWokeOffset > scene.game.config.height * .9) {
+                            scene.yWokeOffset -= scene.game.config.height * .7;
+                        }
+                        //scene.yWokeOffset = Phaser.Math.Wrap(scene.yWokeOffset, scene.game.config.height *.2 ,scene.game.config.height * .8);
+                        console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                     }
                     scene.currentMisinformationIndex++; // increment the index for the next call
                 }
@@ -815,11 +878,13 @@ export class Politics extends BaseScene {
         function handleOverlap(icon, defense, threat, incrementAmount, type, gauge, message) {
             let iconColor = type === 'maga' ? 'red' : 'blue';
 
+            // threat should slowly fade away
             scene.tweens.add({
                 targets: threat,
                 alpha: 0,
                 duration: 500,
                 onComplete: function () {
+                    threat.setAlpha(0);
                     threat.destroy();
                 },
                 callbackScope: scene
@@ -871,12 +936,9 @@ export class Politics extends BaseScene {
                 }
             });
  */
-
-
             scene.physics.add.overlap(icon.icon, scene.helperIcons, function(base, helper) {
                 handleHelperOverlap(icon, base, helper, 70, '', icon.gaugeWoke, '');
             });
-
 
             scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
                 handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
@@ -1016,6 +1078,161 @@ export class Politics extends BaseScene {
             });
         };
 
+        function updateCharVal(character, value, characterText) {
+            let undoCheck = false;
+
+            MAGAupdate = WokeUpdate = 0;
+
+            // Calculate MAGAupdate/WokeUpdate here
+            if (character.faction == 'maga') {
+                MAGAupdate = (value - character.prevValue)*4;
+                WokeUpdate = 0;
+            } else {
+                WokeUpdate = (value - character.prevValue)*4;
+                MAGAupdate = 0;
+            }
+            //characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
+            characterText.setText(character.name + ',\nBacking: ' + (character.endorsement + value).toString());
+
+            // Update MAGAnessText and WokenessText here
+            let tmpMAG = scene.MAGAness - MAGAupdate;
+            let tmpWok = scene.Wokeness - WokeUpdate;
+
+            if (character.faction == 'maga' && tmpMAG < 0) {
+                if (tmpWok >= -tmpMAG) {
+                    tmpWok -= -tmpMAG;
+                    tmpMAG = 0;
+                    console.log('new tmpWok is '+ tmpWok);
+                } else {
+                    tmpMAG = scene.MAGAness;
+                    MAGAupdate = 0;
+                    undoCheck = true;
+
+                    if (MAGAupdate/4 >= 1) {
+                        value = MAGAupdate/4 + character.prevValue;
+                    } else {
+                        value = character.prevValue;
+                    }
+                    console.log('MAGAupdate = ' + MAGAupdate + ' character value = ' + value);
+                    characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
+                    //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
+                }
+            }
+
+            if (character.faction == 'woke' && tmpWok < 0) {
+                if (tmpMAG >= -tmpWok) {
+                    tmpMAG -= -tmpWok;
+                    tmpWok = 0;
+                    console.log('new tmpMag is ' + tmpMAG);
+                } else {
+                    tmpWok = scene.Wokeness;
+                    WokeUpdate = 0;
+                    undoCheck = true;
+
+                    if (WokeUpdate/4 >= 1){
+                        value = WokeUpdate/4 + character.prevValue;
+                    } else {
+                        value = character.prevValue;
+                    }
+                    characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
+                    //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
+                }
+            }
+            if (character.endorsement + value > 1) {
+                characterText.setColor('#00ff00');
+                //checkboxBackground.setColor(0x00ff00); // figure this out later
+            } else {
+                let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
+                characterText.setColor(textColor);
+                //checkboxBackground.setColor(0xffffff); // figure this out later
+            }
+
+            polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+            polCapText.setColor('#00ff00'); // Change text color back to green
+            polCapText.setBackgroundColor('#000000'); // Change background color back to black
+
+            // Save the previous value for next calculation
+            character.prevValue = value;
+
+            // Update MAGAness and Wokeness with new values.  Make sure they are integers
+            scene.MAGAness = Math.floor(tmpMAG);
+            scene.Wokeness = Math.floor(tmpWok);
+
+            return undoCheck;
+        }
+
+        function createCheckbox(scene, x, y, character, characterText, callback, initialValue) {
+            let checkboxBackground = scene.add.graphics({ fillStyle: { color: 0xffffff } });  // 0xffffff is the hexadecimal color for white
+            let checkboxSize = 25;  // Specify the size of your checkbox here
+            checkboxBackground.fillRect(x-12, y-12, checkboxSize, checkboxSize-4);  // Replace x and y with the coordinates where you want to draw the square
+
+            let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.1);
+            let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setVisible(false).setInteractive().setScale(.1);
+
+            checkboxUnchecked.on('pointerdown', function() {
+                this.setVisible(false);
+                checkboxChecked.setVisible(true);
+                // Calculate and return the value
+                let value = 1;
+
+                // Update the underlying character's value
+                character.value = value;
+
+                let undoCheck = updateCharVal(character, value, characterText);
+                if (undoCheck == true) {
+                    this.setVisible(true);
+                    checkboxChecked.setVisible(false);
+                    character.value = 0;
+                } else { // a roundabout way of setting character.backing to parameter value which is 1.
+                    callback(character, 1);
+                }
+            });
+
+            checkboxChecked.on('pointerdown', function() {
+                this.setVisible(false);
+                checkboxUnchecked.setVisible(true);
+                // Calculate and return the value
+                let value = 0;
+
+                // Update the underlying character's value
+                character.value = value;
+
+                let undoCheck = updateCharVal(character, value, characterText);
+                if (undoCheck == true) {
+                    this.setVisible(true);
+                    checkboxUnchecked.setVisible(false);
+                    character.value = 1;
+                } else { // a roundabout way of setting character.backing to parameter value which is 0.
+                    callback(character, 0);
+                }
+            });
+
+            // Initial checkbox state
+            if(initialValue) {
+                checkboxUnchecked.setVisible(false);
+                checkboxChecked.setVisible(true);
+                let value = 1;
+
+                // Update the underlying character's value
+                character.value = value;
+
+                let undoCheck = updateCharVal(character, value, characterText);
+                if (undoCheck == true) {
+                    checkboxUnchecked.setVisible(true);
+                    checkboxChecked.setVisible(false);
+                    character.value = 0;
+                    character.backing = 0; // not sure this is necessary but can't hurt
+                } else { // a roundabout way of setting character.backing to parameter value of 1.
+                    callback(character, 1);
+                }
+            }
+
+            createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
+
+            return { checkboxUnchecked, checkboxChecked };
+        }
+
+
         //====================================================================================
         // Function:
         //      createSlider
@@ -1070,19 +1287,9 @@ export class Politics extends BaseScene {
                 // Update MAGAnessText and WokenessText here
                 let tmpMAG = scene.MAGAness - MAGAupdate;
                 let tmpWok = scene.Wokeness - WokeUpdate;
-                polCapText.setText('Political Capital ' + (tmpMAG+tmpWok).toString());
+                polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
                 polCapText.setColor('#ff0000'); // Change text color to red
                 polCapText.setBackgroundColor('#ffff00'); // Change background color to yellow
-/*
-                MAGAnessText.setText('MAGA political\ncapital: ' + tmpMAG);
-                MAGAnessText.setColor('#ff0000'); // Change text color to red
-                MAGAnessText.setBackgroundColor('#ffff00'); // Change background color to yellow
-
-                WokenessText.setText('Woke political\ncapital: ' + tmpWok);
-                WokenessText.setColor('#0000ff'); // Change text color to blue
-                WokenessText.setBackgroundColor('#ffff00'); // Change background color to yellow
- */
-
             });
 
             slider.on('dragend', function(pointer, dragX, dragY) {
@@ -1119,21 +1326,6 @@ export class Politics extends BaseScene {
                         tmpMAG = 0;
                         console.log('new tmpWok is '+ tmpWok);
                     } else {
-                    // For some reason the concept of partial credit transfer isn't working.  Went back to
-                    // either you can transfer all (see the code above) or none.
-                    /*
-                        if (tmpWok > 0) {
-                            tmpMAG += tmpWok;   // transfer as much of tmpWok as possible to tmpMAG
-                            tmpWok = 0;
-                            if (tmpMAG < 0) {  // if tmpMAG is still negative, we can't update the MAGAness yet
-                                MAGAupdate = scene.MAGAness;
-                            } else {
-                                MAGAupdate = scene.MAGAness - tmpMAG;
-                            }
-                        } else {
-                            MAGAupdate = scene.MAGAness;
-                        }
- */
                         if (0){//tmpWok > 0) { // can't get this to work
                             tmpMAG = tmpWok;
                             tmpWok = 0;
@@ -1192,19 +1384,9 @@ export class Politics extends BaseScene {
                     this.track.setTint(0xffffff);
                 }
 
-                polCapText.setText('Political Capital ' + (tmpMAG+tmpWok).toString());
+                polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
                 polCapText.setColor('#00ff00'); // Change text color back to green
                 polCapText.setBackgroundColor('#000000'); // Change background color back to black
-
- /*
-                MAGAnessText.setText('MAGA political\ncapital: ' + tmpMAG);
-                MAGAnessText.setColor('#ffffff'); // Change text color back to white
-                MAGAnessText.setBackgroundColor('#000000'); // Change background color back to black
-
-                WokenessText.setText('Woke political\ncapital: ' + tmpWok);
-                WokenessText.setColor('#ffffff'); // Change text color to back to white
-                WokenessText.setBackgroundColor('#000000'); // Change background color back to black
- */
 
                 // Save the previous value for next calculation
                 character.prevValue = value;
@@ -1297,7 +1479,7 @@ export class Politics extends BaseScene {
 
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
-            let xOffset = character.faction === 'maga' ? 320 : -320;
+            let xOffset = character.faction === 'maga' ? scene.game.config.width * .3 : scene.game.config.width * -.2;
 
             // Format the text to be centered and with the color based on the affiliation
             let formattedBackstory = insertLineBreaks(character.shortstory.join(' '), 37);

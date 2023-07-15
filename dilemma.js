@@ -48,6 +48,7 @@ export class DilemmaScene extends BaseScene {
             helperTokens: {},
             militaryAllocation: 0
         };
+        this.scenarioNumber = 0;
     }
     // dilemma
     setup(data) {
@@ -223,7 +224,9 @@ export class DilemmaScene extends BaseScene {
             "and crack down on hate speech, potentially reducing social unrest? Or do you",
             "uphold the sanctity of free speech, despite the potential for it to be used irresponsibly?"
         ];
-        let scenarioDescription2 = [
+        let scenarios = [
+        {
+            description: [
             "In recent times, tensions have grown fanned by an increase in online hate speech.",
             "Citizens are increasingly reporting that they feel targeted,",
             "unsafe, and marginalized by the inflammatory rhetoric. A groundswell of support has",
@@ -242,84 +245,242 @@ export class DilemmaScene extends BaseScene {
             "potentially reducing social unrest? Or uphold the sanctity of free speech,",
             "despite its potential misuse?  If you chose wisely, you will receive a steady",
             "flow of political capital for quite some time."
+            ],
+            choices: [
+                {
+                    name: 'Enact the legislation without changes',
+                    MAGACapRequired: 20,
+                    WokeCapRequired: 0,
+                    helps: 'justice',
+                    helpBenefit: 30,
+                    hurts: 'justice',
+                    hurtCost: 5,
+                    hurtFaction: 'maga'
+                },
+                {
+                    name: 'Reject the legislation completely',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 20,
+                    helps: 'justice',
+                    helpBenefit: 0,
+                    hurts: 'justice',
+                    hurtCost: 5,
+                    hurtFaction: 'woke'
+                },
+                {
+                    name:'Modify the legislation to be less stringent',
+                    MAGACapRequired: 5,
+                    WokeCapRequired: 5,
+                    helps: 'justice',
+                    helpBenefit: 10,
+                    hurts: 'justice',
+                    hurtCost: 2,
+                    hurtFaction: 'both'
+                },
+                {
+                    name:'Modify the legislation to be more stringent',
+                    MAGACapRequired: 30,
+                    WokeCapRequired: 0,
+                    helps: 'justice',
+                    helpBenefit: 40,
+                    hurts: 'justice',
+                    hurtCost: 8,
+                    hurtFaction: 'maga'
+                },
+                {
+                    name:'Postpone the decision and gather more information',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 0,
+                    helps: 'justice',
+                    helpBenefit: 0,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'woke'
+                }
+            ]
+        },
+        {
+            description: [
+            "In recent times, the growth and expansion of the government has become a major concern.",
+            "Many citizens feel that the government has become a leviathan, reaching into every",
+            "aspect of their lives and stifling individual freedom and economic prosperity.",
+            "There's a strong push for a comprehensive legislative reform aimed at reducing the",
+            "size and reach of the government, advocates argue that such changes are necessary",
+            "to preserve the foundational principles of liberty and free market that the nation was built upon.",
+            "They believe that a leaner government could lead to a more prosperous society with",
+            "greater individual freedom.",
+            "||",
+            "Opponents of this reform believe that a strong government plays a vital role in",
+            "protecting citizens' rights, providing essential services, and maintaining economic stability.",
+            "They fear that the proposed cuts could lead to a lack of oversight, increased",
+            "economic disparity, and inadequate public services.",
+            "||",
+            "As the leader, your decision carries great weight. Will you support the legislative",
+            "reform and move towards a smaller government? Or will you oppose the reform, maintaining",
+            "the government's size and reach to ensure stability and services? Your choice",
+            "will shape the political landscape for years to come."
+            ],
+            choices: [
+                {
+                    name: 'Push for the reform without changes',
+                    MAGACapRequired: 20,
+                    WokeCapRequired: 0,
+                    helps: 'government',
+                    helpBenefit: 30,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'woke'
+                },
+                {
+                    name: 'Reject the reform completely',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 20,
+                    helps: 'government',
+                    helpBenefit: 20,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'maga'
+                },
+                {
+                    name:'Modify the reform to be less drastic',
+                    MAGACapRequired: 5,
+                    WokeCapRequired: 5,
+                    helps: 'government',
+                    helpBenefit: 10,
+                    hurts: 'government',
+                    hurtCost: 2,
+                    hurtFaction: 'both'
+                },
+                {
+                    name:'Modify the reform to be more drastic',
+                    MAGACapRequired: 30,
+                    WokeCapRequired: 0,
+                    helps: 'government',
+                    helpBenefit: 40,
+                    hurts: 'government',
+                    hurtCost: 8,
+                    hurtFaction: 'woke'
+                },
+                {
+                    name:'Postpone the decision and gather more information',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 0,
+                    helps: 'government',
+                    helpBenefit: 0,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'maga'
+                }
+            ]
+        },
+        {
+            title: 'Public Education Reform',
+            description: [
+                "In recent times, the state of the public education system has become a major",
+                "point of contention. Many believe that it's failing to adequately prepare",
+                "students for the demands of the modern world, leading to widening socioeconomic gaps.",
+                "Advocates for reform argue that a complete overhaul of the system is necessary,",
+                "with increased funding, updated curriculums, and higher teacher salaries.",
+                "They believe these changes will provide all students with a more",
+                "equitable and high-quality education, helping to bridge the gap between different",
+                "socioeconomic classes.",
+                "||",
+                "Opponents of the reform argue that throwing money at the problem won't solve it.",
+                "They advocate for more accountability, standardized testing, and school choice as a",
+                "way to improve the education system. They argue that increased competition",
+                "between schools will naturally lead to improvements in quality and efficiency.",
+                "||",
+                "As the leader, your decision on this matter will heavily impact the future of",
+                "your nation's youth and the country's overall economic prosperity. Will you",
+                "endorse the proposed reforms or opt for a more market-based approach? The fate",
+                "of the education system is in your hands."
+            ],
+            choices: [
+                {
+                    name: 'Support the reform as proposed',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 20,
+                    helps: 'government',
+                    helpBenefit: 30,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'maga'
+                },
+                {
+                    name: 'Oppose the reform completely',
+                    MAGACapRequired: 20,
+                    WokeCapRequired: 0,
+                    helps: 'government',
+                    helpBenefit: 0,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'woke'
+                },
+                {
+                    name:'Modify the reform to include more accountability',
+                    MAGACapRequired: 5,
+                    WokeCapRequired: 5,
+                    helps: 'government',
+                    helpBenefit: 10,
+                    hurts: 'government',
+                    hurtCost: 2,
+                    hurtFaction: 'both'
+                },
+                {
+                    name:'Modify the reform to focus on school choice',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 30,
+                    helps: 'economy',
+                    helpBenefit: 40,
+                    hurts: 'government',
+                    hurtCost: 8,
+                    hurtFaction: 'woke'
+                },
+                {
+                    name:'Postpone the decision and commission a study',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 0,
+                    helps: 'government',
+                    helpBenefit: 0,
+                    hurts: 'economy',
+                    hurtCost: 5,
+                    hurtFaction: 'both'
+                }
+            ]
+        }
         ];
+        // Spell out exactly how many and what kind of insurrectionist will attack which icon
+        console.log('this scenario number is ' + this.scenarioNumber);
+        let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
 
-        let formattedScenario = insertLinezBreaks(scenarioDescription2.join(' '), 110);
-        let titleText = this.add.text(this.sys.game.config.width/2 - 80, 230, 'New Legislation', { font: '48px Arial', fill: '#0ff' });
-        let scenarioText = this.add.text(this.sys.game.config.width/2 - 330, 290, formattedScenario, { font: '20px Arial', fill: '#ffffff' });
+        let titleText = this.add.text(0, 0, 'Legislative Reform', { font: '48px Arial', fill: '#0ff' });
+        titleText.setPosition(this.sys.game.config.width/2 - titleText.width/2, 230);
 
-         // Create the options and assign them an action
-        let choices = [
-            {
-                name: 'Enact the legislation without changes',
-                MAGACapRequired: 20,
-                WokeCapRequired: 0,
-                helps: 'justice',
-                helpBenefit: 30,
-                hurts: 'justice',
-                hurtCost: 5,
-                hurtFaction: 'maga'
-            },
-            {
-                name: 'Reject the legislation completely',
-                MAGACapRequired: 0,
-                WokeCapRequired: 20,
-                helps: 'justice',
-                helpBenefit: 0,
-                hurts: 'justice',
-                hurtCost: 5,
-                hurtFaction: 'woke'
-            },
-            {
-                name:'Modify the legislation to be less stringent',
-                MAGACapRequired: 5,
-                WokeCapRequired: 5,
-                helps: 'justice',
-                helpBenefit: 10,
-                hurts: 'justice',
-                hurtCost: 2,
-                hurtFaction: 'both'
-            },
-            {
-                name:'Modify the legislation to be more stringent',
-                MAGACapRequired: 30,
-                WokeCapRequired: 0,
-                helps: 'justice',
-                helpBenefit: 40,
-                hurts: 'justice',
-                hurtCost: 8,
-                hurtFaction: 'maga'
-            },
-            {
-                name:'Postpone the decision and gather more information',
-                MAGACapRequired: 0,
-                WokeCapRequired: 0,
-                helps: 'justice',
-                helpBenefit: 0,
-                hurts: 'government',
-                hurtCost: 5,
-                hurtFaction: 'woke'
-            }
-        ];
+        let scenarioText = this.add.text(0, 0, formattedScenario, { font: '20px Arial', fill: '#ffffff' });
+        scenarioText.setPosition(this.sys.game.config.width/2 - scenarioText.width/2, 290);
 
-        this.add.text(this.sys.game.config.width/2 - 240, 580, 'Please Make A Choice:', { color: '#fff', fontSize: '20px',fontFamily: 'Roboto' });
-        choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, 600 + index * 20, choice.name , { color: '#ff0000', fontSize: '20px',fontFamily: 'Roboto' })
+        this.add.text(this.sys.game.config.width/2 - 240, 600, 'Please Make A Choice:', { color: '#0ff', fontSize: '20px',fontFamily: 'Roboto' });
+        this.isTweening = false;
+        scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, 620 + index * 20, choice.name , { color: '#ff0000', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
-                .on('pointerdown', () => chooseOption(choice, index))
-                .on('pointerover', () => this.enterButtonHoverState(decision))
-                .on('pointerout', () => this.enterButtonRestState(decision))
+                .on('pointerdown', () => chooseOption(choice))
+                .on('pointerover', () => this.enterButtonHoverState(decision, choice))
+                .on('pointerout', () => this.enterButtonRestState(decision, choice))
         });
+        // move to next scenario next time
+        this.scenarioNumber = (this.scenarioNumber +1 ) % 3;
 
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        let chooseOption = (choice, index) => {
+        let chooseOption = (choice) => {
             let healthChange;
             let threats;
             titleText.destroy();
             scenarioText.destroy();
+            console.log(choice);
             let fruit;
             if (choice.helpBenefit > 0) {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.helps) + ' gets stronger!\nBut! ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
@@ -329,54 +490,22 @@ export class DilemmaScene extends BaseScene {
             let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
 
             // Implement the results of the chosen option
-            this.sharedData.WokenessVelocity = Math.floor(this.sharedData.WokenessVelocity + choice.helpBenefit/40);
+            this.sharedData.WokenessVelocity = this.sharedData.WokenessVelocity + choice.helpBenefit/40;
             console.log(this.sharedData.WokenessVelocity);
             this.icons[choice.helps].health += choice.helpBenefit;
-            this.drawHealthGauge(this.icons[choice.helps].health/ this.icons[choice.helps].healthScale/ 100, this.icons[choice.helps].icon.x, this.icons[choice.helps].icon.y, 'Health', this.icons[choice.helps].gaugeHealth);
+            this.drawNewHealthGauge(this.icons[choice.helps]);
+            //this.drawHealthGauge(this.icons[choice.helps].health/ this.icons[choice.helps].healthScale/ 100, this.icons[choice.helps].icon.x, this.icons[choice.helps].icon.y, 'Health', this.icons[choice.helps].gaugeHealth);
 
             if (choice.hurtFaction == 'both') {
-                this.createThreat(territories[3], 'maga', this.icons[choice.hurts], choice.hurtCost);
+                this.createThreat(territories[2], 'maga', this.icons[choice.hurts], choice.hurtCost);
                 this.createThreat(territories[3], 'woke', this.icons[choice.hurts], choice.hurtCost);
+            } else if (choice.hurtFaction == 'maga'){
+                this.createThreat(territories[2], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
             } else {
                 this.createThreat(territories[3], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
             }
 
-/*
-            switch(index) {
-                case 0:
-                    // Enact the legislation without changes
-                    this.icons[choice.helps].health += choice.helpBenefit;
-                    if (both == true) {
-                        this.createThreat(territories[3], 'maga', this.icons[choice.hurts], choice.hurtCost);
-                        this.createThreat(territories[3], 'woke', this.icons[choice.hurts], choice.hurtCost);
-                    } else {
-                        this.createThreat(territories[3], choice.hurtfaction, this.icons[choice.hurts], choice.hurtCost);
-                    }
-                    break;
-                case 1:
-                    // Reject the legislation completely
-                    this.createThreat(territories[3], 'woke', this.icons['justice'], 5);
-                    break;
-                case 2:
-                    // Modify the legislation to be less stringent
-                    this.icons['justice'].health += 15;
-                    if (both == true) {
-                        this.createThreat(territories[3], 'woke', this.icons['justice'], 2);
-                        this.createThreat(territories[3], 'maga', this.icons['justice'], 2);
-                    }
-                    break;
-                case 3:
-                    // Modify the legislation to be more stringent
-                    this.icons['justice'].health += 45;
-                    this.createThreat(territories[3], 'maga', this.icons['justice'], 8);
-                    break;
-                case 4:
-                    // Postpone the decision and gather more information
-                    this.createThreat(territories[3], 'woke', this.icons['government'], 5);
-                    break;
-            }
- */
-             this.time.delayedCall(4000, () => {
+            this.time.delayedCall(4000, () => {
                 scene.cameras.main.fadeOut(2000, 0, 0, 0);
                 scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('insurrection').setup(this.sharedData);
@@ -948,7 +1077,8 @@ export class DilemmaScene extends BaseScene {
                     iconColor = 'purple';
                 }
                 scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite);
-                scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+                scene.drawNewHealthGauge(icon);
+                //scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
@@ -1347,12 +1477,137 @@ export class DilemmaScene extends BaseScene {
         this.hasBeenCreatedBefore = true;
     }
 
-    enterButtonHoverState(button) {
+    enterButtonHoverState(button, choice) {
         button.setStyle({ fill: '#ff0'}); // change color to yellow
+
+        let helpedIcon = this.icons[choice.helps];
+        let hurtIcon = this.icons[choice.hurts];
+
+        //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
+        let helpedColor;
+        let hurtColor;
+        let originalScale = 0.1;
+        if (choice.hurtFaction == 'maga') {
+            helpedColor = 0x0000ff;
+            hurtColor = 0xff0000;
+            if (!this.isTweening) {
+                let sprite = territories[2].sprite;
+                let originalY = sprite.y;
+                let originalScale = sprite.scale;
+                this.isTweening = true;
+                this.myTween = this.tweens.add({
+                    targets: sprite,
+                    y: sprite.y - 20,
+                    scale: originalScale * 2, // Double the scale. Adjust this value for a bigger or smaller bounce.
+                    duration: 200,
+                    yoyo: true,
+                    repeat: 2,
+                    ease: 'Bounce',
+                    onComplete: () => {
+                        this.isTweening = false;
+                        sprite.y = originalY;
+                        sprite.scale = originalScale;
+                    }
+                });
+            }
+        } else if (choice.hurtFaction == 'woke') {
+            helpedColor = 0xff0000;
+            hurtColor = 0x0000ff;
+            if (!this.isTweening) {
+                let sprite = territories[3].sprite;
+                let originalY = sprite.y;
+                let originalScale = sprite.scale;
+                this.isTweening = true;
+                this.myTween = this.tweens.add({
+                    targets: sprite,
+                    y: sprite.y - 20,
+                    scale: originalScale * 2, // Double the scale. Adjust this value for a bigger or smaller bounce.
+                    duration: 200,
+                    yoyo: true,
+                    repeat: 2,
+                    ease: 'Bounce',
+                    onComplete: () => {
+                        this.isTweening = false;
+                        sprite.y = originalY;
+                        sprite.scale = originalScale;
+
+                    }
+                });
+            }
+        } else { //both
+            hurtIcon.icon.shieldMaga.setAlpha(1).setTint(0xff0000);
+            hurtIcon.icon.shieldWoke.setAlpha(1).setTint(0x0000ff);
+            if (!this.isTweening) {
+                let sprite = territories[2].sprite;
+                let originalY = sprite.y;
+                let originalScale = sprite.scale;
+                this.isTweening = true;
+                this.myTween = this.tweens.add({
+                    targets: sprite,
+                    y: sprite.y - 20,
+                    scale: originalScale * 2, // Double the scale. Adjust this value for a bigger or smaller bounce.
+                    duration: 200,
+                    yoyo: true,
+                    repeat: 2,
+                    ease: 'Bounce',
+                    onComplete: () => {
+                        this.isTweening = false;
+                        sprite.y = originalY;
+                        sprite.scale = originalScale;
+                    }
+                });
+
+                let sprite2 = territories[3].sprite;
+                let originalY2 = sprite2.y;
+                let originalScale2 = sprite2.scale;
+                this.myTween2 = this.tweens.add({
+                    targets: sprite2,
+                    y: sprite2.y - 20,
+                    scale: originalScale * 2, // Double the scale. Adjust this value for a bigger or smaller bounce.
+                    duration: 200,
+                    yoyo: true,
+                    repeat: 2,
+                    ease: 'Bounce',
+                    onComplete: () => {
+                        this.isTweening = false;
+                        sprite2.y = originalY2;
+                        sprite2.scale = originalScale2;
+                    }
+                });
+            }
+            return;
+        }
+        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+        // doesn't matter at this point which shield it is since they are on top of each other
+        hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
     }
 
-    enterButtonRestState(button) {
+    enterButtonRestState(button, choice) {
         button.setStyle({ fill: '#ff0000'}); // change color back to red
+
+        let helpedIcon = this.icons[choice.helps];
+        let hurtIcon = this.icons[choice.hurts];
+
+        //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
+        let helpedColor;
+        let hurtColor;
+        //console.log(helpedIcon);
+        if (choice.hurtFaction == 'maga') {
+            helpedColor = 0xffffff;
+            hurtColor = 0xff0000;
+        } else {
+            helpedColor = 0xffffff;
+            hurtColor = 0x0000ff;
+        }
+        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+        hurtIcon.icon.shieldMaga.setAlpha(0).setTint(0xffffff);
+        hurtIcon.icon.shieldWoke.setAlpha(0).setTint(0xffffff);
+        if (this.isTweening && this.myTween) {
+            this.myTween.complete();
+        }
+        if (this.isTweening && this.myTween2) {
+            this.myTween2.complete();
+        }
     }
 
     //====================================================================================

@@ -293,7 +293,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.sharedData.ideology = ideology;
         characters.forEach((character, index) => {
             if (character.faction == ideology.faction) {
-                character.endorsement += 5;
+                character.endorsement += 1;
             }
         });
         if (ideology.faction == 'maga') {
@@ -307,8 +307,8 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.scene.get('AliensAttack').setup(this.sharedData);
-            this.scene.start('AliensAttack');
+            this.scene.get('politics').setup(this.sharedData);
+            this.scene.start('politics');
             });
     }
 
@@ -652,7 +652,7 @@ export class Scene2 extends BaseScene {
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
         this.totalAlienAttacks = this.sharedData.thisRoundAlienAttacks;
-        this.sharedData.thisRoundAlienAttacks += 2; // each round 2 more alien attacks
+        this.sharedData.thisRoundAlienAttacks += 4; // each round 4 more aliens attack
         this.icons = this.sharedData.icons;
         this.aliensWin = false;
         this.attackIndex = 0; // need to start with this pointing to something so missiles can be launched from it
@@ -673,7 +673,7 @@ export class Scene2 extends BaseScene {
 
         this.createTerritories();
 
-        let totalCapital = this.MAGAness + this.Wokeness;
+        let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
         polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
 
@@ -756,8 +756,6 @@ export class Scene2 extends BaseScene {
 
             base = findValidTerritory(thisFaction, otherFaction);
 
-
-
             console.log(((Phaser.Math.Wrap(this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length), 0, territories.length) + ' ' + this.roundRobinLaunch % territories.length)
             if (this.missilesPerTerritory > 0) {
                 this.missilesPerTerritory--; // use up one missile
@@ -803,7 +801,7 @@ export class Scene2 extends BaseScene {
             threat.hitpoints -= missile.power;
             if (threat.hitpoints <= 0) {
                 this.MAGAness += threat.score;
-                polCapText.setText('Political Capital ' + (this.MAGAness + this.Wokeness).toString());
+                polCapText.setText('Political Capital ' + Math.floor((this.MAGAness + this.Wokeness)).toString());
                 this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
             }
@@ -814,7 +812,7 @@ export class Scene2 extends BaseScene {
             threat.hitpoints -= missile.power;
             if (threat.hitpoints <= 0) {
                 this.Wokeness += threat.score;
-                polCapText.setText('Political Capital: ' + (this.MAGAness + this.Wokeness).toString());
+                polCapText.setText('Political Capital: ' + Math.floor((this.MAGAness + this.Wokeness)).toString());
                 this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
             }
@@ -971,7 +969,7 @@ export class Scene2 extends BaseScene {
                 console.log(this.sharedData.putieTerritories);
                 console.log(this.sharedData.alienTerritories);
 
-                if (this.sharedData.alienTerritories + this.sharedData.putieTerritories > territories.length) {
+                if (this.sharedData.alienTerritories + this.sharedData.putieTerritories >= territories.length) {
                     console.log('you lose!');
                     this.scene.get('TutorialScene').setup(this.sharedData);
                     this.scene.start('TutorialScene', { message: 'I have some bad news:\n the Aliens have taken over America\n It looks like you lose.' });
@@ -988,6 +986,7 @@ export class Scene2 extends BaseScene {
 
                 // Access the icon using the key, then modify its health
                 // in the very first round, the icons haven't been created yet
+                // some random icon gets clobbered
                 if (this.sharedData.icons['environment']) {
                     this.sharedData.icons[randomKey].health = Math.max(0, this.sharedData.icons[randomKey].health - 50);
                     // What happens when an alien reaches the base.  Ignore on first round
