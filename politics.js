@@ -363,7 +363,7 @@ export class Politics extends BaseScene {
                                 { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
             character.charText = characterText; // back reference to text so we can find the location later
-
+console.log('create checkbox with checkmark = '+character.backing);
             createCheckbox(this, 20+xOffset, 270 + (rowIndex * 60), character, characterText, function(character, backing) {
                 character.backing = backing;
             }, character.backing);
@@ -406,7 +406,7 @@ export class Politics extends BaseScene {
                     character.endorsement -= 2;
                 }
                 // Recreate text here
-                character.charText.setText(character.name + '\nEndorsed: ' + (character.value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + character.value));
+                character.charText.setText(character.name + ',\nBacking: ' + (character.endorsement + character.value));
                 // Make sure color of text is normal
                 if (character.faction == 'maga') {
                     character.charText.setColor('#ff8080');
@@ -771,6 +771,12 @@ export class Politics extends BaseScene {
                 if (!helper.isDestroyed) {
                     console.log(helper.container.character.powerTokenType);
                     delete scene.sharedData.helperTokens[helper.container.character.name];
+
+                    let hurtIcon = scene.icons[helper.container.character.hurts];
+                    let territory = territories[3]; // random territory
+                    scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
+                    scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite);
+
                     //tooltip.text.setVisible(true);
                     //tooltip.box.setVisible(true);
                     helper.isDestroyed = true;
@@ -1117,7 +1123,7 @@ export class Politics extends BaseScene {
                     } else {
                         value = character.prevValue;
                     }
-                    characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
+                    characterText.setText(character.name + '\nBacking: ' + (character.endorsement + value).toString());
                     //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                 }
             }
@@ -1192,14 +1198,20 @@ export class Politics extends BaseScene {
 
             // Initial checkbox state
             if(initialValue) {
+                let undoCheck;
+
                 checkboxUnchecked.setVisible(false);
                 checkboxChecked.setVisible(true);
                 let value = 1;
 
                 // Update the underlying character's value
                 character.value = value;
-
-                let undoCheck = updateCharVal(character, value, characterText);
+                if (character.endorsement + value > 1){
+                    undoCheck = true;
+                } else {
+                    // If we are out of political capital, undo the check
+                    undoCheck = updateCharVal(character, value, characterText);
+                }
                 if (undoCheck == true) {
                     checkboxUnchecked.setVisible(true);
                     checkboxChecked.setVisible(false);
@@ -1378,7 +1390,7 @@ export class Politics extends BaseScene {
                 scene.MAGAness = Math.floor(tmpMAG);
                 scene.Wokeness = Math.floor(tmpWok);
             });
-
+console.log('test');
             createCharacterTooltip(scene, character, x, y, slider, characterText);
 
             return {track: track, slider: slider};
@@ -1458,35 +1470,89 @@ export class Politics extends BaseScene {
         //====================================================================================
         //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
         //====================================================================================
+
         function createCharacterTooltip(scene, character, x, y, slider, characterText) {
 
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
-            let xOffset = character.faction === 'maga' ? scene.game.config.width * .3 : scene.game.config.width * -.2;
+            let xOffset = character.faction === 'maga' ? scene.game.config.width * .3 : scene.game.config.width * -.24;
 
             // Format the text to be centered and with the color based on the affiliation
-            let formattedBackstory = insertLineBreaks(character.shortstory.join(' '), 37);
-            let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
-            backstoryText.setOrigin(0.5);
-            backstoryText.setVisible(false);
-            backstoryText.setDepth(2);
+            // let formattedBackstory = insertLineBreaks(character.shortstory.join(' '), 37);
+            // let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
+            // backstoryText.setOrigin(0.5);
+            // backstoryText.setVisible(false);
+            // backstoryText.setDepth(3);  // increase depth to be on top
 
-            // Add a bounding box for the text, with rounded corners and a semi-transparent background
-            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            // Add an icon or graphic
+            let helpedIcon;
+            let tmpHelp = character.helps; // don't want to change character.helps permanently
+            if (character.helps){
+                helpedIcon = scene.sharedData.icons[character.helps];
+                console.log(character);
+            } else {
+                helpedIcon = scene.sharedData.icons['environment']; // placeholder for now for undefined helps
+                if (character.powerTokenType == 'type_3') {
+                    tmpHelp = 'hacker';
+                    helpedIcon.scaleFactor = 0.19;
+                    console.log('hacker');
+                } else {
+                    tmpHelp = 'negotiation';
+                    helpedIcon.scaleFactor = 0.13;
+                    console.log('negotiation');
+                }
+            }
+            console.log(helpedIcon);
+            let graphicObject = tmpHelp;
+            //console.log(graphicObject);
+
+            // Add an icon or graphic and scale it
+            let backstoryIcon = scene.add.image(x+xOffset, y, graphicObject);  // Position the icon at the original y position
+            backstoryIcon.setScale(helpedIcon.scaleFactor);  // scale the icon
+            backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
+            backstoryIcon.setVisible(false);
+            backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
+
+            // Format the text to be centered and with the color based on the affiliation
+            let formattedBackstory = insertLineBreaks(character.shortstory.join(' '), 50);
+            let backstoryText = scene.add.text(x+xOffset, backstoryIcon.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });  // Position the text below the icon
+            backstoryText.setOrigin(0.5,0);
+            backstoryText.setVisible(false);
+            backstoryText.setDepth(3);  // increase depth to be on top
+
+            // Increase the height of the bounding box to accommodate the icon and the text, and adjust its position
+            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y - backstoryIcon.displayHeight/2, backstoryText.width, backstoryText.height + backstoryIcon.displayHeight, 0x000000, 1);  // Add some padding between the icon and the text
             backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff8080 : 0x8080ff, 0.8);
             backstoryBox.isStroked = true;
-            backstoryBox.setOrigin(0.5);
+            backstoryBox.setOrigin(0.5,0);
             backstoryBox.setVisible(false);
             backstoryBox.setDepth(1);
+
+            scene.isTweening = false;
 
             const mouseOver = () => {
                 backstoryText.setVisible(true);
                 backstoryBox.setVisible(true);
+                backstoryIcon.setVisible(true);
+                threatBounce(character);
             };
 
             const mouseOff = () => {
                 backstoryText.setVisible(false);
                 backstoryBox.setVisible(false);
+                backstoryIcon.setVisible(false);
+
+                let hurtIcon = scene.icons[character.hurts];
+                if (hurtIcon){
+                    hurtIcon.icon.shieldMaga.setAlpha(0).setTint(0xffffff);
+                    hurtIcon.icon.shieldWoke.setAlpha(0).setTint(0xffffff);
+                }
+                if (scene.isTweening && scene.myTween) {
+                    scene.myTween.complete();
+                }
+                if (scene.isTweening && scene.myTween2) {
+                    scene.myTween2.complete();
+                }
             };
 
             slider.on('pointerover', mouseOver);
@@ -1494,6 +1560,69 @@ export class Politics extends BaseScene {
 
             slider.on('pointerout', mouseOff);
             characterText.on('pointerout', mouseOff);
+
+            function threatBounce(character) {
+                //let helpedIcon = scene.icons[character.helps];
+                let hurtIcon = scene.icons[character.hurts];
+
+                //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
+                let helpedColor = 0xffffff;
+                let hurtColor = 0xffffff;
+                let originalScale = 0.1;
+                if (character.faction == 'maga') {
+                    helpedColor = 0x0000ff;
+                    hurtColor = 0xff0000;
+                    if (!scene.isTweening) {
+                        let sprite = territories[2].sprite;
+                        let originalY = sprite.y;
+                        let originalScale = sprite.scale;
+                        scene.isTweening = true;
+                        scene.myTween = scene.tweens.add({
+                            targets: sprite,
+                            y: sprite.y - 20,
+                            scale: originalScale * 2, // Double the scale. Adjust this value for a bigger or smaller bounce.
+                            duration: 200,
+                            yoyo: true,
+                            repeat: 2,
+                            ease: 'Bounce',
+                            onComplete: () => {
+                                scene.isTweening = false;
+                                sprite.y = originalY;
+                                sprite.scale = originalScale;
+                            }
+                        });
+                    }
+                } else if (character.faction == 'woke') {
+                    helpedColor = 0xff0000;
+                    hurtColor = 0x0000ff;
+                    if (!scene.isTweening) {
+                        let sprite = territories[3].sprite;
+                        let originalY = sprite.y;
+                        let originalScale = sprite.scale;
+                        scene.isTweening = true;
+                        scene.myTween = scene.tweens.add({
+                            targets: sprite,
+                            y: sprite.y - 20,
+                            scale: originalScale * 2, // Double the scale. Adjust this value for a bigger or smaller bounce.
+                            duration: 200,
+                            yoyo: true,
+                            repeat: 2,
+                            ease: 'Bounce',
+                            onComplete: () => {
+                                scene.isTweening = false;
+                                sprite.y = originalY;
+                                sprite.scale = originalScale;
+
+                            }
+                        });
+                    }
+                }
+                // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                // doesn't matter at this point which shield it is since they are on top of each other
+                if (hurtIcon) {
+                    hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
+                }
+            }
         }
 
         // the very end of create()

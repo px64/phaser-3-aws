@@ -307,8 +307,15 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            this.scene.get('politics').setup(this.sharedData);
-            this.scene.start('politics');
+            let sanity_check = Math.random();
+            console.log(sanity_check);
+            if (sanity_check < .5) {
+                this.scene.get('AliensAttack').setup(this.sharedData);
+                this.scene.start('AliensAttack');
+            } else {
+                this.scene.get('politics').setup(this.sharedData);
+                this.scene.start('politics');
+            }
             });
     }
 

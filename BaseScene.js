@@ -48,9 +48,12 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('independent', 'assets/IPNY_Logo.png');
         this.load.image('scale_arms', 'assets/scale_arms2.png');
         this.load.image('scale_body', 'assets/scale_body2.png');
+        this.load.image('negotiation', 'assets/negotiation.png');
+        this.load.image('hacker', 'assets/hacker.png');
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
         this.load.image('checkboxUnchecked', 'assets/checkboxUnchecked.png');
         this.load.image('checkboxChecked', 'assets/checkboxChecked.png');
+
     }
 
     initializeIcons() {
@@ -59,7 +62,7 @@ export default class BaseScene extends Phaser.Scene {
             this.sharedData.icons['environment'] = this.createIconWithGauges(xStart+xOffset*0, 125, 0.15, 'environment', 0, 0, 50, 'Environmental\nHealth: ', 1, 16, 0); //1
             this.sharedData.icons['economy'] = this.createIconWithGauges(xStart+xOffset*1, 125, 0.1, 'economy', economyMaga, economyWoke, economyStrength, "Economy: " ,1, 16, 0); //440
             this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice: ', 1, 16, 0); //.15
-            this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.03, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0); //50
+            this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.05, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0); //50
             this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0); // 1
             this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 2, 16, 0); // 1
      }
@@ -115,11 +118,11 @@ export default class BaseScene extends Phaser.Scene {
             balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
         }
         stability = stability * (1-balance);
-        let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
+        let healthText = ''; //healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
         //let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)];
 
         let iconText = this.add.text(xPos - (textSize / 2) - 50, yPos - /*75*/85, textBody + healthText, { fontSize: textSize + 'px', fill: '#fff' });
-        return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite};
+        return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite, scaleFactor};
     }
 
     //====================================================================================
@@ -259,7 +262,7 @@ export default class BaseScene extends Phaser.Scene {
             // Determine the tint based on the balance
             // If balance is 0, color is neutral (no tint). If balance is positive, color goes towards red. If balance is negative, color goes towards blue.
             let color;
-            console.log('balance = ' + balance);
+            //console.log('balance = ' + balance);
             if (balance > 0) {
                 // Convert balance (0 to 1) to a value in the range 0xffffff (white) to 0xff0000 (red)
                 let amount = Phaser.Display.Color.Interpolate.RGBWithRGB(255, 128, 128, 255, 0, 0, 100, balance * 100);
@@ -310,74 +313,6 @@ export default class BaseScene extends Phaser.Scene {
         }
 
     }
-/*
-    //====================================================================================
-    //
-    // drawGauges
-    //
-    //====================================================================================
-    drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth) => {
-        this.drawHealthGauge(maga/100,x,y, 'Maga', gaugeMaga);
-        this.drawHealthGauge(woke/100,x,y, 'Woke', gaugeWoke);
-        this.drawHealthGauge(health/healthScale/100,x,y, 'Health', gaugeHealth);
-
-        gaugeMaga.setAlpha(0.5).setDepth(1);
-        gaugeWoke.setAlpha(0.5).setDepth(1);
-        gaugeHealth.setAlpha(0.9).setDepth(1);
-    }
- */
-    //====================================================================================
-    //
-    //      drawHealthGauge(percentage, posX, posY, style, healthGauge)
-    //
-    //====================================================================================
-/*
-    drawHealthGauge(percentage, posX, posY, style, healthGauge) {
-        let ringNum;
-        let color;
-        if (style == 'Maga' || style == 'maga') {color = 0xff0000; ringNum = 3;}
-        if (style == 'Woke' || style == 'woke') {color = 0x0000ff; ringNum = 1;}
-        if (style == 'Health') {color = 0xffffff; ringNum = 2;}
-        healthGauge.clear();
-        // Draw full gray gauge (background)
-        healthGauge.lineStyle(7, 0x808080);
-        healthGauge.beginPath();
-        healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), false);
-        healthGauge.strokePath();
-
-        // Draw the health gauge with an arc, with the angle proportional to the health
-        healthGauge.lineStyle(7, color);
-        healthGauge.beginPath();
-        healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
-        healthGauge.strokePath();
-
-        return healthGauge;
-    }
- */
-    //====================================================================================
-    //
-    //          drawHealthBar(percentage, posX, posY, style, healthBar)
-    //
-    //====================================================================================
-/*
-    drawHealthBar(percentage, posX, posY, style, healthBar) {
-        let ringNum;
-        let color;
-        if (style == 'Maga') {color = 0xff0000; ringNum = 3;}
-        if (style == 'Woke') {color = 0x0000ff; ringNum = 1;}
-        if (style == 'Health') {color = 0xffffff; ringNum = 2;}
-
-        healthBar.clear();
-
-        //this.healthBar.fillStyle(0x2ecc71, 1);
-        healthBar.fillStyle(color, 1);
-
-        var width = 5;
-        var height = 80;
-
-        healthBar.fillRect(posX, posY - percentage*height, width, percentage*height);
-    }
- */
 
     createThreat(territory, faction, icon, numThreats) {
         for (let i = 0; i < numThreats; i++) {
@@ -672,6 +607,25 @@ export const characters = [
         dne: false
     },
     {
+        name: "Ethan 'EagleEye' Thompson",
+        faction: "maga",
+        backstory: [
+            "Once a prodigy in Silicon Valley, Ethan was disillusioned by what he saw as a lack of patriotism and respect for traditional values in the tech industry.",
+            "He left his lucrative career to use his hacking skills to expose what he perceives as bias in the media and social networks."
+        ],
+        shortstory: [
+            "Ethan's activities sow mistrust in the media and the tech industry, making it harder for them to influence public opinion.",
+            "However, his actions also trigger economic instability, shaking investor confidence and causing market fluctuations."
+        ],
+        power: 'Hacking and\nInformation Warfare',
+        powerTokenType: "type_3",
+        hurts: 'economy',
+        value: 0,
+        prevValue: 0,
+        endorsement: 5,
+        dne: false
+    },
+    {
         name:  'Ambassador Aria Chen',
         backstory: [
             "A skilled diplomat and advocate for global cooperation,",
@@ -756,6 +710,7 @@ export const characters = [
         faction: 'woke',
         power: 'Expand Diversity,\nEquality and\nInclusivity',
         powerTokenType: 'type_3',  // Creates a shield around any icon
+        hurts: 'justice',
         value: 0,
         prevValue: 0,
         endorsement: 5,
@@ -834,12 +789,33 @@ export const characters = [
         "addressing disparities in income, education, and healthcare."
     ],
     shortstory: [
-        "Isabelle's insights help to promote social justice and reduce inequality. However, her progressive social policies require",
-        "significant investment, putting pressure on the economy."
+        "Isabelle's insights help to promote social justice and reduce inequality. However, her progressive social policies",
+        "cause unrest in the house and senate, putting pressure on the government."
     ],
     power: 'Sociology and\nSocial Justice',
     helps: 'justice',
-    hurts: 'economy',
+    hurts: 'government',
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false
+},
+{
+    name: "Dr. Max Greenfield",
+    faction: "woke",
+    backstory: [
+        "A charismatic thought leader in the field of tech innovation, Dr. Greenfield's work has revolutionized communication and connectivity across the globe.",
+        "His development of the next-generation virtual reality systems has enabled people from different parts of the world to interact as if they were physically present in the same room."
+    ],
+    shortstory: [
+        "His virtual reality systems have enabled people from different parts of the world to interact as if they were physically present in the same room.",
+        "While Dr. Greenfield's innovations foster global unity and are a boon to the economy, the production and disposal of his VR systems have",
+        "significant environmental impact, contributing to electronic waste and increasing the demand for rare-earth minerals."
+    ],
+    power: 'Tech Innovation\nand Virtual Reality',
+    helps: 'economy',
+    hurts: 'environment',
     powerTokenType: "type_5",
     value: 0,
     prevValue: 0,
@@ -886,6 +862,7 @@ export const characters = [
     endorsement: 5,
     dne: false
 },
+
 {
     name: "Ambassador Charlotte Grant",
     faction: "woke",
@@ -895,17 +872,19 @@ export const characters = [
     ],
     shortstory: [
         "Ambassador Grant's diplomatic skills improve international relations, enhancing global diplomacy. However, her focus on maintaining good relations",
-        "can sometimes come at the cost of military readiness."
+        "can sometimes cause great harm to the economy"
     ],
     power: 'Diplomacy\nand International Relations',
     helps: 'diplomacy',
-    hurts: 'military',
+    hurts: 'economy',
     powerTokenType: "type_5",
     value: 0,
     prevValue: 0,
     endorsement: 5,
     dne: false
 }
+
+
 
 
 

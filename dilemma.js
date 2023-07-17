@@ -106,7 +106,7 @@ export class DilemmaScene extends BaseScene {
             // recreate the icons with the saved state
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
-                console.log(key + ' shieldStrength = ', iconData.shieldStrength);
+                //console.log(key + ' shieldStrength = ', iconData.shieldStrength);
                 let fontSize = parseInt(iconData.iconText.style.fontSize, 10);
                 this.icons[key] = this.createIconWithGauges(
                     iconData.icon.x,

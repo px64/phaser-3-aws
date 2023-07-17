@@ -89,7 +89,7 @@ export class Insurrection extends BaseScene {
             // recreate the icons with the saved state
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
-                console.log(key + ' shieldStrength = ', iconData.shieldStrength);
+                //console.log(key + ' shieldStrength = ', iconData.shieldStrength);
                 let fontSize = parseInt(iconData.iconText.style.fontSize, 10);
                 this.sharedData.icons[key] = this.createIconWithGauges(
                     iconData.icon.x,
@@ -768,7 +768,7 @@ export class Insurrection extends BaseScene {
                 // Now your keys array is shuffled, so you can iterate over it
                 iconKeys.forEach(key => {
                     let icon = scene.sharedData.icons[key];
-                    console.log('maga: ' + icon.maga + ' woke: '+icon.woke + ' attack '+key);
+                    //console.log('maga: ' + icon.maga + ' woke: '+icon.woke + ' attack '+key);
 
                     // loop through each territory
                     for (let region in territories) {
