@@ -64,7 +64,8 @@ export class Politics extends BaseScene {
             year: 2023,
             misinformation: {},
             helperTokens: {},
-            militaryAllocation: 0
+            militaryAllocation: 0,
+            littleHats: {}
         };
         // hack: decrease all character's endorsements by 3
         characters.forEach((character, index) => {
@@ -176,8 +177,13 @@ export class Politics extends BaseScene {
                 this.scene.get('military allocation').setup(this.sharedData);
                 this.scene.start('military allocation');
             } else {
-                this.scene.get('dilemma').setup(this.sharedData);
-                this.scene.start('dilemma');
+                if (this.sharedData.WokenessVelocity < 1 || Math.random < .3) {
+                    this.scene.get('dilemma').setup(this.sharedData);
+                    this.scene.start('dilemma');
+                } else {
+                    this.scene.get('insurrection').setup(this.sharedData);
+                    this.scene.start('insurrection');
+                }
             }
         });
 
@@ -925,6 +931,45 @@ console.log('create checkbox with checkmark = '+character.backing);
                 }
             });
  */
+
+            // New concept: if you drop a Defense into an icon, it will remove some hats
+            scene.physics.add.overlap(icon.icon, scene.magaDefenses, function(base, helper) {
+                console.log('delete index ' + helper.container.misinformationIndex);
+                let infoToken = scene.sharedData.misinformation[helper.container.misinformationIndex];
+                //let otherFaction = infoToken.type == 'maga' ? 'woke' : 'maga';
+
+                delete scene.sharedData.misinformation[helper.container.misinformationIndex];
+                helper.container.destroy();
+
+                //console.log('icon faction = '+icon[infoToken.type]+' other faction = '+icon[otherFaction]);
+                //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
+                let numReturns = Math.min(5,icon.maga/5);
+                scene.returnThreat(scene, territories[2], 'maga', icon, numReturns);
+
+                scene.time.delayedCall(300, () => {
+                    numReturns = Math.min(5,icon.woke/5);
+                    scene.returnThreat(scene, territories[2], 'woke', icon, numReturns);
+                });
+            });
+
+            scene.physics.add.overlap(icon.icon, scene.wokeDefenses, function(base, helper) {
+                console.log('delete index ' + helper.container.misinformationIndex);
+                let infoToken = scene.sharedData.misinformation[helper.container.misinformationIndex];
+                //let otherFaction = infoToken.type == 'maga' ? 'woke' : 'maga';
+
+                delete scene.sharedData.misinformation[helper.container.misinformationIndex];
+                helper.container.destroy();
+
+                //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
+                let numReturns = Math.min(5,icon.woke/5);
+                scene.returnThreat(scene, territories[3], 'woke', icon, numReturns);
+
+                scene.time.delayedCall(300, () => {
+                    numReturns = Math.min(5,icon.maga/5);
+                    scene.returnThreat(scene, territories[2], 'maga', icon, numReturns);
+                });
+            });
+
             scene.physics.add.overlap(icon.icon, scene.helperIcons, function(base, helper) {
                 handleHelperOverlap(icon, base, helper, 70, '', icon.gaugeWoke, '');
             });
@@ -1489,20 +1534,20 @@ console.log('test');
             let tmpHelp = character.helps; // don't want to change character.helps permanently
             if (character.helps){
                 helpedIcon = scene.sharedData.icons[character.helps];
-                console.log(character);
+                //console.log(character);
             } else {
                 helpedIcon = scene.sharedData.icons['environment']; // placeholder for now for undefined helps
                 if (character.powerTokenType == 'type_3') {
                     tmpHelp = 'hacker';
                     helpedIcon.scaleFactor = 0.19;
-                    console.log('hacker');
+                    //console.log('hacker');
                 } else {
                     tmpHelp = 'negotiation';
                     helpedIcon.scaleFactor = 0.13;
-                    console.log('negotiation');
+                    //console.log('negotiation');
                 }
             }
-            console.log(helpedIcon);
+            //console.log(helpedIcon);
             let graphicObject = tmpHelp;
             //console.log(graphicObject);
 

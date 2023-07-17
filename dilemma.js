@@ -473,11 +473,12 @@ export class DilemmaScene extends BaseScene {
         // add some helpful text
         if (!this.hasBeenCreatedBefore) {
             // Format the text to be centered and with the color based on the affiliation
-            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 55);
-            let backstoryText = this.add.text(300, 150, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#0f0', align: 'center' });
+            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 65);
+            let backstoryText = this.add.text(this.sys.game.config.width/2, this.sys.game.config.height/2, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#0f0', align: 'center' });
             backstoryText.setOrigin(0.5);
             backstoryText.setVisible(true);
             backstoryText.setDepth(2);
+            backstoryText.setAlpha(1);
 
             // Add a bounding box for the text, with rounded corners and a semi-transparent background
             let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
@@ -486,6 +487,7 @@ export class DilemmaScene extends BaseScene {
             backstoryBox.setOrigin(0.5);
             backstoryBox.setVisible(true);
             backstoryBox.setDepth(1);
+            backstoryBox.setAlpha(1);
 
             setTimeout(() => {
                 backstoryText.setVisible(false);
@@ -921,7 +923,7 @@ export class DilemmaScene extends BaseScene {
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
-                scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite);
+                scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
                 scene.drawNewHealthGauge(icon);
                 //scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
@@ -951,7 +953,7 @@ export class DilemmaScene extends BaseScene {
                 if (!threat.isPutieDestroyed) {
                     threat.isPutieDestroyed = true;
                     icon['woke'] += 5;
-                    scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite);
+                    scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite, icon.littleHats);
                 }
             });
         }

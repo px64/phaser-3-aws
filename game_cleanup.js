@@ -84,7 +84,8 @@ class TitleScene extends Phaser.Scene {
             thisRoundAlienAttacks: 1,
             thisRoundTerritoriesWithMissiles: 6,
             MAGAnessVelocity: 0,
-            WokenessVelocity: 0
+            WokenessVelocity: 0,
+            littleHats: {}
         };
     }
 
@@ -309,7 +310,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             let sanity_check = Math.random();
             console.log(sanity_check);
-            if (sanity_check < .5) {
+            if (sanity_check < 0) {
                 this.scene.get('AliensAttack').setup(this.sharedData);
                 this.scene.start('AliensAttack');
             } else {

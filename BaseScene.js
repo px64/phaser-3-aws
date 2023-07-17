@@ -85,7 +85,7 @@ export default class BaseScene extends Phaser.Scene {
 
         icon.iconName = iconName;
 
-        this.drawGauges(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite);
+        let littleHats = this.drawGauges(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, []);
         //this.drawBalance(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth);
 
         if (shieldStrength < .1) {shieldVisible = false;}
@@ -122,7 +122,7 @@ export default class BaseScene extends Phaser.Scene {
         //let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)];
 
         let iconText = this.add.text(xPos - (textSize / 2) - 50, yPos - /*75*/85, textBody + healthText, { fontSize: textSize + 'px', fill: '#fff' });
-        return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite, scaleFactor};
+        return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite, scaleFactor, littleHats};
     }
 
     //====================================================================================
@@ -130,13 +130,14 @@ export default class BaseScene extends Phaser.Scene {
     // drawBalance
     //
     //====================================================================================
-    drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite) => {
+    drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, littleHatsRemove) => {
         // 'track' is the scale object (could be a sprite or any game object)
 
-        this.drawHealthGauge(0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite);
+        let littleHatsCreate = this.drawHealthGauge(0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite, littleHatsRemove);
         let stability = health/healthScale;
         let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
         let balance;
+
         maga = Math.min(100, maga); // don't let these go beyond 100
         woke = Math.min(100, woke);
         if (totalValue == 0) {
@@ -149,35 +150,7 @@ export default class BaseScene extends Phaser.Scene {
         this.drawHealthGauge(stability/100,x,y, 'Health', gaugeHealth);
         gaugeHealth.setAlpha(.7);
 
-/*
-        let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
-        let balance;
-        if (totalValue == 0) {
-            balance = 0
-        } else {
-            balance = (maga - woke) / totalValue; // This will be a value between -1 and 1
-        }
-        let rotationAngle = balance * Math.PI / 4; // This will give an angle between -45 and 45 degrees
-        gaugeMaga.setRotation(rotationAngle);
-
-        // Determine the tint based on the balance
-        // If balance is 0, color is neutral (no tint). If balance is positive, color goes towards red. If balance is negative, color goes towards blue.
-        let color;
-        if (balance > 0) {
-            // Convert balance (0 to 1) to a value in the range 0xffffff (white) to 0xff0000 (red)
-            let amount = Phaser.Display.Color.Interpolate.RGBWithRGB(255, 255, 255, 255, 0, 0, 100, balance * 100);
-            color = Phaser.Display.Color.GetColor(amount.r, amount.g, amount.b);
-        } else if (balance < 0) {
-            // Convert balance (-1 to 0) to a value in the range 0xffffff (white) to 0x0000ff (blue)
-            let amount = Phaser.Display.Color.Interpolate.RGBWithRGB(255, 255, 255, 0, 0, 255, 100, balance * -100);
-            color = Phaser.Display.Color.GetColor(amount.r, amount.g, amount.b);
-        } else {
-            // Neutral color
-            color = 0xffffff;
-        }
-
-        gaugeMaga.setTint(color);
- */
+        return littleHatsCreate;
 
     }
 
@@ -223,7 +196,7 @@ export default class BaseScene extends Phaser.Scene {
 
     // // TODO: Add little hat icons for every 10 magas or wokes accumulated
 
-    drawHealthGauge(percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite) {
+    drawHealthGauge(percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite, littleHats) {
         // 'track' is the scale object (could be a sprite or any game object)
         const ICON_MARGIN = 10;
         const GAUGE_HEIGHT = 50;
@@ -294,22 +267,35 @@ export default class BaseScene extends Phaser.Scene {
                     }
                 });
             }
+            //clear all the little hats
+            if (littleHats.length > 0) {
+                littleHats.forEach(hat => {
+                     hat.destroy();
+                 });
+             }
+             littleHats = [];
+
             // Assuming the icons should appear below the health gauge
             let iconY = posY + GAUGE_HEIGHT + ICON_MARGIN;
-            drawIcons(this, posX-20, iconY, maga/5, 'magaBase');
-            drawIcons(this, posX-20, iconY + ICON_SPACING, woke/5, 'wokeBase'); // Offset the Y position for the second row of icons
+            littleHats = drawIcons(this, posX-20, iconY, maga/5, 'magaBase', littleHats);
+            littleHats = drawIcons(this, posX-20, iconY + ICON_SPACING, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
 
         }
-        return healthGauge;
+        return littleHats;
 
-        function drawIcons(scene, x, y, count, texture) {
+        // Draw little hats
+        function drawIcons(scene, x, y, count, texture, littleHats) {
             for (let i = 0; i < count; i++) {
                 // Each icon will be positioned slightly to the right of the previous one
                 let icon = scene.add.image(x + i * ICON_SPACING, y, texture);
 
                 // Adjust the size of the icons if necessary
                 icon.setScale(ICON_SCALE);
+
+                littleHats.push(icon);
+
             }
+            return littleHats;
         }
 
     }
@@ -372,7 +358,7 @@ export default class BaseScene extends Phaser.Scene {
         }
     }
 
-    returnThreat(territory, faction, icon, numThreats) {
+    returnThreat(scene, territory, faction, icon, numThreats) {
         for (let i = 0; i < numThreats; i++) {
             let attackerTerritory = territory;
             let territoryWidth = this.sys.game.config.width / territories.length;
@@ -403,10 +389,17 @@ export default class BaseScene extends Phaser.Scene {
                 //threat.setBounce(1);
                 threat.setCollideWorldBounds(true);
 
+                // // It's good that the littlehat is now associated with this icon, but you can't just pop
+                // // a random hat since it could be maga or it could be woke.
+                // let lastIcon = icon.littleHats.pop();
+                // if (lastIcon) { // Check to ensure the icon exists before calling destroy on it
+                //     lastIcon.destroy();
+                // }
+
                 // Enable world bounds event for this body
                 threat.body.onWorldBounds = true;
-                icon[faction] -= 10;
-                this.drawGauges(icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite);
+                icon[faction] -= 5;
+                icon.littleHats = this.drawGauges(icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite, icon.littleHats);
 
                 // Listen for the event
                 this.physics.world.on('worldbounds', (body) => {

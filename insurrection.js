@@ -222,7 +222,7 @@ export class Insurrection extends BaseScene {
                 let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
                 iconData.iconText.setText(iconData.textBody + healthText);
 
-                this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite);
+                this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite, iconData.littleHats);
             }
 
             thisRoundHealthChange += this.sharedData.MAGAnessVelocity/5;
@@ -265,7 +265,7 @@ export class Insurrection extends BaseScene {
                     this.sharedData.icons['government'].iconText.setText(gov.textBody + healthText);
                 }
 
-                this.drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite);
+                this.drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
             }
         }
         //====================================================================================
@@ -589,7 +589,7 @@ export class Insurrection extends BaseScene {
                         icon.health += 1 * icon.healthScale;
                         iconColor = 'purple';
                     }
-                    scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite);
+                    scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
 
                     let stability = icon.health/icon.healthScale;
                     let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
