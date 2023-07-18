@@ -36,6 +36,9 @@
 //  -- Woke spends capital building better infrastructure against collapse/ insurrection
 
 // NEW IDEA: have social justice only improve by answering difficult questions.
+// It would be interesting if you get a mix of maga and woke characters that changes every game.
+// or perhaps if you choose maga, the two defensive characters are woke, but if you choose woke,
+// the two defensive characters are maga!
 
 
 
@@ -84,8 +87,7 @@ class TitleScene extends Phaser.Scene {
             thisRoundAlienAttacks: 1,
             thisRoundTerritoriesWithMissiles: 6,
             MAGAnessVelocity: 0,
-            WokenessVelocity: 0,
-            littleHats: {}
+            WokenessVelocity: 0
         };
     }
 
@@ -292,9 +294,15 @@ export class ChooseYourIdeologyScene extends BaseScene {
         let icon2 = this.add.sprite(this.sys.game.config.width/2 - 20 + ideologyText.width/2 + 120, height, ideology.icon).setScale(.3);
 
         this.sharedData.ideology = ideology;
+        // Should really create some kind of high level tuning capability.  For instance here I added something
+        // where if the character's ideology matches your ideology, then the character starts with an endorsement.
+        // Now I just added that it is only for type_5 powerTokenTypes.  In other words hacker and mediator don't
+        // get a free endorsement
         characters.forEach((character, index) => {
-            if (character.faction == ideology.faction) {
+            if (character.faction == ideology.faction && character.powerTokenType == 'type_5') {
                 character.endorsement += 1;
+            } else if (ideology.faction == 'none' && character.powerTokenType != 'type_5') {
+                character.endorsement +=1;
             }
         });
         if (ideology.faction == 'maga') {
@@ -302,15 +310,15 @@ export class ChooseYourIdeologyScene extends BaseScene {
         } else if (ideology.faction == 'woke') {
             this.sharedData.Wokeness += 10;
         } else {
-            this.sharedData.MAGAness += 5;
-            this.sharedData.Wokeness += 5;
+            this.sharedData.MAGAness += 10;
+            this.sharedData.Wokeness += 10;
         }
 
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             let sanity_check = Math.random();
             console.log(sanity_check);
-            if (sanity_check < 0) {
+            if (sanity_check < .5) {
                 this.scene.get('AliensAttack').setup(this.sharedData);
                 this.scene.start('AliensAttack');
             } else {

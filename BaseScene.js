@@ -254,6 +254,7 @@ export default class BaseScene extends Phaser.Scene {
 
             // Shimmer effect
             if (maga > 65 || woke > 65) {
+                console.log('Shimmer check.  maga = '+maga+ 'woke = '+woke);
             let shimmerTween = this.tweens.add({
                     delay: Phaser.Math.Between(0, 500),
                     targets: [healthGauge, scaleSprite],
@@ -340,7 +341,9 @@ export default class BaseScene extends Phaser.Scene {
                     if (body.gameObject === threat) {
                         body.gameObject.destroy();
                         this.roundThreats--;
-                        if (this.roundThreats == 1) {
+                        if (this.roundThreats == 1 && this.switchScene == false) {
+                            this.switchScene = true;
+                            console.log('switchscene is set to true in basescene 347');
                             this.cameras.main.fadeOut(2000, 0, 0, 0);
                             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                                 this.scene.get('politics').setup(this.sharedData);
@@ -725,8 +728,8 @@ export const characters = [
         ],
         faction: 'maga',
         power: 'Working Across\n The Aisle',
-        powerTokenType: 'type_5',
-        helps: 'government',
+        powerTokenType: 'type_2',
+        //helps: 'government',
         hurts: 'justice',
         value: 0,
         prevValue: 0,
@@ -855,27 +858,52 @@ export const characters = [
     endorsement: 5,
     dne: false
 },
-
 {
-    name: "Ambassador Charlotte Grant",
-    faction: "woke",
+    name: 'Senator Linda Sterling',
     backstory: [
-        "A distinguished diplomat with decades of experience in foreign policy. Ambassador Grant's skilled diplomacy and negotiation tactics have",
-        "helped foster peace and strong international relations for the country."
+        "Hailing from the heartland of America, Senator Linda Sterling is a stalwart of the MAGA movement.",
+        "Her ability to successfully lobby and negotiate key policies has led to numerous victories in government.",
+        "Despite her political leanings, Sterling has demonstrated an ability to bridge the partisan divide, earning her respect from both MAGA and Woke factions.",
+        "Her dedication to bipartisan cooperation serves as a beacon of unity in a time marked by political division.",
+        "Sterling's unique position allows her to significantly influence governmental decisions, yet her methods often come under fire from advocates of social justice."
     ],
     shortstory: [
-        "Ambassador Grant's diplomatic skills improve international relations, enhancing global diplomacy. However, her focus on maintaining good relations",
-        "can sometimes cause great harm to the economy"
+        "Sterling's lengthy political career and effective lobbying have yielded substantial impacts on governmental policy.",
+        "Her skill in fostering dialogue and compromise between divided factions promotes balance and stability.",
+        "However, her strategies occasionally conflict with those championing radical social justice reforms."
     ],
-    power: 'Diplomacy\nand International Relations',
-    helps: 'diplomacy',
-    hurts: 'economy',
-    powerTokenType: "type_5",
+    faction: 'maga',
+    power: 'Effective Lobbying\nand Negotiation',
+    powerTokenType: 'type_5',
+    helps: 'government',
+    hurts: 'justice',
     value: 0,
     prevValue: 0,
     endorsement: 5,
     dne: false
 }
+
+
+// {
+//     name: "Ambassador Charlotte Grant",
+//     faction: "woke",
+//     backstory: [
+//         "A distinguished diplomat with decades of experience in foreign policy. Ambassador Grant's skilled diplomacy and negotiation tactics have",
+//         "helped foster peace and strong international relations for the country."
+//     ],
+//     shortstory: [
+//         "Ambassador Grant's diplomatic skills improve international relations, enhancing global diplomacy. However, her focus on maintaining good relations",
+//         "can sometimes cause great harm to the economy"
+//     ],
+//     power: 'Diplomacy\nand International Relations',
+//     helps: 'diplomacy',
+//     hurts: 'economy',
+//     powerTokenType: "type_5",
+//     value: 0,
+//     prevValue: 0,
+//     endorsement: 5,
+//     dne: false
+// }
 
 
 

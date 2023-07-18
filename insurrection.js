@@ -112,6 +112,7 @@ export class Insurrection extends BaseScene {
         this.putieTerritories = this.sharedData.putieTerritories;
         this.roundThreats = 0;
         this.switchScene = false;
+        console.log('reset switchScene to false');
 
         //====================================================================================
         //
@@ -142,7 +143,7 @@ export class Insurrection extends BaseScene {
                 // For each icon, the health is influenced by the amount of MAGA and Wokeness.  If the two factions
                 // are balanced, then health improves.
                 let healthChange = Phaser.Math.Clamp((5 - Math.abs(iconData.maga - iconData.woke))/5, -5, 5);
-                thisRoundHealthChange += healthChange;
+                thisRoundHealthChange += healthChange/5;
 
                 console.log('healthChange = '+ healthChange);
 
@@ -177,8 +178,9 @@ export class Insurrection extends BaseScene {
                 sanity_check = 0;
             }
             console.log('check for alien invasion '+ sanity_check + ' switchScene = '+ this.switchScene);
-            if ((this.sharedData.year > 2030) && (sanity_check < .3)  && this.switchScene == false) {
+            if ((this.sharedData.year > 2030) && (sanity_check < .5)  && this.switchScene == false) {
                 this.switchScene = true;
+                console.log('go to Aliens Attack screen.  this.switchscene = true');
                 this.cameras.main.fadeOut(2000, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('AliensAttack').setup(this.sharedData);
@@ -608,10 +610,11 @@ export class Insurrection extends BaseScene {
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
-                    console.log('switchScene = '+scene.switchScene);
                     if (scene.roundThreats == 1 && scene.switchScene == false) {
                         // fix problem with double scene fades!
+                        // maybe the problem is scene vs. this?
                         scene.switchScene = true;
+                        console.log('no more threats.  switchScene = '+scene.switchScene);
                         scene.cameras.main.fadeOut(2000, 0, 0, 0);
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                             scene.scene.get('politics').setup(scene.sharedData);
@@ -732,16 +735,16 @@ export class Insurrection extends BaseScene {
     //
     //====================================================================================
     update() {
-        let scene = this;
+        //let scene = this;
         // game loop
         // This is called 60 times per second. Game logic goes here.
         if (this.roundThreats === 0) {
             console.log('launch!');
             // After 10 seconds we go to politics
             this.time.delayedCall(10000, () => {
-                console.log('switchScene = ' + this.switchScene);
                 if (this.switchScene == false) {
                     this.switchScene = true;
+                    console.log('End of 10 seconds.  switchScene = ' + this.switchScene);
                     this.cameras.main.fadeOut(2000, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                         this.scene.get('politics').setup(this.sharedData);
@@ -753,7 +756,7 @@ export class Insurrection extends BaseScene {
 
             this.time.delayedCall(500, () => {
                 // Get the keys of your icons object
-                let iconKeys = Object.keys(scene.sharedData.icons);
+                let iconKeys = Object.keys(this.sharedData.icons);
 
                 // Shuffle the keys array
                 for(let i = iconKeys.length - 1; i > 0; i--) {
@@ -767,7 +770,7 @@ export class Insurrection extends BaseScene {
                 let countThreats = 0;
                 // Now your keys array is shuffled, so you can iterate over it
                 iconKeys.forEach(key => {
-                    let icon = scene.sharedData.icons[key];
+                    let icon = this.sharedData.icons[key];
                     //console.log('maga: ' + icon.maga + ' woke: '+icon.woke + ' attack '+key);
 
                     // loop through each territory
@@ -823,6 +826,7 @@ export class Insurrection extends BaseScene {
                         // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
                         // question: does this scene's sharedData ever even get used?
                         //this.sharedData.icons = this.icons;
+                        console.log('impossible situation here');
                         this.scene.get('politics').setup(this.sharedData);
                         this.scene.start('politics');
                     });

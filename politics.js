@@ -74,10 +74,10 @@ export class Politics extends BaseScene {
     }
     // politics
     setup(data) {
-/*
+
         var stack = new Error().stack;
         console.log("Called by: ", stack);
- */
+ 
 
         console.log(' politics: setup is loading sharedData');
 
@@ -216,7 +216,7 @@ export class Politics extends BaseScene {
             //this.drawHealthBar(1, 100, 100, 'maga', this.envHealthBarMaga);
             //this.drawHealthBar(0.7, 110, 100, 'woke', this.envHealthBarWoke);
 
-            drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth), env.scaleSprite;
+            drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth, env.scaleSprite, env.littleHats);
 
             if (0) {//Math.random() < 0.3) {
                 this.scene.get('AliensAttack').setup(this.sharedData);
@@ -245,7 +245,7 @@ export class Politics extends BaseScene {
                 this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
             }
  */
-            drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite);
+            drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
         }
         //====================================================================================
         //
@@ -343,6 +343,8 @@ export class Politics extends BaseScene {
                 if (character.hurts == iconData.iconName) matchHurts = true;
             };
             if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true; return;}
+            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true; return}
+            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true; return}
             // Keep separate track of the MAGA and Woke character placement row offsets
             let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
             // Set text color based on affiliation
@@ -369,7 +371,8 @@ export class Politics extends BaseScene {
                                 { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
             character.charText = characterText; // back reference to text so we can find the location later
-console.log('create checkbox with checkmark = '+character.backing);
+
+            //console.log(character.name +' has backing of '+character.backing);
             createCheckbox(this, 20+xOffset, 270 + (rowIndex * 60), character, characterText, function(character, backing) {
                 character.backing = backing;
             }, character.backing);
@@ -781,7 +784,7 @@ console.log('create checkbox with checkmark = '+character.backing);
                     let hurtIcon = scene.icons[helper.container.character.hurts];
                     let territory = territories[3]; // random territory
                     scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
-                    scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite);
+                    scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
 
                     //tooltip.text.setVisible(true);
                     //tooltip.box.setVisible(true);
@@ -840,12 +843,13 @@ console.log('create checkbox with checkmark = '+character.backing);
                         // super MAGA supporter shows up and provides an environmental solution they like.  That would reduce MAGAness.
                         let otherFaction = helper.container.character.faction == 'maga' ? 'woke' : 'maga';
                         if (icon[helper.container.character.faction]> icon[otherFaction]) {
-                            let numReturns = Math.min(5,(icon[helper.container.character.faction] -  icon[otherFaction])/10);
+                            let numReturns = Math.min(5,(icon[helper.container.character.faction] -  icon[otherFaction])/5);
                             let territory = territories[4]; // arbitrarily picked this territory to return to
+                            console.log('return '+numReturns+' threats');
                             scene.returnThreat(territory, helper.container.character.faction, helpedIcon, numReturns);
                             //icon[helper.container.character.faction] = icon[otherFaction];
                         }
-                        scene.drawGauges(helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth, helpedIcon.scaleSprite);
+                        scene.drawGauges(helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth, helpedIcon.scaleSprite, helpedIcon.littleHats);
                         // Delete data from sharedData.helperTokens
                         console.log('delete name ' + helper.container.character.name);
                         delete scene.sharedData.helperTokens[helper.container.character.name];
@@ -854,7 +858,7 @@ console.log('create checkbox with checkmark = '+character.backing);
                         // But we also launch 5 faction threats at the 'hurts' icon
                         console.log('character ' + helper.container.character.name + 'launches 5 threats');
                         scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
-                        scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite);
+                        scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
                         tooltip.text.setVisible(true);
                         tooltip.box.setVisible(true);
                         if (icon.iconName == 'military') {
@@ -893,7 +897,7 @@ console.log('create checkbox with checkmark = '+character.backing);
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
-                scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite);
+                scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
                 scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                 hitIcon(icon.iconText, iconColor);
@@ -1245,19 +1249,22 @@ console.log('create checkbox with checkmark = '+character.backing);
             if(initialValue) {
                 let undoCheck;
 
+console.log('initial value is set. endorsement = '+character.endorsement);
                 checkboxUnchecked.setVisible(false);
                 checkboxChecked.setVisible(true);
                 let value = 1;
 
                 // Update the underlying character's value
                 character.value = value;
-                if (character.endorsement + value > 1){
+                if (character.endorsement + value > 2){
                     undoCheck = true;
+                    console.log('fully endorsed and helpful token generated.  undo check');
                 } else {
                     // If we are out of political capital, undo the check
                     undoCheck = updateCharVal(character, value, characterText);
                 }
                 if (undoCheck == true) {
+                    console.log('undo check!');
                     checkboxUnchecked.setVisible(true);
                     checkboxChecked.setVisible(false);
                     character.value = 0;
