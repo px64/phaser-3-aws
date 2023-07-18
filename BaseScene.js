@@ -252,22 +252,22 @@ export default class BaseScene extends Phaser.Scene {
             healthGauge.setTint(color);
             scaleSprite.setTint(color);
 
-            // Shimmer effect
-            if (maga > 65 || woke > 65) {
-                console.log('Shimmer check.  maga = '+maga+ 'woke = '+woke);
-            let shimmerTween = this.tweens.add({
-                    delay: Phaser.Math.Between(0, 500),
-                    targets: [healthGauge, scaleSprite],
-                    duration: 1000 - maga*5 - woke*5, // Duration of one shimmer
-                    repeat: -1, // -1 for infinite repeats
-                    yoyo: true, // Yoyo makes the tween animate back to its original value after reaching its target.
-                    ease: 'Sine.easeInOut', // Linear easing for a smooth constant transition
-                    alpha: {
-                        start: 1, // Fully visible
-                        to: 0.4  // 50% transparency
-                    }
-                });
-            }
+            // // Shimmer effect -- doesn't unshimmer when hats leave and it's confusing anyway now that we have little hats
+            // if (maga > 65 || woke > 65) {
+            //     console.log('Shimmer check.  maga = '+maga+ 'woke = '+woke);
+            // let shimmerTween = this.tweens.add({
+            //         delay: Phaser.Math.Between(0, 500),
+            //         targets: [healthGauge, scaleSprite],
+            //         duration: 1000 - maga*5 - woke*5, // Duration of one shimmer
+            //         repeat: -1, // -1 for infinite repeats
+            //         yoyo: true, // Yoyo makes the tween animate back to its original value after reaching its target.
+            //         ease: 'Sine.easeInOut', // Linear easing for a smooth constant transition
+            //         alpha: {
+            //             start: 1, // Fully visible
+            //             to: 0.4  // 50% transparency
+            //         }
+            //     });
+            // }
             //clear all the little hats
             if (littleHats.length > 0) {
                 littleHats.forEach(hat => {
@@ -361,12 +361,12 @@ export default class BaseScene extends Phaser.Scene {
         }
     }
 
-    returnThreat(scene, territory, faction, icon, numThreats) {
+    returnThreat(territory, faction, icon, numThreats) {
         for (let i = 0; i < numThreats; i++) {
             let attackerTerritory = territory;
             let territoryWidth = this.sys.game.config.width / territories.length;
             let returnedIcon = icon.icon;
-
+console.log('return threat');
             if (faction == '') {
                 faction = attackerTerritory.faction;
             }
@@ -391,7 +391,7 @@ export default class BaseScene extends Phaser.Scene {
             this.time.delayedCall(i * 200, () => {
                 //threat.setBounce(1);
                 threat.setCollideWorldBounds(true);
-
+console.log('here');
                 // // It's good that the littlehat is now associated with this icon, but you can't just pop
                 // // a random hat since it could be maga or it could be woke.
                 // let lastIcon = icon.littleHats.pop();

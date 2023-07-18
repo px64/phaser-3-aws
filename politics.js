@@ -77,7 +77,7 @@ export class Politics extends BaseScene {
 
         var stack = new Error().stack;
         console.log("Called by: ", stack);
- 
+
 
         console.log(' politics: setup is loading sharedData');
 
@@ -948,11 +948,11 @@ export class Politics extends BaseScene {
                 //console.log('icon faction = '+icon[infoToken.type]+' other faction = '+icon[otherFaction]);
                 //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
                 let numReturns = Math.min(5,icon.maga/5);
-                scene.returnThreat(scene, territories[2], 'maga', icon, numReturns);
+                scene.returnThreat(territories[2], 'maga', icon, numReturns);
 
                 scene.time.delayedCall(300, () => {
                     numReturns = Math.min(5,icon.woke/5);
-                    scene.returnThreat(scene, territories[2], 'woke', icon, numReturns);
+                    scene.returnThreat(territories[2], 'woke', icon, numReturns);
                 });
             });
 
@@ -966,11 +966,11 @@ export class Politics extends BaseScene {
 
                 //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
                 let numReturns = Math.min(5,icon.woke/5);
-                scene.returnThreat(scene, territories[3], 'woke', icon, numReturns);
+                scene.returnThreat(territories[3], 'woke', icon, numReturns);
 
                 scene.time.delayedCall(300, () => {
                     numReturns = Math.min(5,icon.maga/5);
-                    scene.returnThreat(scene, territories[2], 'maga', icon, numReturns);
+                    scene.returnThreat(territories[2], 'maga', icon, numReturns);
                 });
             });
 
