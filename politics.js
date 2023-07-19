@@ -75,9 +75,10 @@ export class Politics extends BaseScene {
     // politics
     setup(data) {
 
+/* // debug: to find out who called politics!
         var stack = new Error().stack;
         console.log("Called by: ", stack);
-
+*/
 
         console.log(' politics: setup is loading sharedData');
 
@@ -171,13 +172,16 @@ export class Politics extends BaseScene {
             this.sharedData.MAGAness = this.MAGAness;
             this.sharedData.Wokeness = this.Wokeness;
 
-            if (this.militaryAllocation == true) {
+            // If autospend is on, then skip the military allocation screen
+            if (this.militaryAllocation == true && !this.difficultyLevel().militaryAutoSpend) {
                 this.militaryAllocation = false;
                 this.sharedData.militaryAllocation = this.totalMilitaryAllocThisScene;
                 this.scene.get('military allocation').setup(this.sharedData);
                 this.scene.start('military allocation');
             } else {
-                if (this.sharedData.WokenessVelocity < 1 || Math.random < .3) {
+                console.log('before calling dilemmaOdds, WokenessVelocity = ' + this.sharedData.WokenessVelocity);
+                if (this.difficultyLevel().dilemmaOdds) {
+                //if (this.sharedData.WokenessVelocity < 1 || Math.random() < .3) {
                     this.scene.get('dilemma').setup(this.sharedData);
                     this.scene.start('dilemma');
                 } else {
@@ -653,6 +657,7 @@ export class Politics extends BaseScene {
             }
 
             let numEntries = 0;
+            // If ideology is 'maga', start with 2 misinformation tokens
             if (scene.sharedData.ideology.faction == 'maga') {
                 numEntries = 2;
             }
@@ -687,7 +692,7 @@ export class Politics extends BaseScene {
             }
 
             // This block should run regardless of whether the scene has been created before
-            for (let i = 0; i < numEntries; i++) { // create 2 entries the first time, then some number depending on politics
+            for (let i = 0; i < numEntries; i++) { // create n entries the first time, then some number depending on politics
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
                     let data = misinformationData[scene.currentMisinformationIndex];
 

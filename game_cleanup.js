@@ -57,6 +57,7 @@ import {MilitaryAllocation} from './MilitaryAllocation.js';
 import { territories } from './BaseScene.js'
 import { characters } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
+import { difficultyList } from './Basescene.js';
 
 var healthBar;
 var healthBox;
@@ -87,7 +88,8 @@ class TitleScene extends Phaser.Scene {
             thisRoundAlienAttacks: 1,
             thisRoundTerritoriesWithMissiles: 6,
             MAGAnessVelocity: 0,
-            WokenessVelocity: 0
+            WokenessVelocity: 0,
+            difficultyLevel: 'A Beginner'
         };
     }
 
@@ -223,51 +225,63 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.add.image(400, 300, 'background');
 
         // Create an array of ideologies
-        let ideologies = [
-        {
-            name: "MAGA",
-            color: '#ff0000',
-            icon: 'magaBase',
-            faction: 'maga'
-        },
-        {
-            name: "Woke",
-            color: '#0000ff',
-            icon: 'wokeBase',
-            faction: 'woke'
-        },
-/*
-        {
-            name: "Libertarian RINO", color: '#ff00ff',
-            icon: 'libertarian',
-            faction: 'rino'
-        },
-        {
-            name: "Independent", color: '#ff00ff',
-            icon: 'independent',
-            faction: 'independent'
-        },
- */
-        {
-            name: "Not interested in politics/\n  Hoping to be abducted", color: '#00ff00',
-            icon: 'threat',
-            faction: 'none'
-        }
+        this.ideologies = [
+            {
+                name: "MAGA",
+                color: '#ff0000',
+                icon: 'magaBase',
+                faction: 'maga'
+            },
+            {
+                name: "Woke",
+                color: '#0000ff',
+                icon: 'wokeBase',
+                faction: 'woke'
+            },
+    /*
+            {
+                name: "Libertarian RINO", color: '#ff00ff',
+                icon: 'libertarian',
+                faction: 'rino'
+            },
+            {
+                name: "Independent", color: '#ff00ff',
+                icon: 'independent',
+                faction: 'independent'
+            },
+     */
+            {
+                name: "Not interested in politics/\n  Hoping to be abducted", color: '#00ff00',
+                icon: 'threat',
+                faction: 'none'
+            }
         ];
+
+        this.radioButtonGroup = []; // store radio buttons for easy removal
+
         let textColor = 1 ? '#ff8080' : '#8080ff';
 
         // Set the title text
-        let titleText = this.add.text(this.sys.game.config.width/2 - 20, 200, 'Choose Your Ideology', { fontSize: '32px', fontFamily: 'Roboto', color: textColor, fill: '#fff' }).setOrigin(0.5);
+        let titleText = this.add.text(this.sys.game.config.width/2 - 20, 200, 'Choose Game Difficulty', { fontSize: '48px', fontFamily: 'Roboto', color: textColor, fill: '#ff0' }).setOrigin(0.5);
 
-        // Create the radio buttons
-        for(let i = 0; i < ideologies.length; i++) {
-            let radioButton = this.add.text(this.sys.game.config.width/2 - 20, 300 + (i * 50), ideologies[i].name, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setInteractive();
-            let icon = this.add.sprite(this.sys.game.config.width/2 - 20 - radioButton.width/2 - 40, 300 + (i * 50), ideologies[i].icon).setScale(.1);
+        this.radioButtonGroup.push(titleText);
 
-            radioButton.on('pointerdown', () => this.selectIdeology(ideologies[i]));
-            radioButton.on('pointerover', () => this.enterButtonHoverState(radioButton));
-            radioButton.on('pointerout', () => this.enterButtonRestState(radioButton));
+        let yOffset = 0;
+        for(let key in difficultyList) {
+            if(difficultyList.hasOwnProperty(key)) {
+                let radioButton = this.add.text(this.sys.game.config.width/2 - 20, 300 + (yOffset * 50), key, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setInteractive();
+
+                radioButton.on('pointerdown', () => this.selectDifficulty(key)); // Pass the key, not the whole object
+                radioButton.on('pointerover', () => this.enterButtonHoverState(radioButton));
+                radioButton.on('pointerout', () => this.enterButtonRestState(radioButton));
+
+                this.radioButtonGroup.push(radioButton); // Add radio button to the group
+                yOffset += 1;
+            }
         }
+
+        let sanity_check = this.difficultyLevel().alienAttackForCapital;
+        let putieThreats = this.difficultyLevel().putieThreat;
 
         this.physics.world.gravity.y = 500;
 
@@ -282,6 +296,50 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
         // Give the sprite an initial velocity
         mySprite.setVelocity(100, -20);
+
+    }
+
+    selectDifficulty(difficultyKey) {
+        this.sharedData.difficultyLevel = difficultyKey;
+
+        console.log(`You chose ${difficultyKey}`);
+        let textColor = '#ff00ff';
+        let height = this.sys.game.config.height*.15;
+        let ideologyText = this.add.text(this.sys.game.config.width/2 - 20, height, 'You are '+ difficultyKey + '!', { fontSize: '56px', fontFamily: 'Roboto', color: textColor }).setOrigin(0.5);
+
+        // add military tech based on difficulty level
+        for (let asset of militaryAssets) {
+            let difficultyLevel = this.difficultyLevel();
+            asset.techLevel += difficultyLevel.militaryTechBoost;
+        }
+        // Remove difficulty radio buttons
+        this.radioButtonGroup.forEach(button => button.destroy());
+        this.radioButtonGroup = []; // reset the radio button group
+
+        // remove choice text
+        this.time.delayedCall(3000, () => {
+            ideologyText.destroy();
+        });
+
+        // Display ideology radio buttons
+        this.displayIdeologies();
+    }
+
+    displayIdeologies() {
+        let textColor = 1 ? '#ff8080' : '#8080ff';
+
+        // Set the title text
+        let titleText = this.add.text(this.sys.game.config.width/2 - 20, 200, 'Choose Your Ideology', { fontSize: '32px', fontFamily: 'Roboto', color: textColor, fill: '#fff' }).setOrigin(0.5);
+
+        // Create the radio buttons
+        for(let i = 0; i < this.ideologies.length; i++) {
+            let radioButton = this.add.text(this.sys.game.config.width/2 - 20, 300 + (i * 50), this.ideologies[i].name, { fontSize: '24px', fill: '#fff' }).setOrigin(0.5).setInteractive();
+            let icon = this.add.sprite(this.sys.game.config.width/2 - 20 - radioButton.width/2 - 40, 300 + (i * 50), this.ideologies[i].icon).setScale(.1);
+
+            radioButton.on('pointerdown', () => this.selectIdeology(this.ideologies[i]));
+            radioButton.on('pointerover', () => this.enterButtonHoverState(radioButton));
+            radioButton.on('pointerout', () => this.enterButtonRestState(radioButton));
+        }
     }
 
     selectIdeology(ideology) {
@@ -298,11 +356,21 @@ export class ChooseYourIdeologyScene extends BaseScene {
         // where if the character's ideology matches your ideology, then the character starts with an endorsement.
         // Now I just added that it is only for type_5 powerTokenTypes.  In other words hacker and mediator don't
         // get a free endorsement
+        console.log('starting endorsement = '+this.difficultyLevel().startingEndorsement);
         characters.forEach((character, index) => {
-            if (character.faction == ideology.faction && character.powerTokenType == 'type_5') {
+            if (this.difficultyLevel().startingEndorsement === 'all') {
                 character.endorsement += 1;
-            } else if (ideology.faction == 'none' && character.powerTokenType != 'type_5') {
-                character.endorsement +=1;
+            } else if (this.difficultyLevel().startingEndorsement === 'ideology') {
+                    if (character.faction == ideology.faction) {
+                        character.endorsement += 1;
+                    }
+            } else if (this.difficultyLevel().startingEndorsement === 'nospecial') { // only type_5's get endorsed
+                if (character.faction == ideology.faction && character.powerTokenType == 'type_5') {
+                    character.endorsement += 1;
+                    // if you have no ideology, only hackers and diplomats get endorsed
+                } else if (ideology.faction == 'none' && character.powerTokenType != 'type_5') {
+                    character.endorsement += 1;
+                }
             }
         });
         if (ideology.faction == 'maga') {
@@ -317,8 +385,11 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.cameras.main.fadeOut(3000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             let sanity_check = Math.random();
-            console.log(sanity_check);
-            if (sanity_check < .5) {
+            console.log('aliens attack random value = ' + sanity_check);
+            if (sanity_check < this.difficultyLevel().oddsOfAlienAttackFirstRound) {
+                console.log('Aliens Attack');
+            }
+            if (sanity_check < this.difficultyLevel().oddsOfAlienAttackFirstRound) {
                 this.scene.get('AliensAttack').setup(this.sharedData);
                 this.scene.start('AliensAttack');
             } else {
@@ -668,7 +739,7 @@ export class Scene2 extends BaseScene {
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
         this.totalAlienAttacks = this.sharedData.thisRoundAlienAttacks;
-        this.sharedData.thisRoundAlienAttacks += 4; // each round 4 more aliens attack
+        this.sharedData.thisRoundAlienAttacks += this.difficultyLevel().alienIncreasePerRound; // each round n more aliens attack
         this.icons = this.sharedData.icons;
         this.aliensWin = false;
         this.attackIndex = 0; // need to start with this pointing to something so missiles can be launched from it
@@ -751,22 +822,25 @@ export class Scene2 extends BaseScene {
             lastClickTime = currentTime;
             //let baseOffset = Phaser.Math.Wrap(this.attackIndex + territories.length/2, 0, territories.length-1);
             let base = territories[Phaser.Math.Wrap((this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length, 0, territories.length)];
-            console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
-            let thisFaction = this.sharedData.ideology.faction;
-            let otherFaction = this.sharedData.ideology.faction;
-            if (this.sharedData.ideology.faction == 'none') {
-                thisFaction = 'maga';
-                otherFaction = 'woke';
-            }
             let diplomacy = 0;
             if (this.sharedData.icons['diplomacy']) {
                 diplomacy = this.sharedData.icons['diplomacy'].health;
             }
-            // If diplomacy is good, then both MAGA and Woke work together on defending
-            if (this.sharedData.ideology.faction == 'none' || diplomacy > 95) {
+            console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
+            let thisFaction = this.sharedData.ideology.faction; // start with both factions the same.
+            let otherFaction = this.sharedData.ideology.faction;
+            if (this.sharedData.ideology.faction == 'none') {
+                thisFaction = 'maga';
+                otherFaction = 'woke';
                 if (diplomacy < 96) {
                     this.roundRobinLaunch++;  // if no affiliation and poor diplomacy, random bases fire
                 }
+            }
+
+            // If diplomacy is good, then both MAGA and Woke work together on defending
+            if (this.sharedData.ideology.faction == 'none'
+                || diplomacy > 95
+                || this.difficultyLevel().alienDefenseFromSameBase) {
                 otherFaction = (thisFaction == 'maga' ? 'woke': 'maga');
             }
 
@@ -784,10 +858,14 @@ export class Scene2 extends BaseScene {
                     let missile2 = this.fireMissile(base, angle, pointer, 30, .03, 150, 3, this.missilesWoke);
                     // Timer event to delay missile firing
                     this.time.delayedCall(400, () => {
+                        let angle = Phaser.Math.Angle.Between(oldBase.x+this.territoryWidth/2, oldBase.y, pointer.x, pointer.y);
+                        angle += 90*(Math.PI/180);
                         // Code to fire missile goes here
                         let missile1 = this.fireMissile(oldBase, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
                     }, [], this);
                     this.time.delayedCall(800, () => {
+                        let angle = Phaser.Math.Angle.Between(oldBase.x+this.territoryWidth/2, oldBase.y, pointer.x, pointer.y);
+                        angle += 90*(Math.PI/180);
                         // Code to fire missile goes here
                         let missile3 = this.fireMissile(oldBase, angle, pointer, 30, .03, 150, 3, this.missilesWoke)
                     }, [], this);

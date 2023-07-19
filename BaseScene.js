@@ -490,6 +490,13 @@ console.log('here');
             graphics.strokePath();
         }
     }
+
+    difficultyLevel() {
+        let config = difficultyList[this.sharedData.difficultyLevel];
+        config.alienAttackForCapital = config.alienAttackForCapitalFunc(this.sharedData);
+        config.dilemmaOdds = config.dilemmaOddsFunc(this.sharedData);
+        return config;
+    }
 }
 //    1. Character creates a barricade
 //    2. Character "creates" a new power token (called powerToken).
@@ -505,7 +512,7 @@ console.log('here');
 
 // impact on alien wars.  oh wait prevent putieville!
 // econ, gov, diplomacy collapse all increase putieville
-// economy health: make more weapons faster
+// economy health: make more weapons faster/ stronger
 
 
 export const characters = [
@@ -1052,3 +1059,67 @@ export const territories = [
     }
     */
 ];
+//    Right now 'tuning' is when a threat hits an icon, the maganess or wokeness increase by 5
+//    when putie hits an icon, the maganess or wokeness increase by 2
+export const difficultyList = {
+    'A Beginner': {
+        alienIncreasePerRound: 1,
+        alienDefenseFromSameBase: 'true',
+        militaryAutoSpend: 'true',
+        alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
+            return sharedData.MAGAness < 4
+                    && sharedData.Wokeness < 4
+                    && sharedData.putieTerritories < territories.length / 2;
+        },
+        dilemmaOddsFunc: function(sharedData) {
+            return (sharedData.WokenessVelocity < 1
+                    || (Math.random() < .3));
+        },
+        militaryTechBoost: 50,
+        oddsOfAlienAttack: 0.66, //more attacks: easier to get capital,
+        oddsOfAlienAttackFirstRound: 1,
+        startingEndorsement: 'all',
+        putieThreat: 1
+    },
+    'Going to Need Some Help': {
+        alienIncreasePerRound: 2,
+        alienDefenseFromSameBase: 'false',
+        militaryAutoSpend: 'true',
+        alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
+            return sharedData.MAGAness === 0
+                    && sharedData.Wokeness === 0
+                    && sharedData.putieTerritories < territories.length / 2;
+        },
+        dilemmaOddsFunc: function(sharedData) { // Go to Dilemma screen based on whether you are earning capital or not
+            let sanity_check = Math.random();
+            console.log('dilemma probability = ' + sanity_check+ ' sharedData.WokenessVelocity = '+sharedData.WokenessVelocity);
+            return (!(sharedData.WokenessVelocity > 2)
+                    && (sharedData.WokenessVelocity < .75
+                        || (sanity_check < .3)));
+        },
+        militaryTechBoost: 25,
+        oddsOfAlienAttack: 0.58,
+        oddsOfAlienAttackFirstRound: .8,
+        startingEndorsement: 'ideology',
+        putieThreat: 2
+    },
+    'Realistic': {
+        alienIncreasePerRound: 4,
+        alienDefenseFromSameBase: 'false',
+        militaryAutoSpend: 'false',
+        alienAttackForCapitalFunc: function(sharedData) {
+            return sharedData.MAGAness === 0
+                    && sharedData.Wokeness === 0
+                    && sharedData.putieTerritories < territories.length / 2;
+        },
+        dilemmaOddsFunc: function(sharedData) {
+            return (sharedData.WokenessVelocity < .5
+                    || (Math.random() < .3));
+        },
+        militaryTechBoost: 0,
+        oddsOfAlienAttack: 0.5,
+        oddsOfAlienAttackFirstRound: .5,
+        startingEndorsement: 'nospecial',
+        putieThreat: 2
+    }
+};

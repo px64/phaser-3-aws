@@ -63,7 +63,7 @@ export class DilemmaScene extends BaseScene {
 
 
         console.log('MAGA: ' + this.sharedData.MAGAness + ' Woke: ' + this.sharedData.Wokeness);
-        console.log(this.sharedData.icons);
+        //console.log(this.sharedData.icons);
     }
 
     preload() {
@@ -78,7 +78,7 @@ export class DilemmaScene extends BaseScene {
     //
     //====================================================================================
     create() {
-        console.log(this.sharedData.icons);
+        //console.log(this.sharedData.icons);
         if (!Object.keys(this.sharedData.icons).length) {
             console.log('new data here in dilemma');
             // initialize icons...
