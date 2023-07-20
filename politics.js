@@ -173,7 +173,7 @@ export class Politics extends BaseScene {
             this.sharedData.Wokeness = this.Wokeness;
 
             // If autospend is on, then skip the military allocation screen
-            if (this.militaryAllocation == true && !this.difficultyLevel().militaryAutoSpend) {
+            if (this.militaryAllocation == true && this.difficultyLevel().militaryAutoSpend == 'false') {
                 this.militaryAllocation = false;
                 this.sharedData.militaryAllocation = this.totalMilitaryAllocThisScene;
                 this.scene.get('military allocation').setup(this.sharedData);
@@ -398,7 +398,7 @@ export class Politics extends BaseScene {
                 // Lookup stored data
                 let storedData = scene.sharedData.helperTokens[key];
                 console.log('helperToken ' + storedData.text + ' has been recreated and the saved index is ' + storedData.helperTokenIndex);
-                let helpfulToken = createPowerToken(scene, storedData.type, storedData.text, storedData.x, storedData.y, storedData);
+                let helpfulToken = createPowerToken(scene, storedData.type, storedData.text, storedData.x, storedData.y, storedData, storedData.helperTokenIcon);
                 // debug helpfulToken.sprite.setVisible(true);
                 scene.helperIcons.add(helpfulToken.sprite); // This line is supposed to make interactions possible
                 helpfulToken.container.setInteractive({ draggable: true }); // make each defense item draggable
@@ -444,8 +444,35 @@ export class Politics extends BaseScene {
             } else {
                 xOffset = charText.x - 140;
             }
-
             yOffset = charText.y + 25;
+
+            //===========
+            // Add an icon or graphic
+            let helpedIcon;
+            let characterHelps = character.helps; // don't want to change character.helps permanently
+            if (character.helps){
+                helpedIcon = scene.sharedData.icons[character.helps];
+            } else {
+                helpedIcon = scene.sharedData.icons['environment']; // placeholder for now for undefined helps
+                if (character.powerTokenType == 'type_3') {
+                    characterHelps = 'hacker';
+                    helpedIcon.scaleFactor = 0.19;
+                    //console.log('hacker');
+                } else {
+                    characterHelps = 'negotiation';
+                    helpedIcon.scaleFactor = 0.13;
+                    //console.log('negotiation');
+                }
+            }
+
+            // Add an icon or graphic and scale it
+            let helpfulTokenIcon = scene.add.image(0, 0, characterHelps);  // Position the icon at the original y position
+            helpfulTokenIcon.setScale(helpedIcon.scaleFactor*.6);  // scale the icon
+            helpfulTokenIcon.setOrigin(0.5, 0.82);  // change origin to bottom center
+            helpfulTokenIcon.setVisible(true);
+            //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
+            helpfulTokenIcon.setAlpha(1);
+            //=====
 
             // Store position data
             let storedData = {
@@ -454,7 +481,8 @@ export class Politics extends BaseScene {
                 type: character.faction,
                 text: text,
                 character: character,
-                helperTokenIndex: helpfulTokenIndex
+                helperTokenIndex: helpfulTokenIndex,
+                helperTokenIcon: helpfulTokenIcon
             };
 
             // Store new helpful token data indexed by character.name
@@ -462,10 +490,11 @@ export class Politics extends BaseScene {
 
             // Create new helpful token
             let size = 'normal';
-            if (character.powerTokenType === 'type_2') {
+            if (character.powerTokenType == 'type_2') {
                 size = 'large';
             }
-            let helpfulToken = createPowerToken(scene, character.faction, text, xOffset, yOffset, storedData, size, 'normal', false);
+
+            let helpfulToken = createPowerToken(scene, character.faction, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
 
             scene.helperIcons.add(helpfulToken.sprite);
             helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
@@ -490,17 +519,39 @@ export class Politics extends BaseScene {
                     let hurtIcon = scene.sharedData.icons[character.hurts];
                     hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
                     //console.log(hurtIcon);
+                } else if (character.powerTokenType == 'type_3') {
+                    for (let key in scene.sharedData.icons) {
+                        let iconData = scene.sharedData.icons[key];
+
+                        //console.log(helpedIcon);
+                        if (character.faction == 'maga') {
+                            helpedColor = 0xff8080;
+                        } else {
+                            helpedColor = 0x8080ff;
+                        }
+                        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                        iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
+                    }
+                    //console.log(hurtIcon);
                 }
             });
             helpfulToken.container.on('pointerup', function (pointer, dragX, dragY) {
                 //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
-                let helpedIcon = scene.sharedData.icons[character.helps];
-                if (helpedIcon) {
-                    helpedIcon.icon.shieldWoke.setAlpha(0);
-                }
-                let hurtIcon = scene.sharedData.icons[character.hurts];
-                if (hurtIcon) {
-                    hurtIcon.icon.shieldMaga.setAlpha(0);
+                if (character.powerTokenType == 'type_5') {
+                    let helpedIcon = scene.sharedData.icons[character.helps];
+                    if (helpedIcon) {
+                        helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.1:0);
+                    }
+                    let hurtIcon = scene.sharedData.icons[character.hurts];
+                    if (hurtIcon) {
+                        hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength > 0 ? 0.1:0);
+                    }
+                } else if (character.powerTokenType == 'type_3') {
+                    for (let key in scene.sharedData.icons) {
+                        let iconData = scene.sharedData.icons[key];
+                        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                        iconData.icon.shieldWoke.setAlpha(iconData.icon.shieldStrength > 0 ? 0.1:0);
+                    }
                 }
             });
             if (character.powerTokenType === 'type_2') {
@@ -1013,7 +1064,7 @@ export class Politics extends BaseScene {
         //
         //====================================================================================
 
-        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce) {
+        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
             let factionColor = faction === 'maga'
                 ? '0xff0000'
                 : faction === 'woke'
@@ -1027,6 +1078,7 @@ export class Politics extends BaseScene {
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
             if (size == 'large' ) {text.setFontSize(36);}
+
             // Create a larger white rectangle for outline
             let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
             // Create a tween that scales the rectangle up and down
@@ -1052,17 +1104,38 @@ export class Politics extends BaseScene {
                 loop: -1, // -1 means it will loop forever
             });
 
+
             // Create a sprite for physics and bouncing
             let misinformationSprite = scene.physics.add.sprite(0, 0, 'track');
             misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
             misinformationSprite.setDepth(1);
 
-            // Group the text, outline, and rectangle into a single container
-            let misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+            let misinformation;
 
+            // Group the text, outline, and rectangle into a single container
+            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                console.log(tokenIcon);
+                let tokenIconTween = scene.tweens.add({
+                    targets: tokenIcon, // object that the tween affects
+                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
+                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
+                    duration: 1000, // duration of scaling to 120% will be 1 second
+                    ease: 'Linear', // type of easing
+                    yoyo: true, // after scaling to 120%, it will scale back to original size
+                    loop: -1, // -1 means it will loop forever
+                });
+                rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
+                outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
+                text.y += tokenIcon.displayHeight/2;
+                //rectangle.x adjustment??
+                misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
+            } else {
+                misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+                misinformation.setSize(outline.width, outline.height);
+            }
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
-            misinformation.setSize(outline.width, outline.height);
             misinformationSprite.setScale(.6);
             //misinformationSprite.setSize(outline.width*.1, 1);
 
@@ -1254,7 +1327,6 @@ export class Politics extends BaseScene {
             if(initialValue) {
                 let undoCheck;
 
-console.log('initial value is set. endorsement = '+character.endorsement);
                 checkboxUnchecked.setVisible(false);
                 checkboxChecked.setVisible(true);
                 let value = 1;
@@ -1447,7 +1519,7 @@ console.log('initial value is set. endorsement = '+character.endorsement);
                 scene.MAGAness = Math.floor(tmpMAG);
                 scene.Wokeness = Math.floor(tmpWok);
             });
-console.log('test');
+
             createCharacterTooltip(scene, character, x, y, slider, characterText);
 
             return {track: track, slider: slider};
@@ -1533,13 +1605,6 @@ console.log('test');
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
             let xOffset = character.faction === 'maga' ? scene.game.config.width * .3 : scene.game.config.width * -.24;
-
-            // Format the text to be centered and with the color based on the affiliation
-            // let formattedBackstory = insertLineBreaks(character.shortstory.join(' '), 37);
-            // let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
-            // backstoryText.setOrigin(0.5);
-            // backstoryText.setVisible(false);
-            // backstoryText.setDepth(3);  // increase depth to be on top
 
             // Add an icon or graphic
             let helpedIcon;

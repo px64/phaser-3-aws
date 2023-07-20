@@ -1097,7 +1097,7 @@ export const difficultyList = {
                     && (sharedData.WokenessVelocity < .75
                         || (sanity_check < .3)));
         },
-        militaryTechBoost: 25,
+        militaryTechBoost: 15,
         oddsOfAlienAttack: 0.58,
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',
