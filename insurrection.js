@@ -112,6 +112,7 @@ export class Insurrection extends BaseScene {
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
         this.roundThreats = 0;
+        this.haventLaunchedYet = true;
         this.switchScene = false;
         console.log('reset switchScene to false');
 
@@ -517,6 +518,7 @@ export class Insurrection extends BaseScene {
                 console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
                 if (scene.roundThreats == 1) {
                     console.log('all threats destroyed but stay here til time ends anyway');
+                    scene.victoryText.destroy();
                     //scene.scene.get('politics').setup(this.sharedData);
                     //scene.scene.start('politics');
                 }
@@ -547,6 +549,7 @@ export class Insurrection extends BaseScene {
                 console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
                 if (scene.roundThreats == 1) {
                     console.log('all threats destroyed but stay here til time ends anyway');
+                    scene.victoryText.destroy();
                     //scene.scene.get('politics').setup(scene.sharedData);scene.scene.start('politics');
                 }
                 //console.log(defense.container);
@@ -574,7 +577,9 @@ export class Insurrection extends BaseScene {
                 scene.tweens.add({
                     targets: threat,
                     alpha: 0,
-                    duration: 500,
+                    scaleX: 0,
+                    scaleY: 0,
+                    duration: 200,
                     onComplete: function () {
                         threat.destroy();
                     },
@@ -613,17 +618,19 @@ export class Insurrection extends BaseScene {
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
-                    if (scene.roundThreats == 1 && scene.switchScene == false) {
-                        // fix problem with double scene fades!
-                        // maybe the problem is scene vs. this?
-                        scene.switchScene = true;
-                        console.log('no more threats.  switchScene = '+scene.switchScene);
-                        scene.cameras.main.fadeOut(2000, 0, 0, 0);
-                        scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                            scene.scene.get('politics').setup(scene.sharedData);
-                            scene.scene.start('politics');
-                        });
-                    }
+                    scene.victoryText.destroy();
+                    console.log('stay here until 10 seconds elapse so more capital can be rewarded');
+                    // if (scene.roundThreats == 1 && scene.switchScene == false) {
+                    //     // fix problem with double scene fades!
+                    //     // maybe the problem is scene vs. this?
+                    //     scene.switchScene = true;
+                    //     console.log('no more threats.  switchScene = '+scene.switchScene);
+                    //     scene.cameras.main.fadeOut(2000, 0, 0, 0);
+                    //     scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    //         scene.scene.get('politics').setup(scene.sharedData);
+                    //         scene.scene.start('politics');
+                    //     });
+                    // }
                 }
             }
 
@@ -741,8 +748,9 @@ export class Insurrection extends BaseScene {
         //let scene = this;
         // game loop
         // This is called 60 times per second. Game logic goes here.
-        if (this.roundThreats === 0) {
+        if (this.roundThreats === 0 && this.haventLaunchedYet == true) {
             console.log('launch!');
+            this.haventLaunchedYet = false;
             // After 10 seconds we go to politics
             this.time.delayedCall(10000, () => {
                 if (this.switchScene == false) {
@@ -813,13 +821,13 @@ export class Insurrection extends BaseScene {
                     }
                 }
                 // Create a text object to display a victory message
-                let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, message, {
+                this.victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, message, {
                     font: 'bold 48px Arial',
                     fill: '#ffffff',
                     align: 'center'
                 });
-                victoryText.setOrigin(0.5);  // Center align the text
-                victoryText.setAlpha(0.8);
+                this.victoryText.setOrigin(0.5);  // Center align the text
+                this.victoryText.setAlpha(0.8);
                 if (countThreats == 0) {
                     // Create a button using an image
                     let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);

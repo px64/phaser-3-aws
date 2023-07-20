@@ -355,7 +355,7 @@ export default class BaseScene extends Phaser.Scene {
 
                 let attackedIcon = icon.icon;
                 threat.icon = icon;
-                this.physics.moveTo(threat, attackedIcon.x, attackedIcon.y, 220); // 100 is the speed of the threat.
+                this.physics.moveTo(threat, attackedIcon.x, attackedIcon.y, 450); // 100 is the speed of the threat.
                 this.roundThreats++;
             });
         }
@@ -1092,7 +1092,7 @@ export const difficultyList = {
         },
         dilemmaOddsFunc: function(sharedData) { // Go to Dilemma screen based on whether you are earning capital or not
             let sanity_check = Math.random();
-            console.log('dilemma probability = ' + sanity_check+ ' sharedData.WokenessVelocity = '+sharedData.WokenessVelocity);
+            //console.log('dilemma probability = ' + sanity_check+ ' sharedData.WokenessVelocity = '+sharedData.WokenessVelocity);
             return (!(sharedData.WokenessVelocity > 2)
                     && (sharedData.WokenessVelocity < .75
                         || (sanity_check < .3)));

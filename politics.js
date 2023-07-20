@@ -27,7 +27,8 @@
 
 import BaseScene from './BaseScene.js';
 import { characters } from './BaseScene.js';
-import { territories } from './BaseScene.js'
+import { territories } from './BaseScene.js';
+import { militaryAssets } from './BaseScene.js';
 
 //var MAGAness = 0;
 var MAGAupdate = 0;
@@ -172,22 +173,38 @@ export class Politics extends BaseScene {
             this.sharedData.MAGAness = this.MAGAness;
             this.sharedData.Wokeness = this.Wokeness;
 
-            // If autospend is on, then skip the military allocation screen
-            if (this.militaryAllocation == true && this.difficultyLevel().militaryAutoSpend == 'false') {
-                this.militaryAllocation = false;
-                this.sharedData.militaryAllocation = this.totalMilitaryAllocThisScene;
-                this.scene.get('military allocation').setup(this.sharedData);
-                this.scene.start('military allocation');
-            } else {
+            //Function to handle dilemma or insurrection
+            const handleDilemmaOrInsurrection = () => {
                 console.log('before calling dilemmaOdds, WokenessVelocity = ' + this.sharedData.WokenessVelocity);
                 if (this.difficultyLevel().dilemmaOdds) {
-                //if (this.sharedData.WokenessVelocity < 1 || Math.random() < .3) {
                     this.scene.get('dilemma').setup(this.sharedData);
                     this.scene.start('dilemma');
                 } else {
                     this.scene.get('insurrection').setup(this.sharedData);
                     this.scene.start('insurrection');
                 }
+            };
+
+            if (this.militaryAllocation == true) {
+                this.militaryAllocation = false;
+                if (this.difficultyLevel().militaryAutoSpend == 'true') {
+                    militaryAssets.forEach((asset, index) => {
+                        asset.techLevel += this.totalMilitaryAllocThisScene;
+                        console.log(asset.name + ' has a new tech level of ' + asset.techLevel);
+                    });
+                    // Need to go to scene to indicate additional military strength
+                    this.scene.get('TutorialScene').setup(this.sharedData);
+                    this.scene.start('TutorialScene', { nextScene: 'dilemmaOrInsurrection', message: 'Military Capital has been allocated.\nYour Alien Defense is stronger!' });
+                    //this.scene.pause('politics');
+
+                    //handleDilemmaOrInsurrection();
+                } else { // if autospend is false
+                    this.sharedData.militaryAllocation = this.totalMilitaryAllocThisScene;
+                    this.scene.get('military allocation').setup(this.sharedData);
+                    this.scene.start('military allocation');
+                }
+            } else {
+                handleDilemmaOrInsurrection();
             }
         });
 
@@ -851,23 +868,25 @@ export class Politics extends BaseScene {
                 //console.log(icon.iconName + ' ' + scene.icons[icon.iconName]);
             }
             if (helper.container.character.powerTokenType == 'type_5') {
-                // Automatically directed to a predetermined icon.  If this is the wrong one, nothing happens.
-                //console.log(helper.container.character.faction + ' ' + helper.container.character.helps + '  ' + icon.iconName + ' ' + helper.container.character.hurts);
                 //console.log(scene.icons[helper.container.character.hurts][helper.container.character.faction]);
                 // The helper token's representative character's help icon matches the icon into which it's been dropped.
                 // This where we apply the various actions based on attributes contributed by the represented character's power
                 if (helper.container.character.helps == icon.iconName) {
                     let helpedIcon = scene.icons[helper.container.character.helps];
                     let tooltip = createTooltip(scene, helper.container.character, 500, 500, helpedIcon.icon, helpedIcon.iconText);
+                    scene.time.delayedCall(5000, () => {
+                        tooltip.text.setVisible(false);
+                        tooltip.box.setVisible(false);
+                    });
+
                     scene.tweens.add({
                         targets: helper.container,
                         alpha: 0,
-                        duration: 5000,
+                        scaleX: 0, // start scaling to 0% of the original size
+                        scaleY: 0, // start scaling to 0% of the original size
+                        duration: 800,
                         onComplete: function () {
                             helper.container.destroy();
-                            tooltip.text.setVisible(false);
-                            tooltip.box.setVisible(false);
-
                         },
                         callbackScope: scene
                     });
@@ -937,7 +956,9 @@ export class Politics extends BaseScene {
             scene.tweens.add({
                 targets: threat,
                 alpha: 0,
-                duration: 500,
+                scaleX: 0,
+                scaleY: 0,
+                duration: 200,
                 onComplete: function () {
                     threat.setAlpha(0);
                     threat.destroy();

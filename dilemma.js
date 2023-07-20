@@ -642,7 +642,9 @@ export class DilemmaScene extends BaseScene {
                 this.tweens.add({
                     targets: defense,
                     alpha: 0,
-                    duration: 500,
+                    scaleX: 0,
+                    scaleY: 0,
+                    duration: 200,
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
@@ -661,7 +663,9 @@ export class DilemmaScene extends BaseScene {
                 this.tweens.add({
                     targets: defense,
                     alpha: 0,
-                    duration: 500,
+                    scaleX: 0,
+                    scaleY: 0,
+                    duration: 200,
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
@@ -908,7 +912,9 @@ export class DilemmaScene extends BaseScene {
             scene.tweens.add({
                 targets: threat,
                 alpha: 0,
-                duration: 500,
+                scaleX: 0,
+                scaleY: 0,
+                duration: 200,
                 onComplete: function () {
                     threat.destroy();
                 },

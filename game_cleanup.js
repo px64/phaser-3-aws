@@ -524,7 +524,7 @@ class AliensAttack extends Phaser.Scene {
         }
     }
 }
-class TutorialScene extends Phaser.Scene {
+class TutorialScene extends BaseScene {
     constructor() {
         super({ key: 'TutorialScene' });
         this.sharedData = {
@@ -566,11 +566,29 @@ class TutorialScene extends Phaser.Scene {
 
         console.log('year is '+ this.sharedData.year);
 
+        //Function to handle dilemma or insurrection
+        const handleDilemmaOrInsurrection = () => {
+            console.log('before calling dilemmaOdds, WokenessVelocity = ' + this.sharedData.WokenessVelocity);
+            if (this.difficultyLevel().dilemmaOdds) {
+                this.scene.get('dilemma').setup(this.sharedData);
+                this.scene.start('dilemma');
+            } else {
+                this.scene.get('insurrection').setup(this.sharedData);
+                this.scene.start('insurrection');
+            }
+        };
+
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
             // Switch to the next scene
-            this.scene.get('politics').setup(this.sharedData);
-            this.scene.start('politics');
+            if (data.nextScene != 'dilemmaOrInsurrection') {
+                console.log('sanity check: not dilemma');
+                this.scene.get('politics').setup(this.sharedData);
+                this.scene.start('politics');
+            } else {
+                console.log('sanity check: we hit handle dilemma or insurrection');
+                handleDilemmaOrInsurrection();
+            }
         }, this);
     }
 }
@@ -1032,7 +1050,7 @@ export class Scene2 extends BaseScene {
             thereBeThreats = 1;
         }
         // If aliens have aleady reached the bottom of the screen then you can't have deterred the attack
-        if (this.totalAlienAttacks < 2 && thereBeThreats == 1 && this.threats.countActive(true) == 0 && this.aliensWin == false) {
+        if (this.totalAlienAttacks < 1 && thereBeThreats == 1 && this.threats.countActive(true) == 0 && this.aliensWin == false) {
             console.log('All threats have been destroyed!');
             thereBeThreats = 0;
             if (this.attackedTerritory.faction == 'maga') {
