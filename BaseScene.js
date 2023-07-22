@@ -18,6 +18,7 @@ var justiceMaga = 0;
 var justiceWoke = 0;
 var justiceStrength = 50;
 var charVal = {};
+// testTerritory
 
 export default class BaseScene extends Phaser.Scene {
 /*
