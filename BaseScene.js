@@ -391,7 +391,7 @@ console.log('return threat');
             this.time.delayedCall(i * 200, () => {
                 //threat.setBounce(1);
                 threat.setCollideWorldBounds(true);
-console.log('here');
+
                 // // It's good that the littlehat is now associated with this icon, but you can't just pop
                 // // a random hat since it could be maga or it could be woke.
                 // let lastIcon = icon.littleHats.pop();
@@ -1064,8 +1064,8 @@ export const territories = [
 export const difficultyList = {
     'A Beginner': {
         alienIncreasePerRound: 1,
-        alienDefenseFromSameBase: 'true',
-        militaryAutoSpend: 'true',
+        alienDefenseFromSameBase: true,
+        militaryAutoSpend: true,
         alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
             return sharedData.MAGAness < 4
                     && sharedData.Wokeness < 4
@@ -1083,8 +1083,8 @@ export const difficultyList = {
     },
     'Going to Need Some Help': {
         alienIncreasePerRound: 2,
-        alienDefenseFromSameBase: 'false',
-        militaryAutoSpend: 'true',
+        alienDefenseFromSameBase: false,
+        militaryAutoSpend: true,
         alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
             return sharedData.MAGAness === 0
                     && sharedData.Wokeness === 0
@@ -1105,8 +1105,8 @@ export const difficultyList = {
     },
     'Realistic': {
         alienIncreasePerRound: 4,
-        alienDefenseFromSameBase: 'false',
-        militaryAutoSpend: 'false',
+        alienDefenseFromSameBase: false,
+        militaryAutoSpend: false,
         alienAttackForCapitalFunc: function(sharedData) {
             return sharedData.MAGAness === 0
                     && sharedData.Wokeness === 0

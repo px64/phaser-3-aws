@@ -599,7 +599,9 @@ export class Insurrection extends BaseScene {
                         icon.health += 1 * icon.healthScale;
                         iconColor = 'purple';
                     }
-                    scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
+                    console.log(icon.littleHats);
+                    icon.littleHats = scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
+                    console.log(icon.littleHats);
 
                     let stability = icon.health/icon.healthScale;
                     let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values

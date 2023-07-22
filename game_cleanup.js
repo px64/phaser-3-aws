@@ -459,7 +459,7 @@ class VictoryScene extends Phaser.Scene {
     }
 }
 
-class AliensAttack extends Phaser.Scene {
+class AliensAttack extends BaseScene {
     constructor() {
         super({ key: 'AliensAttack' });
         this.sharedData = {
@@ -494,9 +494,26 @@ class AliensAttack extends Phaser.Scene {
         }
         let healthText = capitalizeFirstLetter(healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)]);
 
+        let diplomacy = 0;
+
+        if (this.sharedData.icons['diplomacy']) {
+            diplomacy = this.sharedData.icons['diplomacy'].health;
+        }
+console.log(this.sharedData.ideology.faction);
+console.log(diplomacy);
+console.log(this.difficultyLevel().alienDefenseFromSameBase);
+        let bonusText = '';
+        if (this.sharedData.ideology.faction == 'none'
+            || diplomacy > 95
+            || this.difficultyLevel().alienDefenseFromSameBase == true) {
+            bonusText = "\n\nDue to good diplomacy, both \nfaction's bases will fend off the attacks";
+        } else {
+            bonusText = "\n\nDue to weak diplomacy, only your\n own faction will fend off the attacks";
+        }
+
         let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY,
            'Alien Invasion!\n You need to defend America from\n' + this.sharedData.thisRoundAlienAttacks +
-           ' alien Attack' + ((this.sharedData.thisRoundAlienAttacks > 1) ? 's': '') +'!\nYour Alien Defense is: ' + healthText, {
+           ' alien Attack' + ((this.sharedData.thisRoundAlienAttacks > 1) ? 's': '') +'!\nYour Alien Defense is: ' + healthText + bonusText, {
             font: 'bold ' + this.sharedData.fontSize + ' Arial',
             fill: '#ffffff',
             align: 'center'
@@ -844,7 +861,7 @@ export class Scene2 extends BaseScene {
             if (this.sharedData.icons['diplomacy']) {
                 diplomacy = this.sharedData.icons['diplomacy'].health;
             }
-            console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
+            //console.log('base faction = ' + base.faction + ' ideology = ' + this.sharedData.ideology.faction);
             let thisFaction = this.sharedData.ideology.faction; // start with both factions the same.
             let otherFaction = this.sharedData.ideology.faction;
             if (this.sharedData.ideology.faction == 'none') {
@@ -864,7 +881,7 @@ export class Scene2 extends BaseScene {
 
             base = findValidTerritory(thisFaction, otherFaction);
 
-            console.log(((Phaser.Math.Wrap(this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length), 0, territories.length) + ' ' + this.roundRobinLaunch % territories.length)
+            //console.log(((Phaser.Math.Wrap(this.attackIndex + generateNumber(this.roundRobinLaunch)) % territories.length), 0, territories.length) + ' ' + this.roundRobinLaunch % territories.length)
             if (this.missilesPerTerritory > 0) {
                 this.missilesPerTerritory--; // use up one missile
                 base.nameText.setText(base.name + ' ' + numberToBars(this.missilesPerTerritory));

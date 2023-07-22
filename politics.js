@@ -87,7 +87,6 @@ export class Politics extends BaseScene {
 
 
         console.log('MAGA: ' + this.sharedData.MAGAness + ' Woke: ' + this.sharedData.Wokeness);
-        console.log(this.sharedData.icons);
     }
 
     //====================================================================================
@@ -187,9 +186,9 @@ export class Politics extends BaseScene {
 
             if (this.militaryAllocation == true) {
                 this.militaryAllocation = false;
-                if (this.difficultyLevel().militaryAutoSpend == 'true') {
+                if (this.difficultyLevel().militaryAutoSpend == true) {
                     militaryAssets.forEach((asset, index) => {
-                        asset.techLevel += this.totalMilitaryAllocThisScene;
+                        asset.techLevel += this.totalMilitaryAllocThisScene/10;
                         console.log(asset.name + ' has a new tech level of ' + asset.techLevel);
                     });
                     // Need to go to scene to indicate additional military strength
@@ -825,7 +824,9 @@ export class Politics extends BaseScene {
                 scene.tweens.add({
                     targets: helper.container,
                     alpha: 0,
-                    duration: 50,
+                    scaleX: 0, // start scaling to 0% of the original size
+                    scaleY: 0, // start scaling to 0% of the original size
+                    duration: 800,
                     onComplete: function () {
                         helper.container.destroy();
                         //tooltip.text.setVisible(false);
@@ -931,7 +932,7 @@ export class Politics extends BaseScene {
                         let hurtIcon = scene.icons[helper.container.character.hurts];
                         let territory = territories[3]; // arbitrarily picked this territory to launch from
                         // But we also launch 5 faction threats at the 'hurts' icon
-                        console.log('character ' + helper.container.character.name + 'launches 5 threats');
+                        console.log('character ' + helper.container.character.name + ' launches 5 threats');
                         scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
                         scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
                         tooltip.text.setVisible(true);
@@ -974,7 +975,7 @@ export class Politics extends BaseScene {
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
-                scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
+                icon.littleHats = scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
                 scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                 hitIcon(icon.iconText, iconColor);
@@ -1068,7 +1069,7 @@ export class Politics extends BaseScene {
                 if (!threat.isPutieDestroyed) {
                     threat.isPutieDestroyed = true;
                     icon['woke'] += 5;
-                    scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite);
+                    icon.littleHats = scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite, icon.littleHats);
                 }
             });
         }
@@ -1173,7 +1174,7 @@ export class Politics extends BaseScene {
                 storedData.y = dragY;
                 misinformationSprite.setImmovable(true);
             });
-            if (dropOnce == 'drop once') {
+            if (0) { // skip the dropOnce concept dropOnce == 'drop once') {
                 misinformation.on('dragend', function(pointer, dragX, dragY) {
                     outlineTween.stop();
                     rectangleTween.stop();
