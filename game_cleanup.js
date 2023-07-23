@@ -58,7 +58,7 @@ import { territories } from './BaseScene.js'
 import { characters } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
 import { difficultyList } from './Basescene.js';
-
+//foo
 var healthBar;
 var healthBox;
 var healthGauge;
