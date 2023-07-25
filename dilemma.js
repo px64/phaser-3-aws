@@ -119,7 +119,8 @@ export class DilemmaScene extends BaseScene {
                     iconData.textBody,
                     iconData.healthScale,
                     fontSize,
-                    iconData.shieldStrength
+                    iconData.shieldStrength,
+                    iconData.iconTitle
                 );
             }
         }
@@ -505,7 +506,7 @@ export class DilemmaScene extends BaseScene {
         this.add.text(this.sys.game.config.width/2 - 240, 600, 'Please Make A Choice:', { color: '#0ff', fontSize: '20px',fontFamily: 'Roboto' });
         this.isTweening = false;
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, 620 + index * 20, choice.name , { color: '#ff0000', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, 620 + index * 20, choice.name , { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
@@ -542,7 +543,7 @@ export class DilemmaScene extends BaseScene {
             this.icons[choice.helps].health += choice.helpBenefit;
             this.drawNewHealthGauge(this.icons[choice.helps]);
             //this.drawHealthGauge(this.icons[choice.helps].health/ this.icons[choice.helps].healthScale/ 100, this.icons[choice.helps].icon.x, this.icons[choice.helps].icon.y, 'Health', this.icons[choice.helps].gaugeHealth);
-
+console.log(this.icons[choice.hurts]);
             if (choice.hurtFaction == 'both') {
                 this.createThreat(territories[2], 'maga', this.icons[choice.hurts], choice.hurtCost);
                 this.createThreat(territories[3], 'woke', this.icons[choice.hurts], choice.hurtCost);
@@ -1436,7 +1437,7 @@ export class DilemmaScene extends BaseScene {
     }
 
     enterButtonRestState(button, choice) {
-        button.setStyle({ fill: '#ff0000'}); // change color back to red
+        button.setStyle({ fill: '#ffffff'}); // change color back to white
 
         let helpedIcon = this.icons[choice.helps];
         let hurtIcon = this.icons[choice.hurts];

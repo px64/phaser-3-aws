@@ -60,12 +60,12 @@ export default class BaseScene extends Phaser.Scene {
     initializeIcons() {
             let xStart = this.sys.game.config.width * .05; // 70;
             let xOffset = this.sys.game.config.width * 200/1280;
-            this.sharedData.icons['environment'] = this.createIconWithGauges(xStart+xOffset*0, 125, 0.15, 'environment', 0, 0, 50, 'Environmental\nHealth: ', 1, 16, 0); //1
-            this.sharedData.icons['economy'] = this.createIconWithGauges(xStart+xOffset*1, 125, 0.1, 'economy', economyMaga, economyWoke, economyStrength, "Economy: " ,1, 16, 0); //440
-            this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice: ', 1, 16, 0); //.15
-            this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.05, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0); //50
-            this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0); // 1
-            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 2, 16, 0); // 1
+            this.sharedData.icons['environment'] = this.createIconWithGauges(xStart+xOffset*0, 125, 0.15, 'environment', 0, 0, 50, 'Environmental\nHealth: ', 1, 16, 0, 'The EPA');
+            this.sharedData.icons['economy'] = this.createIconWithGauges(xStart+xOffset*1, 125, 0.1, 'economy', economyMaga, economyWoke, economyStrength, "Economy: " ,1, 16, 0, 'Wall Street');
+            this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice: ', 1, 16, 0, 'The Supreme Court');
+            this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.05, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0, 'The US Capital');
+            this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0, 'The United Nations');
+            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 2, 16, 0, 'The Pentagon');
      }
 
     //====================================================================================
@@ -73,7 +73,7 @@ export default class BaseScene extends Phaser.Scene {
     // createIconWithGauges
     //
     //====================================================================================
-    createIconWithGauges = (xPos, yPos, scaleFactor, iconName, maga, woke, health, textBody, healthScale, textSize, shieldStrength)  => {
+    createIconWithGauges = (xPos, yPos, scaleFactor, iconName, maga, woke, health, textBody, healthScale, textSize, shieldStrength, iconTitle)  => {
         let icon = this.physics.add.sprite(xPos, yPos, iconName).setAlpha(.8).setScale(scaleFactor);
         //let gaugeMaga; = this.add.graphics();
         //let gaugeWoke; = this.add.graphics();
@@ -123,7 +123,7 @@ export default class BaseScene extends Phaser.Scene {
         //let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(health/healthScale/20),0,4)];
 
         let iconText = this.add.text(xPos - (textSize / 2) - 50, yPos - /*75*/85, textBody + healthText, { fontSize: textSize + 'px', fill: '#fff' });
-        return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite, scaleFactor, littleHats};
+        return {icon, gaugeMaga, gaugeWoke, gaugeHealth, iconText, textBody, maga, woke, health, healthScale, shieldStrength, iconName, scaleSprite, scaleFactor, littleHats, iconTitle};
     }
 
     //====================================================================================
@@ -303,25 +303,58 @@ export default class BaseScene extends Phaser.Scene {
     }
 
     createThreat(territory, faction, icon, numThreats) {
+        let attackerTerritory = territory;
+        let territoryWidth = this.sys.game.config.width / territories.length;
+
+        if (faction == '') {
+            faction = attackerTerritory.faction;
+        }
+
+        let threatIcon = faction === 'maga'
+            ? 'magaBase'
+            : faction === 'woke'
+                ? 'wokeBase'
+                : 'putieBase';
+
+        let threatGroup = faction == 'maga'
+            ? this.magaThreats
+            : faction == 'woke'
+                ? this.wokeThreats
+                : this.putieThreats;
+                
+        let message = 'Protestors March on ';
+        message += icon.iconTitle + '!';
+        let offsetY = icon.icon.x*.2-50;
+        let fillColor;
+        if (faction == 'maga') {
+            fillColor = '#ff0000';
+        } else {
+            fillColor = '#0000ff';
+        }
+        // Create a text object to display an attack message
+        this.attackText = this.add.text(this.cameras.main.centerX, this.sys.game.config.height*.8 + offsetY, message, {
+            font: 'bold 48px Arial',
+            fill: fillColor,
+            align: 'center'
+        });
+        this.attackText.setOrigin(0.5);  // Center align the text
+        this.attackText.setAlpha(1);
+        this.tweens.add({
+            targets: this.attackText,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 3000,
+            onComplete: function () {
+                this.attackText.setAlpha(0);
+                this.attackText.destroy();
+                //tooltip.text.setVisible(false);
+                //tooltip.box.setVisible(false);
+            },
+            callbackScope: this
+        });
+
         for (let i = 0; i < numThreats; i++) {
-            let attackerTerritory = territory;
-            let territoryWidth = this.sys.game.config.width / territories.length;
 
-            if (faction == '') {
-                faction = attackerTerritory.faction;
-            }
-
-            let threatIcon = faction === 'maga'
-                ? 'magaBase'
-                : faction === 'woke'
-                    ? 'wokeBase'
-                    : 'putieBase';
-
-            let threatGroup = faction == 'maga'
-                ? this.magaThreats
-                : faction == 'woke'
-                    ? this.wokeThreats
-                    : this.putieThreats;
 
             // Create threat
             let threat = threatGroup.create(attackerTerritory.x + territoryWidth / 2, this.game.config.height, threatIcon).setScale(0.1);
@@ -363,6 +396,36 @@ export default class BaseScene extends Phaser.Scene {
     }
 
     returnThreat(territory, faction, icon, numThreats) {
+        let message = 'Protestors Go home from ';
+        message += icon.iconTitle + '...';
+        let offsetY = icon.icon.x*.1-50;
+        let fillColor;
+        if (faction == 'maga') {
+            fillColor = '#ff0000';
+        } else {
+            fillColor = '#0000ff';
+        }
+        // Create a text object to display an attack message
+        this.attackText = this.add.text(this.cameras.main.centerX, this.sys.game.config.height*.24 + offsetY, message, {
+            font: 'bold 48px Arial',
+            fill: fillColor,
+            align: 'center'
+        });
+        this.attackText.setOrigin(0.5);  // Center align the text
+        this.attackText.setAlpha(1);
+        this.tweens.add({
+            targets: this.attackText,
+            alpha: 0,
+            ease: 'Linear',
+            duration: 3000,
+            onComplete: function () {
+                this.attackText.setAlpha(0);
+                this.attackText.destroy();
+                //tooltip.text.setVisible(false);
+                //tooltip.box.setVisible(false);
+            },
+            callbackScope: this
+        });
         for (let i = 0; i < numThreats; i++) {
             let attackerTerritory = territory;
             let territoryWidth = this.sys.game.config.width / territories.length;

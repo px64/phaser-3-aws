@@ -103,7 +103,8 @@ export class Insurrection extends BaseScene {
                     iconData.textBody,
                     iconData.healthScale,
                     fontSize,
-                    iconData.shieldStrength
+                    iconData.shieldStrength,
+                    iconData.iconTitle
                 );
             }
         }
@@ -620,7 +621,7 @@ export class Insurrection extends BaseScene {
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
-                    scene.victoryText.destroy();
+                    //scene.victoryText.destroy();
                     console.log('stay here until 10 seconds elapse so more capital can be rewarded');
                     // if (scene.roundThreats == 1 && scene.switchScene == false) {
                     //     // fix problem with double scene fades!
@@ -811,13 +812,26 @@ export class Insurrection extends BaseScene {
                             this.createThreat(territory, '', icon, 1);
                         }
                     }
-                    });
-                    console.log('total number of threats fired: '+countThreats);
-                    let message;
+                });
+                console.log('total number of threats fired: '+countThreats);
+                let message;
+
                 if (countThreats == 0) {
                     message = 'America is at peace.\n MAGA and Woke are balanced\nand content.';
                 } else {
-                    message = 'Activists Apply Pressure!';
+                    switch (Math.floor(countThreats / 6)) {
+                        case 0:
+                            message = 'Activists Apply Pressure!';
+                            break;
+                        case 1:
+                            message = 'Protest Marches Erupt!';
+                            break;
+                        case 2:
+                            message = 'Insurrectionists Attack!';
+                            break;
+                        default:
+                            message = 'Total Revolution!';
+                    }
                     if (this.putieThreats > 0) {
                         message += '\nAnd Putie sends his minions to cause instability!';
                     }

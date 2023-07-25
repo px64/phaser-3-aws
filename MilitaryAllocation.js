@@ -10,7 +10,7 @@
 //        - faster missiles
 //        - improved accuracy
 //        - bigger explosions (would need to add missile detonation at destination and an explosion)
-//        - more frequent reload (would need to add a time delay between missile launches) 
+//        - more frequent reload (would need to add a time delay between missile launches)
 //              -- idea that also impacts putieville: perhaps each territory has a launch delay and
 //              -- it automatically round-robins between territories so the delay can catch up when returning to territory #1
 //=========================================================================================================================
@@ -20,7 +20,7 @@ import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
 import { militaryAssets} from './BaseScene.js';
 
-/* 
+/*
 var MAGAness = 0;
 var MAGAupdate = 0;
 var MAGAnessText;
@@ -60,9 +60,9 @@ export class MilitaryAllocation extends BaseScene {
     }
 
     //====================================================================================
-    //              
-    // create() 
-    // 
+    //
+    // create()
+    //
     //====================================================================================
     create() {
         if (!Object.keys(this.sharedData.icons).length) {
@@ -75,7 +75,7 @@ export class MilitaryAllocation extends BaseScene {
         } else {
             //this.icons = this.sharedData.icons;
             this.shieldsMaga = this.physics.add.group();
-            this.shieldsWoke = this.physics.add.group(); 
+            this.shieldsWoke = this.physics.add.group();
             console.log('already have shared data to use.');
             // recreate the icons with the saved state
             //for (let key in this.sharedData.icons)
@@ -94,13 +94,14 @@ export class MilitaryAllocation extends BaseScene {
                     iconData.textBody,
                     iconData.healthScale,
                     fontSize,
-                    iconData.shieldStrength
+                    iconData.shieldStrength,
+                    iconData.iconTitle
                 );
             }
         }
-                  
+
         militaryAlloc = this.sharedData.militaryAllocation;
-        
+
         // Create a button using an image
         let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
@@ -126,12 +127,12 @@ export class MilitaryAllocation extends BaseScene {
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
         this.roundThreats = 0;
-        
+
 
         //====================================================================================
-        //              
-        // environmentalImpact 
-        // 
+        //
+        // environmentalImpact
+        //
         //====================================================================================
         let environmentalImpact = () => {
             let env = this.icons['environment'];
@@ -151,11 +152,11 @@ export class MilitaryAllocation extends BaseScene {
             drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth);
 
             if (0) {//Math.random() < 0.3) {
-                this.scene.start('AliensAttack'); 
+                this.scene.start('AliensAttack');
             }
         }
- /* 
-       
+ /*
+
         function createCurvedText(text, radius, scene) {
             let totalAngle = 2; // Total angle span of the text
             let startAngle = -totalAngle / 2; // Starting angle (so text is centered around 0)
@@ -165,7 +166,7 @@ export class MilitaryAllocation extends BaseScene {
 
             let chars = text.toUpperCase().split('');
             let charArray = [];
-  
+
             chars.forEach((char, index) => {
                 let charAngle = startAngle + (index * angleStep);
 
@@ -184,27 +185,27 @@ export class MilitaryAllocation extends BaseScene {
 
                 charArray.push(letter);
             });
-  
+
             return charArray;
         }
  */
 
 
         //====================================================================================
-        //              
-        // function governmentGrowth() 
-        // 
+        //
+        // function governmentGrowth()
+        //
         //====================================================================================
         function governmentGrowth() {
             this.icons['government'].health += this.icons['government'].woke - this.icons['government'].maga +3;
             let gov = this.icons['government'];
             let governmentSize = gov.health;
-    
+
             if (1) {//governmentSize < 1200) {
                 this.icons['government'].textBody = 'Government\nStrength: ';
                 this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
             }
-/* 
+/*
             else {
                 this.icons['government'].textBody = 'Living on the Dole: ' + (governmentSize-1000)/50 + '%\nCrony Capitalism: ' + ((governmentSize-800)/66).toFixed(2) +'%\nGovernment Stability: ';
 
@@ -222,45 +223,45 @@ export class MilitaryAllocation extends BaseScene {
             }
         }
         //====================================================================================
-        //              
-        // The main body of create() 
-        // 
+        //
+        // The main body of create()
+        //
         //====================================================================================
-    
- 
+
+
         // Create MAGAness text
         let MilAllocText = this.add.text(20, 0, 'Military Spending: ' + militaryAlloc, { fontSize: '16px', fill: '#fff' });
- /*   
+ /*
         // Create Wokeness text
         WokenessText = this.add.text(900, 0, 'Wokeness Political\n Capital: ' + Wokeness, { fontSize: '16px', fill: '#fff' });
-    
+
         // Create Year text
         yearText = this.add.text(500, 0, 'Year: ' + year, { fontSize: '32px', fill: '#fff' });
  */
 
 
-    
+
         //this.envHealthBarMaga = this.add.graphics();
         //this.envHealthBarWoke = this.add.graphics();
         //this.drawHealthBar(1, 100, 100, 'maga', this.envHealthBarMaga);
         //this.drawHealthBar(0.8, 110, 100, 'woke', this.envHealthBarWoke);
-/* 
+/*
 
 
         //====================================================================================
-        //              
+        //
         // The following function creates the information/misinformation blockers
-        // 
+        //
         //====================================================================================
         createMisinformationManagement(this);
  */
-  
+
         //====================================================================================
-        //              
-        // The following code block creates Assets with slider bars 
-        // 
+        //
+        // The following code block creates Assets with slider bars
+        //
         //====================================================================================
-        
+
         this.assetSliders = []; // keep track of the sliders
         this.assetTexts = []; // keep track of character text pointers
 
@@ -271,19 +272,19 @@ export class MilitaryAllocation extends BaseScene {
         let numberOfSteps = 21; // Define the number of steps
         let defaultValue = 0;
         let textColor = '#ffffff';
-        
+
         militaryAssets.forEach((asset, index) => {
             xOffset = 200;
             //asset.prevValue = asset.value = 0; // put it back to zero for this setup
             rowIndex++;
-                         
+
             let assetText = this.add.text(xOffset-75, 100 + (rowIndex * 100), asset.name + ' Backing: ' + asset.value + '/ ' + (numberOfSteps-1) + '\nTechnology Level: ' + asset.techLevel,
                             { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'center' }).setInteractive();
 
             if (!this.hasBeenCreatedBefore) {
                 assetVal[asset.name] = 250+xOffset;
             }
-            
+
             let initialValue = asset.value / (numberOfSteps - 1); // asset.value should be a number from 0 to numberOfSteps - 1
             let assetSlider = createSlider(this, initialValue + xOffset, 85 + (rowIndex * 100), asset, assetText, value => {
                 assetVal[asset.name] = assetSlider.slider.x;
@@ -293,7 +294,7 @@ export class MilitaryAllocation extends BaseScene {
             this.assetSliders.push(assetSlider);
             this.assetTexts.push(assetText);
         });
-        
+
 
         if (this.hasBeenCreatedBefore) {
             let helpfulTokenIndex = 0;
@@ -302,7 +303,7 @@ export class MilitaryAllocation extends BaseScene {
                 let stepSize = (assetSlider.track.width-20) / (numberOfSteps - 1); // Calculate the size of each step
                 assetSlider.slider.x = (assetSlider.track.x - assetSlider.track.width / 2) + (asset.value * stepSize)+12;
                 this.assetTexts[index].setText(asset.name + ' Backing: ' + asset.value + '/ ' + (numberOfSteps-1) + '\nTechnology Level: ' + asset.techLevel);
-/* 
+/*
                 if (0) { // hardcode to true for now character.endorsement > 10) {
                     // new help token is generated, depending on the character endorsed.  added to misinformation data set
                     // after it is generated, it can be moved around or dropped into an icon for a certain effect
@@ -317,10 +318,10 @@ export class MilitaryAllocation extends BaseScene {
             });
         }
 
-        this.hasBeenCreatedBefore = true; 
- 
+        this.hasBeenCreatedBefore = true;
 
-/* 
+
+/*
         // Timer event to increment the year every second
         this.yearTime = this.time.addEvent({
             delay: 1000,
@@ -328,7 +329,7 @@ export class MilitaryAllocation extends BaseScene {
             callbackScope: this,
             loop: true
         });
-    
+
         // Timer event to adjust Environmental impact every 10 seconds
         this.envTime = this.time.addEvent({
             delay: 10000,
@@ -344,8 +345,8 @@ export class MilitaryAllocation extends BaseScene {
             loop: true
         });
  */
- 
- 
+
+
         //====================================================================================
         // Function:
         //      createSlider
@@ -357,7 +358,7 @@ export class MilitaryAllocation extends BaseScene {
             scene.input.setDraggable(slider);
             // Attach track to slider
             slider.track = track;
-    
+
             let numberOfSteps = 21; // Define the number of steps
             let stepSize = (track.width-20) / (numberOfSteps - 1); // Calculate the size of each step
 
@@ -381,7 +382,7 @@ export class MilitaryAllocation extends BaseScene {
                 // Update the text dynamically as the slider is being dragged
                 characterText.setText(character.name + ' Backing: ' + closestStep + '/ ' + (numberOfSteps-1)+ '\nTechnology Level: ' + character.techLevel);
                 militaryUpdate = (closestStep - character.prevValue);
-    
+
                 // Update MAGAnessText and WokenessText here
                 let tmpMil = militaryAlloc - militaryUpdate;
                 MilAllocText.setText('Military Spending: ' + tmpMil);
@@ -399,9 +400,9 @@ export class MilitaryAllocation extends BaseScene {
 
                 // Update the underlying character's value
                 character.value = value;
-    
+
                 militaryUpdate = (value - character.prevValue);
-    
+
                 // Update MAGAnessText and WokenessText here
                 let tmpMil = militaryAlloc - militaryUpdate;
                 if (tmpMil < 0) {
@@ -409,10 +410,10 @@ export class MilitaryAllocation extends BaseScene {
                     tmpMil = 0;
                     value = militaryUpdate + character.prevValue;
                     characterText.setText(character.name + ' Backing: ' + value + '/ ' + (numberOfSteps-1)+ '\nTechnology Level: ' + character.techLevel);
-                    this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;  
+                    this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                 }
 
-                
+
                 MilAllocText.setText('Military Spending: ' + tmpMil);
 
                 // Save the previous value for next calculation
@@ -432,7 +433,7 @@ export class MilitaryAllocation extends BaseScene {
             let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
             backstoryText.setOrigin(0.5);
             backstoryText.setVisible(false);
-    
+
             // Add a bounding box for the text, with rounded corners and a semi-transparent background
             let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 0.2);
             backstoryBox.setStrokeStyle(2, 0x808080, 0.8);
@@ -446,7 +447,7 @@ export class MilitaryAllocation extends BaseScene {
             characterText.on('pointerover', () => {
                 mouseOver();
             });
-        
+
             slider.on('pointerout', () => {
                 //MAGAness += MAGAupdate;
                 //Wokeness += WokeUpdate;
@@ -461,9 +462,9 @@ export class MilitaryAllocation extends BaseScene {
                 //WokeUpdate = 0;
                 mouseOff();
             });
-    
+
             return {track: track, slider: slider};
-            
+
             //====================================================================================
             //    function insertLineBreaks(str, charsPerLine) {
             //====================================================================================
@@ -485,7 +486,7 @@ export class MilitaryAllocation extends BaseScene {
                 return lines.join('\n');
             }
             //====================================================================================
-            //  function mouseOver() 
+            //  function mouseOver()
             //====================================================================================
 
             function mouseOver() {
@@ -496,7 +497,7 @@ export class MilitaryAllocation extends BaseScene {
                 //scene.govTime.paused = true;
             }
             //====================================================================================
-            //  function mouseOver() 
+            //  function mouseOver()
             //====================================================================================
 
             function mouseOff() {
@@ -509,32 +510,32 @@ export class MilitaryAllocation extends BaseScene {
         }
     }
 
-    
+
     //====================================================================================
     //
-    //        update() 
+    //        update()
     //
     //====================================================================================
     update() {
         // game loop
         // This is called 60 times per second. Put game logic here.
-/* 
+/*
         if (this.roundThreats == 20) {this.scene.start('AliensAttack'); }
         if (Math.random() < 0.01) {
             let attackerIndex = Phaser.Math.Between(0, territories.length - 1);
             let attackerTerritory = territories[attackerIndex];
             let territoryWidth = this.sys.game.config.width / territories.length;
-        
+
             let threatIcon = attackerTerritory.faction === 'maga'? 'magaBase': 'wokeBase';
             let threat;
-            
+
             if (attackerTerritory.faction == 'maga'){
                 threat = this.magaThreats.create(attackerTerritory.x + territoryWidth/2, this.game.config.height-25, threatIcon).setScale(0.1);
             } else {
                 threat = this.wokeThreats.create(attackerTerritory.x + territoryWidth/2, this.game.config.height-25, threatIcon).setScale(0.1);
             }
             threat.setBounce(1);
-            
+
             let keys = Object.keys(this.icons);
             let attackedIconKey = keys[Phaser.Math.Between(0, keys.length - 1)];
             let attackedIcon = this.icons[attackedIconKey].icon;

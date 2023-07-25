@@ -23,6 +23,8 @@
 //    Right now 'tuning' is when a threat hits an icon, the maganess or wokeness increase by 5
 //    when putie hits an icon, the maganess or wokeness increase by 2
 //
+//    When the activists attack, need a message.  Need a message when they are deflected
+//
 //=========================================================================================================================
 
 import BaseScene from './BaseScene.js';
@@ -135,7 +137,8 @@ export class Politics extends BaseScene {
                     iconData.textBody,
                     iconData.healthScale,
                     fontSize,
-                    iconData.shieldStrength
+                    iconData.shieldStrength,
+                    iconData.iconTitle
                 );
             }
         }
@@ -536,6 +539,7 @@ export class Politics extends BaseScene {
                     hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
                     //console.log(hurtIcon);
                 } else if (character.powerTokenType == 'type_3') {
+                    // Light up all the shields to provide hint that hacker can be used everywhere
                     for (let key in scene.sharedData.icons) {
                         let iconData = scene.sharedData.icons[key];
 
@@ -814,13 +818,21 @@ export class Politics extends BaseScene {
 
         function handleHelperOverlap(icon, base, helper, incrementAmount, faction, gauge, message) {
             let iconColor = faction === 'maga' ? 'red' : 'blue';
+            // This where we apply the various actions based on attributes contributed by the represented character's power
             // Do the appropriate thing depending on the helper type
             if (helper.container.character.powerTokenType == 'type_3') {
-                let helpedIcon = icon.icon;
-                let tooltip = createTooltip(scene, helper.container.character, 500, 500, helpedIcon.icon, helpedIcon.iconText);
-                scene.icons[icon.iconName].shieldStrength = 1;
-                helpedIcon.shieldWoke.setAlpha(0.1);
-
+                let helpedIcon = icon;
+                let tmpChar = helper.container.character;
+                tmpChar.shortstory = [('Social Hacking Firewall is now enabled: ' + helpedIcon.iconTitle + ' '),
+                    "is temporarily immune to all political attacks"];
+                //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
+                let tooltip = createTooltip(scene, tmpChar, helpedIcon.icon.x, helpedIcon.icon.y+150, helpedIcon.icon);
+                scene.icons[icon.iconName].shieldStrength = 1;  // Hacker changes shield strength to 1.0
+                helpedIcon.icon.shieldWoke.setAlpha(0.5);
+                scene.time.delayedCall(5000, () => {
+                    tooltip.text.setVisible(false);
+                    tooltip.box.setVisible(false);
+                });
                 scene.tweens.add({
                     targets: helper.container,
                     alpha: 0,
@@ -829,8 +841,6 @@ export class Politics extends BaseScene {
                     duration: 800,
                     onComplete: function () {
                         helper.container.destroy();
-                        //tooltip.text.setVisible(false);
-                        //tooltip.box.setVisible(false);
                     },
 
                     callbackScope: scene
@@ -860,8 +870,8 @@ export class Politics extends BaseScene {
                     scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
                     scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
 
-                    //tooltip.text.setVisible(true);
-                    //tooltip.box.setVisible(true);
+                    tooltip.text.setVisible(true);
+                    tooltip.box.setVisible(true);
                     helper.isDestroyed = true;
                 }
 
@@ -871,7 +881,6 @@ export class Politics extends BaseScene {
             if (helper.container.character.powerTokenType == 'type_5') {
                 //console.log(scene.icons[helper.container.character.hurts][helper.container.character.faction]);
                 // The helper token's representative character's help icon matches the icon into which it's been dropped.
-                // This where we apply the various actions based on attributes contributed by the represented character's power
                 if (helper.container.character.helps == icon.iconName) {
                     let helpedIcon = scene.icons[helper.container.character.helps];
                     let tooltip = createTooltip(scene, helper.container.character, 500, 500, helpedIcon.icon, helpedIcon.iconText);
@@ -917,6 +926,7 @@ export class Politics extends BaseScene {
                         // Bonus: Someone of your own faction can reduce the MAGAness or Wokeness of your own faction.
                         // Imagine the scenario of a bunch of angry MAGA protesters storming around the environment icon and some
                         // super MAGA supporter shows up and provides an environmental solution they like.  That would reduce MAGAness.
+                        // This feature might be too confusing and should just be removed from the game?
                         let otherFaction = helper.container.character.faction == 'maga' ? 'woke' : 'maga';
                         if (icon[helper.container.character.faction]> icon[otherFaction]) {
                             let numReturns = Math.min(5,(icon[helper.container.character.faction] -  icon[otherFaction])/5);
@@ -1300,15 +1310,31 @@ export class Politics extends BaseScene {
         }
 
         function createCheckbox(scene, x, y, character, characterText, callback, initialValue) {
-            let checkboxBackground = scene.add.graphics({ fillStyle: { color: 0xffffff } });  // 0xffffff is the hexadecimal color for white
-            let checkboxSize = 25;  // Specify the size of your checkbox here
-            checkboxBackground.fillRect(x-12, y-12, checkboxSize, checkboxSize-4);  // Replace x and y with the coordinates where you want to draw the square
+            let textColor = character.faction === 'maga' ? 0xff8080 : 0x8080ff;
 
-            let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.1);
-            let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setVisible(false).setInteractive().setScale(.1);
+            let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
+            let checkboxSize = 32;  // Specify the size of your checkbox here
+            checkboxBackground.fillRect(x-checkboxSize/2, y-checkboxSize/2, checkboxSize, checkboxSize-4);  // Replace x and y with the coordinates where you want to draw the square
 
-            checkboxUnchecked.on('pointerdown', function() {
-                this.setVisible(false);
+            // Add ability to check the box by clicking on the character text too
+            characterText.setInteractive();
+            characterText.on('pointerdown', chooseAction);
+
+            let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
+            let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setVisible(false).setInteractive().setScale(.15);
+
+            checkboxUnchecked.on('pointerdown', checkboxUncheckedAction);
+            checkboxChecked.on('pointerdown', checkboxCheckedAction);
+
+            function chooseAction() {
+                if (character.value == 1) {
+                    checkboxCheckedAction();
+                } else {
+                    checkboxUncheckedAction();
+                }
+            }
+            function checkboxUncheckedAction() {
+                checkboxUnchecked.setVisible(false);
                 checkboxChecked.setVisible(true);
                 // Calculate and return the value
                 let value = 1;
@@ -1324,10 +1350,9 @@ export class Politics extends BaseScene {
                 } else { // a roundabout way of setting character.backing to parameter value which is 1.
                     callback(character, 1);
                 }
-            });
-
-            checkboxChecked.on('pointerdown', function() {
-                this.setVisible(false);
+            }
+            function checkboxCheckedAction() {
+                checkboxChecked.setVisible(false);
                 checkboxUnchecked.setVisible(true);
                 // Calculate and return the value
                 let value = 0;
@@ -1343,7 +1368,7 @@ export class Politics extends BaseScene {
                 } else { // a roundabout way of setting character.backing to parameter value which is 0.
                     callback(character, 0);
                 }
-            });
+            }
 
             // Initial checkbox state
             if(initialValue) {
@@ -1377,6 +1402,7 @@ export class Politics extends BaseScene {
 
             return { checkboxUnchecked, checkboxChecked };
         }
+
 
 
         //====================================================================================
@@ -1685,11 +1711,15 @@ export class Politics extends BaseScene {
                 backstoryText.setVisible(false);
                 backstoryBox.setVisible(false);
                 backstoryIcon.setVisible(false);
-
+                let helpedIcon = scene.icons[character.helps];
+                if (helpedIcon) {
+                    helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.1:0);
+                    helpedIcon.icon.shieldMaga.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.1:0);
+                }
                 let hurtIcon = scene.icons[character.hurts];
                 if (hurtIcon){
-                    hurtIcon.icon.shieldMaga.setAlpha(0).setTint(0xffffff);
-                    hurtIcon.icon.shieldWoke.setAlpha(0).setTint(0xffffff);
+                    hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength*0.1).setTint(0xffffff);
+                    hurtIcon.icon.shieldWoke.setAlpha(hurtIcon.icon.shieldStrength*0.1).setTint(0xffffff);
                 }
                 if (scene.isTweening && scene.myTween) {
                     scene.myTween.complete();
