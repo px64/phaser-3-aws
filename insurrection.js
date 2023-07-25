@@ -521,8 +521,8 @@ export class Insurrection extends BaseScene {
                         let helpedIcon = scene.sharedData.icons['environment'];
                         let shortstory;
                         if (isItPutie) {
-                            shortstory = ["Putie's influence is deterred ",
-                                "because of temporary immunity to political attacks"];
+                            shortstory = ["Russian Troll Farms are deterred ",
+                                "because of immunity to internet troll farm attacks"];
                         } else {
                             shortstory = ["Woke Activists peacefully return home  ",
                                 "because of temporary immunity to political attacks"];

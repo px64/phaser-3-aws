@@ -353,6 +353,26 @@ export class Politics extends BaseScene {
 
         }
 
+        let endorseMaga = this.add.text(0, 220, 'Endorse?',
+                            { fontSize: '22px', fontFamily: 'Roboto', color: '#ff8080', align: 'left' });
+        let underline = this.add.graphics();
+        underline.lineStyle(2, 0xff8080); // Set the line thickness and color
+        underline.beginPath();
+        underline.moveTo(endorseMaga.x, endorseMaga.y + endorseMaga.height);
+        underline.lineTo(endorseMaga.x + endorseMaga.width, endorseMaga.y + endorseMaga.height);
+        underline.closePath();
+        underline.strokePath();
+
+        let endorseWoke = this.add.text(0 + this.sys.game.config.width * .74, 220, 'Endorse?',
+                                                { fontSize: '22px', fontFamily: 'Roboto', color: '#8080ff', align: 'left' })
+        underline = this.add.graphics();
+        underline.lineStyle(2, 0x8080ff); // Set the line thickness and color
+        underline.beginPath();
+        underline.moveTo(endorseWoke.x, endorseWoke.y + endorseWoke.height);
+        underline.lineTo(endorseWoke.x + endorseWoke.width, endorseWoke.y + endorseWoke.height);
+        underline.closePath();
+        underline.strokePath();
+
         // We have a problem where we are creating the characters and the checkboxes here, but that also includes
         // recreating the characters and keeping the checkbox settings from the previous round.
         // There is a catch-22 where we think the endorsement is 2, so we color it green, but then it gets set to zero.
@@ -389,8 +409,10 @@ export class Politics extends BaseScene {
                  character.backing = character.value;
                  //character.value = 0;
              }
+             let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+             let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement,0,2)];
 
-            characterText = this.add.text(50+xOffset, 250 + (rowIndex * 60), character.name +'\nBacking: ' + character.endorsement,
+            characterText = this.add.text(50+xOffset, 250 + (rowIndex * 60), character.name +'\nBacking: ' + healthText,
                                 { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
             character.charText = characterText; // back reference to text so we can find the location later
@@ -437,8 +459,10 @@ export class Politics extends BaseScene {
                     helpfulTokenIndex++;
                     character.endorsement -= 2;
                 }
+                let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+                let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
                 // Recreate text here
-                character.charText.setText(character.name + ',\nBacking: ' + (character.endorsement + character.value));
+                character.charText.setText(character.name + ',\nBacking: ' + healthText);
                 // Make sure color of text is normal
                 if (character.faction == 'maga') {
                     character.charText.setColor('#ff8080');
@@ -823,7 +847,7 @@ export class Politics extends BaseScene {
             if (helper.container.character.powerTokenType == 'type_3') {
                 let helpedIcon = icon;
                 let tmpChar = helper.container.character;
-                tmpChar.shortstory = [('Social Hacking Firewall is now enabled: ' + helpedIcon.iconTitle + ' '),
+                tmpChar.shortstory = [('Russian Troll Farm Firewall is enabled: ' + helpedIcon.iconTitle + ' '),
                     "is temporarily immune to all political attacks"];
                 //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
                 let tooltip = createTooltip(scene, tmpChar, helpedIcon.icon.x, helpedIcon.icon.y+150, helpedIcon.icon);
@@ -1240,7 +1264,9 @@ export class Politics extends BaseScene {
                 MAGAupdate = 0;
             }
             //characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
-            characterText.setText(character.name + ',\nBacking: ' + (character.endorsement + value).toString());
+            let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+            let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
+            characterText.setText(character.name + ',\nBacking: ' + healthText);
 
             // Update MAGAnessText and WokenessText here
             let tmpMAG = scene.MAGAness - MAGAupdate;
@@ -1262,7 +1288,9 @@ export class Politics extends BaseScene {
                         value = character.prevValue;
                     }
                     console.log('MAGAupdate = ' + MAGAupdate + ' character value = ' + value);
-                    characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
+                    let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+                    let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
+                    characterText.setText(character.name + ',\nBacking: ' + healthText);
                     //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                 }
             }
@@ -1282,7 +1310,9 @@ export class Politics extends BaseScene {
                     } else {
                         value = character.prevValue;
                     }
-                    characterText.setText(character.name + '\nBacking: ' + (character.endorsement + value).toString());
+                    let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+                    let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
+                    characterText.setText(character.name + '\nBacking: ' + healthText);
                     //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
                 }
             }
@@ -1652,7 +1682,7 @@ export class Politics extends BaseScene {
 
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
-            let xOffset = character.faction === 'maga' ? scene.game.config.width * .3 : scene.game.config.width * -.24;
+            let xOffset = character.faction === 'maga' ? scene.game.config.width * .4 : scene.game.config.width * -.24;
 
             // Add an icon or graphic
             let helpedIcon;

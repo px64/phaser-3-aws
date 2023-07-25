@@ -475,24 +475,24 @@ export class DilemmaScene extends BaseScene {
         if (!this.hasBeenCreatedBefore) {
             // Format the text to be centered and with the color based on the affiliation
             let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 65);
-            let backstoryText = this.add.text(this.sys.game.config.width/2, this.sys.game.config.height/2, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#0f0', align: 'center' });
-            backstoryText.setOrigin(0.5);
-            backstoryText.setVisible(true);
-            backstoryText.setDepth(2);
-            backstoryText.setAlpha(1);
+            this.backstoryText = this.add.text(this.sys.game.config.width/2, this.sys.game.config.height/2, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#0f0', align: 'center' });
+            this.backstoryText.setOrigin(0.5);
+            this.backstoryText.setVisible(true);
+            this.backstoryText.setDepth(2);
+            this.backstoryText.setAlpha(1);
 
             // Add a bounding box for the text, with rounded corners and a semi-transparent background
-            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-            backstoryBox.setStrokeStyle(2, 0x00ff00, 0.8);
-            backstoryBox.isStroked = true;
-            backstoryBox.setOrigin(0.5);
-            backstoryBox.setVisible(true);
-            backstoryBox.setDepth(1);
-            backstoryBox.setAlpha(1);
+            this.backstoryBox = this.add.rectangle(this.backstoryText.x, this.backstoryText.y, this.backstoryText.width, this.backstoryText.height, 0x000000, 1);
+            this.backstoryBox.setStrokeStyle(2, 0x00ff00, 0.8);
+            this.backstoryBox.isStroked = true;
+            this.backstoryBox.setOrigin(0.5);
+            this.backstoryBox.setVisible(true);
+            this.backstoryBox.setDepth(1);
+            this.backstoryBox.setAlpha(1);
 
             setTimeout(() => {
-                backstoryText.setVisible(false);
-                backstoryBox.setVisible(false);
+                this.backstoryText.setVisible(false);
+                this.backstoryBox.setVisible(false);
             }, 20000);
            this.hasBeenCreatedBefore = true;
         }
@@ -1335,7 +1335,8 @@ console.log(this.icons[choice.hurts]);
 
     enterButtonHoverState(button, choice) {
         button.setStyle({ fill: '#ff0'}); // change color to yellow
-
+        this.backstoryBox.setVisible(false);
+        this.backstoryText.setVisible(false);
         let helpedIcon = this.icons[choice.helps];
         let hurtIcon = this.icons[choice.hurts];
 
