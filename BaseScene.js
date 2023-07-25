@@ -321,7 +321,7 @@ export default class BaseScene extends Phaser.Scene {
             : faction == 'woke'
                 ? this.wokeThreats
                 : this.putieThreats;
-                
+
         let message = 'Protestors March on ';
         message += icon.iconTitle + '!';
         let offsetY = icon.icon.x*.2-50;
@@ -332,30 +332,30 @@ export default class BaseScene extends Phaser.Scene {
             fillColor = '#0000ff';
         }
         // Create a text object to display an attack message
-        this.attackText = this.add.text(this.cameras.main.centerX, this.sys.game.config.height*.8 + offsetY, message, {
-            font: 'bold 48px Arial',
-            fill: fillColor,
-            align: 'center'
-        });
-        this.attackText.setOrigin(0.5);  // Center align the text
-        this.attackText.setAlpha(1);
-        this.tweens.add({
-            targets: this.attackText,
-            alpha: 0,
-            ease: 'Linear',
-            duration: 3000,
-            onComplete: function () {
-                this.attackText.setAlpha(0);
-                this.attackText.destroy();
-                //tooltip.text.setVisible(false);
-                //tooltip.box.setVisible(false);
-            },
-            callbackScope: this
-        });
+        if (threatIcon != 'putieBase') {
+            this.attackText = this.add.text(this.cameras.main.centerX, this.sys.game.config.height*.8 + offsetY, message, {
+                font: 'bold 48px Arial',
+                fill: fillColor,
+                align: 'center'
+            });
+            this.attackText.setOrigin(0.5);  // Center align the text
+            this.attackText.setAlpha(1);
+            this.tweens.add({
+                targets: this.attackText,
+                alpha: 0,
+                ease: 'Linear',
+                duration: 3000,
+                onComplete: function () {
+                    this.attackText.setAlpha(0);
+                    this.attackText.destroy();
+                    //tooltip.text.setVisible(false);
+                    //tooltip.box.setVisible(false);
+                },
+                callbackScope: this
+            });
+        }
 
         for (let i = 0; i < numThreats; i++) {
-
-
             // Create threat
             let threat = threatGroup.create(attackerTerritory.x + territoryWidth / 2, this.game.config.height, threatIcon).setScale(0.1);
             threat.y -= threat.displayHeight / 2 + 5;
@@ -1168,7 +1168,7 @@ export const difficultyList = {
         putieThreat: 2
     },
     'Realistic': {
-        alienIncreasePerRound: 4,
+        alienIncreasePerRound: 3,
         alienDefenseFromSameBase: false,
         militaryAutoSpend: false,
         alienAttackForCapitalFunc: function(sharedData) {

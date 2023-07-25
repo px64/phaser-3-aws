@@ -116,6 +116,7 @@ export class Insurrection extends BaseScene {
         this.haventLaunchedYet = true;
         this.switchScene = false;
         console.log('reset switchScene to false');
+        this.alreadyCreated = {};
 
         //====================================================================================
         //
@@ -158,7 +159,8 @@ export class Insurrection extends BaseScene {
             if (this.sharedData.putieTerritories < territories.length/2 || Math.random() < .5) {
                 for (let key in this.sharedData.icons) {
                     let iconData = this.sharedData.icons[key];
-                    if (iconData.maga > 100 || iconData.woke > 100) {
+                    if (Math.abs(iconData.maga - iconData.woke ) > 100) {
+                        console.log('collapse! health: '+iconData.health+' maga: '+iconData.maga+' woke: '+iconData.woke);
                         this.sharedData.putieTerritories++;
                         this.putieTerritories = this.sharedData.putieTerritories;
                         iconData.maga = 0;
@@ -196,7 +198,8 @@ export class Insurrection extends BaseScene {
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
 
-                if (iconData.health < 1 || iconData.maga > 100 || iconData.woke > 100 || iconData.maga + iconData.woke > 100) {
+                if (iconData.health < 1 || Math.abs(iconData.maga - iconData.woke ) > 100 || iconData.maga + iconData.woke > 145) {
+                    console.log('collapse! health: '+iconData.health+' maga: '+iconData.maga+' woke: '+iconData.woke);
                     this.sharedData.putieTerritories++;
                     this.putieTerritories = this.sharedData.putieTerritories;
                     iconData.maga = 0;
@@ -389,14 +392,6 @@ export class Insurrection extends BaseScene {
         //====================================================================================
             function magaThreatWokeShield(object,threat, shieldStrength)
             {
-/*
-                if (threat.body.velocity.x == 0 && threat.body.velocity.y == 0) {
-                    console.log('swap object and threat');
-                    let temp = threat;
-                    threat = object;
-                    object = temp;
-                }
- */
                 // If the object does not have an id, give it one.
                 if (!object.hasOwnProperty('id')) {
                     object.id = Phaser.Utils.String.UUID();
@@ -416,13 +411,31 @@ export class Insurrection extends BaseScene {
                     let territoryWidth = scene.sys.game.config.width / territories.length;
                     if (Math.random() < shieldStrength) {
                         //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
+                        let helpedIcon = scene.sharedData.icons['environment'];
+                        let shortstory = ["MAGA Activists peacefully return home  ",
+                            "because it is immune to political attacks"];
+                        let faction = 'maga';
+                        //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
+                        let tooltip = createTooltip(scene, shortstory, faction, threat.x, threat.y);
+                        if (scene.alreadyCreated[object.id] === undefined) {
+                            scene.alreadyCreated[object.id] = true;
+                            tooltip.text.setVisible(true);
+                            tooltip.box.setVisible(true);
+                        }
+
+                        helpedIcon.icon.shieldWoke.setAlpha(0.5);
+                        scene.time.delayedCall(5000, () => {
+                            tooltip.text.setVisible(false);
+                            tooltip.box.setVisible(false);
+                            scene.alreadyCreated[object.id] = false;
+                        });
 
                         // "bounce" and move the threat to territory 1
                         scene.physics.moveTo(threat, territory.x + territoryWidth/2, scene.game.config.height, 200);
                         object.setTint(0x8080ff).setAlpha(0.9);
                         scene.tweens.add({
                             targets: object,
-                            alpha: 0,
+                            alpha: 0.1,
                             duration: 500,
                             onComplete: function () {
                                 object.setAlpha(0.1);
@@ -437,17 +450,56 @@ export class Insurrection extends BaseScene {
                     }
                 }
             }
+            //====================================================================================
+            //    function createTooltip(scene, character, x, y,)
+            //====================================================================================
+            function createTooltip(scene, shortstory, faction, x, y ) {
+                // Set text color based on affiliation
+                let textColor = faction === 'maga' ? '#ff8080' : '#8080ff';
+                let xOffset = 0;//character.faction === 'maga' ? 320 : -320;
 
-            function wokeThreatMagaShield(object,threat, shieldStrength)
-            {
-/*
-                if (threat.body.velocity.x == 0 && threat.body.velocity.y == 0) {
-                    console.log('swap object and threat');
-                    let temp = threat;
-                    threat = object;
-                    object = temp;
+                // Format the text to be centered and with the color based on the affiliation
+                let formattedBackstory = insertLineBreaks(shortstory.join(' '), 37);
+                let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
+                backstoryText.setOrigin(0.5);
+                backstoryText.setVisible(false);
+                backstoryText.setDepth(2);
+
+                // Add a bounding box for the text, with rounded corners and a semi-transparent background
+                let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                backstoryBox.setStrokeStyle(2, faction === 'maga' ? 0xff8080 : 0x8080ff, 0.3);
+                backstoryBox.isStroked = true;
+                backstoryBox.setOrigin(0.5);
+                backstoryBox.setVisible(false);
+                //backstoryBox.setDepth(1);
+
+                return {
+                    text: backstoryText,
+                    box: backstoryBox
+                };
+            }
+            //====================================================================================
+            //    function insertLineBreaks(str, charsPerLine) {
+            //====================================================================================
+            function insertLineBreaks(str, charsPerLine) {
+                let words = str.split(' ');
+                let lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if (currentLine.length + words[i].length + 1 > charsPerLine) {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    } else {
+                        currentLine += ' ' + words[i];
+                    }
                 }
- */
+                lines.push(currentLine);
+
+                return lines.join('\n');
+            }
+            function wokeThreatMagaShield(object,threat, shieldStrength, isItPutie)
+            {
                 // If the object does not have an id, give it one.
                 if (!object.hasOwnProperty('id')) {
                     object.id = Phaser.Utils.String.UUID();
@@ -466,6 +518,31 @@ export class Insurrection extends BaseScene {
 
                     if (Math.random() < shieldStrength) {
                         //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
+                        let helpedIcon = scene.sharedData.icons['environment'];
+                        let shortstory;
+                        if (isItPutie) {
+                            shortstory = ["Putie's influence is deterred ",
+                                "because of temporary immunity to political attacks"];
+                        } else {
+                            shortstory = ["Woke Activists peacefully return home  ",
+                                "because of temporary immunity to political attacks"];
+                        }
+                        let faction = 'woke';
+                        //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
+                        let tooltip = createTooltip(scene, shortstory, faction, threat.x, threat.y+100);
+                        if (scene.alreadyCreated[object.id] === undefined) {
+                            scene.alreadyCreated[object.id] = true;
+                            tooltip.text.setVisible(true);
+                            tooltip.box.setVisible(true);
+                        }
+
+                        helpedIcon.icon.shieldWoke.setAlpha(0.5);
+                        scene.time.delayedCall(5000, () => {
+                            tooltip.text.setVisible(false);
+                            tooltip.box.setVisible(false);
+                            scene.alreadyCreated[object.id] = false;
+                        });
+
                         scene.physics.moveTo(threat, territory.x+ territoryWidth/2, scene.sys.game.config.height, 200);
                         object.setTint(0xff8080).setAlpha(0.9);
                         scene.tweens.add({
@@ -498,7 +575,7 @@ export class Insurrection extends BaseScene {
             scene.physics.add.overlap(scene.putieThreats, scene.shieldsMaga, function (threat, object) {
                     let shieldStrength = object.shieldStrength;
                     //console.log('object shieldstrength = '+ shieldStrength);
-                    wokeThreatMagaShield(object,threat, shieldStrength);
+                    wokeThreatMagaShield(object,threat, shieldStrength, true);
                 }, null, this);
 
             //====================================================================================
@@ -621,7 +698,11 @@ export class Insurrection extends BaseScene {
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
-                    //scene.victoryText.destroy();
+                    if (scene.roundThreats < 2) {
+                        scene.time.delayedCall(2000, function() {
+                            scene.victoryText.destroy();
+                        });
+                    }
                     console.log('stay here until 10 seconds elapse so more capital can be rewarded');
                     // if (scene.roundThreats == 1 && scene.switchScene == false) {
                     //     // fix problem with double scene fades!

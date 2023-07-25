@@ -800,6 +800,8 @@ console.log(this.icons[choice.hurts]);
         //====================================================================================
 
         function handleHelperOverlap(icon, base, helper, incrementAmount, faction, gauge, message) {
+            console.error('handleHelperOverlap should never get called in dilemma');
+            game.loop.stop(); // assuming 'game' is your Phaser.Game instance
             let iconColor = faction === 'maga' ? 'red' : 'blue';
             console.log(helper.container.character.powerTokenType);
             // Do the appropriate thing depending on the helper type
