@@ -138,9 +138,15 @@ class TitleScene extends Phaser.Scene {
         if (this.sys.game.config.width < 704) {
             this.sharedData.fontSize = '24px';
             this.sharedData.medFont = '18px';
+
         } else {
           this.sharedData.fontSize = '48px';
           this.sharedData.medFont = '32px';
+        }
+        if (this.sys.game.config.width < 1200) {
+            this.sharedData.charFont = '18px';
+        } else {
+            this.sharedData.charFont = '28px';
         }
         // For each line of text...
         for (let i = 0; i < storyLines.length; i++) {
@@ -429,65 +435,6 @@ export class ChooseYourIdeologyScene extends BaseScene {
         button.setStyle({ fill: fillColor}); // change color back to white
     }
 
-    runTutorial(nextButton) {
-        let nextScreenTutorial = [
-            {
-                story: [
-                    "Mouse over each character to learn more about them.  ",
-                    "When finished, click on the Earth Icon tomove to the next screen"
-                ]
-            },
-            {
-                story: [
-                    "Click on the Earth Icon to",
-                        "move to the next screen"
-                ]
-            }
-        ];
-        // add some helpful text
-        if (!this.hasBeenCreatedBefore) {
-            // Format the text to be centered and with the color based on the affiliation
-            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 35);
-            let backstoryText = this.add.text(nextButton.x-130, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-            backstoryText.setOrigin(0.5);
-            backstoryText.setVisible(true);
-            backstoryText.setDepth(2);
-
-            // Add a bounding box for the text, with rounded corners and a semi-transparent background
-            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-            backstoryBox.isStroked = true;
-            backstoryBox.setOrigin(0.5);
-            backstoryBox.setVisible(true);
-            backstoryBox.setDepth(1);
-
-            setTimeout(() => {
-                backstoryText.setVisible(false);
-                backstoryBox.setVisible(false);
-            }, 10000);
-
-        }
-        //====================================================================================
-        //    function insertLineBreaks(str, charsPerLine) {
-        //====================================================================================
-        function insertLineBreaks(str, charsPerLine) {
-            let words = str.split(' ');
-            let lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            lines.push(currentLine);
-
-            return lines.join('\n');
-        }
-    }
 
     introduceCharacters() {
         let Wokeindex = 0;
@@ -495,7 +442,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         let xOffset = 0;
         let xSpriteOffset = 0;
 
-        this.characterTitleText = this.add.text(this.sys.game.config.width/2 - 20, 180, 'Meet Your Potential Advocates:', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
+        this.characterTitleText = this.add.text(this.sys.game.config.width/2 - 20, 180, 'Meet Your Advocates:', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
         let endorseMaga = this.add.text(40, 200, 'MAGA',
                             { fontSize: '24px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
@@ -544,7 +491,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             }
             else {
                 Wokeindex++;
-                xOffset = this.sys.game.config.width * .74;
+                xOffset = this.sys.game.config.width * .7;
                 xSpriteOffset = xOffset;
                 factionIcon = 'wokeBase';
              }
@@ -569,7 +516,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
                  //console.log('negotiation');
              }
             characterText = this.add.text(80+xOffset, 250 + (rowIndex * 60), character.name,
-                                { fontSize: '28px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+                                { fontSize: this.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
             if (character.faction == 'maga') {
                 xSpriteOffset += characterText.width+70;
             } else {
@@ -708,6 +655,66 @@ export class ChooseYourIdeologyScene extends BaseScene {
                 // Now add an extra line break after each section
                 lines.push('');
             }
+
+            return lines.join('\n');
+        }
+    }
+
+    runTutorial(nextButton) {
+        let nextScreenTutorial = [
+            {
+                story: [
+                    "Mouse over each character to learn more about them.  ",
+                    "When finished, click on the Earth Icon to move to the next screen"
+                ]
+            },
+            {
+                story: [
+                    "Click on the Earth Icon to",
+                        "move to the next screen"
+                ]
+            }
+        ];
+        // add some helpful text
+        if (!this.hasBeenCreatedBefore) {
+            // Format the text to be centered and with the color based on the affiliation
+            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 35);
+            let backstoryText = this.add.text(nextButton.x-150, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            backstoryText.setOrigin(0.5);
+            backstoryText.setVisible(true);
+            backstoryText.setDepth(2);
+
+            // Add a bounding box for the text, with rounded corners and a semi-transparent background
+            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+            backstoryBox.isStroked = true;
+            backstoryBox.setOrigin(0.5);
+            backstoryBox.setVisible(true);
+            backstoryBox.setDepth(1);
+
+            setTimeout(() => {
+                backstoryText.setVisible(false);
+                backstoryBox.setVisible(false);
+            }, 10000);
+
+        }
+        //====================================================================================
+        //    function insertLineBreaks(str, charsPerLine) {
+        //====================================================================================
+        function insertLineBreaks(str, charsPerLine) {
+            let words = str.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 > charsPerLine) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                } else {
+                    currentLine += ' ' + words[i];
+                }
+            }
+            lines.push(currentLine);
 
             return lines.join('\n');
         }
