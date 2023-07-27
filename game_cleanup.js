@@ -527,7 +527,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             //character.charText = characterText; // back reference to text so we can find the location later
 
-            createCharacterTooltip(this, character, 50+xOffset, Math.min(this.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText);
+            createCharacterTooltip(this, character, 50+xOffset, Math.min(this.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText, scaleFactor, tmpHelp);
 
             //characterText.on('pointerdown', () => this.selectIdeology(this.ideologies[i]));
             characterText.on('pointerover', () => this.enterButtonHoverState(characterText));
@@ -538,7 +538,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
         //====================================================================================
 
-        function createCharacterTooltip(scene, character, x, y, slider, characterText) {
+        function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
             let xOffset = character.faction === 'maga' ? 80+scene.game.config.width * .4 : scene.game.config.width * -.24;
@@ -546,18 +546,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             // Add an icon or graphic
             let helpedIcon;
-            let scaleFactor = 0.15;
-            let tmpHelp = character.helps; // don't want to change character.helps permanently
-
-            if (character.powerTokenType == 'type_3') {
-                tmpHelp = 'hacker';
-                scaleFactor = 0.19;
-                //console.log('hacker');
-            } else if (character.powerTokenType == 'type_2') {
-                tmpHelp = 'negotiation';
-                scaleFactor = 0.13;
-                //console.log('negotiation');
-            }
+            //let scaleFactor = 0.15;
 
             // Format the text to be centered and with the color based on the affiliation
             let roughSize = character.backstory.length * character.backstory[0].length;
