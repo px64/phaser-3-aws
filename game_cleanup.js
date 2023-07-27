@@ -567,7 +567,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             if (roughSize > 800 && scene.sys.game.config.width > 1000)
             {
                 lineLength = 88;
-                yOffset = 80;
+                yOffset = 140;
             } else {
                 if (roughSize > 440)
                 {
