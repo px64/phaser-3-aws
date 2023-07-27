@@ -228,7 +228,8 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
     create() {
         // Add a background
-        this.backgroundImage = this.add.image(400, 300, 'background');
+        this.backgroundImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'background');
+        this.backgroundImage.setScale(1);  // Don't scale down the image
 
         // Create an array of ideologies
         this.ideologies = [
@@ -544,10 +545,6 @@ export class ChooseYourIdeologyScene extends BaseScene {
             let xOffset = character.faction === 'maga' ? 80+scene.game.config.width * .4 : scene.game.config.width * -.24;
             //let xOffset = character.faction === 'maga' ? 500 : -400;
 
-            // Add an icon or graphic
-            let helpedIcon;
-            //let scaleFactor = 0.15;
-
             // Format the text to be centered and with the color based on the affiliation
             let roughSize = character.backstory.length * character.backstory[0].length;
             console.log(roughSize);
@@ -567,7 +564,6 @@ export class ChooseYourIdeologyScene extends BaseScene {
                     yOffset = 0;
                 }
             }
-            //console.log(helpedIcon);
             let graphicObject = tmpHelp;
             //console.log(graphicObject);
 
@@ -577,7 +573,6 @@ export class ChooseYourIdeologyScene extends BaseScene {
             backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
             backstoryIcon.setVisible(false);
             backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
-
 
             let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
             let backstoryText = scene.add.text(x+xOffset, backstoryIcon.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });  // Position the text below the icon
@@ -593,13 +588,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
             backstoryBox.setVisible(false);
             backstoryBox.setDepth(1);
 
-            scene.isTweening = false;
-
             const mouseOver = () => {
                 backstoryText.setVisible(true);
                 backstoryBox.setVisible(true);
                 backstoryIcon.setVisible(true);
-                //threatBounce(character);
             };
 
             const mouseOff = () => {

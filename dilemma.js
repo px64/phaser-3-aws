@@ -131,13 +131,18 @@ export class DilemmaScene extends BaseScene {
                   // Add a background
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
-        let image = this.add.image(0,0, 'newspaper').setDepth(-1).setAlpha(.3);
+        // let image = this.add.image(0,0, 'newspaper').setDepth(-1).setAlpha(.3);
+        // let scaleX = this.sys.game.config.width / image.width;
+        // let scaleY = this.sys.game.config.height / image.height;
+        // let scale = Math.min(scaleX, scaleY);
+        //
+        // image.setScale(scale).setOrigin(0, 0);
+
+        let image = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'newspaper').setDepth(-1).setAlpha(.3);
         let scaleX = this.sys.game.config.width / image.width;
         let scaleY = this.sys.game.config.height / image.height;
-        let scale = Math.min(scaleX, scaleY);
-
-        image.setScale(scale).setOrigin(0, 0);
-
+        let scale = Math.max(scaleX, scaleY);
+        image.setScale(scale);
 
         this.roundThreats = 0;
 
