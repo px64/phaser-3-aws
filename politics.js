@@ -354,9 +354,9 @@ export class Politics extends BaseScene {
         }
 
         let endorseMaga = this.add.text(0, 220, 'Endorse?',
-                            { fontSize: '22px', fontFamily: 'Roboto', color: '#ff8080', align: 'left' });
+                            { fontSize: '22px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
         let underline = this.add.graphics();
-        underline.lineStyle(2, 0xff8080); // Set the line thickness and color
+        underline.lineStyle(2, 0xff4040); // Set the line thickness and color
         underline.beginPath();
         underline.moveTo(endorseMaga.x, endorseMaga.y + endorseMaga.height);
         underline.lineTo(endorseMaga.x + endorseMaga.width, endorseMaga.y + endorseMaga.height);
@@ -465,7 +465,7 @@ export class Politics extends BaseScene {
                 character.charText.setText(character.name + ',\nBacking: ' + healthText);
                 // Make sure color of text is normal
                 if (character.faction == 'maga') {
-                    character.charText.setColor('#ff8080');
+                    character.charText.setColor('#ff4040');
                 } else {
                     character.charText.setColor('#8080ff');
                 }
@@ -569,7 +569,7 @@ export class Politics extends BaseScene {
 
                         //console.log(helpedIcon);
                         if (character.faction == 'maga') {
-                            helpedColor = 0xff8080;
+                            helpedColor = 0xff4040;
                         } else {
                             helpedColor = 0x8080ff;
                         }
@@ -1340,7 +1340,7 @@ export class Politics extends BaseScene {
         }
 
         function createCheckbox(scene, x, y, character, characterText, callback, initialValue) {
-            let textColor = character.faction === 'maga' ? 0xff8080 : 0x8080ff;
+            let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
 
             let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
             let checkboxSize = 32;  // Specify the size of your checkbox here
@@ -1473,7 +1473,7 @@ export class Politics extends BaseScene {
                     characterText.setColor('#00ff00');
                     this.track.setTint(0x00ff00);
                 } else {
-                    let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
+                    let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
                     characterText.setColor(textColor);
                     this.track.setTint(0xffffff);
                 }
@@ -1581,7 +1581,7 @@ export class Politics extends BaseScene {
                     characterText.setColor('#00ff00');
                     this.track.setTint(0x00ff00);
                 } else {
-                    let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
+                    let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
                     characterText.setColor(textColor);
                     this.track.setTint(0xffffff);
                 }
@@ -1650,7 +1650,7 @@ export class Politics extends BaseScene {
         //====================================================================================
         function createTooltip(scene, character, x, y, slider, characterText) {
             // Set text color based on affiliation
-            let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
+            let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
             let xOffset = 0;//character.faction === 'maga' ? 320 : -320;
 
             // Format the text to be centered and with the color based on the affiliation
@@ -1662,7 +1662,7 @@ export class Politics extends BaseScene {
 
             // Add a bounding box for the text, with rounded corners and a semi-transparent background
             let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-            backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff8080 : 0x8080ff, 0.3);
+            backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.3);
             backstoryBox.isStroked = true;
             backstoryBox.setOrigin(0.5);
             backstoryBox.setVisible(false);
@@ -1681,8 +1681,9 @@ export class Politics extends BaseScene {
         function createCharacterTooltip(scene, character, x, y, slider, characterText) {
 
             // Set text color based on affiliation
-            let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
-            let xOffset = character.faction === 'maga' ? scene.game.config.width * .4 : scene.game.config.width * -.24;
+            let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+            //let xOffset = character.faction === 'maga' ? scene.game.config.width * .4 : scene.game.config.width * -.24;
+            let xOffset = character.faction === 'maga' ? 400 : -300;
 
             // Add an icon or graphic
             let helpedIcon;
@@ -1707,7 +1708,7 @@ export class Politics extends BaseScene {
             //console.log(graphicObject);
 
             // Add an icon or graphic and scale it
-            let backstoryIcon = scene.add.image(x+xOffset, y, graphicObject);  // Position the icon at the original y position
+            let backstoryIcon = scene.add.image(x+xOffset, Math.min(scene.sys.game.config.height*.7,y), graphicObject);  // Position the icon at the original y position
             backstoryIcon.setScale(helpedIcon.scaleFactor);  // scale the icon
             backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
             backstoryIcon.setVisible(false);
@@ -1722,7 +1723,7 @@ export class Politics extends BaseScene {
 
             // Increase the height of the bounding box to accommodate the icon and the text, and adjust its position
             let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y - backstoryIcon.displayHeight/2, backstoryText.width, backstoryText.height + backstoryIcon.displayHeight, 0x000000, 1);  // Add some padding between the icon and the text
-            backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff8080 : 0x8080ff, 0.8);
+            backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
             backstoryBox.isStroked = true;
             backstoryBox.setOrigin(0.5,0);
             backstoryBox.setVisible(false);

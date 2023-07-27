@@ -741,7 +741,7 @@ export const characters = [
         dne: false
     },
     {
-        name:  'Maya Rodriguez - Bridge Builder',
+        name:  'Maya Rodriguez',
         backstory: [
             "A community organizer and human rights activist, Maya is",
             "passionate about social justice and inclusivity. She helps players build bridges",
@@ -762,17 +762,17 @@ export const characters = [
         dne: false
     },
     {
-        name: 'Sasha Goldman - Social Hacker',
+        name: 'Sasha Goldman',
         backstory: [
-            "A brilliant economist and a fervent believer in social justice, Sasha is a leading figure on the Woke side.",
-            "She combines her sharp economic acumen with a deep commitment to equality and social empowerment.",
-            "In the game, Sasha helps players to strategize economic growth that benefits all members of society, enhancing income equality and boosting social welfare.",
-            "She believes in the power of a diverse, inclusive economy to drive growth and prosperity for all."
+            "In her early years, Sasha was a rising star in the world of digital security, praised for her uncanny ability to safeguard information systems and protect user privacy.",
+            "Driven by her passion for social justice and a belief in the transformative power of technology, she left the corporate world to use her skills for the greater good.",
+            "Using her hacking prowess, she is committed to protecting the digital landscape from manipulation and ensuring information equality in the face of disinformation campaigns.",
+            "For Sasha, the battle isn't just in the physical world, but also in the realm of ones and zeros, where she stands as a digital sentinel for truth and justice."
         ],
         shortstory: [
-            "Sasha helps players to strategize economic growth that benefits all members of society, enhancing income equality and boosting social welfare.",
-            "She believes in the power of a diverse, inclusive economy to drive growth and prosperity for all. ",
-            "She's a great computer hacker and can protect systems from attacks."
+            "Sasha's mastery in cyber-security and hacking safeguards vital information and digital systems from intrusion, maintaining the integrity of your faction's digital platforms.",
+            "In the game, her actions fortify your online defenses and ensure that your narrative isn't hijacked or sabotaged.",
+            "Moreover, Sasha's actions expose biases and misinformation in the digital world, helping to shape a more equitable and informed society."
         ],
         faction: 'woke',
         power: 'Expand Diversity,\nEquality and\nInclusivity',
@@ -810,9 +810,19 @@ export const characters = [
 {
         name: "Rene Stellar",
         faction: "woke",
+        // backstory: [
+        //     "Born into a humble family in the heartland, Rene Stellar was fascinated by the mysteries of the universe from a very early age. Their nights were spent stargazing, their days buried in books about astrophysics and rocketry.",
+        //     "Following their passion, Rene secured a scholarship to a prestigious engineering institution. Their genius in propulsion systems and rocketry quickly distinguished them amongst their peers and professors alike. Rene was not simply a star student; they were a supernova.",
+        //     "As Rene's academic reputation grew, so did their personal journey. During their college years, Rene came out as transgender. This personal revelation didn’t come without its challenges. They faced discrimination and resistance in the traditional STEM field. But the adversity only fueled Rene’s determination.",
+        //     "Upon graduation, Rene was immediately recruited by the military, drawn by their unique blend of intellect and innovation. As a lead scientist, Rene’s advanced propulsion systems greatly bolstered national defense capabilities. Their advancements in rocketry technology, in particular, have been instrumental in deterring extra-terrestrial threats.",
+        //     "However, Rene was far more than a scientist dedicated to their work. They were a leader with a cause. Passionate about promoting inclusivity and representation within the traditionally conservative STEM and military fields, Rene worked tirelessly to establish mentoring programs, advocacy groups, and inclusive policies. They were an unwavering advocate for LGBTQ+ rights, consistently fighting for acceptance and equality both inside and outside of their field.",
+        //     "Today, Rene Stellar stands as an emblem of scientific brilliance and social progress. They are respected not only for their invaluable contributions to defense technology but also for their tireless efforts in making the STEM fields a more diverse and inclusive space."
+        // ],
         backstory: [
-            "A visionary rocket scientist and a fervent advocate for LGBTQ+ rights. Rene is recognized not only for their expertise in rocketry but also",
-            "their work in promoting inclusivity and representation within STEM fields."
+            "Growing up in the heartland, Rene Stellar was captivated by the cosmos. A scholarship to a prestigious engineering institution allowed Rene to explore their passion for astrophysics and rocketry. Their expertise was unparalleled, their innovations, groundbreaking.",
+            "College was also a time of personal revelation. Rene came out as transgender, facing and overcoming the hurdles of discrimination in the traditional STEM field. Their resilience only sharpened their determination and solidified their sense of identity.",
+            "After graduation, Rene was recruited by the military. Their advanced propulsion systems and rocketry enhancements have become crucial in national defense, particularly against extraterrestrial threats.",
+            "However, Rene was far more than a scientist dedicated to their work. They were a leader with a cause. Passionate about promoting inclusivity and representation within the traditionally conservative STEM and military fields, Rene worked tirelessly to establish mentoring programs, advocacy groups, and inclusive policies. They were an unwavering advocate for LGBTQ+ rights, consistently fighting for acceptance and equality both inside and outside of their field. Rene Stellar is now a symbol of both scientific genius and the push for a more inclusive future."
         ],
         shortstory: [
             "Rene's advanced knowledge in rocketry significantly bolsters our Alien Defense. However, their ambitious projects require substantial funding,",

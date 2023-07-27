@@ -222,7 +222,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
     create() {
         // Add a background
-        this.add.image(400, 300, 'background');
+        this.backgroundImage = this.add.image(400, 300, 'background');
 
         // Create an array of ideologies
         this.ideologies = [
@@ -258,8 +258,9 @@ export class ChooseYourIdeologyScene extends BaseScene {
         ];
 
         this.radioButtonGroup = []; // store radio buttons for easy removal
+        this.ideologyButtonGroup = [];
 
-        let textColor = 1 ? '#ff8080' : '#8080ff';
+        let textColor = 1 ? '#ff4040' : '#8080ff';
 
         // Set the title text
         let titleText = this.add.text(this.sys.game.config.width/2 - 20, 200, 'Choose Game Difficulty', { fontSize: '48px', fontFamily: 'Roboto', color: textColor, fill: '#ff0' }).setOrigin(0.5);
@@ -273,7 +274,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
                 radioButton.on('pointerdown', () => this.selectDifficulty(key)); // Pass the key, not the whole object
                 radioButton.on('pointerover', () => this.enterButtonHoverState(radioButton));
-                radioButton.on('pointerout', () => this.enterButtonRestState(radioButton));
+                radioButton.on('pointerout', () => this.enterButtonRestState(radioButton, '#fff'));
 
                 this.radioButtonGroup.push(radioButton); // Add radio button to the group
                 yOffset += 1;
@@ -326,10 +327,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
     }
 
     displayIdeologies() {
-        let textColor = 1 ? '#ff8080' : '#8080ff';
+        let textColor = 1 ? '#ff4040' : '#8080ff';
 
         // Set the title text
-        let titleText = this.add.text(this.sys.game.config.width/2 - 20, 200, 'Choose Your Ideology', { fontSize: '32px', fontFamily: 'Roboto', color: textColor, fill: '#fff' }).setOrigin(0.5);
+        this.ideologyTitleText = this.add.text(this.sys.game.config.width/2 - 20, 200, 'Choose Your Ideology', { fontSize: '32px', fontFamily: 'Roboto', color: textColor, fill: '#fff' }).setOrigin(0.5);
 
         // Create the radio buttons
         for(let i = 0; i < this.ideologies.length; i++) {
@@ -338,7 +339,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             radioButton.on('pointerdown', () => this.selectIdeology(this.ideologies[i]));
             radioButton.on('pointerover', () => this.enterButtonHoverState(radioButton));
-            radioButton.on('pointerout', () => this.enterButtonRestState(radioButton));
+            radioButton.on('pointerout', () => this.enterButtonRestState(radioButton, '#fff'));
+
+            this.ideologyButtonGroup.push(radioButton);
+            this.ideologyButtonGroup.push(icon);
         }
     }
 
@@ -382,29 +386,331 @@ export class ChooseYourIdeologyScene extends BaseScene {
             this.sharedData.Wokeness += 10;
         }
 
-        this.cameras.main.fadeOut(3000, 0, 0, 0);
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-            let sanity_check = Math.random();
-            console.log('aliens attack random value = ' + sanity_check);
-            if (sanity_check < this.difficultyLevel().oddsOfAlienAttackFirstRound) {
-                console.log('Aliens Attack');
-            }
-            if (sanity_check < this.difficultyLevel().oddsOfAlienAttackFirstRound) {
-                this.scene.get('AliensAttack').setup(this.sharedData);
-                this.scene.start('AliensAttack');
-            } else {
-                this.scene.get('politics').setup(this.sharedData);
-                this.scene.start('politics');
-            }
+        this.backgroundImage.destroy();
+        this.ideologyTitleText.destroy();
+        ideologyText.destroy();
+        icon.destroy();
+        icon2.destroy();
+        this.ideologyButtonGroup.forEach(button => button.destroy());
+        this.ideologyButtonGroup = []; // reset the radio button group
+
+        this.introduceCharacters();
+
+        // Create a button using an image
+        let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
+
+        // When the button is clicked, start the next scene
+        nextButton.on('pointerdown', () => {
+            this.cameras.main.fadeOut(800, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                let sanity_check = Math.random();
+                console.log('aliens attack random value = ' + sanity_check);
+                if (sanity_check < this.difficultyLevel().oddsOfAlienAttackFirstRound) {
+                    console.log('Aliens Attack');
+                }
+                if (sanity_check < this.difficultyLevel().oddsOfAlienAttackFirstRound) {
+                    this.scene.get('AliensAttack').setup(this.sharedData);
+                    this.scene.start('AliensAttack');
+                } else {
+                    this.scene.get('politics').setup(this.sharedData);
+                    this.scene.start('politics');
+                }
             });
+        });
+
+        this.runTutorial(nextButton);
     }
 
     enterButtonHoverState(button) {
         button.setStyle({ fill: '#ff0'}); // change color to yellow
     }
 
-    enterButtonRestState(button) {
-        button.setStyle({ fill: '#fff'}); // change color back to white
+    enterButtonRestState(button, fillColor) {
+        button.setStyle({ fill: fillColor}); // change color back to white
+    }
+
+    runTutorial(nextButton) {
+        let nextScreenTutorial = [
+            {
+                story: [
+                    "Mouse over each character to learn more about them.  ",
+                    "When finished, click on the Earth Icon tomove to the next screen"
+                ]
+            },
+            {
+                story: [
+                    "Click on the Earth Icon to",
+                        "move to the next screen"
+                ]
+            }
+        ];
+        // add some helpful text
+        if (!this.hasBeenCreatedBefore) {
+            // Format the text to be centered and with the color based on the affiliation
+            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 35);
+            let backstoryText = this.add.text(nextButton.x-130, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            backstoryText.setOrigin(0.5);
+            backstoryText.setVisible(true);
+            backstoryText.setDepth(2);
+
+            // Add a bounding box for the text, with rounded corners and a semi-transparent background
+            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+            backstoryBox.isStroked = true;
+            backstoryBox.setOrigin(0.5);
+            backstoryBox.setVisible(true);
+            backstoryBox.setDepth(1);
+
+            setTimeout(() => {
+                backstoryText.setVisible(false);
+                backstoryBox.setVisible(false);
+            }, 10000);
+
+        }
+        //====================================================================================
+        //    function insertLineBreaks(str, charsPerLine) {
+        //====================================================================================
+        function insertLineBreaks(str, charsPerLine) {
+            let words = str.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 > charsPerLine) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                } else {
+                    currentLine += ' ' + words[i];
+                }
+            }
+            lines.push(currentLine);
+
+            return lines.join('\n');
+        }
+    }
+
+    introduceCharacters() {
+        let Wokeindex = 0;
+        let MAGAindex = 0;
+        let xOffset = 0;
+        let xSpriteOffset = 0;
+
+        this.characterTitleText = this.add.text(this.sys.game.config.width/2 - 20, 180, 'Meet Your Potential Advocates:', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
+
+        let endorseMaga = this.add.text(40, 200, 'MAGA',
+                            { fontSize: '24px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
+        let underline = this.add.graphics();
+        underline.lineStyle(2, 0xff4040); // Set the line thickness and color
+        underline.beginPath();
+        underline.moveTo(endorseMaga.x, endorseMaga.y + endorseMaga.height);
+        underline.lineTo(endorseMaga.x + endorseMaga.width, endorseMaga.y + endorseMaga.height);
+        underline.closePath();
+        underline.strokePath();
+
+        let endorseWoke = this.add.text(40 + this.sys.game.config.width * .74, 200, 'WOKE',
+                                                { fontSize: '24px', fontFamily: 'Roboto', color: '#8080ff', align: 'left' })
+        underline = this.add.graphics();
+        underline.lineStyle(2, 0x8080ff); // Set the line thickness and color
+        underline.beginPath();
+        underline.moveTo(endorseWoke.x, endorseWoke.y + endorseWoke.height);
+        underline.lineTo(endorseWoke.x + endorseWoke.width, endorseWoke.y + endorseWoke.height);
+        underline.closePath();
+        underline.strokePath();
+
+        characters.forEach((character, index) => {
+            let characterText;
+
+            let matchHelps = true; // for now just assume all icons are visible
+            let matchHurts = true;
+            for (let key in this.sharedData.icons) {
+                let iconData = this.sharedData.icons[key];
+                if (character.helps == iconData.iconName) matchHelps = true;
+                if (character.hurts == iconData.iconName) matchHurts = true;
+            };
+
+            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true; return;}
+            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true; return}
+            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true; return}
+            // Keep separate track of the MAGA and Woke character placement row offsets
+            let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
+            // Set text color based on affiliation
+            let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+            let factionIcon;
+            if (character.faction == 'maga') {
+                MAGAindex++;
+                xOffset = 0;
+                xSpriteOffset = xOffset;
+                factionIcon = 'magaBase';
+            }
+            else {
+                Wokeindex++;
+                xOffset = this.sys.game.config.width * .74;
+                xSpriteOffset = xOffset;
+                factionIcon = 'wokeBase';
+             }
+             let tmpHelp = character.helps; // don't want to change character.helps permanently
+             let scaleTable = {
+                "environment": 0.15,
+                "economy": 0.1,
+                "justice": 0.05,
+                "government": 0.05,
+                "diplomacy" : 0.16,
+                "military" : 0.13
+             };
+             let scaleFactor = scaleTable[character.helps];
+
+             if (character.powerTokenType == 'type_3') {
+                 tmpHelp = 'hacker';
+                 scaleFactor = 0.19;
+                 //console.log('hacker');
+             } else if (character.powerTokenType == 'type_2') {
+                 tmpHelp = 'negotiation';
+                 scaleFactor = 0.13;
+                 //console.log('negotiation');
+             }
+            characterText = this.add.text(80+xOffset, 250 + (rowIndex * 60), character.name,
+                                { fontSize: '28px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+            if (character.faction == 'maga') {
+                xSpriteOffset += characterText.width+70;
+            } else {
+                xSpriteOffset -= 60;
+            }
+            let icon = this.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor/2);
+            let hatType = this.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), factionIcon).setScale(.1);
+
+            //character.charText = characterText; // back reference to text so we can find the location later
+
+            createCharacterTooltip(this, character, 50+xOffset, Math.min(this.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText);
+
+            //characterText.on('pointerdown', () => this.selectIdeology(this.ideologies[i]));
+            characterText.on('pointerover', () => this.enterButtonHoverState(characterText));
+            characterText.on('pointerout', () => this.enterButtonRestState(characterText, textColor));
+
+        });
+        //====================================================================================
+        //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
+        //====================================================================================
+
+        function createCharacterTooltip(scene, character, x, y, slider, characterText) {
+            // Set text color based on affiliation
+            let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+            let xOffset = character.faction === 'maga' ? 80+scene.game.config.width * .4 : scene.game.config.width * -.24;
+            //let xOffset = character.faction === 'maga' ? 500 : -400;
+
+            // Add an icon or graphic
+            let helpedIcon;
+            let scaleFactor = 0.15;
+            let tmpHelp = character.helps; // don't want to change character.helps permanently
+
+            if (character.powerTokenType == 'type_3') {
+                tmpHelp = 'hacker';
+                scaleFactor = 0.19;
+                //console.log('hacker');
+            } else if (character.powerTokenType == 'type_2') {
+                tmpHelp = 'negotiation';
+                scaleFactor = 0.13;
+                //console.log('negotiation');
+            }
+
+            // Format the text to be centered and with the color based on the affiliation
+            let roughSize = character.backstory.length * character.backstory[0].length;
+            console.log(roughSize);
+            let lineLength;
+            let yOffset;
+            if (roughSize > 800 && scene.sys.game.config.width > 1000)
+            {
+                lineLength = 88;
+                yOffset = 80;
+            } else {
+                if (roughSize > 440)
+                {
+                    lineLength = 80;
+                    yOffset = 0;
+                } else {
+                    lineLength = 40;
+                    yOffset = 0;
+                }
+            }
+            //console.log(helpedIcon);
+            let graphicObject = tmpHelp;
+            //console.log(graphicObject);
+
+            // Add an icon or graphic and scale it
+            let backstoryIcon = scene.add.image(x+xOffset, y-yOffset, graphicObject);  // Position the icon at the original y position
+            backstoryIcon.setScale(scaleFactor);  // scale the icon
+            backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
+            backstoryIcon.setVisible(false);
+            backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
+
+
+            let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+            let backstoryText = scene.add.text(x+xOffset, backstoryIcon.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });  // Position the text below the icon
+            backstoryText.setOrigin(0.5,0);
+            backstoryText.setVisible(false);
+            backstoryText.setDepth(3);  // increase depth to be on top
+
+            // Increase the height of the bounding box to accommodate the icon and the text, and adjust its position
+            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y - backstoryIcon.displayHeight/2, backstoryText.width, backstoryText.height + backstoryIcon.displayHeight, 0x000000, 1);  // Add some padding between the icon and the text
+            backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
+            backstoryBox.isStroked = true;
+            backstoryBox.setOrigin(0.5,0);
+            backstoryBox.setVisible(false);
+            backstoryBox.setDepth(1);
+
+            scene.isTweening = false;
+
+            const mouseOver = () => {
+                backstoryText.setVisible(true);
+                backstoryBox.setVisible(true);
+                backstoryIcon.setVisible(true);
+                //threatBounce(character);
+            };
+
+            const mouseOff = () => {
+                backstoryText.setVisible(false);
+                backstoryBox.setVisible(false);
+                backstoryIcon.setVisible(false);
+            };
+
+            slider.on('pointerover', mouseOver);
+            characterText.on('pointerover', mouseOver);
+
+            slider.on('pointerout', mouseOff);
+            characterText.on('pointerout', mouseOff);
+
+        }
+        //====================================================================================
+        //    insertLinezBreaks(str, charsPerLine) {
+        //====================================================================================
+        function insertLinezBreaks(str, charsPerLine) {
+            // First split the string into sections based on the special token
+            let sections = str.split('||');
+            let lines = [];
+
+            // Now process each section independently
+            for (let section of sections) {
+                // Split the section into words
+                let words = section.split(' ');
+
+                // Process the words in this section as before
+                let currentLine = words[0];
+                for (let i = 1; i < words.length; i++) {
+                    if (currentLine.length + words[i].length + 1 > charsPerLine) {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    } else {
+                        currentLine += ' ' + words[i];
+                    }
+                }
+                // Push the last line of this section
+                lines.push(currentLine);
+
+                // Now add an extra line break after each section
+                lines.push('');
+            }
+
+            return lines.join('\n');
+        }
     }
 }
 
