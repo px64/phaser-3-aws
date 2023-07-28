@@ -86,7 +86,8 @@ export default class BaseScene extends Phaser.Scene {
 
         icon.iconName = iconName;
 
-        let littleHats = this.drawGauges(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, []);
+        // Note that drawGauges is an arrow function so it keeps 'this' from this context
+        let littleHats = this.drawGauges(this, xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, []);
         //this.drawBalance(xPos, yPos, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth);
 
         if (shieldStrength < .1) {shieldVisible = false;}
@@ -131,10 +132,11 @@ export default class BaseScene extends Phaser.Scene {
     // drawBalance
     //
     //====================================================================================
-    drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, littleHatsRemove) => {
+    //drawGauges = (scene, x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, littleHatsRemove) => {
+    drawGauges(scene, x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, littleHatsRemove) {
         // 'track' is the scale object (could be a sprite or any game object)
 
-        let littleHatsCreate = this.drawHealthGauge(this, 0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite, littleHatsRemove);
+        let littleHatsCreate = this.drawHealthGauge(scene, 0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite, littleHatsRemove);
         let stability = health/healthScale;
         let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
         let balance;
@@ -148,11 +150,10 @@ export default class BaseScene extends Phaser.Scene {
         }
         stability = stability * (1-balance);
 
-        this.drawHealthGauge(this, stability/100,x,y, 'Health', gaugeHealth);
+        this.drawHealthGauge(scene, stability/100,x,y, 'Health', gaugeHealth);
         gaugeHealth.setAlpha(.7);
 
         return littleHatsCreate;
-
     }
 
     // So we now have 'health' which can be renamed 'strength' and 'stability'
@@ -275,7 +276,7 @@ export default class BaseScene extends Phaser.Scene {
                      hat.destroy();
                  });
              }
-             littleHats = [];
+             //littleHats = [];
 
             // Assuming the icons should appear below the health gauge
             let iconY = posY + GAUGE_HEIGHT + ICON_MARGIN;
@@ -466,7 +467,8 @@ console.log('return threat');
                 // Enable world bounds event for this body
                 threat.body.onWorldBounds = true;
                 icon[faction] -= 5;
-                icon.littleHats = this.drawGauges(icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite, icon.littleHats);
+                // Note that drawGauges is an arrow function so it keeps 'this' from this context
+                icon.littleHats = this.drawGauges(this, icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite, icon.littleHats);
 
                 // Listen for the event
                 this.physics.world.on('worldbounds', (body) => {

@@ -443,7 +443,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         let xOffset = 0;
         let xSpriteOffset = 0;
 
-        this.characterTitleText = this.add.text(this.sys.game.config.width/2 - 20, 180, 'Meet Your Advocates:', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
+        this.characterTitleText = this.add.text(this.sys.game.config.width/2 - 20, 180, 'Meet Your Advocates', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
         let endorseMaga = this.add.text(40, 200, 'MAGA',
                             { fontSize: '24px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
@@ -858,7 +858,8 @@ class TutorialScene extends BaseScene {
 
     preload() {
         // Preload an image for the tutorial scene
-        this.load.image('tutorial', 'assets/aliencrash.png');
+        this.load.image('maga_riot', 'assets/maga_riot.jpg');
+        this.load.image('aliencrash', 'assets/aliencrash.png');
     }
 
     create(data) {
@@ -871,10 +872,15 @@ class TutorialScene extends BaseScene {
 
         victoryText.setOrigin(0.5);  // Center align the text
 
+        let victoryImage;
         // Optionally, display a victory image
-        let victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'tutorial');
-        victoryImage.setScale(0.5);  // Scale down the image
-        victoryImage.setAlpha(0.2);  // Make the image semi-transparent
+        if (data.nextScene != 'dilemmaOrInsurrection') {
+            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'maga_riot');
+        } else {
+            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'aliencrash');
+        }
+        //victoryImage.setScale(0.5);  // Scale down the image
+        victoryImage.setAlpha(0.3);  // Make the image semi-transparent
 
         // Bring the text to the top
         victoryText.setDepth(1);

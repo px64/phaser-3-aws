@@ -65,7 +65,12 @@ export class Insurrection extends BaseScene {
             Object.assign(this.sharedData, data);
 
         }
-
+        preload() {
+                this.load.image('woke_protest', 'assets/woke_protest.png');
+                this.load.image('maga_protest', 'assets/maga_protest.jpg');
+                this.load.image('woke_riot', 'assets/woke_riot.jpg');
+                this.load.image('maga_riot', 'assets/maga_riot.jpg');
+        }
         //====================================================================================
         //
         // create()
@@ -108,7 +113,13 @@ export class Insurrection extends BaseScene {
                 );
             }
         }
-
+/*
+        this.backgroundImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'woke_protest').setDepth(-1).setAlpha(.3);
+        let scaleX = this.sys.game.config.width / this.backgroundImage.width;
+        let scaleY = this.sys.game.config.height / this.backgroundImage.height;
+        let scale = Math.max(scaleX, scaleY);
+        this.backgroundImage.setScale(scale);
+*/
         this.MAGAness = this.sharedData.MAGAness;
         this.Wokeness = this.sharedData.Wokeness;
         this.putieTerritories = this.sharedData.putieTerritories;
@@ -117,6 +128,7 @@ export class Insurrection extends BaseScene {
         this.switchScene = false;
         console.log('reset switchScene to false');
         this.alreadyCreated = {};
+        this.changedBackgroundOnce = false;
 
         //====================================================================================
         //
@@ -232,7 +244,7 @@ export class Insurrection extends BaseScene {
                 let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
                 iconData.iconText.setText(iconData.textBody + healthText);
 
-                this.drawGauges(iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite, iconData.littleHats);
+                this.drawGauges(this, iconData.icon.x, iconData.icon.y, iconData.maga, iconData.woke, iconData.health, iconData.healthScale, iconData.gaugeMaga, iconData.gaugeWoke, iconData.gaugeHealth, iconData.scaleSprite, iconData.littleHats);
             }
 
             thisRoundHealthChange += this.sharedData.MAGAnessVelocity/5;
@@ -275,7 +287,7 @@ export class Insurrection extends BaseScene {
                     this.sharedData.icons['government'].iconText.setText(gov.textBody + healthText);
                 }
 
-                this.drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
+                this.drawGauges(this, gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
             }
         }
         //====================================================================================
@@ -863,6 +875,11 @@ export class Insurrection extends BaseScene {
                 let magaThreatCounter = 0;
                 let wokeThreatCounter = 0;
                 let countThreats = 0;
+                let nonPutieThreats = 0;
+                let magaThreats = 0;
+                let wokeThreats = 0;
+                let putieThreats = 0;
+
                 // Now your keys array is shuffled, so you can iterate over it
                 iconKeys.forEach(key => {
                     let icon = this.sharedData.icons[key];
@@ -879,6 +896,8 @@ export class Insurrection extends BaseScene {
                                 this.createThreat(territory, '', icon, Math.floor(magaThreatCounter));
                                 magaThreatCounter -= Math.floor(magaThreatCounter);
                                 countThreats++;
+                                nonPutieThreats++;
+                                magaThreats++;
                             }
                         }  else if (territory.faction == 'woke') {
                             wokeThreatCounter += icon.woke/25;
@@ -887,34 +906,66 @@ export class Insurrection extends BaseScene {
                                 this.createThreat(territory, '', icon, Math.floor(wokeThreatCounter));
                                 wokeThreatCounter -= Math.floor(wokeThreatCounter);
                                 countThreats++;
+                                nonPutieThreats++;
+                                wokeThreats++;
                             }
                         } else if (territory.faction == 'putieVille') { // one threat automatically issued to every icon from Putie
                             countThreats++;
+                            putieThreats++;
                             this.createThreat(territory, '', icon, 1);
                         }
                     }
                 });
+
+                let changeBackgroundImage = (imageName) => {
+                    if (this.changedBackgroundOnce == false) {
+                        this.changedBackgroundOnce = true;
+                        //this.backgroundImage.destroy();
+                        this.backgroundImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, imageName).setDepth(-1).setAlpha(.3);
+                        let scaleX = this.sys.game.config.width / this.backgroundImage.width;
+                        let scaleY = this.sys.game.config.height / this.backgroundImage.height;
+                        let scale = Math.max(scaleX, scaleY);
+                        this.backgroundImage.setScale(scale);
+                    }
+                }
+
                 console.log('total number of threats fired: '+countThreats);
                 let message;
-
+                let backgroundImage;
                 if (countThreats == 0) {
                     message = 'America is at peace.\n MAGA and Woke are balanced\nand content.';
                 } else {
-                    switch (Math.floor(countThreats / 6)) {
+                    if (magaThreats > wokeThreats) {
+                        backgroundImage = 'maga_protest';
+                    } else {
+                        backgroundImage = 'woke_protest';
+                    }
+                    switch (Math.floor(nonPutieThreats / 4)) {
                         case 0:
                             message = 'Activists Apply Pressure!';
+                            changeBackgroundImage(backgroundImage);
                             break;
                         case 1:
                             message = 'Protest Marches Erupt!';
+                            changeBackgroundImage(backgroundImage);
                             break;
                         case 2:
                             message = 'Insurrectionists Attack!';
+                            if (magaThreats > wokeThreats) {
+                                changeBackgroundImage('maga_riot');
+                            } else {
+                                changeBackgroundImage('woke_riot');
+                            }
                             break;
                         default:
-                            message = 'Total Revolution!';
-                    }
-                    if (this.putieThreats > 0) {
-                        message += '\nAnd Putie sends his minions to cause instability!';
+                            message = 'Riots in the Streets!';
+                            if (magaThreats > wokeThreats) {
+                                changeBackgroundImage('maga_riot');
+                            } else {
+                                changeBackgroundImage('woke_riot');
+                            }                    }
+                    if (putieThreats > 0) {
+                        message += '\n\nAnd Russian Troll Farms Create Instability!';
                     }
                 }
                 // Create a text object to display a victory message

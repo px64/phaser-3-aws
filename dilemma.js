@@ -69,7 +69,8 @@ export class DilemmaScene extends BaseScene {
     preload() {
             //this.load.image('newspaper', 'assets/newspaper-border.png');
             this.load.image('newspaper', 'assets/protest2.jpg');
-
+            this.load.image('woke_protest', 'assets/woke_protest.png');
+            this.load.image('maga_protest', 'assets/maga_protest.jpg');
     }
 
     //====================================================================================
@@ -138,11 +139,11 @@ export class DilemmaScene extends BaseScene {
         //
         // image.setScale(scale).setOrigin(0, 0);
 
-        let image = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'newspaper').setDepth(-1).setAlpha(.3);
-        let scaleX = this.sys.game.config.width / image.width;
-        let scaleY = this.sys.game.config.height / image.height;
+        this.backgroundImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'newspaper').setDepth(-1).setAlpha(.3);
+        let scaleX = this.sys.game.config.width / this.backgroundImage.width;
+        let scaleY = this.sys.game.config.height / this.backgroundImage.height;
         let scale = Math.max(scaleX, scaleY);
-        image.setScale(scale);
+        this.backgroundImage.setScale(scale);
 
         this.roundThreats = 0;
 
@@ -543,19 +544,39 @@ export class DilemmaScene extends BaseScene {
                 });
             });
 
-            this.time.delayedCall(1000, () => {
-                console.log(choice);
-                let fruit;
-                if (choice.helpBenefit > 0) {
-                    fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.helps) + ' gets stronger!\nBut! ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
-                    fruit += '\n\nGood news!  Political Capital will be boosted by +'+choice.helpBenefit/40+'/year for many years to come!';
-                } else {
-                    fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
-                    fruit += '\n\nBad news!  Political Capital will suffer by '+choice.helpBenefit/40+'/year for many years to come!';
+            let changeBackgroundImage = (imageName) => {
+                if (1){//this.changedBackgroundOnce == false) {
+                    this.changedBackgroundOnce = true;
+                    this.backgroundImage.destroy();
+                    this.backgroundImage = this.add.image(this.cameras.main.centerX-80, this.cameras.main.centerY, imageName).setDepth(-1).setAlpha(.3);
+                    let scaleX = this.sys.game.config.width / this.backgroundImage.width;
+                    let scaleY = this.sys.game.config.height / this.backgroundImage.height;
+                    let scale = Math.max(scaleX, scaleY);
+                    this.backgroundImage.setScale(scale);
                 }
+            }
 
-                let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
+            let backgroundImage;
+            if (choice.hurtFaction == 'maga') {
+                backgroundImage = 'maga_protest';
+            } else {
+                backgroundImage = 'woke_protest';
+            }
+            changeBackgroundImage(backgroundImage);
 
+            console.log(choice);
+            let fruit;
+            if (choice.helpBenefit > 0) {
+                fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.helps) + ' gets stronger!\nBut! ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
+                fruit += '\n\nGood news!  Political Capital will be boosted by +'+choice.helpBenefit/40+'/year for many years to come!';
+            } else {
+                fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
+                fruit += '\n\nBad news!  Political Capital will suffer by '+choice.helpBenefit/40+'/year for many years to come!';
+            }
+
+            let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
+
+            this.time.delayedCall(1000, () => {
                 // Implement the results of the chosen option.  Shortcut: just give velocity to Wokeness to make game design easier for now.
                 // If someday this becomes a 2-person game then the velocities will need to be separated
                 this.sharedData.WokenessVelocity = this.sharedData.WokenessVelocity + choice.helpBenefit/40;

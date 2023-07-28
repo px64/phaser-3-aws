@@ -239,7 +239,7 @@ export class Politics extends BaseScene {
             //this.drawHealthBar(1, 100, 100, 'maga', this.envHealthBarMaga);
             //this.drawHealthBar(0.7, 110, 100, 'woke', this.envHealthBarWoke);
 
-            drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth, env.scaleSprite, env.littleHats);
+            drawGauges(this, env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth, env.scaleSprite, env.littleHats);
 
             if (0) {//Math.random() < 0.3) {
                 this.scene.get('AliensAttack').setup(this.sharedData);
@@ -268,7 +268,7 @@ export class Politics extends BaseScene {
                 this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
             }
  */
-            drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
+            drawGauges(this, gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
         }
         //====================================================================================
         //
@@ -892,7 +892,7 @@ export class Politics extends BaseScene {
                     let hurtIcon = scene.icons[helper.container.character.hurts];
                     let territory = territories[3]; // random territory
                     scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
-                    scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
+                    scene.drawGauges(scene, hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
 
                     tooltip.text.setVisible(true);
                     tooltip.box.setVisible(true);
@@ -959,7 +959,7 @@ export class Politics extends BaseScene {
                             scene.returnThreat(territory, helper.container.character.faction, helpedIcon, numReturns);
                             //icon[helper.container.character.faction] = icon[otherFaction];
                         }
-                        scene.drawGauges(helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth, helpedIcon.scaleSprite, helpedIcon.littleHats);
+                        scene.drawGauges(scene, helpedIcon.icon.x, helpedIcon.icon.y, helpedIcon.maga, helpedIcon.woke, helpedIcon.health, helpedIcon.healthScale, helpedIcon.gaugeMaga, helpedIcon.gaugeWoke, helpedIcon.gaugeHealth, helpedIcon.scaleSprite, helpedIcon.littleHats);
                         // Delete data from sharedData.helperTokens
                         console.log('delete name ' + helper.container.character.name);
                         delete scene.sharedData.helperTokens[helper.container.character.name];
@@ -968,7 +968,7 @@ export class Politics extends BaseScene {
                         // But we also launch 5 faction threats at the 'hurts' icon
                         console.log('character ' + helper.container.character.name + ' launches 5 threats');
                         scene.createThreat(territory, helper.container.character.faction, hurtIcon, 5);
-                        scene.drawGauges(hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
+                        scene.drawGauges(scene, hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
                         tooltip.text.setVisible(true);
                         tooltip.box.setVisible(true);
                         if (icon.iconName == 'military') {
