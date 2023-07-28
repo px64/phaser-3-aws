@@ -134,7 +134,7 @@ export default class BaseScene extends Phaser.Scene {
     drawGauges = (x, y, maga, woke, health, healthScale, gaugeMaga, gaugeWoke, gaugeHealth, scaleSprite, littleHatsRemove) => {
         // 'track' is the scale object (could be a sprite or any game object)
 
-        let littleHatsCreate = this.drawHealthGauge(0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite, littleHatsRemove);
+        let littleHatsCreate = this.drawHealthGauge(this, 0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite, littleHatsRemove);
         let stability = health/healthScale;
         let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
         let balance;
@@ -148,7 +148,7 @@ export default class BaseScene extends Phaser.Scene {
         }
         stability = stability * (1-balance);
 
-        this.drawHealthGauge(stability/100,x,y, 'Health', gaugeHealth);
+        this.drawHealthGauge(this, stability/100,x,y, 'Health', gaugeHealth);
         gaugeHealth.setAlpha(.7);
 
         return littleHatsCreate;
@@ -197,7 +197,7 @@ export default class BaseScene extends Phaser.Scene {
 
     // // TODO: Add little hat icons for every 10 magas or wokes accumulated
 
-    drawHealthGauge(percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite, littleHats) {
+    drawHealthGauge(scene, percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite, littleHats) {
         // 'track' is the scale object (could be a sprite or any game object)
         const ICON_MARGIN = 10;
         const GAUGE_HEIGHT = 50;
@@ -279,8 +279,8 @@ export default class BaseScene extends Phaser.Scene {
 
             // Assuming the icons should appear below the health gauge
             let iconY = posY + GAUGE_HEIGHT + ICON_MARGIN;
-            littleHats = drawIcons(this, posX-20, iconY, maga/5, 'magaBase', littleHats);
-            littleHats = drawIcons(this, posX-20, iconY + ICON_SPACING, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
+            littleHats = drawIcons(scene, posX-20, iconY, maga/5, 'magaBase', littleHats);
+            littleHats = drawIcons(scene, posX-20, iconY + ICON_SPACING, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
 
         }
         return littleHats;
@@ -607,10 +607,12 @@ export const characters = [
     {
         name: 'Commander Jackson',
         backstory: [
-            "A retired military officer with years of combat experience,",
-            "Commander Jackson advocates for a strong national defense and decisive action",
-            "against the alien threat. He is skilled in tactics, leadership, and combat, and",
-            "provides valuable guidance to players aligned with the MAGA faction."
+            "Commander Jackson, a distinguished veteran, demonstrates unwavering dedication to the country's defense from the extraterrestrial",
+            "menace. His long-standing commitment to limited government and fiscal conservatism mirrors in his decisive, no-nonsense approach",
+            "towards the alien threat. His battle-hardened experience and profound tactical acumen give him a distinct edge, making him a valuable",
+            "asset to those with the MAGA alignment. Despite resistance from proponents of government intervention, Commander Jackson holds his",
+            "ground, emphasizing that the key to victory lies in bolstering military strength and empowering individual citizens, rather than in",
+            "bureaucratic expansion."
         ],
         shortstory: [
             "He is skilled in tactics, leadership, and combat, and",
@@ -630,10 +632,12 @@ export const characters = [
     {
         name: 'Dr. Emily Hartwell',
         backstory: [
-            "A renowned scientist and inventor, Dr. Hartwell has a strong moral code and is dedicated",
-            "to developing new technologies to protect her country from the extraterrestrial",
-            "invaders. With her expertise in engineering and technology, she assists players",
-            "in upgrading their defenses and researching new weapons."
+            "Dr. Hartwell, an esteemed inventor, embodies a deep-seated commitment to her country and its safeguarding from alien threats.",
+            "Her strong belief in the traditional American way of life significantly influences her scientific endeavors. She advocates",
+            "for individual liberties and a free-market approach in technological innovation, contending that advancements should foremost",
+            "fortify national security. Her views often ignite contention with those championing socio-economic concerns. Nevertheless, her",
+            "engineering expertise and technological prowess remain pivotal in enhancing national defenses and innovating unprecedented",
+            "weaponry – critical tools in this looming battle."
         ],
         shortstory: [
             "Her expertise in engineering and technology assists players in upgrading their",
@@ -810,14 +814,6 @@ export const characters = [
 {
         name: "Rene Stellar",
         faction: "woke",
-        // backstory: [
-        //     "Born into a humble family in the heartland, Rene Stellar was fascinated by the mysteries of the universe from a very early age. Their nights were spent stargazing, their days buried in books about astrophysics and rocketry.",
-        //     "Following their passion, Rene secured a scholarship to a prestigious engineering institution. Their genius in propulsion systems and rocketry quickly distinguished them amongst their peers and professors alike. Rene was not simply a star student; they were a supernova.",
-        //     "As Rene's academic reputation grew, so did their personal journey. During their college years, Rene came out as transgender. This personal revelation didn’t come without its challenges. They faced discrimination and resistance in the traditional STEM field. But the adversity only fueled Rene’s determination.",
-        //     "Upon graduation, Rene was immediately recruited by the military, drawn by their unique blend of intellect and innovation. As a lead scientist, Rene’s advanced propulsion systems greatly bolstered national defense capabilities. Their advancements in rocketry technology, in particular, have been instrumental in deterring extra-terrestrial threats.",
-        //     "However, Rene was far more than a scientist dedicated to their work. They were a leader with a cause. Passionate about promoting inclusivity and representation within the traditionally conservative STEM and military fields, Rene worked tirelessly to establish mentoring programs, advocacy groups, and inclusive policies. They were an unwavering advocate for LGBTQ+ rights, consistently fighting for acceptance and equality both inside and outside of their field.",
-        //     "Today, Rene Stellar stands as an emblem of scientific brilliance and social progress. They are respected not only for their invaluable contributions to defense technology but also for their tireless efforts in making the STEM fields a more diverse and inclusive space."
-        // ],
         backstory: [
             "Growing up in the heartland, Rene Stellar was captivated by the cosmos. A scholarship to a prestigious engineering institution allowed Rene to explore their passion for astrophysics and rocketry. Their expertise was unparalleled, their innovations, groundbreaking.",
             "College was also a time of personal revelation. Rene came out as transgender, facing and overcoming the hurdles of discrimination in the traditional STEM field. Their resilience only sharpened their determination and solidified their sense of identity.",
@@ -842,8 +838,12 @@ export const characters = [
     name: "Justice Benjamin Harmon",
     faction: "maga",
     backstory: [
-        "A retired Supreme court judge, respected philanthropist and community leader. Ben has dedicated his life to social reform and bridging cultural divides.",
-        "His efforts in fostering mutual understanding have made him a key player in promoting peace and unity."
+        "Justice Benjamin Harmon, a retired Supreme Court judge, epitomizes the core values of traditionalism and rule of law. His",
+        "distinguished legal career is marked by rulings that echo the principles of constitutional originalism, highlighting the",
+        "inherent strength of our nation's founding guidelines. Post-retirement, his philanthropic pursuits and community leadership",
+        "focus on nurturing respect for cultural heritage and fostering societal unity. Justice Harmon remains a central figure in",
+        "policy reform discussions, using his influence to reinforce the importance of safeguarding justice and individual rights.",
+        "However, his conservative economic approach often stands in conflict with expansive social programs, making for complex policy dynamics."
     ],
     shortstory: [
         "Ben's influence promotes the wellbeing of the community and boosts the health of society,",
@@ -862,8 +862,12 @@ export const characters = [
     name: "Professor Isabelle Martinez",
     faction: "woke",
     backstory: [
-        "A leading sociologist renowned for her research on social inequality. Isabelle's work has had a profound influence on policies and initiatives aimed at",
-        "addressing disparities in income, education, and healthcare."
+        "Professor Isabelle Martinez, a celebrated sociologist, champions social equality with an empathetic yet analytic approach.",
+        "Her groundbreaking research into systemic disparities across income, education, and healthcare sectors has redefined how",
+        "these issues are addressed in contemporary policy making. Drawing from an array of intersectional perspectives, Isabelle",
+        "emphasizes the urgent need for structural change, advocating for holistic strategies that uplift marginalized communities",
+        "and foster equitable access to resources. However, her bold vision for social justice is often met with opposition from those",
+        "favoring traditional governance and fiscal conservatism, resulting in contentious political debates."
     ],
     shortstory: [
         "Isabelle's insights help to promote social justice and reduce inequality. However, her progressive social policies",
@@ -942,10 +946,9 @@ export const characters = [
 {
     name: 'Senator Linda Sterling',
     backstory: [
-        "Hailing from the heartland of America, Senator Linda Sterling is a stalwart of the MAGA movement.",
-        "Her ability to successfully lobby and negotiate key policies has led to numerous victories in government.",
-        "Despite her political leanings, Sterling has demonstrated an ability to bridge the partisan divide, earning her respect from both MAGA and Woke factions.",
-        "Her dedication to bipartisan cooperation serves as a beacon of unity in a time marked by political division.",
+        "Hailing from the heartland of America, Senator Linda Sterling is a stalwart of the MAGA movement.  Her ability to successfully lobby and negotiate key policies",
+        "has led to numerous victories in government.  Despite her political leanings, Sterling has demonstrated an ability to bridge the partisan divide, earning",
+        "her respect from both MAGA and Woke factions.  Her dedication to bipartisan cooperation serves as a beacon of unity in a time marked by political division.",
         "Sterling's unique position allows her to significantly influence governmental decisions, yet her methods often come under fire from advocates of social justice."
     ],
     shortstory: [

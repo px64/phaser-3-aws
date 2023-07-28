@@ -1009,8 +1009,8 @@ export class Politics extends BaseScene {
                     icon.health += 1 * icon.healthScale;
                     iconColor = 'purple';
                 }
-                icon.littleHats = scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
-                scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+                icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
+                scene.drawHealthGauge(scene, icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
@@ -1103,7 +1103,7 @@ export class Politics extends BaseScene {
                 if (!threat.isPutieDestroyed) {
                     threat.isPutieDestroyed = true;
                     icon['woke'] += 5;
-                    icon.littleHats = scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite, icon.littleHats);
+                    icon.littleHats = scene.drawHealthGauge(scene, icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite, icon.littleHats);
                 }
             });
         }

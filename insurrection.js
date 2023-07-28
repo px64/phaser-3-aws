@@ -678,7 +678,7 @@ export class Insurrection extends BaseScene {
                         iconColor = 'purple';
                     }
                     console.log(icon.littleHats);
-                    icon.littleHats = scene.drawHealthGauge(icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
+                    icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
                     console.log(icon.littleHats);
 
                     let stability = icon.health/icon.healthScale;
@@ -693,7 +693,7 @@ export class Insurrection extends BaseScene {
                     }
                     stability = stability * (1-balance);
 
-                    scene.drawHealthGauge(stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+                    scene.drawHealthGauge(scene, stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                     icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;

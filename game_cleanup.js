@@ -547,7 +547,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             // Format the text to be centered and with the color based on the affiliation
             let roughSize = character.backstory.length * character.backstory[0].length;
-            console.log(roughSize);
+            console.log(character.name + ' ' + character.backstory.length + 'x' + character.backstory[0].length + '=' + (y+ roughSize/3));
             let lineLength;
             let yOffset;
             if (roughSize > 800 && scene.sys.game.config.width > 1000)
@@ -564,8 +564,12 @@ export class ChooseYourIdeologyScene extends BaseScene {
                     yOffset = 0;
                 }
             }
+            // Emergency override: the screen is not very high so we really need to move the tooltip up a lot!
+            if (y + roughSize/3 > scene.sys.game.config.height ) {
+                yOffset = roughSize/4;
+                console.log('adjust upward '+yOffset);
+            }
             let graphicObject = tmpHelp;
-            //console.log(graphicObject);
 
             // Add an icon or graphic and scale it
             let backstoryIcon = scene.add.image(x+xOffset, y-yOffset, graphicObject);  // Position the icon at the original y position
