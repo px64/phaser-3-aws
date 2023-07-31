@@ -258,7 +258,7 @@ export class Politics extends BaseScene {
             let governmentSize = gov.health;
 
             if (1) {//governmentSize < 1200) {
-                this.icons['government'].textBody = 'Government\nStrength: ';
+                this.icons['government'].textBody = 'Government\nStrength ';
                 this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
             }
 /*
@@ -1011,7 +1011,7 @@ export class Politics extends BaseScene {
                 }
                 icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
                 scene.drawHealthGauge(scene, icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
-                icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
+                icon.iconText.setText(icon.textBody + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
                 scene.roundThreats--;

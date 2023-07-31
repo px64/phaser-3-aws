@@ -60,12 +60,12 @@ export default class BaseScene extends Phaser.Scene {
     initializeIcons() {
             let xStart = this.sys.game.config.width * .05; // 70;
             let xOffset = this.sys.game.config.width * 200/1280;
-            this.sharedData.icons['environment'] = this.createIconWithGauges(xStart+xOffset*0, 125, 0.15, 'environment', 0, 0, 50, 'Environmental\nHealth: ', 1, 16, 0, 'The EPA');
-            this.sharedData.icons['economy'] = this.createIconWithGauges(xStart+xOffset*1, 125, 0.1, 'economy', economyMaga, economyWoke, economyStrength, "Economy: " ,1, 16, 0, 'Wall Street');
-            this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice: ', 1, 16, 0, 'The Supreme Court');
-            this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.05, 'government', 5, 5, governmentSize, 'Government\nHealth: ', 1, 16, 0, 'The US Capital');
-            this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations:\n ', 1, 16, 0, 'The United Nations');
-            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense: ', 2, 16, 0, 'The Pentagon');
+            this.sharedData.icons['environment'] = this.createIconWithGauges(xStart+xOffset*0, 125, 0.15, 'environment', 0, 0, 50, 'Environmental\nHealth ', 1, 16, 0, 'The EPA');
+            this.sharedData.icons['economy'] = this.createIconWithGauges(xStart+xOffset*1, 125, 0.1, 'economy', economyMaga, economyWoke, economyStrength, "Economy " ,1, 16, 0, 'Wall Street');
+            this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice ', 1, 16, 0, 'The Supreme Court');
+            this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.05, 'government', 5, 5, governmentSize, 'Government\nHealth ', 1, 16, 0, 'The US Capital');
+            this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations\n ', 1, 16, 0, 'The United Nations');
+            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense ', 2, 16, 0, 'The Pentagon');
      }
 
     //====================================================================================
@@ -77,8 +77,8 @@ export default class BaseScene extends Phaser.Scene {
         let icon = this.physics.add.sprite(xPos, yPos, iconName).setAlpha(.8).setScale(scaleFactor);
         //let gaugeMaga; = this.add.graphics();
         //let gaugeWoke; = this.add.graphics();
-        let scaleSprite = this.physics.add.sprite(xPos+60, yPos+48, 'scale_body').setScale(0.06).setDepth(1).setAlpha(1);
-        let gaugeMaga = this.physics.add.sprite(xPos+60, yPos+48, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(1);
+        let scaleSprite = this.physics.add.sprite(xPos+60, yPos+48, 'scale_body').setScale(0.06).setDepth(1).setAlpha(0);
+        let gaugeMaga = this.physics.add.sprite(xPos+60, yPos+48, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(0);
         let gaugeWoke = gaugeMaga;
 
         let gaugeHealth = this.add.graphics();
@@ -221,7 +221,7 @@ export default class BaseScene extends Phaser.Scene {
             healthGauge.strokePath();
         } else {
             //console.log('x,y = ' + posX + ',' + posY + ' maga: ' + maga + ' woke: ' + woke);
-
+/*
             let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
             let balance;
             maga = Math.min(100, maga); // don't let these go beyond 100
@@ -253,7 +253,7 @@ export default class BaseScene extends Phaser.Scene {
 
             healthGauge.setTint(color);
             scaleSprite.setTint(color);
-
+*/
             // // Shimmer effect -- doesn't unshimmer when hats leave and it's confusing anyway now that we have little hats
             // if (maga > 65 || woke > 65) {
             //     console.log('Shimmer check.  maga = '+maga+ 'woke = '+woke);

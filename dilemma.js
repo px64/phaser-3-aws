@@ -747,7 +747,7 @@ export class DilemmaScene extends BaseScene {
                 scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
                 scene.drawNewHealthGauge(icon);
                 //scene.drawHealthGauge(icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
-                icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
+                icon.iconText.setText(icon.textBody + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
                 scene.roundThreats--;

@@ -706,7 +706,7 @@ export class Insurrection extends BaseScene {
                     stability = stability * (1-balance);
 
                     scene.drawHealthGauge(scene, stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
-                    icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
+                    icon.iconText.setText(icon.textBody + message);
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
