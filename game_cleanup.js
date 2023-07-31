@@ -124,6 +124,104 @@ class TitleScene extends Phaser.Scene {
             "together for the greater good of humanity? Only time would tell as the first",
             "signs of the extraterrestrial threat began to emerge."
         ];
+        let storyLines_tooLong = [
+            "The objective of the game is to keep society stable throughout the attack by the alien invaders.",
+
+            "At the top of the screen are icons representing various aspects of society.  The icons are:",
+            "Environment, Economy, Government, Social Justice, Diplomacy, and Alien Defense (military).",
+
+            "Each icon has a ring around it that represents the health or strength of that aspect of society.",
+            "If the aspect is strong, the gauge is mostly white.  If the aspect is weak the gauge is mostly dark.",
+            "Above each icon is a the name of the icon and a description of the strength of the icon ranging from",
+            "'excellent' to 'terrible'.  Next to each icon are tiny hats showing the total number of political",
+            "activists from each faction that are engaged with that aspect of society. If the scale gets too far",
+            "out of balance, that aspect collapses and Putin moves in and takes over a territory.",
+
+            "The middle of the screen is divided into two halves. The 'MAGA' characters on the left and the 'Woke'",
+            "characters on the right.  Each character has a checkbox that can be checked to Endorse that character.",
+            "Endorsing a character costs some Political Capital.  Once you've spent your political capital for",
+            "that round you cannot endorse any more characters.   There are 3 levels of backing for a character:",
+            "none, endorsed, and fully endorsed.  After a character is fully endorsed, a helpful token representation",
+            "of the character's abilities is generated which can be dragged into the society icons of that character",
+            "to increase the strength of that aspect of society.  However when the character applies its strength to",
+            "a society icon, that character will also stir 'interes' in another icon, represented by either MAGA or",
+            "Woke hats flying to and accumulating on the icon. For instance, Al Welch, the CEO, is strongly MAGA.",
+            "He can help boost the economy, but his strong political leanings will in the process cause MAGA pressure",
+            "on the environment to increase too.  ",
+
+            "There are two special characters that do not simply increase the strength of a societal icon.",
+
+            "One type of special character is a negotiator that help reduce the MAGA and Woke pressure on aspects of",
+            "society. When this character is fully endorsed, he/she will generate 4 'community outreach' tokens that can be",
+            "used to either:",
+            "1) Block the MAGA/ Woke hats from accumulating around an icon or:",
+            "2) Be dropped into an icon to have up to 5 MAGA and 5 Woke hats peacefully 'return home'",
+
+            "The other type of special character is the 'hacker' which prevents Russian Troll farms from creating instability",
+            "at one societal icon.  When this character is fully endorsed, a protection token is generated which can be",
+            "dropped into any one of the 6 icons, giving it full immunity to Putin and insurrectionist attacks.",
+
+            "After the political capital has been allocated and the public service tokens have been positioned, the",
+            "earth icon in the bottom right corner of the screen can be clicked to move to the next scene.",
+
+            "The next scene is the 'legislative reform' scene.  In this scene, which only comes up a few times during the game,",
+            "you are presented with a societal dilemma, and depending on how you act, you cause some amount of unrest, but also",
+            "you are given a steady allowance of political capital that accumulates each year that passes in the game.",
+
+            "After that scene is the 'insurrectionist attack' scene.  If 'MAGA' and 'Woke' influences on all aspects",
+            "of society are low enough, there will be no insurrectionist unrest.  As influences increase on a",
+            "particular level of society, then unrest will increase represented by red 'maga' caps or blue 'woke'",
+            "caps attacking that aspect of society.  If 'maga' influence and 'woke' influence are balanced then",
+            "the aspect can remain healthy, until a certain threshold where it is too much.  If one is much stronger",
+            "than the other, then it is unhealthy too.",
+
+            "If some aspect of society collapses, then Putin moves in and takes over a territory.  Once Putin takes",
+            "over a territory you can not get it back.  Putin will influence all aspects of society to create unrest",
+            "by sending his own influencers to increase whichever aspect of unrest is greater.",
+
+            "There is also the alien attack scene.  The aliens attack and depending on your military strength you",
+            "can either hold them off or they damage some aspect of society.  If you hold them off, you gain political",
+            "capital which can be spent back on the first 'politics' screen.",
+
+            "You win if you can get all aspects of society to 'excellent' before Putin and/ or the Aliens take over."
+        ];
+
+        let storyLines2 = [
+            "Maintain societal stability amidst an alien invasion.",
+            "Monitor icons at the top representing societal aspects:",
+            "Environment, Economy, Government, Social Justice, Diplomacy, and Alien Defense (military).",
+            "Each icon's health",
+            "is displayed by a surrounding gauge and a descriptor from 'excellent' to 'terrible'.",
+            "Adjacent scales track the",
+            "MAGA/Woke balance for each aspect. If unbalanced, the aspect collapses, and Putin claims a territory.",
+            " ",
+            "The center of the screen holds MAGA and Woke characters.",
+            "Spend Political Capital to endorse characters, enhancing",
+            "a societal aspect's strength but also creating MAGA/Woke interest in another.",
+            "Al Welch, for example, boosts",
+            "Economy but also increases MAGA pressure on Environment.",
+            " ",
+            "Two unique characters can help:",
+            "Negotiators create 'community outreach' tokens to alleviate MAGA/Woke pressure,",
+            "Hackers generate protection tokens to shield aspects from Putin and insurrectionist attacks.",
+            " ",
+            "After allocating capital and placing tokens,",
+            "click the earth icon to proceed to the next scene.",
+            "Periodically, you'll face a societal dilemma in the 'legislative reform'",
+            "scene, causing some unrest but also providing a steady",
+            "Political Capital income.",
+            " ",
+            "Next, the 'insurrectionist attack' scene occurs.",
+            "Balanced MAGA/Woke influences lead to health and low unrest;",
+            "unbalance causes problems. If an aspect collapses, Putin claims",
+            " a territory, sending influencers to further cause unrest.",
+            " ",
+            "In the alien attack scene, your military strength determines whether",
+            " you fend off the invaders or suffer societal",
+            "damage. Successful defense rewards Political Capital.",
+            " ",
+            "You win by achieving 'excellent' status in all societal aspects before losing to Putin and/or the Aliens."
+        ]
 
         // Create a group to hold your text lines
         let textGroup = this.add.group();
@@ -149,13 +247,13 @@ class TitleScene extends Phaser.Scene {
             this.sharedData.charFont = '28px';
         }
         // For each line of text...
-        for (let i = 0; i < storyLines.length; i++) {
+        for (let i = 0; i < storyLines2.length; i++) {
             // ...create a timed event that waits i*1000 milliseconds, then...
             this.time.addEvent({
                 delay: i * 1400,
                 callback: () => {
                     // Create the text line
-                    let text = this.add.text(this.cameras.main.centerX, this.sys.game.config.height /* + i * 5 */, storyLines[i], {
+                    let text = this.add.text(this.cameras.main.centerX, this.sys.game.config.height /* + i * 5 */, storyLines2[i], {
                             font: 'bold ' + this.sharedData.fontSize + ' Arial',
                             fill: '#ffffff',
                             align: 'center'
@@ -165,7 +263,7 @@ class TitleScene extends Phaser.Scene {
                     text.setOrigin(0.5);
 
                     // Adjust the scale based on the line number
-                    let startScale = 0.5 + (10 / storyLines.length) / 2;
+                    let startScale = 0.5 + (10 / storyLines2.length) / 2;
                     text.setScale(startScale);
 
                     // Calculate the duration based on the starting and ending scale
@@ -185,7 +283,7 @@ class TitleScene extends Phaser.Scene {
                         repeat: 0,
                         onComplete: function () {
                             text.destroy(); // destroy the text once it's off the screen
-                            if (i === storyLines.length - 1) {
+                            if (i === storyLines2.length - 1) {
                                 this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
                                 this.scene.start('ChooseYourIdeologyScene');
                             }
