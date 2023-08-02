@@ -689,9 +689,9 @@ export class Insurrection extends BaseScene {
                         icon.health += 1 * icon.healthScale;
                         iconColor = 'purple';
                     }
-                    console.log(icon.littleHats);
+                    //console.log(icon.littleHats);
                     icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
-                    console.log(icon.littleHats);
+                    //console.log(icon.littleHats);
 
                     let stability = icon.health/icon.healthScale;
                     let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
@@ -743,7 +743,9 @@ export class Insurrection extends BaseScene {
                 // Putin overlap
                 scene.physics.add.overlap(icon.icon, scene.putieThreats, function(defense, threat) {
                     // handle the Putin overlap with maga and then increment woke afterward
-                    handleOverlap(icon, defense, threat, 2, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
+                    // Increment amount was 2, as in putie doesn't cause as much instability, but That
+                    // seems much too confusing.  Better to have all attacks create 1 hat.
+                    handleOverlap(icon, defense, threat, 5, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
 /*
                     if (!threat.isPutieDestroyed) {
                         let message;

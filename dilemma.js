@@ -33,6 +33,21 @@ var justiceWoke = 20;
 var justiceStrength = 5;
 var charVal = {};
 
+class ScenarioPicker {
+    constructor(scenarios) {
+        this.scenarios = scenarios;
+        this.bag = [...scenarios];
+    }
+
+    getRandomScenario() {
+        if (this.bag.length === 0) {
+            this.bag = [...this.scenarios];
+        }
+
+        const randomIndex = Math.floor(Math.random() * this.bag.length);
+        return this.bag.splice(randomIndex, 1)[0];
+    }
+}
 export class DilemmaScene extends BaseScene {
 
     constructor() {
@@ -48,7 +63,9 @@ export class DilemmaScene extends BaseScene {
             helperTokens: {},
             militaryAllocation: 0
         };
-        this.scenarioNumber = 0;
+
+        this.picker = new ScenarioPicker([0, 1, 2, 3]);
+        this.scenarioNumber = this.picker.getRandomScenario();
     }
     // dilemma
     setup(data) {
@@ -92,6 +109,7 @@ export class DilemmaScene extends BaseScene {
             this.Wokeness = this.sharedData.Wokeness;
             this.putieTerritories = this.sharedData.putieTerritories;
             this.extraMisinformationTokens = 0;
+
 
             // ...similarly for other icons
         } else {
@@ -147,6 +165,9 @@ export class DilemmaScene extends BaseScene {
 
         this.roundThreats = 0;
 
+        // Now you can get random scenarios without repeating until all have been picked:
+        //console.log(this.picker.getRandomScenario());  // e.g., 2
+        // ...and so on
         //====================================================================================
         //
         // The main body of create()
@@ -218,7 +239,7 @@ export class DilemmaScene extends BaseScene {
             "and crack down on hate speech, potentially reducing social unrest? Or do you",
             "uphold the sanctity of free speech, despite the potential for it to be used irresponsibly?"
         ];
-        let scenarios = [
+    let scenarios = [
         {
             description: [
             "In recent times, tensions have grown fanned by an increase in online hate speech.",
@@ -440,9 +461,82 @@ export class DilemmaScene extends BaseScene {
                     hurtCost: 5,
                     hurtFaction: 'both'
                 }
-            ]
-        }
-        ];
+            ] // choices
+        },
+        /*
+        This scenario deals with a decision to increase the minimum wage. The potential benefits include mitigating economic disparities and uplifting citizens from poverty, but the potential risks include job losses and financial strain on businesses.
+        */
+        {
+            description: [
+                "Economic disparities are growing in the country, and the gap between the rich and the poor is",
+                "becoming more pronounced than ever. There is a proposal to increase the minimum wage significantly",
+                "as a measure to mitigate these disparities. Advocates argue that the change will uplift millions",
+                "from poverty, provide them with a living wage, and stimulate the economy through increased",
+                "consumer spending.",
+                "||",
+                "Opponents of the policy, on the other hand, worry about the financial impact on businesses,",
+                "especially small and medium-sized enterprises. They argue that it may lead to job losses",
+                "and higher costs passed on to consumers.",
+                "||",
+                "As a leader, your stance is crucial. Will you support the increase in minimum wage, potentially",
+                "lifting many out of poverty? Or do you consider the risk to businesses and job security too great?",
+                "Choosing wisely could yield a steady flow of political capital for quite some time."
+            ],
+            choices: [
+                {
+                    name: 'Increase the minimum wage as proposed',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 30,
+                    helps: 'economy',
+                    helpBenefit: 30,
+                    hurts: 'economy',
+                    hurtCost: 5,
+                    hurtFaction: 'maga'
+                },
+                {
+                    name: 'Reject the proposal to increase the minimum wage',
+                    MAGACapRequired: 30,
+                    WokeCapRequired: 0,
+                    helps: 'economy',
+                    helpBenefit: 0,
+                    hurts: 'economy',
+                    hurtCost: 5,
+                    hurtFaction: 'woke'
+                },
+                {
+                    name:'Modify the proposal to include a smaller increase',
+                    MAGACapRequired: 10,
+                    WokeCapRequired: 10,
+                    helps: 'economy',
+                    helpBenefit: 15,
+                    hurts: 'economy',
+                    hurtCost: 2,
+                    hurtFaction: 'both'
+                },
+                {
+                    name:'Modify the proposal to include a larger increase',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 40,
+                    helps: 'economy',
+                    helpBenefit: 40,
+                    hurts: 'economy',
+                    hurtCost: 8,
+                    hurtFaction: 'maga'
+                },
+                {
+                    name:'Delay the decision to collect more data',
+                    MAGACapRequired: 0,
+                    WokeCapRequired: 0,
+                    helps: 'economy',
+                    helpBenefit: -5,
+                    hurts: 'government',
+                    hurtCost: 5,
+                    hurtFaction: 'woke'
+                }
+            ] // choices
+        } // this scenario
+    ]; // end of all scenarios
+
         // Spell out exactly how many and what kind of insurrectionist will attack which icon
         console.log('this scenario number is ' + this.scenarioNumber);
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
@@ -510,7 +604,7 @@ export class DilemmaScene extends BaseScene {
                 this.decisionGroup.push(decision); // Add decision button to the group
         });
         // move to next scenario next time
-        this.scenarioNumber = (this.scenarioNumber +1 ) % 3;
+        this.scenarioNumber = this.picker.getRandomScenario();//(this.scenarioNumber +1 ) % 3;
 
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
