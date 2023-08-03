@@ -96,6 +96,8 @@ class TitleScene extends Phaser.Scene {
     create() {
         // The story text
         let storyLines = [
+            "MAGA vs. Woke",
+            " ",
             "In the year 2023, America stood divided. A philosophical war had taken",
             "hold, a conflict of ideas and ideals that divided the nation into two",
             "distinct factions: MAGA and Woke. These two sides stood in opposition, each",
@@ -187,10 +189,9 @@ class TitleScene extends Phaser.Scene {
         ];
 
         let storyLines2 = [
-            "MAGA vs. Woke",
+            "How to Play the Game",
             "You are to Maintain societal stability amidst an alien invasion",
-            "Icons at the top represent societal aspects:",
-            "Environment, Economy, Government, Social Justice, Diplomacy, and Alien Defense (military).",
+            "Icons at the top represent 6 societal aspects",
             "Each icon's status",
             "is shown by a surrounding gauge.",
             "Adjacent scales track the",
@@ -222,17 +223,32 @@ class TitleScene extends Phaser.Scene {
             " you fend off the invaders or suffer societal",
             "damage. Successful defense rewards Political Capital.",
             " ",
-            "You win by achieving 'excellent' status in all societal aspects before losing to Putin and/or the Aliens."
+            "You win by achieving 'excellent' status in all societal aspects",
+            "before Putin and/or the Aliens take over."
         ]
 
         // Create a group to hold your text lines
         let textGroup = this.add.group();
+        let text;
+        let storyLinesSet = [storyLines, storyLines2];
+        let currentStoryLineIndex = 0;
 
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
-            // Skip to the next scene
-            this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
-            this.scene.start('ChooseYourIdeologyScene');
+            currentStoryLineIndex++;
+            if (currentStoryLineIndex < storyLinesSet.length) {
+                this.cameras.main.fadeOut(800, 0, 0, 0);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    displayStoryLine(storyLinesSet[currentStoryLineIndex]);
+                    this.cameras.main.fadeIn(800, 0, 0, 0);
+                });
+            } else {             // Skip to the next scene
+                this.cameras.main.fadeOut(800, 0, 0, 0);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                    this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
+                    this.scene.start('ChooseYourIdeologyScene');
+                });
+            }
         }, this);
 
         if (this.sys.game.config.width < 704) {
@@ -248,52 +264,69 @@ class TitleScene extends Phaser.Scene {
         } else {
             this.sharedData.charFont = '28px';
         }
-        // For each line of text...
-        for (let i = 0; i < storyLines2.length; i++) {
-            // ...create a timed event that waits i*1000 milliseconds, then...
-            this.time.addEvent({
-                delay: i * 1400,
-                callback: () => {
-                    // Create the text line
-                    let text = this.add.text(this.cameras.main.centerX, this.sys.game.config.height /* + i * 5 */, storyLines2[i], {
+
+        let textObjects = [];  // Array to store all text objects
+        let timerEvents = [];  // Array to store all timer events
+
+        let displayStoryLine = (storyLines) => {
+            // Destroy all previous text objects
+            textObjects.forEach(text => text.destroy());
+            textObjects = [];  // Reset the array
+
+            // Remove all previous timer events
+            timerEvents.forEach(event => this.time.removeEvent(event));
+            timerEvents = [];  // Reset the array
+
+            for (let i = 0; i < storyLines.length; i++) {
+                let timerEvent = this.time.addEvent({
+                    delay: i * 1600,
+                    callback: () => {
+                        text = this.add.text(this.cameras.main.centerX, this.sys.game.config.height, storyLines[i], {
                             font: 'bold ' + this.sharedData.fontSize + ' Arial',
                             fill: '#ffffff',
                             align: 'center'
                         });
 
-                    // Center align the text
-                    text.setOrigin(0.5);
+                        text.setOrigin(0.5);
 
-                    // Adjust the scale based on the line number
-                    let startScale = 0.5 + (10 / storyLines2.length) / 2;
-                    text.setScale(startScale);
+                        let startScale = 0.5 + (10 / storyLines.length) / 2;
+                        text.setScale(startScale);
 
-                    // Calculate the duration based on the starting and ending scale
-                    let duration = 20000 * (1 + startScale);
+                        textObjects.push(text);  // Add the text object to the array
 
-                    // Create a tween to scroll and scale the text
-                    this.tweens.add({
-                        targets: text,
-                        y: '-=1050',
-                        scaleX: '-=0.7',
-                        scaleY: '-=0.7',
-                        // y: '-=700',
-                        // scaleX: '-=0.35',
-                        // scaleY: '-=0.35',
-                        ease: 'Linear',
-                        duration: 33000,
-                        repeat: 0,
-                        onComplete: function () {
-                            text.destroy(); // destroy the text once it's off the screen
-                            if (i === storyLines2.length - 1) {
-                                this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
-                                this.scene.start('ChooseYourIdeologyScene');
-                            }
-                        }, callbackScope: this
-                    });
-                }, callbackScope: this
-            });
-        }
+                        let duration = 20000 * (1 + startScale);
+
+                        this.tweens.add({
+                            targets: text,
+                            y: '-=1050',
+                            scaleX: '-=0.7',
+                            scaleY: '-=0.7',
+                            ease: 'Linear',
+                            duration: 33000,
+                            repeat: 0,
+                            onComplete: function () {
+                                text.destroy();
+                                if (i === storyLines.length - 1) {
+                                    currentStoryLineIndex++;
+                                    if (currentStoryLineIndex < storyLinesSet.length) {
+                                        displayStoryLine(storyLinesSet[currentStoryLineIndex]);
+                                    } else {
+                                        this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
+                                        this.scene.start('ChooseYourIdeologyScene');
+                                    }
+                                }
+                            },
+                            callbackScope: this
+                        });
+                    },
+                    callbackScope: this
+                });
+
+                timerEvents.push(timerEvent);  // Add the timer event to the array
+            }
+        };
+
+        displayStoryLine(storyLinesSet[currentStoryLineIndex]);
     }
 }
 
@@ -806,6 +839,13 @@ export class ChooseYourIdeologyScene extends BaseScene {
     }
 }
 
+//====================================================================================
+//
+//        class VictoryScene extends Phaser.Scene
+//
+// VictoryScene informative text about a victory of some sort
+//
+//====================================================================================
 
 class VictoryScene extends Phaser.Scene {
     constructor() {
@@ -831,6 +871,19 @@ class VictoryScene extends Phaser.Scene {
     create(data) {
         this.input.setDefaultCursor('default');
 
+        let yearScore = 2200 - this.sharedData.year;
+        console.log('Year Score: ' + yearScore);
+        let legislationScore = this.sharedData.WokenessVelocity*30;
+        legislationScore += this.sharedData.MAGAnessVelocity*30;
+        console.log('Legislation Bonus Score: ' + legislationScore);
+        let territoriesScore = (territories.length - this.sharedData.alienTerritories - this.sharedData.putieTerritories)*30;
+        console.log('Number of Territories Score: ' + territoriesScore);
+        let score = yearScore + legislationScore + territoriesScore;
+        console.log('Total Score: ' + score);
+        let totalScore = '\n Current Score '+ score;
+
+        data.message += totalScore;
+
         // Create a text object to display a victory message
         let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, data.message, {
             font: 'bold '+ this.sharedData.fontSize + ' Arial',
@@ -839,6 +892,15 @@ class VictoryScene extends Phaser.Scene {
         });
 
         victoryText.setOrigin(0.5);  // Center align the text
+
+
+
+        // let scoreText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY+40, totalScore, {
+        //     font: 'bold '+ this.sharedData.fontSize + ' Arial',
+        //     fill: '#ffffff',
+        //     align: 'center'
+        // });
+        // scoreText.setOrigin(0.5);  // Center align the text
 
         // Optionally, display a victory image
         let victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'victory');
@@ -856,7 +918,13 @@ class VictoryScene extends Phaser.Scene {
         }, this);
     }
 }
-
+//====================================================================================
+//
+//        class AliensAttack extends BaseScene
+//
+// AliensAttack informative text about the upcoming Alien Invasion
+//
+//====================================================================================
 class AliensAttack extends BaseScene {
     constructor() {
         super({ key: 'AliensAttack' });
@@ -939,6 +1007,14 @@ console.log(this.difficultyLevel().alienDefenseFromSameBase);
         }
     }
 }
+//====================================================================================
+//
+//        class TutorialScene extends BaseScene
+//
+// TutorialScene can be used either for a societal collapse, or for an alien invasion
+//
+//====================================================================================
+
 class TutorialScene extends BaseScene {
     constructor() {
         super({ key: 'TutorialScene' });
@@ -973,7 +1049,7 @@ class TutorialScene extends BaseScene {
         victoryText.setOrigin(0.5);  // Center align the text
 
         let victoryImage;
-        // Optionally, display a victory image
+        // TutorialScene can be used either for a societal collapse, or for an alien invasion
         if (data.nextScene != 'dilemmaOrInsurrection') {
             victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'maga_riot');
         } else {
