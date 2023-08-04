@@ -51,6 +51,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('scale_body', 'assets/scale_body2.png');
         this.load.image('negotiation', 'assets/negotiation.png');
         this.load.image('hacker', 'assets/hacker.png');
+        this.load.image('aliens_win', 'assets/aliens_win.png');
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
         this.load.image('checkboxUnchecked', 'assets/checkboxUnchecked.png');
         this.load.image('checkboxChecked', 'assets/checkboxChecked.png');
@@ -65,7 +66,7 @@ export default class BaseScene extends Phaser.Scene {
             this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice ', 1, 16, 0, 'The Supreme Court');
             this.sharedData.icons['government'] = this.createIconWithGauges(xStart+xOffset*3, 125, 0.05, 'government', 5, 5, governmentSize, 'Government\nHealth ', 1, 16, 0, 'The US Capital');
             this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations\n ', 1, 16, 0, 'The United Nations');
-            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.13, 'military', 0, 0, 5,  'Alien\nDefense ', 2, 16, 0, 'The Pentagon');
+            this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.12, 'military', 0, 0, 5,  'Alien\nDefense ', 2, 16, 0, 'The Pentagon');
      }
 
     //====================================================================================

@@ -641,12 +641,47 @@ export class DilemmaScene extends BaseScene {
             let changeBackgroundImage = (imageName) => {
                 if (1){//this.changedBackgroundOnce == false) {
                     this.changedBackgroundOnce = true;
-                    this.backgroundImage.destroy();
-                    this.backgroundImage = this.add.image(this.cameras.main.centerX-80, this.cameras.main.centerY, imageName).setDepth(-1).setAlpha(.3);
-                    let scaleX = this.sys.game.config.width / this.backgroundImage.width;
-                    let scaleY = this.sys.game.config.height / this.backgroundImage.height;
+
+                    // Assuming backgroundImage1 and backgroundImage2 are the images you want to crossfade between
+                    this.backgroundImage2 = this.add.image(this.cameras.main.centerX-80, this.cameras.main.centerY, imageName).setDepth(-1).setAlpha(.3);
+                    // First, make sure the second image is invisible
+                    this.backgroundImage2.setAlpha(0);
+                    let scaleX = this.sys.game.config.width / this.backgroundImage2.width;
+                    let scaleY = this.sys.game.config.height / this.backgroundImage2.height;
                     let scale = Math.max(scaleX, scaleY);
-                    this.backgroundImage.setScale(scale);
+                    this.backgroundImage2.setScale(scale);
+
+                    // Fade out the first image
+                    this.tweens.add({
+                        targets: this.backgroundImage,
+                        alpha: 0, // fade out to 0 alpha
+                        duration: 1000, // over 1000 milliseconds
+                        onComplete: function () {
+                            this.backgroundImage.destroy(); // destroy the image once it's faded out
+                        },
+                        callbackScope: this
+                    });
+
+                    // Simultaneously fade in the second image
+                    this.tweens.add({
+                        targets: this.backgroundImage2,
+                        alpha: .3, // fade in to .3 alpha
+                        duration: 1000, // over 1000 milliseconds
+                    });
+
+                    // this.tweens.add({
+                    //     targets: this.backgroundImage,
+                    //     alpha: 0, // fade out to 0 alpha
+                    //     duration: 800, // over 800 milliseconds
+                    //
+                    //
+                    //         let scaleX = this.sys.game.config.width / this.backgroundImage.width;
+                    //         let scaleY = this.sys.game.config.height / this.backgroundImage.height;
+                    //         let scale = Math.max(scaleX, scaleY);
+                    //         this.backgroundImage.setScale(scale);
+                    //     },
+                    //     callbackScope: this
+                    // });
                 }
             }
 

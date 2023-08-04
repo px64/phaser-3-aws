@@ -942,7 +942,7 @@ export class Politics extends BaseScene {
                             scene.cameras.main.fadeOut(1000, 0, 0, 0);
                             scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                                 scene.scene.get('VictoryScene').setup(scene.sharedData);
-                                scene.scene.start('VictoryScene', { message: 'You Win!\nIn the year ' + scene.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
+                                scene.scene.start('VictoryScene', { showScore: true, message: 'You Win!\nIn the year ' + scene.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
                             });
                             helper.isDestroyed = true;
                             return;

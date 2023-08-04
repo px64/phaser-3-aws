@@ -235,8 +235,8 @@ class TitleScene extends Phaser.Scene {
 
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
-            currentStoryLineIndex++;
-            if (currentStoryLineIndex < storyLinesSet.length) {
+            if (currentStoryLineIndex < storyLinesSet.length - 1) {
+                currentStoryLineIndex++;
                 this.cameras.main.fadeOut(800, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     displayStoryLine(storyLinesSet[currentStoryLineIndex]);
@@ -871,18 +871,24 @@ class VictoryScene extends Phaser.Scene {
     create(data) {
         this.input.setDefaultCursor('default');
 
-        let yearScore = 2200 - this.sharedData.year;
-        console.log('Year Score: ' + yearScore);
-        let legislationScore = this.sharedData.WokenessVelocity*30;
-        legislationScore += this.sharedData.MAGAnessVelocity*30;
-        console.log('Legislation Bonus Score: ' + legislationScore);
-        let territoriesScore = (territories.length - this.sharedData.alienTerritories - this.sharedData.putieTerritories)*30;
-        console.log('Number of Territories Score: ' + territoriesScore);
-        let score = yearScore + legislationScore + territoriesScore;
-        console.log('Total Score: ' + score);
-        let totalScore = '\n Current Score '+ score;
+        if (data.showScore == true) {
+            let scoreText = '\n';
+            let yearScore = Math.floor(2200 - this.sharedData.year)/2;
+            console.log('Year Score: ' + yearScore);
+            scoreText += '\n Year of Victory Score '+ yearScore;
+            let legislationScore = Math.floor(this.sharedData.WokenessVelocity*30);
+            legislationScore += Math.floor(this.sharedData.MAGAnessVelocity*30);
+            console.log('Legislation Bonus Score: ' + legislationScore);
+            scoreText += '\n Legislation Bonus: '+ legislationScore;
+            let territoriesScore = (territories.length - this.sharedData.alienTerritories - this.sharedData.putieTerritories)*15;
+            console.log('Number of Territories Score: ' + territoriesScore);
+            scoreText += '\n Territories Bonus: '+ territoriesScore;
+            let score = yearScore + legislationScore + territoriesScore;
+            console.log('Total Score: ' + score);
+            scoreText += '\n Final Score '+ score;
 
-        data.message += totalScore;
+            data.message += scoreText;
+        }
 
         // Create a text object to display a victory message
         let victoryText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, data.message, {
@@ -1035,7 +1041,9 @@ class TutorialScene extends BaseScene {
     preload() {
         // Preload an image for the tutorial scene
         this.load.image('maga_riot', 'assets/maga_riot.jpg');
+        this.load.image('aliens_win', 'assets/aliens_win.jpg');
         this.load.image('aliencrash', 'assets/aliencrash.png');
+
     }
 
     create(data) {
@@ -1049,15 +1057,18 @@ class TutorialScene extends BaseScene {
         victoryText.setOrigin(0.5);  // Center align the text
 
         let victoryImage;
-        // TutorialScene can be used either for a societal collapse, or for an alien invasion
-        if (data.nextScene != 'dilemmaOrInsurrection') {
-            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'maga_riot');
-        } else {
-            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'aliencrash');
-        }
-        //victoryImage.setScale(0.5);  // Scale down the image
-        victoryImage.setAlpha(0.3);  // Make the image semi-transparent
 
+        // TutorialScene can be used either for a societal collapse, or for an alien invasion
+        if (data.nextScene == 'aliensWin') {
+            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'aliens_win');
+            victoryImage.setAlpha(0.7);  // Make the image semi-transparent
+        } else if (data.nextScene != 'dilemmaOrInsurrection') {
+            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'maga_riot');
+            victoryImage.setAlpha(0.3);  // Make the image semi-transparent
+        } else {
+            victoryImage = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'aliencrash')
+            victoryImage.setAlpha(0.3);  // Make the image semi-transparent
+        }
         // Bring the text to the top
         victoryText.setDepth(1);
 
@@ -1582,7 +1593,7 @@ export class Scene2 extends BaseScene {
                 if (this.sharedData.alienTerritories + this.sharedData.putieTerritories >= territories.length) {
                     console.log('you lose!');
                     this.scene.get('TutorialScene').setup(this.sharedData);
-                    this.scene.start('TutorialScene', { message: 'I have some bad news:\n the Aliens have taken over America\n It looks like you lose.' });
+                    this.scene.start('TutorialScene', { nextScene: 'aliensWin', message: 'I have some bad news:\n the Aliens have taken over America\n It looks like you lose.' });
                     return;
                 }
                 // Convert the object keys into an array
