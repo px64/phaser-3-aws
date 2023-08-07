@@ -33,6 +33,29 @@ var justiceWoke = 20;
 var justiceStrength = 5;
 var charVal = {};
 
+//====================================================================================
+//
+//             findValidTerritory(thisFaction, otherFaction)
+//
+//====================================================================================
+let findValidTerritory = (thisFaction, otherFaction) => {
+    let generateNumber = (n) => Math.floor((n + 1) / 2) * (n % 2 === 0 ? 1 : -1);
+    let count = 0;
+    let attackIndex = 3;
+    let roundRobinLaunch = 0;
+    let base = territories[Phaser.Math.Wrap((attackIndex + generateNumber(roundRobinLaunch)) % territories.length, 0, territories.length)];
+    while (base.faction != thisFaction && base.faction != otherFaction) {
+        // pick a new territory
+        roundRobinLaunch++;
+        base = territories[Phaser.Math.Wrap((attackIndex + generateNumber(roundRobinLaunch)) % territories.length, 0, territories.length)];
+        if (count++ > 16) {
+            console.log('something went wrong.  got stuck in looking for a new territory.');
+            break;
+        }
+    }
+    return base;
+}
+
 class ScenarioPicker {
     constructor(scenarios) {
         this.scenarios = scenarios;
@@ -49,6 +72,7 @@ class ScenarioPicker {
     }
 }
 export class DilemmaScene extends BaseScene {
+
 
     constructor() {
         super({ key: 'dilemma' });
@@ -164,6 +188,8 @@ export class DilemmaScene extends BaseScene {
         this.backgroundImage.setScale(scale);
 
         this.roundThreats = 0;
+
+
 
         // Now you can get random scenarios without repeating until all have been picked:
         //console.log(this.picker.getRandomScenario());  // e.g., 2
@@ -714,12 +740,16 @@ export class DilemmaScene extends BaseScene {
                 this.drawNewHealthGauge(this.icons[choice.helps]);
                 //this.drawHealthGauge(this.icons[choice.helps].health/ this.icons[choice.helps].healthScale/ 100, this.icons[choice.helps].icon.x, this.icons[choice.helps].icon.y, 'Health', this.icons[choice.helps].gaugeHealth);
                 if (choice.hurtFaction == 'both') {
-                    this.createThreat(territories[2], 'maga', this.icons[choice.hurts], choice.hurtCost);
-                    this.createThreat(territories[3], 'woke', this.icons[choice.hurts], choice.hurtCost);
+                    let validTerritory = findValidTerritory('maga', 'maga');
+                    this.createThreat(validTerritory, 'maga', this.icons[choice.hurts], choice.hurtCost);
+                    validTerritory = findValidTerritory('woke', 'woke');
+                    this.createThreat(validTerritory, 'woke', this.icons[choice.hurts], choice.hurtCost);
                 } else if (choice.hurtFaction == 'maga'){
-                    this.createThreat(territories[2], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
+                    let validTerritory = findValidTerritory('maga', 'maga');
+                    this.createThreat(validTerritory, choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
                 } else {
-                    this.createThreat(territories[3], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
+                    let validTerritory = findValidTerritory('woke', 'woke');
+                    this.createThreat(validTerritory, choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
                 }
 
                 this.time.delayedCall(4000, () => {
@@ -952,6 +982,8 @@ export class DilemmaScene extends BaseScene {
         button.setStyle({ fill: '#ff0'}); // change color to yellow
         this.backstoryBox.setVisible(false);
         this.backstoryText.setVisible(false);
+        this.attackIndex = 3; // put it somewhere in the middle
+        this.roundRobinLaunch = 0;
         let helpedIcon = this.icons[choice.helps];
         let hurtIcon = this.icons[choice.hurts];
 
@@ -963,7 +995,8 @@ export class DilemmaScene extends BaseScene {
             helpedColor = 0x0000ff;
             hurtColor = 0xff0000;
             if (!this.isTweening) {
-                let sprite = territories[2].sprite;
+                let sprite = findValidTerritory('maga', 'maga').sprite;
+                //let sprite = territories[2].sprite;
                 let originalY = sprite.y;
                 let originalScale = sprite.scale;
                 this.isTweening = true;
@@ -986,7 +1019,7 @@ export class DilemmaScene extends BaseScene {
             helpedColor = 0xff0000;
             hurtColor = 0x0000ff;
             if (!this.isTweening) {
-                let sprite = territories[3].sprite;
+                let sprite = findValidTerritory('woke', 'woke').sprite;
                 let originalY = sprite.y;
                 let originalScale = sprite.scale;
                 this.isTweening = true;
@@ -1010,7 +1043,7 @@ export class DilemmaScene extends BaseScene {
             hurtIcon.icon.shieldMaga.setAlpha(1).setTint(0xff0000);
             hurtIcon.icon.shieldWoke.setAlpha(1).setTint(0x0000ff);
             if (!this.isTweening) {
-                let sprite = territories[2].sprite;
+                let sprite = findValidTerritory('woke', 'woke').sprite;
                 let originalY = sprite.y;
                 let originalScale = sprite.scale;
                 this.isTweening = true;
@@ -1029,7 +1062,7 @@ export class DilemmaScene extends BaseScene {
                     }
                 });
 
-                let sprite2 = territories[3].sprite;
+                let sprite2 = findValidTerritory('maga', 'maga').sprite;
                 let originalY2 = sprite2.y;
                 let originalScale2 = sprite2.scale;
                 this.myTween2 = this.tweens.add({

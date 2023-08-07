@@ -182,8 +182,24 @@ export class Insurrection extends BaseScene {
                         if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
                             this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
                         } else {
-                            this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
+                            this.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                         }
+                        //
+                        // this.physics.world.gravity.y = 500;
+                        //
+                        // for (let i = 0; i < 8; i++) {
+                        //     // Create the sprite at the center of the screen
+                        //     let mySprite = this.physics.add.sprite(this.cameras.main.centerX, this.sys.game.config.height - 100, 'putieBase').setScale(.1);
+                        //
+                        //     // Set the bounce property
+                        //     mySprite.setBounce(1.02);
+                        //
+                        //     // Set the sprite to collide with the world bounds
+                        //     mySprite.setCollideWorldBounds(true);
+                        //
+                        //     // Give the sprite an initial velocity
+                        //     mySprite.setVelocity(100, -20);
+                        //}
                         return;
                     }
                 }
@@ -221,7 +237,7 @@ export class Insurrection extends BaseScene {
                     if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
                         this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
                     } else {
-                        this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
+                        this.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                     }
                     return;
                 }

@@ -1088,14 +1088,16 @@ class TutorialScene extends BaseScene {
 
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
-            // Switch to the next scene
-            if (data.nextScene != 'dilemmaOrInsurrection') {
-                console.log('sanity check: not dilemma');
-                this.scene.get('politics').setup(this.sharedData);
-                this.scene.start('politics');
-            } else {
-                console.log('sanity check: we hit handle dilemma or insurrection');
-                handleDilemmaOrInsurrection();
+            if (data.nextScene != 'youLose') {
+                // Switch to the next scene
+                if (data.nextScene != 'dilemmaOrInsurrection') {
+                    console.log('sanity check: not dilemma');
+                    this.scene.get('politics').setup(this.sharedData);
+                    this.scene.start('politics');
+                } else {
+                    console.log('sanity check: we hit handle dilemma or insurrection');
+                    handleDilemmaOrInsurrection();
+                }
             }
         }, this);
     }
