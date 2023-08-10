@@ -752,7 +752,9 @@ export class Politics extends BaseScene {
             }
 
             let numEntries = 0;
-            // If ideology is 'maga', start with 2 misinformation tokens
+            // If ideology is 'maga', start with 2 community outreach tokens.  It would make more sense
+            // from ideology if it were 'woke', but the game doesn't play well that way.
+            
             if (scene.sharedData.ideology.faction == 'maga') {
                 numEntries = 2;
             }

@@ -167,11 +167,11 @@ export class Insurrection extends BaseScene {
                 iconData.health = Phaser.Math.Clamp(iconData.health + healthChange, 0, 133*iconData.healthScale);
             }
             // If Putie has only a few territories, then check collapse all the time
-            // If Putie has a lot of territories, then only check for collapse 50% of the time
+            // If Putie has a lot of territories, then only check for collapse 50% of the time (just to give the player a chance)
             if (this.sharedData.putieTerritories < territories.length/2 || Math.random() < .5) {
                 for (let key in this.sharedData.icons) {
                     let iconData = this.sharedData.icons[key];
-                    if (Math.abs(iconData.maga - iconData.woke ) > 100) {
+                    if (Math.abs(iconData.maga - iconData.woke ) > this.difficultyLevel().collapseImbalance) {
                         console.log('collapse! health: '+iconData.health+' maga: '+iconData.maga+' woke: '+iconData.woke);
                         this.sharedData.putieTerritories++;
                         this.putieTerritories = this.sharedData.putieTerritories;
@@ -343,9 +343,10 @@ export class Insurrection extends BaseScene {
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
+        // annoying that restoreMisinformationTokens is here AND in BaseScene.  Need to simplify
         //
         //====================================================================================
-        createMisinformationManagement(this);
+        restoreMisinformationTokens(this);
 
         // Timer event to increment the year every second
         this.yearTime = this.time.addEvent({
@@ -372,30 +373,11 @@ export class Insurrection extends BaseScene {
         // });
 
         //====================================================================================
-        // function createMisinformationManagement(scene)
+        // function restoreMisinformationTokens(scene)
         // function that recreates the information/misinformation blockers
         //
         //====================================================================================
-        function createMisinformationManagement(scene) {
-            scene.misinformationData = [
-                //{type: 'maga', text: 'Make America\nGreat Again'},
-/*
-                {type: 'maga', text: 'Virtue Signaling'},
-                {type: 'maga', text: 'Dog Whistle'},
-                {type: 'maga', text: 'The Thin Blue Line'},
-                {type: 'maga', text: 'Tucker Carlson'},
-                {type: 'maga', text: 'Media Bias'},
-                {type: 'maga', text: 'Candace Owens'},
-                {type: 'woke', text: 'Public Awareness'},
-                {type: 'woke', text: 'Black Lives Matter'},
-                {type: 'woke', text: 'Police Brutality'},
-                {type: 'woke', text: 'Anthony Fauci'},
-                {type: 'woke', text: 'Amanda Gorman'}
-*/
-                //{type: 'woke', text: 'Wokeness'}
-            ];
-
-
+        function restoreMisinformationTokens(scene) {
             // Recreate previously generated misinformation tokens
             for (let key in scene.sharedData.misinformation) {
                 // Look up the stored data
@@ -748,12 +730,15 @@ export class Insurrection extends BaseScene {
 
             for (let key in scene.sharedData.icons) {
                 let icon = scene.sharedData.icons[key];
+                console.log(key);
                 // Woke overlap
                 scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
+                    console.log('wokethreat overlap');
                     handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
                 });
                 // Maga overlap
                 scene.physics.add.overlap(icon.icon, scene.magaThreats, function(defense, threat) {
+                    console.log('magathreat overlap');
                     handleOverlap(icon, defense, threat, 5, 'maga', icon.gaugeMaga, '\nMake America Great Again!');
                 });
                 // Putin overlap
@@ -761,7 +746,7 @@ export class Insurrection extends BaseScene {
                     // handle the Putin overlap with maga and then increment woke afterward
                     // Increment amount was 2, as in putie doesn't cause as much instability, but That
                     // seems much too confusing.  Better to have all attacks create 1 hat.
-                    handleOverlap(icon, defense, threat, 5, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
+                    handleOverlap(icon, defense, threat, 3, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
 /*
                     if (!threat.isPutieDestroyed) {
                         let message;

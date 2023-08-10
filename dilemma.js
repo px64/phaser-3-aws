@@ -657,8 +657,6 @@ export class DilemmaScene extends BaseScene {
                         // Check if all objects have been destroyed
                         if (total === 0) {
                             this.decisionGroup = []; // reset the radio button group
-
-                            // Here you can proceed to the next scene or execute some other logic
                         }
                     }
                 });
@@ -718,6 +716,10 @@ export class DilemmaScene extends BaseScene {
                 backgroundImage = 'woke_protest';
             }
             changeBackgroundImage(backgroundImage);
+
+            // Will affect the balance, but it makes more sense for the player if their public forums are visible every time the
+            // insurrectionists attack.  Seems very confusing for there to be no public forum defenses only when the dilemma screen is up
+            this.restoreMisinformationTokens(this);
 
             console.log(choice);
             let fruit;

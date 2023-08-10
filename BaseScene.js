@@ -78,8 +78,8 @@ export default class BaseScene extends Phaser.Scene {
         let icon = this.physics.add.sprite(xPos, yPos, iconName).setAlpha(.8).setScale(scaleFactor);
         //let gaugeMaga; = this.add.graphics();
         //let gaugeWoke; = this.add.graphics();
-        let scaleSprite = this.physics.add.sprite(xPos+60, yPos+48, 'scale_body').setScale(0.06).setDepth(1).setAlpha(0);
-        let gaugeMaga = this.physics.add.sprite(xPos+60, yPos+48, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(0);
+        let scaleSprite = this.physics.add.sprite(xPos+60, yPos+48, 'scale_body').setScale(0.06).setDepth(1).setAlpha(1);
+        let gaugeMaga = this.physics.add.sprite(xPos+60, yPos+48, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(1);
         let gaugeWoke = gaugeMaga;
 
         let gaugeHealth = this.add.graphics();
@@ -222,7 +222,7 @@ export default class BaseScene extends Phaser.Scene {
             healthGauge.strokePath();
         } else {
             //console.log('x,y = ' + posX + ',' + posY + ' maga: ' + maga + ' woke: ' + woke);
-/*
+
             let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
             let balance;
             maga = Math.min(100, maga); // don't let these go beyond 100
@@ -254,7 +254,7 @@ export default class BaseScene extends Phaser.Scene {
 
             healthGauge.setTint(color);
             scaleSprite.setTint(color);
-*/
+
             // // Shimmer effect -- doesn't unshimmer when hats leave and it's confusing anyway now that we have little hats
             // if (maga > 65 || woke > 65) {
             //     console.log('Shimmer check.  maga = '+maga+ 'woke = '+woke);
@@ -398,9 +398,10 @@ export default class BaseScene extends Phaser.Scene {
     }
 
     returnThreat(territory, faction, icon, numThreats) {
-        let message = 'Protestors Go home from ';
+        //let message = 'Your advocate persuades protestors to go home from ';
+        let message = 'Protestors recognize advocate and\n return home from ';
         message += icon.iconTitle + '...';
-        let offsetY = icon.icon.x*.1-50;
+        let offsetY = 10;
         let fillColor;
         if (faction == 'maga') {
             fillColor = '#ff0000';
@@ -408,8 +409,8 @@ export default class BaseScene extends Phaser.Scene {
             fillColor = '#0000ff';
         }
         // Create a text object to display an attack message
-        this.attackText = this.add.text(this.cameras.main.centerX, this.sys.game.config.height*.24 + offsetY, message, {
-            font: 'bold 48px Arial',
+        this.attackText = this.add.text(Math.max(50,icon.icon.x-10), this.sys.game.config.height*.24 + offsetY, message, {
+            font: '28px Arial',
             fill: fillColor,
             align: 'center'
         });
@@ -432,7 +433,7 @@ export default class BaseScene extends Phaser.Scene {
             let attackerTerritory = territory;
             let territoryWidth = this.sys.game.config.width / territories.length;
             let returnedIcon = icon.icon;
-console.log('return threat');
+
             if (faction == '') {
                 faction = attackerTerritory.faction;
             }
@@ -477,7 +478,7 @@ console.log('return threat');
                     if (body.gameObject === threat) {
                         body.gameObject.destroy();
                         this.roundThreats--;
-                        console.log('left screen.  threats is down to ' + this.roundThreats);
+                        //console.log('left screen.  threats is down to ' + this.roundThreats);
                     }
                 }, this);
 
@@ -485,6 +486,84 @@ console.log('return threat');
                 this.roundThreats++;
             });
         }
+    }
+
+    //====================================================================================
+    // function restoreMisinformationTokens(scene)
+    // function that recreates the information/misinformation blockers
+    //
+    //====================================================================================
+
+    restoreMisinformationTokens(scene) {
+        // Recreate previously generated misinformation tokens
+        for (let key in scene.sharedData.misinformation) {
+            // Look up the stored data
+            let storedData = scene.sharedData.misinformation[key];
+
+            // Use the stored data when creating the token
+            let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData);
+            scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
+            scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
+            misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
+            misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
+            misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
+
+            //data.x = xOffset;
+            //data.y = yOffset;
+        }
+
+        //====================================================================================
+        // function createPowerToken(scene)
+        // function that createPowerToken text, rectangle, and dragability
+        //
+        //====================================================================================
+
+        function createPowerToken(scene, faction, message, x, y, storedData) {
+            let factionColor = faction === 'maga'
+                ? '0xff0000'
+                : faction === 'woke'
+                    ? '0x0000ff'
+                    : '0x228B22'; // forest green
+
+            let fillColor = faction === 'maga'
+                ? '#ffffff'
+                : faction === 'woke'
+                    ? '#ffffff'
+                    : '#80ff80';
+
+            // Add text to the rectangle
+            let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
+
+            // Create a larger white rectangle for outline
+            let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
+
+            // Create a smaller factionColor rectangle
+            let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
+
+            // Create a sprite for physics and bouncing
+            let misinformationSprite = scene.physics.add.sprite(0, 0, 'track').setImmovable(true);
+            misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
+            misinformationSprite.setDepth(1);
+            misinformationSprite.setScale(.6);
+
+            // Group the text, outline, and rectangle into a single container
+            let misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+
+            // Attach the container to the sprite
+            misinformationSprite.container = misinformation;
+
+            // Set the size of the container to match the size of the outline rectangle
+            misinformation.setSize(outline.width, outline.height);
+
+        /* Don't allow dragging of power tokens during insurrection scene: you need to position them wisely
+        */
+
+            return {
+                container: misinformation,
+                sprite: misinformationSprite
+            };
+        }
+
     }
 
     createTerritories()
@@ -1159,7 +1238,8 @@ export const difficultyList = {
         oddsOfAlienAttack: 0.66, //more attacks: easier to get capital,
         oddsOfAlienAttackFirstRound: 1,
         startingEndorsement: 'all',
-        putieThreat: 1
+        putieThreat: 1,
+        collapseImbalance: 100
     },
     'Going to Need Some Help': {
         alienIncreasePerRound: 2,
@@ -1181,7 +1261,8 @@ export const difficultyList = {
         oddsOfAlienAttack: 0.58,
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',
-        putieThreat: 2
+        putieThreat: 2,
+        collapseImbalance: 100
     },
     'Realistic': {
         alienIncreasePerRound: 3,
@@ -1200,6 +1281,7 @@ export const difficultyList = {
         oddsOfAlienAttack: 0.5,
         oddsOfAlienAttackFirstRound: .5,
         startingEndorsement: 'nospecial',
-        putieThreat: 2
+        putieThreat: 2,
+        collapseImbalance: 80
     }
 };
