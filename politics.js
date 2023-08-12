@@ -754,9 +754,9 @@ export class Politics extends BaseScene {
             let numEntries = 0;
             // If ideology is 'maga', start with 2 community outreach tokens.  It would make more sense
             // from ideology if it were 'woke', but the game doesn't play well that way.
-            
-            if (scene.sharedData.ideology.faction == 'maga') {
-                numEntries = 2;
+
+            if (scene.sharedData.ideology.faction == 'maga') { // no outreach tokens is too hard lol!
+                numEntries = 1;
             }
             if (scene.hasBeenCreatedBefore) {
 
@@ -1049,7 +1049,28 @@ export class Politics extends BaseScene {
                 }
             });
  */
-
+             //====================================================================================
+             //
+             //             findValidTerritory(thisFaction, otherFaction)
+             //
+             //====================================================================================
+             let findValidTerritory = (thisFaction, otherFaction) => {
+                 let generateNumber = (n) => Math.floor((n + 1) / 2) * (n % 2 === 0 ? 1 : -1);
+                 let count = 0;
+                 let attackIndex = 3;
+                 let roundRobinLaunch = 0;
+                 let base = territories[Phaser.Math.Wrap((attackIndex + generateNumber(roundRobinLaunch)) % territories.length, 0, territories.length)];
+                 while (base.faction != thisFaction && base.faction != otherFaction) {
+                     // pick a new territory
+                     roundRobinLaunch++;
+                     base = territories[Phaser.Math.Wrap((attackIndex + generateNumber(roundRobinLaunch)) % territories.length, 0, territories.length)];
+                     if (count++ > 16) {
+                         console.log('something went wrong.  got stuck in looking for a new territory.');
+                         break;
+                     }
+                 }
+                 return base;
+             }
             // New concept: if you drop a Defense into an icon, it will remove some hats
             scene.physics.add.overlap(icon.icon, scene.magaDefenses, function(base, helper) {
                 console.log('delete index ' + helper.container.misinformationIndex);
@@ -1060,14 +1081,22 @@ export class Politics extends BaseScene {
                 helper.container.destroy();
 
                 //console.log('icon faction = '+icon[infoToken.type]+' other faction = '+icon[otherFaction]);
-                //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
-                let numReturns = Math.min(5,icon.maga/5);
-                scene.returnThreat(territories[2], 'maga', icon, numReturns);
-
-                scene.time.delayedCall(300, () => {
-                    numReturns = Math.min(5,icon.woke/5);
-                    scene.returnThreat(territories[2], 'woke', icon, numReturns);
-                });
+                //let numReturns = Math.min(5,icon.maga/5);
+                let validTerritory = findValidTerritory('maga', 'maga');
+                if (icon.maga > icon.woke) {
+                    let numReturns = Math.min(5,Math.max(0, icon.maga/5 -  icon.woke/5));
+                    scene.returnThreat(validTerritory, 'maga', icon, numReturns);
+                } else if (icon.woke > icon.maga){
+                    let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
+                    scene.returnThreat(validTerritory, 'woke', icon, numReturns);
+                } else {
+                    let numReturns = Math.min(5,icon.woke/5);
+                    scene.returnThreat(validTerritory, 'woke', icon, numReturns);
+                    scene.time.delayedCall(300, () => {
+                        let numReturns = Math.min(5,icon.maga/5);
+                        scene.returnThreat(validTerritory, 'maga', icon, numReturns);
+                    });
+                }
             });
 
             scene.physics.add.overlap(icon.icon, scene.wokeDefenses, function(base, helper) {
@@ -1079,13 +1108,23 @@ export class Politics extends BaseScene {
                 helper.container.destroy();
 
                 //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
-                let numReturns = Math.min(5,icon.woke/5);
-                scene.returnThreat(territories[3], 'woke', icon, numReturns);
+                let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
+                let validTerritory = findValidTerritory('woke', 'woke');
+                if (icon.maga > icon.woke) {
+                    let numReturns = Math.min(5,Math.max(0, icon.maga/5 -  icon.woke/5));
+                    scene.returnThreat(validTerritory, 'maga', icon, numReturns);
+                } else if (icon.woke > icon.maga){
+                    let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
+                    scene.returnThreat(validTerritory, 'woke', icon, numReturns);
+                } else {
+                    let numReturns = Math.min(5,icon.woke/5);
+                    scene.returnThreat(validTerritory, 'woke', icon, numReturns);
+                    scene.time.delayedCall(300, () => {
+                        let numReturns = Math.min(5,icon.maga/5);
+                        scene.returnThreat(validTerritory, 'maga', icon, numReturns);
+                    });
+                }
 
-                scene.time.delayedCall(300, () => {
-                    numReturns = Math.min(5,icon.maga/5);
-                    scene.returnThreat(territories[2], 'maga', icon, numReturns);
-                });
             });
 
             scene.physics.add.overlap(icon.icon, scene.helperIcons, function(base, helper) {

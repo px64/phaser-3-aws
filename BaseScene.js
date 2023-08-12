@@ -20,6 +20,11 @@ var justiceStrength = 50;
 var charVal = {};
 // testTerritory
 
+const ICON_MARGIN = 10;
+const GAUGE_HEIGHT = 50;
+const ICON_SPACING = 10;
+const ICON_SCALE = 0.03;
+
 export default class BaseScene extends Phaser.Scene {
 /*
     constructor() {
@@ -78,8 +83,8 @@ export default class BaseScene extends Phaser.Scene {
         let icon = this.physics.add.sprite(xPos, yPos, iconName).setAlpha(.8).setScale(scaleFactor);
         //let gaugeMaga; = this.add.graphics();
         //let gaugeWoke; = this.add.graphics();
-        let scaleSprite = this.physics.add.sprite(xPos+60, yPos+48, 'scale_body').setScale(0.06).setDepth(1).setAlpha(1);
-        let gaugeMaga = this.physics.add.sprite(xPos+60, yPos+48, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(1);
+        let scaleSprite = this.physics.add.sprite(xPos, yPos+60, 'scale_body').setScale(0.06).setDepth(1).setAlpha(1);
+        let gaugeMaga = this.physics.add.sprite(xPos, yPos+60, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(1);
         let gaugeWoke = gaugeMaga;
 
         let gaugeHealth = this.add.graphics();
@@ -201,11 +206,6 @@ export default class BaseScene extends Phaser.Scene {
 
     drawHealthGauge(scene, percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite, littleHats) {
         // 'track' is the scale object (could be a sprite or any game object)
-        const ICON_MARGIN = 10;
-        const GAUGE_HEIGHT = 50;
-        const ICON_SPACING = 10;
-        const ICON_SCALE = 0.03;
-
         if (style == 'Health') {
             let color = 0xffffff; let ringNum = 1;
             healthGauge.clear();
@@ -215,11 +215,40 @@ export default class BaseScene extends Phaser.Scene {
             healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), false);
             healthGauge.strokePath();
 
-            // Draw the health gauge with an arc, with the angle proportional to the health
-            healthGauge.lineStyle(7, color);
-            healthGauge.beginPath();
-            healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
-            healthGauge.strokePath();
+            // // Draw the health gauge with an arc, with the angle proportional to the health
+            // healthGauge.lineStyle(7, color);
+            // healthGauge.beginPath();
+            // healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
+            // healthGauge.strokePath();
+
+            if (percentage > .25) {
+                // Draw the normal health gauge (static)
+                //healthGauge.clear();
+                healthGauge.lineStyle(7, 0xffffff);
+                healthGauge.beginPath();
+                healthGauge.arc(posX, posY, 45 + (ringNum - 1) * 10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
+                healthGauge.strokePath();
+            } else {
+                // Draw the red gauge (will be pulsing)
+                //healthGauge.clear();
+                healthGauge.lineStyle(7, 0xff0000);
+                healthGauge.beginPath();
+                healthGauge.arc(posX, posY, 45 + (ringNum - 1) * 10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
+                healthGauge.strokePath();
+
+                let shimmerTween = this.tweens.add({
+                    delay: Phaser.Math.Between(0, 500),
+                    targets: healthGauge,
+                    duration: (percentage * 10000), // Duration of one shimmer
+                    repeat: -1, // -1 for infinite repeats
+                    yoyo: true, // Yoyo makes the tween animate back to its original value after reaching its target.
+                    ease: 'Sine.easeInOut',
+                    alpha: {
+                        start: .33, // Fully transparent
+                        to: 1    // Fully visible
+                    }
+                });
+            }
         } else {
             //console.log('x,y = ' + posX + ',' + posY + ' maga: ' + maga + ' woke: ' + woke);
 
@@ -255,22 +284,8 @@ export default class BaseScene extends Phaser.Scene {
             healthGauge.setTint(color);
             scaleSprite.setTint(color);
 
-            // // Shimmer effect -- doesn't unshimmer when hats leave and it's confusing anyway now that we have little hats
-            // if (maga > 65 || woke > 65) {
-            //     console.log('Shimmer check.  maga = '+maga+ 'woke = '+woke);
-            // let shimmerTween = this.tweens.add({
-            //         delay: Phaser.Math.Between(0, 500),
-            //         targets: [healthGauge, scaleSprite],
-            //         duration: 1000 - maga*5 - woke*5, // Duration of one shimmer
-            //         repeat: -1, // -1 for infinite repeats
-            //         yoyo: true, // Yoyo makes the tween animate back to its original value after reaching its target.
-            //         ease: 'Sine.easeInOut', // Linear easing for a smooth constant transition
-            //         alpha: {
-            //             start: 1, // Fully visible
-            //             to: 0.4  // 50% transparency
-            //         }
-            //     });
-            // }
+
+
             //clear all the little hats
             if (littleHats.length > 0) {
                 littleHats.forEach(hat => {
@@ -281,8 +296,8 @@ export default class BaseScene extends Phaser.Scene {
 
             // Assuming the icons should appear below the health gauge
             let iconY = posY + GAUGE_HEIGHT + ICON_MARGIN;
-            littleHats = drawIcons(scene, posX-20, iconY, maga/5, 'magaBase', littleHats);
-            littleHats = drawIcons(scene, posX-20, iconY + ICON_SPACING, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
+            littleHats = drawIcons(scene, posX-20 + ICON_SPACING*3, iconY, maga/5, 'magaBase', littleHats);
+            littleHats = drawIcons(scene, posX-20 - ICON_SPACING*3, iconY, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
 
         }
         return littleHats;
@@ -290,8 +305,10 @@ export default class BaseScene extends Phaser.Scene {
         // Draw little hats
         function drawIcons(scene, x, y, count, texture, littleHats) {
             for (let i = 0; i < count; i++) {
+                let xOffset = (i%5) * ICON_SPACING;
+                let yOffset = Math.floor(i/5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
-                let icon = scene.add.image(x + i * ICON_SPACING, y, texture);
+                let icon = scene.add.image(x + xOffset, y + yOffset, texture);
 
                 // Adjust the size of the icons if necessary
                 icon.setScale(ICON_SCALE);
@@ -884,7 +901,7 @@ export const characters = [
             "She helps government but puts Woke pressure on Justice."
         ],
         faction: 'maga',
-        power: 'Working Across\n The Aisle',
+        power: 'Senator Greenfield is\nWorking Across\nThe Aisle',
         powerTokenType: 'type_2',
         //helps: 'government',
         hurts: 'justice',
