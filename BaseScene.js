@@ -65,7 +65,8 @@ export default class BaseScene extends Phaser.Scene {
 
     initializeIcons() {
             let xStart = this.sys.game.config.width * .05; // 70;
-            let xOffset = this.sys.game.config.width * 200/1280;
+            //let xOffset = this.sys.game.config.width * 200/1280;
+            let xOffset = (this.sys.game.config.width-xStart*2) / 5;
             this.sharedData.icons['environment'] = this.createIconWithGauges(xStart+xOffset*0, 125, 0.15, 'environment', 0, 0, 50, 'Environmental\nHealth ', 1, 16, 0, 'The EPA');
             this.sharedData.icons['economy'] = this.createIconWithGauges(xStart+xOffset*1, 125, 0.1, 'economy', economyMaga, economyWoke, economyStrength, "Economy " ,1, 16, 0, 'Wall Street');
             this.sharedData.icons['justice'] = this.createIconWithGauges(xStart+xOffset*2, 125, 0.05, 'justice', justiceMaga, justiceWoke, 5,  'Social\nJustice ', 1, 16, 0, 'The Supreme Court');
