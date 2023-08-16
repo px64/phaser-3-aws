@@ -683,7 +683,7 @@ export class Scene2 extends BaseScene {
                 this.cameras.main.fadeOut(3000, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('VictoryScene').setup(this.sharedData);
-                    this.scene.start('VictoryScene', { showScore: true, message: messageString});
+                    this.scene.start('VictoryScene', { message: messageString});
                 });
             }
             if (alien.x <= 0 || alien.y > this.sys.game.config.height) {
