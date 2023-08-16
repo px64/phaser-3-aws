@@ -160,7 +160,7 @@ export class Politics extends BaseScene {
             this.cameras.main.fadeOut(1000, 0, 0, 0);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                 this.scene.get('VictoryScene').setup(this.sharedData);
-                this.scene.start('VictoryScene', { message: 'You Win!\nIn the year ' + this.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
+                this.scene.start('VictoryScene', { showScore: true, message: 'You Win!\nIn the year ' + this.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
             });
             return;
         }
@@ -1875,39 +1875,4 @@ export class Politics extends BaseScene {
         this.hasBeenCreatedBefore = true;
     }
 
-
-    //====================================================================================
-    //
-    //        update()
-    //
-    //====================================================================================
-    update() {
-        // game loop
-        // This is called 60 times per second. Put game logic here.
-/*
-        if (this.roundThreats == 20) {this.scene.start('AliensAttack'); }
-        if (Math.random() < 0.01) {
-            let attackerIndex = Phaser.Math.Between(0, territories.length - 1);
-            let attackerTerritory = territories[attackerIndex];
-            let territoryWidth = this.sys.game.config.width / territories.length;
-
-            let threatIcon = attackerTerritory.faction === 'maga'? 'magaBase': 'wokeBase';
-            let threat;
-
-            if (attackerTerritory.faction == 'maga'){
-                threat = this.magaThreats.create(attackerTerritory.x + territoryWidth/2, this.game.config.height-25, threatIcon).setScale(0.1);
-            } else {
-                threat = this.wokeThreats.create(attackerTerritory.x + territoryWidth/2, this.game.config.height-25, threatIcon).setScale(0.1);
-            }
-            threat.setBounce(1);
-
-            let keys = Object.keys(this.icons);
-            let attackedIconKey = keys[Phaser.Math.Between(0, keys.length - 1)];
-            let attackedIcon = this.icons[attackedIconKey].icon;
-
-            this.physics.moveTo(threat, attackedIcon.x, attackedIcon.y, 100); // 100 is the speed of the threat.
-            this.roundThreats++;
-        }
- */
-    }
 }

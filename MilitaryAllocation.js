@@ -20,26 +20,6 @@ import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
 import { militaryAssets} from './BaseScene.js';
 
-/*
-var MAGAness = 0;
-var MAGAupdate = 0;
-var MAGAnessText;
-var Wokeness = 0;
-var WokeUpdate = 0;
-var WokenessText;
-var year = 2023; // the starting year
-var yearText;
-var enviromentalHealth = 11; // the starting health of the environment
-var enviromentText;
-var governmentSize = 1200; // the starting size of the government
-var governmentText;
-var economyMaga = 20;
-var economyWoke = 20;
-var economyStrength = 32000;
-var justiceMaga = 20;
-var justiceWoke = 20;
-var justiceStrength = 5;
-*/
 var militaryUpdate = 0;
 var militaryAlloc = 10;
 

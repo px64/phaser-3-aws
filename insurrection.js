@@ -212,7 +212,7 @@ export class Insurrection extends BaseScene {
             // if (this.sharedData.MAGAness == 0 && this.sharedData.Wokeness == 0 && this.sharedData.putieTerritories < territories.length/2) {
             //                 sanity_check = 0;
             //             }
-            console.log('check for alien invasion '+ sanity_check + ' switchScene = '+ this.switchScene);
+            //console.log('check for alien invasion '+ sanity_check + ' switchScene = '+ this.switchScene);
             if ((this.sharedData.year > 2030) && (sanity_check < this.difficultyLevel().oddsOfAlienAttack)  && this.switchScene == false) {
                 this.switchScene = true;
                 console.log('go to Aliens Attack screen.  this.switchscene = true');
@@ -264,13 +264,13 @@ export class Insurrection extends BaseScene {
             }
 
             thisRoundHealthChange += this.sharedData.MAGAnessVelocity/5;
-            console.log(this.sharedData.MAGAnessVelocity + ' ' + thisRoundHealthChange);
+            //console.log(this.sharedData.MAGAnessVelocity + ' ' + thisRoundHealthChange);
             thisRoundHealthChange += this.sharedData.WokenessVelocity/5;
-            console.log(this.sharedData.WokenessVelocity + ' ' + thisRoundHealthChange);
+            //console.log(this.sharedData.WokenessVelocity + ' ' + thisRoundHealthChange);
 
             this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
             this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
-            console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
+            //console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
 
             polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
 
@@ -596,14 +596,14 @@ export class Insurrection extends BaseScene {
             //
             //====================================================================================
             scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
-                console.log('icon maganess = ' + threat.icon.maga);
+                //console.log('icon maganess = ' + threat.icon.maga);
                 if (threat.icon.maga > threat.icon.woke) {
                     console.log("don't destroy threat: it's going to help!");
                     return;
                 }
                 threat.destroy();
                 scene.roundThreats--;
-                console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
+                //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
                 if (scene.roundThreats == 1) {
                     console.log('all threats destroyed but stay here til time ends anyway');
                     scene.victoryText.destroy();
@@ -627,14 +627,14 @@ export class Insurrection extends BaseScene {
             }, null, this);
 
             scene.physics.add.overlap(scene.wokeDefenses, scene.magaThreats, function(defense, threat) {
-                console.log('icon wokeness = ' +threat.icon.woke);
+                //console.log('icon wokeness = ' +threat.icon.woke);
                 if (threat.icon.woke > threat.icon.maga) {
                     console.log("don't destroy threat: it's going to help!");
                     return;
                 }
                 threat.destroy();
                 scene.roundThreats--;
-                console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
+                //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
                 if (scene.roundThreats == 1) {
                     console.log('all threats destroyed but stay here til time ends anyway');
                     scene.victoryText.destroy();
@@ -730,15 +730,15 @@ export class Insurrection extends BaseScene {
 
             for (let key in scene.sharedData.icons) {
                 let icon = scene.sharedData.icons[key];
-                console.log(key);
+                //console.log(key);
                 // Woke overlap
                 scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
-                    console.log('wokethreat overlap');
+                    //console.log('wokethreat overlap');
                     handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
                 });
                 // Maga overlap
                 scene.physics.add.overlap(icon.icon, scene.magaThreats, function(defense, threat) {
-                    console.log('magathreat overlap');
+                    //console.log('magathreat overlap');
                     handleOverlap(icon, defense, threat, 5, 'maga', icon.gaugeMaga, '\nMake America Great Again!');
                 });
                 // Putin overlap

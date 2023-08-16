@@ -1257,7 +1257,8 @@ export const difficultyList = {
         oddsOfAlienAttackFirstRound: 1,
         startingEndorsement: 'all',
         putieThreat: 1,
-        collapseImbalance: 100
+        collapseImbalance: 100,
+        multiplier: 1
     },
     'Going to Need Some Help': {
         alienIncreasePerRound: 2,
@@ -1280,7 +1281,8 @@ export const difficultyList = {
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',
         putieThreat: 2,
-        collapseImbalance: 100
+        collapseImbalance: 100,
+        multiplier: 2
     },
     'Realistic': {
         alienIncreasePerRound: 3,
@@ -1300,6 +1302,7 @@ export const difficultyList = {
         oddsOfAlienAttackFirstRound: .5,
         startingEndorsement: 'nospecial',
         putieThreat: 2,
-        collapseImbalance: 80
+        collapseImbalance: 80,
+        multiplier: 3
     }
 };
