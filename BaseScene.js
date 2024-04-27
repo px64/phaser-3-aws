@@ -63,6 +63,71 @@ export default class BaseScene extends Phaser.Scene {
 
     }
 
+
+
+    initializeIcons() {
+        function getRandomSample(arr, n) {
+            const shuffled = arr.slice().sort(() => 0.5 - Math.random()); // This shuffles the copy of the array
+            return shuffled.slice(0, n); // Returns the first `n` elements of the shuffled array
+        }
+        
+        let xStart = this.sys.game.config.width * .05;
+        let xOffset = (this.sys.game.config.width-xStart*2) / 5;
+
+        let icons = ['environment', 'economy', 'justice', 'government', 'diplomacy', 'military'];
+
+        // Shuffle the icons array for positions
+        let shuffledIcons = Phaser.Utils.Array.Shuffle(icons.slice()); // Cloning the array before shuffling
+        // Select 2 random icons to be weak
+        let weakIcons = getRandomSample(icons, 2);
+
+        // Now create each icon using the shuffled array for positions
+        shuffledIcons.forEach((icon, index) => {
+            switch(icon) {
+                case 'environment':
+                    this.sharedData.icons[icon] = this.createIconWithGauges(xStart+xOffset*index, 125, 0.15, icon, 0, 0, weakIcons.includes(icon) ? 5 : 50, 'Environmental\nHealth ', 1, 16, 0, 'The EPA');
+                    break;
+                case 'economy':
+                    this.sharedData.icons[icon] = this.createIconWithGauges(xStart+xOffset*index, 125, 0.1, icon, economyMaga, economyWoke, weakIcons.includes(icon) ? 5 : economyStrength, "Economy " ,1, 16, 0, 'Wall Street');
+                    break;
+                case 'justice':
+                    this.sharedData.icons[icon] = this.createIconWithGauges(xStart+xOffset*index, 125, 0.05, icon, justiceMaga, justiceWoke, weakIcons.includes(icon) ? 5 : 50,  'Social\nJustice ', 1, 16, 0, 'The Supreme Court');
+                    break;
+                case 'government':
+                    this.sharedData.icons[icon] = this.createIconWithGauges(xStart+xOffset*index, 125, 0.05, icon, 5, 5, weakIcons.includes(icon) ? 5 : governmentSize, 'Government\nHealth ', 1, 16, 0, 'The US Capital');
+                    break;
+                case 'diplomacy':
+                    this.sharedData.icons[icon] = this.createIconWithGauges(xStart+xOffset*index, 125, 0.16, icon, 0, 0, weakIcons.includes(icon) ? 5 : 50,  'International\nRelations\n ', 1, 16, 0, 'The United Nations');
+                    break;
+                case 'military':
+                    this.sharedData.icons[icon] = this.createIconWithGauges(xStart+xOffset*index, 125, 0.12, icon, 0, 0, weakIcons.includes(icon) ? 5 : 50,  'Alien\nDefense ', 2, 16, 0, 'The Pentagon');
+                    break;
+            }
+        });
+    }
+
+/*
+    initializeIcons() {
+        let xStart = this.sys.game.config.width * .05;
+        let xOffset = (this.sys.game.config.width - xStart * 2) / 5;
+
+        // Define the icons in an array
+        let icons = ['environment', 'economy', 'justice', 'government', 'diplomacy', 'military'];
+
+        // Shuffle the array
+        Phaser.Utils.Array.Shuffle(icons);
+
+        // Take the first two items and assign them a low strength
+        let weakIcons = icons.slice(0, 2);
+
+        this.sharedData.icons[icons[0]] = this.createIconWithGauges(xStart + xOffset * 0, 125, 0.15, 'environment', 0, 0, weakIcons.includes('environment') ? 5 : 50, 'Environmental\nHealth ', 1, 16, 0, 'The EPA');
+        this.sharedData.icons[icons[1]] = this.createIconWithGauges(xStart + xOffset * 1, 125, 0.1, 'economy', economyMaga, economyWoke, weakIcons.includes('economy') ? 5 : economyStrength, "Economy ", 1, 16, 0, 'Wall Street');
+        this.sharedData.icons[icons[2]] = this.createIconWithGauges(xStart + xOffset * 2, 125, 0.05, 'justice', justiceMaga, justiceWoke, weakIcons.includes('justice') ? 5 : 50, 'Social\nJustice ', 1, 16, 0, 'The Supreme Court');
+        this.sharedData.icons[icons[3]] = this.createIconWithGauges(xStart + xOffset * 3, 125, 0.05, 'government', 5, 5, weakIcons.includes('government') ? 5 : governmentSize, 'Government\nHealth ', 1, 16, 0, 'The US Capital');
+        this.sharedData.icons[icons[4]] = this.createIconWithGauges(xStart + xOffset * 4, 125, 0.16, 'diplomacy', 0, 0, weakIcons.includes('diplomacy') ? 5 : 50, 'International\nRelations\n ', 1, 16, 0, 'The United Nations');
+        this.sharedData.icons[icons[5]] = this.createIconWithGauges(xStart + xOffset * 5, 125, 0.12, 'military', 0, 0, weakIcons.includes('military') ? 5 : 50,  'Alien\nDefense ', 2, 16, 0, 'The Pentagon');
+    }
+
     initializeIcons() {
             let xStart = this.sys.game.config.width * .05; // 70;
             //let xOffset = this.sys.game.config.width * 200/1280;
@@ -74,7 +139,7 @@ export default class BaseScene extends Phaser.Scene {
             this.sharedData.icons['diplomacy'] = this.createIconWithGauges(xStart+xOffset*4, 125, 0.16, 'diplomacy', 0, 0, 50,  'International\nRelations\n ', 1, 16, 0, 'The United Nations');
             this.sharedData.icons['military'] = this.createIconWithGauges(xStart+xOffset*5, 125, 0.12, 'military', 0, 0, 5,  'Alien\nDefense ', 2, 16, 0, 'The Pentagon');
      }
-
+*/
     //====================================================================================
     //
     // createIconWithGauges
