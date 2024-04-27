@@ -310,7 +310,7 @@ class TitleScene extends Phaser.Scene {
                             duration: 33000,
                             repeat: 0,
                             onComplete: function () {
-                                text.destroy();
+                                // JCS NEW text.destroy();
                                 if (i === storyLines.length - 1) {
                                     currentStoryLineIndex++;
                                     if (currentStoryLineIndex < storyLinesSet.length) {
@@ -379,7 +379,7 @@ class VictoryScene extends BaseScene {
             let territoriesScore = (territories.length - this.sharedData.alienTerritories - this.sharedData.putieTerritories)*15;
             console.log('Number of Territories Score: ' + territoriesScore);
             scoreText += '\n Territories Bonus: '+ territoriesScore;
-            let score = yearScore + legislationScore + territoriesScore; 
+            let score = yearScore + legislationScore + territoriesScore;
             scoreText += '\n Score: '+ score;
             scoreText += '\n Difficulty multiplier: '+ this.difficultyLevel().multiplier + 'x';
             score = score * this.difficultyLevel().multiplier;
