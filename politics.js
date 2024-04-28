@@ -346,11 +346,21 @@ export class Politics extends BaseScene {
             backstoryBox.setVisible(true);
             backstoryBox.setDepth(1);
 
+            // Create a tween for pulsing effect
+            this.tweens.add({
+                targets: [backstoryText, backstoryBox],
+                alpha: { from: 1, to: 0 },
+                ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
+                duration: 1000, // duration of each pulse
+                repeat: -1, // repeat infinitely
+                yoyo: true // make it fade back in
+            });
+
             setTimeout(() => {
                 backstoryText.setVisible(false);
                 backstoryBox.setVisible(false);
+                this.tweens.killTweensOf([backstoryText, backstoryBox]); // Stop the tween when hiding the text and box
             }, 10000);
-
         }
 
         let endorseMaga = this.add.text(0, 220, 'Endorse?',
