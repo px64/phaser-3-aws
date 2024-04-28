@@ -38,7 +38,7 @@ var MAGAnessText;
 //var Wokeness = 0;
 var WokeUpdate = 0;
 var WokenessText;
-var polCapText;
+//var polCapText;
 var year = 2023; // the starting year
 var yearText;
 var enviromentalHealth = 11; // the starting health of the environment
@@ -165,10 +165,10 @@ export class Politics extends BaseScene {
             return;
         }
         // Create a button using an image
-        let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
+        this.nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
         // When the button is clicked, start the next scene
-        nextButton.on('pointerdown', () => {
+        this.nextButton.on('pointerdown', () => {
             // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
             // question: does this scene's sharedData ever even get used?
             this.sharedData.icons = this.icons;
@@ -279,7 +279,7 @@ export class Politics extends BaseScene {
 
         let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
-        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
+        this.polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
 
         // Create Year text
         yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
@@ -330,21 +330,19 @@ export class Politics extends BaseScene {
                     "to make effective decisions"
                 ],
                 reference: 'polCapText',
-                offset: { x: 0, y: 50 } // Offset from polCapText
+                offset: { x: 180, y: 80 } // Offset from polCapText
             }
         ];
-
         if (!this.hasBeenCreatedBefore) {
             let currentIndex = 0;
+            let backdrop;  // Optional: A background to capture clicks on the entire game area
+            let timeoutHandle;
 
             const displayTutorial = () => {
                 if (currentIndex < nextScreenTutorial.length) {
                     let tutorial = nextScreenTutorial[currentIndex];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 35);
-
-                    // Determine the reference object dynamically
-                    let referenceObject = this[tutorial.reference]; // Assuming 'this' has properties 'nextButton' and 'polCapText'
-
+                    let referenceObject = this[tutorial.reference];
                     let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                     backstoryText.setOrigin(0.5);
                     backstoryText.setVisible(true);
@@ -366,54 +364,35 @@ export class Politics extends BaseScene {
                         yoyo: true
                     });
 
-                    setTimeout(() => {
+                    // Optional: Add a full-screen invisible sprite to capture clicks anywhere
+                    if (!backdrop) {
+                        backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0).setOrigin(0, 0).setInteractive();
+                    }
+
+                    // Cleanup function to clear current tutorial item
+                    const clearCurrentTutorial = () => {
+                        clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
                         backstoryText.setVisible(false);
                         backstoryBox.setVisible(false);
                         this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                        backdrop.off('pointerdown');
+                        this.input.keyboard.off('keydown-ENTER');
                         currentIndex++;
-                        displayTutorial(); // Recursively call to display the next item
-                    }, 10000); // Adjust timing as needed for each screen
+                        displayTutorial(); // Display next item
+                    };
+
+                    // Set up listeners for pointer down and ENTER key
+                    backdrop.on('pointerdown', clearCurrentTutorial);
+                    this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+
+                    // Set a timeout to automatically advance
+                    timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
                 }
             };
 
             displayTutorial(); // Start the tutorial display
         }
 
-/*
-        // add some helpful text
-        if (!this.hasBeenCreatedBefore) {
-            // Format the text to be centered and with the color based on the affiliation
-            let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 35);
-            let backstoryText = this.add.text(nextButton.x-130, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-            backstoryText.setOrigin(0.5);
-            backstoryText.setVisible(true);
-            backstoryText.setDepth(2);
-
-            // Add a bounding box for the text, with rounded corners and a semi-transparent background
-            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-            backstoryBox.isStroked = true;
-            backstoryBox.setOrigin(0.5);
-            backstoryBox.setVisible(true);
-            backstoryBox.setDepth(1);
-
-            // Create a tween for pulsing effect
-            this.tweens.add({
-                targets: [backstoryText, backstoryBox],
-                alpha: { from: 1, to: 0 },
-                ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-                duration: 1000, // duration of each pulse
-                repeat: -1, // repeat infinitely
-                yoyo: true // make it fade back in
-            });
-
-            setTimeout(() => {
-                backstoryText.setVisible(false);
-                backstoryBox.setVisible(false);
-                this.tweens.killTweensOf([backstoryText, backstoryBox]); // Stop the tween when hiding the text and box
-            }, 10000);
-        }
-*/
         let endorseMaga = this.add.text(0, 220, 'Endorse?',
                             { fontSize: '22px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
         let underline = this.add.graphics();
@@ -1427,9 +1406,9 @@ export class Politics extends BaseScene {
                 //checkboxBackground.setColor(0xffffff); // figure this out later
             }
 
-            polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
-            polCapText.setColor('#00ff00'); // Change text color back to green
-            polCapText.setBackgroundColor('#000000'); // Change background color back to black
+            this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+            this.polCapText.setColor('#00ff00'); // Change text color back to green
+            this.polCapText.setBackgroundColor('#000000'); // Change background color back to black
 
             // Save the previous value for next calculation
             character.prevValue = value;
@@ -1591,9 +1570,9 @@ export class Politics extends BaseScene {
                 // Update MAGAnessText and WokenessText here
                 let tmpMAG = scene.MAGAness - MAGAupdate;
                 let tmpWok = scene.Wokeness - WokeUpdate;
-                polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
-                polCapText.setColor('#ff0000'); // Change text color to red
-                polCapText.setBackgroundColor('#ffff00'); // Change background color to yellow
+                this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+                this.polCapText.setColor('#ff0000'); // Change text color to red
+                this.polCapText.setBackgroundColor('#ffff00'); // Change background color to yellow
             });
 
             slider.on('dragend', function(pointer, dragX, dragY) {
@@ -1688,9 +1667,9 @@ export class Politics extends BaseScene {
                     this.track.setTint(0xffffff);
                 }
 
-                polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
-                polCapText.setColor('#00ff00'); // Change text color back to green
-                polCapText.setBackgroundColor('#000000'); // Change background color back to black
+                this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+                this.polCapText.setColor('#00ff00'); // Change text color back to green
+                this.polCapText.setBackgroundColor('#000000'); // Change background color back to black
 
                 // Save the previous value for next calculation
                 character.prevValue = value;
