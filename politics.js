@@ -319,16 +319,67 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "Click on the Earth Icon to",
-                        "move to the next screen"
-                ]
+                    "move to the next screen"
+                ],
+                reference: 'nextButton',
+                offset: { x: -130, y: -75 }
             },
             {
                 story: [
-                    "Click on the Earth Icon to",
-                        "move to the next screen"
-                ]
+                    "Understand your Political Capital",
+                    "to make effective decisions"
+                ],
+                reference: 'polCapText',
+                offset: { x: 0, y: 50 } // Offset from polCapText
             }
         ];
+
+        if (!this.hasBeenCreatedBefore) {
+            let currentIndex = 0;
+
+            const displayTutorial = () => {
+                if (currentIndex < nextScreenTutorial.length) {
+                    let tutorial = nextScreenTutorial[currentIndex];
+                    let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 35);
+
+                    // Determine the reference object dynamically
+                    let referenceObject = this[tutorial.reference]; // Assuming 'this' has properties 'nextButton' and 'polCapText'
+
+                    let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                    backstoryText.setOrigin(0.5);
+                    backstoryText.setVisible(true);
+                    backstoryText.setDepth(2);
+
+                    let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                    backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                    backstoryBox.isStroked = true;
+                    backstoryBox.setOrigin(0.5);
+                    backstoryBox.setVisible(true);
+                    backstoryBox.setDepth(1);
+
+                    this.tweens.add({
+                        targets: [backstoryText, backstoryBox],
+                        alpha: { from: 1, to: 0 },
+                        ease: 'Linear',
+                        duration: 1000,
+                        repeat: -1,
+                        yoyo: true
+                    });
+
+                    setTimeout(() => {
+                        backstoryText.setVisible(false);
+                        backstoryBox.setVisible(false);
+                        this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                        currentIndex++;
+                        displayTutorial(); // Recursively call to display the next item
+                    }, 10000); // Adjust timing as needed for each screen
+                }
+            };
+
+            displayTutorial(); // Start the tutorial display
+        }
+
+/*
         // add some helpful text
         if (!this.hasBeenCreatedBefore) {
             // Format the text to be centered and with the color based on the affiliation
@@ -362,7 +413,7 @@ export class Politics extends BaseScene {
                 this.tweens.killTweensOf([backstoryText, backstoryBox]); // Stop the tween when hiding the text and box
             }, 10000);
         }
-
+*/
         let endorseMaga = this.add.text(0, 220, 'Endorse?',
                             { fontSize: '22px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
         let underline = this.add.graphics();
