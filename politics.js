@@ -318,19 +318,109 @@ export class Politics extends BaseScene {
         let nextScreenTutorial = [
             {
                 story: [
-                    "Click on the Earth Icon to",
-                    "move to the next screen"
+                    "Political Capital is the currency that is",
+                    "used to get things done!"
                 ],
-                reference: 'nextButton',
-                offset: { x: -130, y: -75 }
+                reference: 'polCapText',
+                offset: { x: 280, y: 70 } // Offset from polCapText
             },
             {
                 story: [
-                    "Understand your Political Capital",
-                    "to make effective decisions"
+                    "Spend Political Capital",
+                    "to endorse your liasons"
                 ],
                 reference: 'polCapText',
-                offset: { x: 180, y: 80 } // Offset from polCapText
+                offset: { x: 240, y: 380 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "These are the six societal aspects that",
+                    "you are trying to improve.  Once all six are",
+                    "in excellent health, you win!"
+                ],
+                reference: 'polCapText',
+                offset: { x: 360, y: 120 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "The circle around the outside indicates its health.  It also",
+                    "flashes red when very unhealthy.  If it collapses, Putie moves",
+                    "in and takes over a territory."
+                ],
+                reference: 'polCapText',
+                offset: { x: 560, y: 120 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "The scale indicates the balance of MAGA vs. Woke.  It is best if",
+                    "MAGA and Woke are balanced AND there aren't too many MAGA or Woke activists",
+                    "protesting the aspect.  Too many activists can cause a revolt!"
+                ],
+                reference: 'polCapText',
+                offset: { x: 660, y: 280 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "This is an infomational token.  It can",
+                    "dispell agression and create mutual",
+                    "understanding among upset MAGA and Woke activists. Feel free to drag the",
+                    "token around to block attacking Insurrectionists"
+                ],
+                reference: 'polCapText',
+                offset: { x: 430, y: 300 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "These territories are either MAGA or Woke.  The hats indicate",
+                    "the alignment of the territory.  The hat pulses to indicate",
+                    "if activists in a territory are expressing frustration"
+                ],
+                reference: 'nextButton',
+                offset: { x: -580, y: -75 }
+            },
+            {
+                story: [
+                    "Carefully choose who to endorse!  Spend Capital on a person",
+                    "and then that person will give benefits to improve",
+                    "society or defend against agressive activists (including Putin!)"
+                ],
+                reference: 'polCapText',
+                offset: { x: 640, y: 380 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "Once a character has been fully endorsed, it will turn green and on",
+                    "the next round that character will issue a benefit that you can then deploy"
+                ],
+                reference: 'polCapText',
+                offset: { x: 640, y: 580 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "When you mouse over a character, some background is given on the character, and",
+                    "you will see an angry hat pulse at the bottom.",
+                    "Also, you will see either a blue or a red glow around a societal aspect indicating",
+                    "what the political faction is angry about and will attack."
+                ],
+                reference: 'polCapText',
+                offset: { x: 340, y: 580 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "The goal is to improve the societal aspect while not causing too much political",
+                    "unrest.  In some situations the political unrest needs to be defused before the aspect can",
+                    "be improved."
+                ],
+                reference: 'polCapText',
+                offset: { x: 640, y: 580 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "Now spend all of your current Political capital endorsing characters and then Click",
+                    "on the Earth Icon to move to the next screen"
+                ],
+                reference: 'nextButton',
+                offset: { x: -280, y: -75 }
             }
         ];
         if (!this.hasBeenCreatedBefore) {
@@ -341,7 +431,7 @@ export class Politics extends BaseScene {
             const displayTutorial = () => {
                 if (currentIndex < nextScreenTutorial.length) {
                     let tutorial = nextScreenTutorial[currentIndex];
-                    let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 35);
+                    let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
                     let referenceObject = this[tutorial.reference];
                     let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                     backstoryText.setOrigin(0.5);
@@ -366,7 +456,7 @@ export class Politics extends BaseScene {
 
                     // Optional: Add a full-screen invisible sprite to capture clicks anywhere
                     if (!backdrop) {
-                        backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000, 0).setOrigin(0, 0).setInteractive();
+                        backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
                     }
 
                     // Cleanup function to clear current tutorial item
@@ -1406,9 +1496,9 @@ export class Politics extends BaseScene {
                 //checkboxBackground.setColor(0xffffff); // figure this out later
             }
 
-            this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
-            this.polCapText.setColor('#00ff00'); // Change text color back to green
-            this.polCapText.setBackgroundColor('#000000'); // Change background color back to black
+            scene.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+            scene.polCapText.setColor('#00ff00'); // Change text color back to green
+            scene.polCapText.setBackgroundColor('#000000'); // Change background color back to black
 
             // Save the previous value for next calculation
             character.prevValue = value;

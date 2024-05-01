@@ -264,6 +264,11 @@ export class ChooseYourIdeologyScene extends BaseScene {
             this.sharedData.MAGAness += 10;
             this.sharedData.Wokeness += 10;
         }
+        // If aliens never attack first round then it must be beginner level: give out some more Political Capital
+        if (this.difficultyLevel().oddsOfAlienAttackFirstRound == 0) {
+            this.sharedData.MAGAness += 5;
+            this.sharedData.Wokeness += 5;
+        }
 
         this.backgroundImage.destroy();
         this.ideologyTitleText.destroy();

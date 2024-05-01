@@ -70,7 +70,7 @@ export default class BaseScene extends Phaser.Scene {
             const shuffled = arr.slice().sort(() => 0.5 - Math.random()); // This shuffles the copy of the array
             return shuffled.slice(0, n); // Returns the first `n` elements of the shuffled array
         }
-        
+
         let xStart = this.sys.game.config.width * .05;
         let xOffset = (this.sys.game.config.width-xStart*2) / 5;
 
@@ -1319,7 +1319,7 @@ export const difficultyList = {
         },
         militaryTechBoost: 50,
         oddsOfAlienAttack: 0.66, //more attacks: easier to get capital,
-        oddsOfAlienAttackFirstRound: 1,
+        oddsOfAlienAttackFirstRound: 0, // New plan: aliens don't attack immediately: too confusing!
         startingEndorsement: 'all',
         putieThreat: 1,
         collapseImbalance: 100,

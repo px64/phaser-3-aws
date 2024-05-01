@@ -235,7 +235,7 @@ class TitleScene extends Phaser.Scene {
         // Create a group to hold your text lines
         let textGroup = this.add.group();
         let text;
-        let storyLinesSet = [storyLines, storyLines2];
+        let storyLinesSet = [storyLines];// skip how to play the game for now , storyLines2];
         let currentStoryLineIndex = 0;
 
         // Input event listener
