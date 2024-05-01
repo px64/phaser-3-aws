@@ -521,6 +521,16 @@ class TutorialScene extends BaseScene {
                 }
             }
         }, this);
+        
+        // Setup a timeout to automatically switch scenes if there is no interaction
+        this.sceneSwitchTimeout = setTimeout(() => {
+            if (data.nextScene !== 'youLose' && data.nextScene !== 'dilemmaOrInsurrection') {
+                switchScene.call(this, 'politics');
+            } else if (data.nextScene === 'dilemmaOrInsurrection') {
+                handleDilemmaOrInsurrection.call(this);
+            }
+        }, 10000);  // Time in milliseconds, e.g., 10000ms for 10 seconds
+
     }
 }
 

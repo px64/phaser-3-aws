@@ -416,6 +416,14 @@ export class Politics extends BaseScene {
             },
             {
                 story: [
+                    "If the societal aspect is very weak, it's a bad idea to cause activists to attack it.",
+                    "Best to wait for that aspect of society to be strong before causing unrest against it!"
+                ],
+                reference: 'polCapText',
+                offset: { x: 660, y: 280 } // Offset from characterTexts
+            },
+            {
+                story: [
                     "Now spend all of your current Political capital endorsing characters and then Click",
                     "on the Earth Icon to move to the next screen"
                 ],
@@ -447,7 +455,7 @@ export class Politics extends BaseScene {
 
                     this.tweens.add({
                         targets: [backstoryText, backstoryBox],
-                        alpha: { from: 1, to: 0 },
+                        alpha: { from: 1, to: .5 },
                         ease: 'Linear',
                         duration: 1000,
                         repeat: -1,
