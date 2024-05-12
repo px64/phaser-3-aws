@@ -509,6 +509,7 @@ class TutorialScene extends BaseScene {
 
         // Input event listener
         this.input.on('pointerdown', function (pointer) {
+            clearTimeout(this.sceneSwitchTimeout);
             if (data.nextScene != 'youLose') {
                 // Switch to the next scene
                 if (data.nextScene != 'dilemmaOrInsurrection') {
@@ -521,7 +522,7 @@ class TutorialScene extends BaseScene {
                 }
             }
         }, this);
-        
+
         // Setup a timeout to automatically switch scenes if there is no interaction
         this.sceneSwitchTimeout = setTimeout(() => {
             if (data.nextScene !== 'youLose' && data.nextScene !== 'dilemmaOrInsurrection') {
