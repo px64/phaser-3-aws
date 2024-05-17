@@ -362,7 +362,7 @@ export class Politics extends BaseScene {
                     "understanding among upset MAGA and Woke activists. Feel free to drag the",
                     "token around to block attacking Insurrectionists"
                 ],
-                reference: "sharedData.misinformation['Public Forums']",
+                reference: "sharedData.misinformation[0]",
                 offset: { x: 430, y: 300 } // Offset from characterTexts
             },
             {
