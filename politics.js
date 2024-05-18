@@ -336,7 +336,7 @@ export class Politics extends BaseScene {
                     "in excellent health, you win!"
                 ],
                 reference: "icons['environment'].icon",
-                offset: { x: 0, y: 80 } // Offset from characterTexts
+                offset: { x: 140, y: 120 } // Offset from characterTexts
             },
             {
                 story: [
@@ -355,7 +355,7 @@ export class Politics extends BaseScene {
                 ],
                 //reference: "icons['government'].scaleSprite",
                 reference: "icons['government'].gaugeMaga",
-                offset: { x: 0, y: 120 } // Offset from characterTexts
+                offset: { x: 140, y: 120 } // Offset from characterTexts
             },
             {
                 story: [
@@ -374,7 +374,7 @@ export class Politics extends BaseScene {
                     "if activists in a territory are expressing frustration"
                 ],
                 reference: "territoryReference",
-                offset: { x: -580, y: -75 }
+                offset: { x: -280, y: -175 }
             },
             {
                 story: [
@@ -382,7 +382,7 @@ export class Politics extends BaseScene {
                     "and then that person will give benefits to improve",
                     "society or defend against agressive activists (including Putin!)"
                 ],
-                reference: 'polCapText',
+                reference: 'characterTexts[3]',
                 offset: { x: 640, y: 380 } // Offset from characterTexts
             },
             {
@@ -390,7 +390,7 @@ export class Politics extends BaseScene {
                     "Once a character has been fully endorsed, it will turn green and on",
                     "the next round that character will issue a benefit that you can then deploy"
                 ],
-                reference: 'polCapText',
+                reference: 'characterTexts[4]',
                 offset: { x: 640, y: 580 } // Offset from characterTexts
             },
             {
@@ -400,7 +400,7 @@ export class Politics extends BaseScene {
                     "Also, you will see either a blue or a red glow around a societal aspect indicating",
                     "what the political faction is angry about and will attack."
                 ],
-                reference: 'polCapText',
+                reference: 'characterTexts[8]',
                 offset: { x: 340, y: 580 } // Offset from characterTexts
             },
             {
@@ -409,7 +409,7 @@ export class Politics extends BaseScene {
                     "unrest.  In some situations the political unrest needs to be defused before the aspect can",
                     "be improved."
                 ],
-                reference: 'polCapText',
+                reference: "icons['government'].gaugeMaga",
                 offset: { x: 640, y: 580 } // Offset from characterTexts
             },
             {
@@ -417,7 +417,7 @@ export class Politics extends BaseScene {
                     "If the societal aspect is very weak, it's a bad idea to cause activists to attack it.",
                     "Best to wait for that aspect of society to be strong before causing unrest against it!"
                 ],
-                reference: 'polCapText',
+                reference: "icons['government'].gaugeMaga",
                 offset: { x: 660, y: 280 } // Offset from characterTexts
             },
             {
@@ -451,7 +451,6 @@ export class Politics extends BaseScene {
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
                     let referenceObject = getValueByPath(this, tutorial.reference);
                     console.log(typeof(referenceObject));
-                    console.log(territories[3]);
                     console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
                     let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
@@ -547,237 +546,7 @@ export class Politics extends BaseScene {
             return graphics; // Ensure the graphics object is returned
 
         }
-        //====================================================================================
-        //
-        // The following code block creates characters with slider bars .
-        // It also creates (or recreates) helpful tokens if the character is endorsed enough
-        //
-        //====================================================================================
-        /*
-        this.characterSliders = []; // keep track of the sliders
-        this.characterTexts = []; // keep track of character text pointers
 
-        let Wokeindex = 0;
-        let MAGAindex = 0;
-        let xOffset = 0;
-        let numberOfSteps = 7;
-        let defaultValue = 0;
-        let characterText;
-        let nextScreenTutorial = [
-            {
-                story: [
-                    "Political Capital is the currency that is",
-                    "used to get things done!"
-                ],
-                reference: 'polCapText',
-                offset: { x: 280, y: 70 } // Offset from polCapText
-            },
-            {
-                story: [
-                    "Spend Political Capital",
-                    "to endorse your liasons"
-                ],
-                reference: 'polCapText',
-                offset: { x: 240, y: 380 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "These are the six societal aspects that",
-                    "you are trying to improve.  Once all six are",
-                    "in excellent health, you win!"
-                ],
-                reference: "icons['environment'].icon",
-                offset: { x: 0, y: 80 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "The circle around the outside indicates its health.  It also",
-                    "flashes red when very unhealthy.  If it collapses, Putie moves",
-                    "in and takes over a territory."
-                ],
-                reference: "icons['government'].gaugeHealth",
-                offset: { x: 560, y: 120 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "The scale indicates the balance of MAGA vs. Woke.  It is best if",
-                    "MAGA and Woke are balanced AND there aren't too many MAGA or Woke activists",
-                    "protesting the aspect.  Too many activists can cause a revolt!"
-                ],
-                //reference: "icons['government'].scaleSprite",
-                reference: "icons['government'].gaugeMaga",
-                offset: { x: 0, y: 120 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "This is an infomational token.  It can",
-                    "dispell agression and create mutual",
-                    "understanding among upset MAGA and Woke activists. Feel free to drag the",
-                    "token around to block attacking Insurrectionists"
-                ],
-                reference: 'polCapText',
-                offset: { x: 430, y: 300 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "These territories are either MAGA or Woke.  The hats indicate",
-                    "the alignment of the territory.  The hat pulses to indicate",
-                    "if activists in a territory are expressing frustration"
-                ],
-                reference: 'nextButton',
-                offset: { x: -580, y: -75 }
-            },
-            {
-                story: [
-                    "Carefully choose who to endorse!  Spend Capital on a person",
-                    "and then that person will give benefits to improve",
-                    "society or defend against agressive activists (including Putin!)"
-                ],
-                reference: 'polCapText',
-                offset: { x: 640, y: 380 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "Once a character has been fully endorsed, it will turn green and on",
-                    "the next round that character will issue a benefit that you can then deploy"
-                ],
-                reference: 'polCapText',
-                offset: { x: 640, y: 580 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "When you mouse over a character, some background is given on the character, and",
-                    "you will see an angry hat pulse at the bottom.",
-                    "Also, you will see either a blue or a red glow around a societal aspect indicating",
-                    "what the political faction is angry about and will attack."
-                ],
-                reference: 'polCapText',
-                offset: { x: 340, y: 580 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "The goal is to improve the societal aspect while not causing too much political",
-                    "unrest.  In some situations the political unrest needs to be defused before the aspect can",
-                    "be improved."
-                ],
-                reference: 'polCapText',
-                offset: { x: 640, y: 580 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "If the societal aspect is very weak, it's a bad idea to cause activists to attack it.",
-                    "Best to wait for that aspect of society to be strong before causing unrest against it!"
-                ],
-                reference: 'polCapText',
-                offset: { x: 660, y: 280 } // Offset from characterTexts
-            },
-            {
-                story: [
-                    "Now spend all of your current Political capital endorsing characters and then Click",
-                    "on the Earth Icon to move to the next screen"
-                ],
-                reference: 'nextButton',
-                offset: { x: -280, y: -75 }
-            }
-        ];
-
-        function getValueByPath(obj, path) {
-            return path.split(/[\[\]'.]+/).filter(Boolean).reduce((o, key) => o[key], obj);
-        }
-
-        if (!this.hasBeenCreatedBefore) {
-            let currentIndex = 0;
-            let backdrop;  // Optional: A background to capture clicks on the entire game area
-            let timeoutHandle;
-
-            const displayTutorial = () => {
-                if (currentIndex < nextScreenTutorial.length) {
-                    let tutorial = nextScreenTutorial[currentIndex];
-                    let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
-                    //let referenceObject = this[tutorial.reference];
-                    let referenceObject = getValueByPath(this, tutorial.reference);
-                    console.log(referenceObject);
-                    let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-                    backstoryText.setOrigin(0.5);
-                    backstoryText.setVisible(true);
-                    backstoryText.setDepth(2);
-
-                    let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-                    backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-                    backstoryBox.isStroked = true;
-                    backstoryBox.setOrigin(0.5);
-                    backstoryBox.setVisible(true);
-                    backstoryBox.setDepth(1);
-
-                    this.tweens.add({
-                        targets: [backstoryText, backstoryBox],
-                        alpha: { from: 1, to: .5 },
-                        ease: 'Linear',
-                        duration: 1000,
-                        repeat: -1,
-                        yoyo: true
-                    });
-                    this.tweens.add({
-                        targets: [referenceObject],
-                        alpha: 1,
-                        duration: 333,
-                        repeat: -1,
-                        yoyo: true,
-                        onUpdate: (tween, target) => {
-                            const progress = tween.progress;
-                            target.alpha = progress < 0.5 ? 1 : 0.5; // Changes alpha at 50% of the progress
-                        }
-                    });
-/*
-                    //function tweenTint(obj, startColor, endColor, duration) {
-                        let colorBlend = { step: 0 };
-                        let colorTween = this.tweens.add({
-                            targets: colorBlend,
-                            step: 100,
-                            duration: 1000,
-                            repeat: -1,
-                            yoyo: true,
-                            onUpdate: () => {
-                                referenceObject.setTint(Phaser.Display.Color.Interpolate.ColorWithColor(
-                                    Phaser.Display.Color.ValueToColor(0xffffff),
-                                    Phaser.Display.Color.ValueToColor(0xff00ff),
-                                    100,
-                                    colorBlend.step
-                                ));
-                            }
-                        });
-                    //}
-
-
-                    // Optional: Add a full-screen invisible sprite to capture clicks anywhere
-                    if (!backdrop) {
-                        backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
-                    }
-
-                    // Cleanup function to clear current tutorial item
-                    const clearCurrentTutorial = () => {
-                        clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                        backstoryText.setVisible(false);
-                        backstoryBox.setVisible(false);
-                        this.tweens.killTweensOf([backstoryText, backstoryBox]);
-                        backdrop.off('pointerdown');
-                        this.input.keyboard.off('keydown-ENTER');
-                        currentIndex++;
-                        displayTutorial(); // Display next item
-                    };
-
-                    // Set up listeners for pointer down and ENTER key
-                    backdrop.on('pointerdown', clearCurrentTutorial);
-                    this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-
-                    // Set a timeout to automatically advance
-                    timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
-                }
-            };
-
-            displayTutorial(); // Start the tutorial display
-        }
-*/
         let endorseMaga = this.add.text(0, 220, 'Endorse?',
                             { fontSize: '22px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
         let underline = this.add.graphics();
@@ -854,7 +623,7 @@ export class Politics extends BaseScene {
             // }, initialValue);
             //
             // this.characterSliders.push(characterSlider);
-            // this.characterTexts.push(characterText);
+            this.characterTexts.push(characterText); // Push characterTexts just so we can reference location w pointers later
         });
 
 
