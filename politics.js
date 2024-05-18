@@ -310,6 +310,8 @@ export class Politics extends BaseScene {
         let defaultValue = 0;
         let characterText;
 
+        this.territoryReference = territories[3];
+
         let nextScreenTutorial = [
             {
                 story: [
@@ -371,7 +373,7 @@ export class Politics extends BaseScene {
                     "the alignment of the territory.  The hat pulses to indicate",
                     "if activists in a territory are expressing frustration"
                 ],
-                reference: 'nextButton',
+                reference: "territoryReference",
                 offset: { x: -580, y: -75 }
             },
             {
@@ -429,8 +431,13 @@ export class Politics extends BaseScene {
         ];
 
         function getValueByPath(obj, path) {
-            return path.split(/[\[\]'.]+/).filter(Boolean).reduce((o, key) => o[key], obj);
+            let result = path.split(/[\[\]'.]+/).filter(Boolean).reduce((o, key) => (o && o[key] !== undefined) ? o[key] : undefined, obj);
+            if (result === undefined) {
+                result = {path}; // Return the path directly if not found in obj
+            }
+            return result;
         }
+
 
         if (!this.hasBeenCreatedBefore) {
             let currentIndex = 0;
@@ -443,6 +450,9 @@ export class Politics extends BaseScene {
                     let tutorial = nextScreenTutorial[currentIndex];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
                     let referenceObject = getValueByPath(this, tutorial.reference);
+                    console.log(typeof(referenceObject));
+                    console.log(territories[3]);
+                    console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
                     let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                     backstoryText.setOrigin(0.5);
