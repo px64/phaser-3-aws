@@ -344,7 +344,7 @@ export class Politics extends BaseScene {
                     "flashes red when very unhealthy.  If it collapses, Putie moves",
                     "in and takes over a territory."
                 ],
-                reference: "icons['government'].gaugeHealth",
+                reference: "icons['government'].gaugeMaga",
                 offset: { x: 120, y: 120 } // Offset from characterTexts
             },
             {
@@ -453,7 +453,9 @@ export class Politics extends BaseScene {
                     console.log(typeof(referenceObject));
                     console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
-                    let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                    //let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                    let backstoryText = this.add.text(this.cameras.main.width/5*2, this.cameras.main.height/5*2+currentIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+
                     backstoryText.setOrigin(0.5);
                     backstoryText.setVisible(true);
                     backstoryText.setDepth(2);
