@@ -310,7 +310,22 @@ export class Politics extends BaseScene {
         let defaultValue = 0;
         let characterText;
 
-        this.territoryReference = territories[3];
+        // Initialize an array to store arrow graphics
+        let arrowGraphicsArray = [];
+        this.territoryReference = territories;
+        this.gaugeMagaArray = [];
+        this.iconArray = [];
+        let arrowTimerIDs = [];
+
+        // Iterate over each category in the icons object
+        Object.keys(this.icons).forEach(category => {
+            if (this.icons[category].gaugeMaga) {
+                this.gaugeMagaArray.push(this.icons[category].gaugeMaga);
+            }
+            if (this.icons[category].icon) {
+                this.iconArray.push(this.icons[category].icon);
+            }
+        });
 
         let nextScreenTutorial = [
             {
@@ -335,7 +350,7 @@ export class Politics extends BaseScene {
                     "you are trying to improve.  Once all six are",
                     "in excellent health, you win!"
                 ],
-                reference: "icons['environment'].icon",
+                reference: "iconArray",
                 offset: { x: 140, y: 120 } // Offset from characterTexts
             },
             {
@@ -344,7 +359,7 @@ export class Politics extends BaseScene {
                     "flashes red when very unhealthy.  If it collapses, Putie moves",
                     "in and takes over a territory."
                 ],
-                reference: "icons['government'].gaugeMaga",
+                reference: "gaugeMagaArray",
                 offset: { x: 120, y: 120 } // Offset from characterTexts
             },
             {
@@ -353,8 +368,7 @@ export class Politics extends BaseScene {
                     "MAGA and Woke are balanced AND there aren't too many MAGA or Woke activists",
                     "protesting the aspect.  Too many activists can cause a revolt!"
                 ],
-                //reference: "icons['government'].scaleSprite",
-                reference: "icons['government'].gaugeMaga",
+                reference: "gaugeMagaArray",
                 offset: { x: 140, y: 120 } // Offset from characterTexts
             },
             {
@@ -382,7 +396,7 @@ export class Politics extends BaseScene {
                     "and then that person will give benefits to improve",
                     "society or defend against agressive activists (including Putin!)"
                 ],
-                reference: 'characterTexts[3]',
+                reference: 'characterTexts',
                 offset: { x: 640, y: 380 } // Offset from characterTexts
             },
             {
@@ -390,7 +404,7 @@ export class Politics extends BaseScene {
                     "Once a character has been fully endorsed, it will turn green and on",
                     "the next round that character will issue a benefit that you can then deploy"
                 ],
-                reference: 'characterTexts[4]',
+                reference: 'characterTexts',
                 offset: { x: 640, y: 580 } // Offset from characterTexts
             },
             {
@@ -400,7 +414,7 @@ export class Politics extends BaseScene {
                     "Also, you will see either a blue or a red glow around a societal aspect indicating",
                     "what the political faction is angry about and will attack."
                 ],
-                reference: 'characterTexts[8]',
+                reference: 'characterTexts',
                 offset: { x: 340, y: 580 } // Offset from characterTexts
             },
             {
@@ -409,7 +423,7 @@ export class Politics extends BaseScene {
                     "unrest.  In some situations the political unrest needs to be defused before the aspect can",
                     "be improved."
                 ],
-                reference: "icons['government'].gaugeMaga",
+                reference: "gaugeMagaArray",
                 offset: { x: 640, y: 580 } // Offset from characterTexts
             },
             {
@@ -417,7 +431,7 @@ export class Politics extends BaseScene {
                     "If the societal aspect is very weak, it's a bad idea to cause activists to attack it.",
                     "Best to wait for that aspect of society to be strong before causing unrest against it!"
                 ],
-                reference: "icons['government'].gaugeMaga",
+                reference: "gaugeMagaArray",
                 offset: { x: 660, y: 280 } // Offset from characterTexts
             },
             {
@@ -438,7 +452,6 @@ export class Politics extends BaseScene {
             return result;
         }
 
-
         if (!this.hasBeenCreatedBefore) {
             let currentIndex = 0;
             let backdrop;  // Optional: A background to capture clicks on the entire game area
@@ -447,13 +460,24 @@ export class Politics extends BaseScene {
 
             const displayTutorial = () => {
                 if (currentIndex < nextScreenTutorial.length) {
+                    let snog;
                     let tutorial = nextScreenTutorial[currentIndex];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
                     let referenceObject = getValueByPath(this, tutorial.reference);
-                    console.log(typeof(referenceObject));
-                    console.log(referenceObject);
+                    if (tutorial.reference == "polCapText")
+                    {
+                        snog = Object.assign({}, referenceObject);
+                        snog.x = snog.x + 100;
+                        snog.y = snog.y + 20;
+                    }
+                    else {
+                        snog = referenceObject;
+                    }
+                    console.log(referenceObject.length);
+                    //console.log(typeof(referenceObject));
+                    //console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
-                    //let backstoryText = this.add.text(referenceObject.x + tutorial.offset.x, referenceObject.y + tutorial.offset.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+
                     let backstoryText = this.add.text(this.cameras.main.width/5*2, this.cameras.main.height/5*2+currentIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
 
                     backstoryText.setOrigin(0.5);
@@ -466,9 +490,22 @@ export class Politics extends BaseScene {
                     backstoryBox.setOrigin(0.5);
                     backstoryBox.setVisible(true);
                     backstoryBox.setDepth(1);
+                    console.log(backstoryBox.x + backstoryBox.width/2);
 
-                    // Draw arrow pointing to the reference object
-                    arrowGraphics = drawArrow(this, referenceObject.x, referenceObject.y, backstoryBox.x, backstoryBox.y);
+                    // Check if snog is an array or a single object
+                    if (Array.isArray(snog)) {
+                        snog.forEach((element, index) => {
+                            const timerID = setTimeout(() => {
+                                let arrow = drawArrow(this, element.x, element.y, backstoryBox.x, backstoryBox.y);
+                                arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                            }, (index+1) * 400 ); // Delay each arrow by index * 400 milliseconds
+                            arrowTimerIDs.push(timerID); // Store the timer ID
+                        });
+
+                    } else {
+                        let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                        arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                    }
 
                     this.tweens.add({
                         targets: [backstoryText, backstoryBox],
@@ -492,10 +529,14 @@ export class Politics extends BaseScene {
                         this.tweens.killTweensOf([backstoryText, backstoryBox]);
                         backdrop.off('pointerdown');
                         this.input.keyboard.off('keydown-ENTER');
-                        // Destroy the arrow graphics
-                        if (arrowGraphics) {
-                             arrowGraphics.destroy();
-                        }
+
+                        // Clear all pending timers for drawing arrows
+                        arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                        arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+
+                        // Destroy all arrow graphics
+                        arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                        arrowGraphicsArray = []; // Clear the array after destruction
 
                         currentIndex++;
                         displayTutorial(); // Display next item
