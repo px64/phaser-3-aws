@@ -527,8 +527,8 @@ export class ChooseYourIdeologyScene extends BaseScene {
             {
                 story: [
                     "Mouse over each character to learn more about them.  ",
-                    "Characters help an aspect of society while causing protests in another aspect."
-                    "The hacker can create a cyber-shield around a",
+                    "Characters help an aspect of society while causing protests in another aspect.",
+                    "The hacker special ability creates a cyber-shield around a",
                     "societal aspect to defend against attacks",
                     "and the social peacemaker creates new information session tokens",
                     "When finished, click on the Earth Icon to move to the next screen"
