@@ -331,7 +331,8 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "Political Capital is the currency that is",
-                    "used to get things done!"
+                    "used to get things done!  You earn capital by",
+                    "making effective policy decisions."
                 ],
                 reference: 'polCapText',
                 offset: { x: 280, y: 70 } // Offset from polCapText
@@ -339,7 +340,8 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "Spend Political Capital",
-                    "to endorse your liasons"
+                    "to endorse your liasons.  They will in turn be able to provide",
+                    "you with helpful resources that improve society and prevent collapse."
                 ],
                 reference: 'polCapText',
                 offset: { x: 240, y: 380 } // Offset from characterTexts
@@ -356,7 +358,7 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "The circle around the outside indicates its health.  It also",
-                    "flashes red when very unhealthy.  If it collapses, Putie moves",
+                    "flashes red when very unhealthy.  If an aspect collapses, Putie moves",
                     "in and takes over a territory."
                 ],
                 reference: "gaugeMagaArray",
@@ -385,24 +387,37 @@ export class Politics extends BaseScene {
                 story: [
                     "These territories are either MAGA or Woke.  The hats indicate",
                     "the alignment of the territory.  The hat pulses to indicate",
-                    "if activists in a territory are expressing frustration"
+                    "if activists in a territory are expressing frustration.  Mouse",
+                    "over a liason and see activists getting ready to protest"
                 ],
                 reference: "territoryReference",
                 offset: { x: -280, y: -175 }
             },
             {
                 story: [
-                    "Carefully choose who to endorse!  Spend Capital on a person",
-                    "and then that person will give benefits to improve",
-                    "society or defend against agressive activists (including Putin!)"
+                    "The person you choose to endorse will give benefits to improve",
+                    "society or defend against agressive activists (including Putin!)",
+                    "In addition, liasons encourage activists to attack",
+                    "a societal aspect that they are opposed to."
                 ],
                 reference: 'characterTexts', // this has been pushed into a this.characterTexts array elsewhere just for this purpose
-                offset: { x: 640, y: 380 } // Offset from characterTexts
+                offset: { x: 640, y: 380 }
+            },
+            {
+                story: [
+                    "The societal aspect the liason opposes will be highlighted",
+                    "with a ring the color of the MAGA or Woke activists that will attack it."
+                ],
+                reference: 'gaugeMagaArray', // this has been pushed into a this.characterTexts array elsewhere just for this purpose
+                offset: { x: 640, y: 380 }
             },
             {
                 story: [
                     "Once a character has been fully endorsed, it will turn green and on",
-                    "the next round that character will issue a benefit that you can then deploy"
+                    "the next round that character will issue a benefit that you can then deploy.",
+                    "Some Liasons help society.  The hacker can create a cyber-shield around a",
+                    "societal aspect to defend against attacks",
+                    "and the social peacemaker creates new information session tokens"
                 ],
                 reference: 'characterTexts',
                 offset: { x: 640, y: 580 } // Offset from characterTexts
