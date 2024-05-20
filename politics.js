@@ -396,7 +396,7 @@ export class Politics extends BaseScene {
                     "and then that person will give benefits to improve",
                     "society or defend against agressive activists (including Putin!)"
                 ],
-                reference: 'characterTexts',
+                reference: 'characterTexts', // this has been pushed into a this.characterTexts array elsewhere just for this purpose
                 offset: { x: 640, y: 380 } // Offset from characterTexts
             },
             {
@@ -424,7 +424,7 @@ export class Politics extends BaseScene {
                     "be improved."
                 ],
                 reference: "gaugeMagaArray",
-                offset: { x: 640, y: 580 } // Offset from characterTexts
+                offset: { x: 640, y: 580 }
             },
             {
                 story: [
@@ -432,7 +432,7 @@ export class Politics extends BaseScene {
                     "Best to wait for that aspect of society to be strong before causing unrest against it!"
                 ],
                 reference: "gaugeMagaArray",
-                offset: { x: 660, y: 280 } // Offset from characterTexts
+                offset: { x: 660, y: 280 }
             },
             {
                 story: [
@@ -466,6 +466,7 @@ export class Politics extends BaseScene {
                     let referenceObject = getValueByPath(this, tutorial.reference);
                     if (tutorial.reference == "polCapText")
                     {
+                        // make a copy of referenceObject so we can pretend to move the x, y coordinates over
                         snog = Object.assign({}, referenceObject);
                         snog.x = snog.x + 100;
                         snog.y = snog.y + 20;
@@ -473,6 +474,11 @@ export class Politics extends BaseScene {
                     else {
                         snog = referenceObject;
                     }
+                    if (tutorial.reference == "characterTexts")
+                    {
+                        startBlinkingCheckbox(this, characters[0].checkbox.checkboxUnchecked, characters[0].checkbox.checkboxChecked, characters[0].checkbox.checkboxUncheckedAction, characters[0].checkbox.checkboxCheckedAction);
+                    }
+
                     console.log(referenceObject.length);
                     //console.log(typeof(referenceObject));
                     //console.log(referenceObject);
@@ -557,7 +563,7 @@ export class Politics extends BaseScene {
         // Function to draw an arrow with the head on the starting point
         function drawArrow(scene, startX, startY, endX, endY) {
             let graphics = scene.add.graphics();
-            graphics.lineStyle(5, 0x800080, 1);
+            graphics.lineStyle(5, 0xa000a0, 1);
 
             // Draw the main line
             graphics.beginPath();
@@ -582,7 +588,7 @@ export class Politics extends BaseScene {
             graphics.lineTo(arrowPoint1X, arrowPoint1Y);
             graphics.lineTo(arrowPoint2X, arrowPoint2Y);
             graphics.lineTo(startX, startY);
-            graphics.fillStyle(0x800080, 1);
+            graphics.fillStyle(0xa000a0, 1);
             graphics.fillPath();
             graphics.strokePath();
 
@@ -655,7 +661,7 @@ export class Politics extends BaseScene {
             character.charText = characterText; // back reference to text so we can find the location later
 
             //console.log(character.name +' has backing of '+character.backing);
-            createCheckbox(this, 20+xOffset, 270 + (rowIndex * 60), character, characterText, function(character, backing) {
+            character.checkbox = createCheckbox(this, 20+xOffset, 270 + (rowIndex * 60), character, characterText, function(character, backing) {
                 character.backing = backing;
             }, character.backing);
             //
@@ -1707,7 +1713,7 @@ export class Politics extends BaseScene {
             }
 
             createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
-
+/*
             // Blink only this checkbox on and off 3 times
             let toggleCount = 0;
             const maxToggles = 3; // Blink 3 times (each blink consists of two toggles)
@@ -1732,8 +1738,33 @@ export class Politics extends BaseScene {
                 callback: toggleCheckbox,
                 loop: true
             });
+*/
+            return { checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction };
+        }
 
-            return { checkboxUnchecked, checkboxChecked };
+        function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction) {
+            let toggleCount = 0;
+            const maxToggles = 6; // Blink 3 times (each blink consists of two toggles)
+
+            const toggleCheckbox = () => {
+                if (toggleCount < maxToggles) {
+                    if (checkboxUnchecked.visible) {
+                        checkboxUncheckedAction();
+                    } else {
+                        checkboxCheckedAction();
+                    }
+                    toggleCount++;
+                } else {
+                    checkboxCheckedAction();
+                    toggleEvent.remove(); // Remove the event after the desired number of toggles
+                }
+            };
+
+            const toggleEvent = scene.time.addEvent({
+                delay: 1000, // Delay in milliseconds
+                callback: toggleCheckbox,
+                loop: true
+            });
         }
 
 
