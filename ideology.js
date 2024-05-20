@@ -545,7 +545,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         if (!this.hasBeenCreatedBefore) {
             // Format the text to be centered and with the color based on the affiliation
             let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 80);
-            let backstoryText = this.add.text(nextButton.x-325, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            let backstoryText = this.add.text(nextButton.x-400, nextButton.y-75, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
             backstoryText.setOrigin(0.5);
             backstoryText.setVisible(true);
             backstoryText.setDepth(2);
