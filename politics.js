@@ -330,9 +330,9 @@ export class Politics extends BaseScene {
         let nextScreenTutorial = [
             {
                 story: [
-                    "Political Capital is the currency that is",
-                    "used to get things done!  You earn capital by",
-                    "making effective policy decisions."
+                    "Political Capital is the currency you use",
+                    "to accomplish tasks! Earn capital by making",
+                    "effective policy decisions."
                 ],
                 reference: 'polCapText',
                 offset: { x: 280, y: 70 } // Offset from polCapText
@@ -340,16 +340,25 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "Spend Political Capital",
-                    "to endorse your liasons.  They will in turn be able to provide",
-                    "you with helpful resources that improve society and prevent collapse."
+                    "to endorse your liaisons. They will provide",
+                    "you with valuable resources to improve society and prevent collapse."
                 ],
                 reference: 'polCapText',
                 offset: { x: 240, y: 380 } // Offset from characterTexts
             },
             {
                 story: [
-                    "These are the six societal aspects that",
-                    "you are trying to improve.  Once all six are",
+                    "There are MAGA liaisons and Woke liaisons. Both types provide",
+                    "valuable resources. However MAGA liaisons promote MAGA activism,",
+                    "while Woke liaisons promote Woke activism."
+                ],
+                reference: 'characterTexts',
+                offset: { x: 240, y: 380 } // Offset from characterTexts
+            },
+            {
+                story: [
+                    "These are the six societal aspects you",
+                    "aim to improve. When all six are",
                     "in excellent health, you win!"
                 ],
                 reference: "iconArray",
@@ -425,9 +434,7 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "When you mouse over a character, some background is given on the character, and",
-                    "you will see an angry hat pulse at the bottom.",
-                    "Also, you will see either a blue or a red glow around a societal aspect indicating",
-                    "what the political faction is angry about and will attack."
+                    "you will see an activist hat pulse at the bottom, ready to protest!"
                 ],
                 reference: 'characterTexts',
                 offset: { x: 340, y: 580 } // Offset from characterTexts
