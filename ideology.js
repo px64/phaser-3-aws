@@ -456,10 +456,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
             backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
             
             let backstoryHurtIcon = scene.add.image(x+xOffset, y-yOffset, character.hurts);  // Position the icon at the original y position
-            backstoryIcon.setScale(scaleFactor);  // scale the icon
-            backstoryIcon.setOrigin(0.75, 1);  // change origin to bottom center
-            backstoryIcon.setVisible(false);
-            backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
+            backstoryHurtIcon.setScale(scaleFactor);  // scale the icon
+            backstoryHurtIcon.setOrigin(0.75, 1);  // change origin to bottom center
+            backstoryHurtIcon.setVisible(false);
+            backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
             
             let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
             let backstoryText = scene.add.text(x+xOffset, backstoryIcon.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });  // Position the text below the icon
