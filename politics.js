@@ -501,6 +501,7 @@ export class Politics extends BaseScene {
             return result;
         }
         if (this.secondTimeThrough) {
+            let backdrop;  // Optional: A background to capture clicks on the entire game area
             this.secondTimeThrough = 0;
             let currentIndex = 0;
 
