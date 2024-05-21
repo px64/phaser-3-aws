@@ -392,12 +392,12 @@ export class ChooseYourIdeologyScene extends BaseScene {
              if (character.powerTokenType == 'type_3') {
                  tmpHelp = 'hacker';
                  scaleFactor.helps = 0.19;
-                 scaleFactor.hurts = 0.19;
+                 //scaleFactor.hurts = 0.19;
                  //console.log('hacker');
              } else if (character.powerTokenType == 'type_2') {
                  tmpHelp = 'negotiation';
                  scaleFactor.helps = 0.13;
-                 scaleFactor.hurts = 0.13;
+                 //scaleFactor.hurts = 0.13;
                  //console.log('negotiation');
              }
             characterText = this.add.text(80+xOffset, 250 + (rowIndex * 60), character.name,
@@ -458,13 +458,13 @@ export class ChooseYourIdeologyScene extends BaseScene {
             // Add an icon or graphic and scale it
             let backstoryIcon = scene.add.image(x+xOffset, y-yOffset, graphicObject);  // Position the icon at the original y position
             backstoryIcon.setScale(scaleFactor.helps);  // scale the icon
-            backstoryIcon.setOrigin(0.1, 1);  // change origin to bottom center
+            backstoryIcon.setOrigin(0.9, 1);  // change origin to bottom center
             backstoryIcon.setVisible(false);
             backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
             
             let backstoryHurtIcon = scene.add.image(x+xOffset, y-yOffset, character.hurts);  // Position the icon at the original y position
             backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
-            backstoryHurtIcon.setOrigin(0.9, 1);  // change origin to bottom center
+            backstoryHurtIcon.setOrigin(0.1, 1);  // change origin to bottom center
             backstoryHurtIcon.setVisible(false);
             backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
             
