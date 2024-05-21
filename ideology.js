@@ -457,13 +457,13 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             // Add an icon or graphic and scale it
             let backstoryIcon = scene.add.image(x+xOffset, y-yOffset, graphicObject);  // Position the icon at the original y position
-            backstoryIcon.setScale(scaleFactor);  // scale the icon
+            backstoryIcon.setScale(scaleFactor.helps);  // scale the icon
             backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
             backstoryIcon.setVisible(false);
             backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
             
             let backstoryHurtIcon = scene.add.image(x+xOffset, y-yOffset, character.hurts);  // Position the icon at the original y position
-            backstoryHurtIcon.setScale(scaleFactor);  // scale the icon
+            backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
             backstoryHurtIcon.setOrigin(0.75, 1);  // change origin to bottom center
             backstoryHurtIcon.setVisible(false);
             backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
