@@ -382,15 +382,22 @@ export class ChooseYourIdeologyScene extends BaseScene {
                 "diplomacy" : 0.16,
                 "military" : 0.13
              };
-             let scaleFactor = scaleTable[character.helps];
+            
+            // Create the scaleFactor object with substructures
+            let scaleFactor = {
+                helps: scaleTable[character.helps],
+                hurts: scaleTable[character.hurts]
+            };
 
              if (character.powerTokenType == 'type_3') {
                  tmpHelp = 'hacker';
-                 scaleFactor = 0.19;
+                 scaleFactor.helps = 0.19;
+                 scaleFactor.hurts = 0.19;
                  //console.log('hacker');
              } else if (character.powerTokenType == 'type_2') {
                  tmpHelp = 'negotiation';
-                 scaleFactor = 0.13;
+                 scaleFactor.helps = 0.13;
+                 scaleFactor.hurts = 0.13;
                  //console.log('negotiation');
              }
             characterText = this.add.text(80+xOffset, 250 + (rowIndex * 60), character.name,
