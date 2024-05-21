@@ -382,7 +382,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
                 "diplomacy" : 0.16,
                 "military" : 0.13
              };
-            
+
             // Create the scaleFactor object with substructures
             let scaleFactor = {
                 helps: scaleTable[character.helps],
@@ -454,12 +454,12 @@ export class ChooseYourIdeologyScene extends BaseScene {
     // Add an icon or graphic and scale it
     let backstoryIcon = scene.add.image(x + xOffset, y - yOffset, graphicObject);  // Position the icon at the original y position
     backstoryIcon.setScale(scaleFactor.helps);  // scale the icon
-    backstoryIcon.setOrigin(0.9, 1);  // change origin to bottom center
+    backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
     backstoryIcon.setVisible(false);
     backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
 
     // Add a label for "helps"
-    let helpsLabel = scene.add.text(backstoryIcon.x - backstoryIcon.displayWidth / 2, backstoryIcon.y - backstoryIcon.displayHeight - 10, 'Helps', {
+    let helpsLabel = scene.add.text(backstoryIcon.x - backstoryIcon.displayWidth / 2, backstoryIcon.y - backstoryIcon.displayHeight/2, 'Helps: '+ tmpHelp, {
         fontSize: '28px',
         fontFamily: 'Roboto',
         color: textColor,
@@ -468,23 +468,6 @@ export class ChooseYourIdeologyScene extends BaseScene {
     helpsLabel.setOrigin(0.9, 1);
     helpsLabel.setVisible(false);
     helpsLabel.setDepth(2);
-
-    let backstoryHurtIcon = scene.add.image(x + xOffset, y - yOffset, character.hurts);  // Position the icon at the original y position
-    backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
-    backstoryHurtIcon.setOrigin(0.1, 1);  // change origin to bottom center
-    backstoryHurtIcon.setVisible(false);
-    backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
-
-    // Add a label for "hurts"
-    let hurtsLabel = scene.add.text(backstoryHurtIcon.x - backstoryHurtIcon.displayWidth / 2, backstoryHurtIcon.y - backstoryHurtIcon.displayHeight - 10, 'Hurts', {
-        fontSize: '28px',
-        fontFamily: 'Roboto',
-        color: textColor,
-        align: 'center'
-    });
-    hurtsLabel.setOrigin(0.1, 1);
-    hurtsLabel.setVisible(false);
-    hurtsLabel.setDepth(2);
 
     let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
     let backstoryText = scene.add.text(x + xOffset, backstoryIcon.y, formattedBackstory, {
@@ -504,6 +487,24 @@ export class ChooseYourIdeologyScene extends BaseScene {
     backstoryBox.setOrigin(0.5, 0);
     backstoryBox.setVisible(false);
     backstoryBox.setDepth(1);
+
+
+    let backstoryHurtIcon = scene.add.image(x + xOffset, backstoryBox.y + backstoryBox.displayHeight, character.hurts);  // Position the icon at the original y position
+    backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
+    backstoryHurtIcon.setOrigin(0.5, 1);  // change origin to bottom center
+    backstoryHurtIcon.setVisible(false);
+    backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
+
+    // Add a label for "hurts"
+    let hurtsLabel = scene.add.text(backstoryHurtIcon.x - backstoryHurtIcon.displayWidth -10, backstoryHurtIcon.y, 'Causes Activists To Protest: ' + character.hurts, {
+        fontSize: '20px',
+        fontFamily: 'Roboto',
+        color: textColor,
+        align: 'center'
+    });
+    hurtsLabel.setOrigin(0, 1);
+    hurtsLabel.setVisible(false);
+    hurtsLabel.setDepth(2);
 
     const mouseOver = () => {
         backstoryText.setVisible(true);
@@ -569,13 +570,13 @@ export class ChooseYourIdeologyScene extends BaseScene {
             backstoryIcon.setOrigin(0.9, 1);  // change origin to bottom center
             backstoryIcon.setVisible(false);
             backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
-            
+
             let backstoryHurtIcon = scene.add.image(x+xOffset, y-yOffset, character.hurts);  // Position the icon at the original y position
             backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
             backstoryHurtIcon.setOrigin(0.1, 1);  // change origin to bottom center
             backstoryHurtIcon.setVisible(false);
             backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
-            
+
             let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
             let backstoryText = scene.add.text(x+xOffset, backstoryIcon.y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });  // Position the text below the icon
             backstoryText.setOrigin(0.5,0);
