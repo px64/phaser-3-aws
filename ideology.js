@@ -422,7 +422,115 @@ export class ChooseYourIdeologyScene extends BaseScene {
         //====================================================================================
         //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
         //====================================================================================
+        function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
+    // Set text color based on affiliation
+    let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+    let xOffset = character.faction === 'maga' ? 80 + scene.game.config.width * .4 : scene.game.config.width * -.24;
 
+    // Format the text to be centered and with the color based on the affiliation
+    let roughSize = character.backstory.length * character.backstory[0].length;
+    console.log(character.name + ' ' + character.backstory.length + 'x' + character.backstory[0].length + '=' + (y + roughSize / 3));
+    let lineLength;
+    let yOffset;
+    if (roughSize > 800 && scene.sys.game.config.width > 1000) {
+        lineLength = 88;
+        yOffset = 140;
+    } else {
+        if (roughSize > 440) {
+            lineLength = 80;
+            yOffset = 0;
+        } else {
+            lineLength = 40;
+            yOffset = 0;
+        }
+    }
+    // Emergency override: the screen is not very high so we really need to move the tooltip up a lot!
+    if (y + roughSize / 3 > scene.sys.game.config.height) {
+        yOffset = roughSize / 4;
+        console.log('adjust upward ' + yOffset);
+    }
+    let graphicObject = tmpHelp;
+
+    // Add an icon or graphic and scale it
+    let backstoryIcon = scene.add.image(x + xOffset, y - yOffset, graphicObject);  // Position the icon at the original y position
+    backstoryIcon.setScale(scaleFactor.helps);  // scale the icon
+    backstoryIcon.setOrigin(0.9, 1);  // change origin to bottom center
+    backstoryIcon.setVisible(false);
+    backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
+
+    // Add a label for "helps"
+    let helpsLabel = scene.add.text(backstoryIcon.x - backstoryIcon.displayWidth / 2, backstoryIcon.y - backstoryIcon.displayHeight - 10, 'Helps', {
+        fontSize: '16px',
+        fontFamily: 'Roboto',
+        color: textColor,
+        align: 'center'
+    });
+    helpsLabel.setOrigin(0.5, 1);
+    helpsLabel.setVisible(false);
+    helpsLabel.setDepth(2);
+
+    let backstoryHurtIcon = scene.add.image(x + xOffset, y - yOffset, character.hurts);  // Position the icon at the original y position
+    backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
+    backstoryHurtIcon.setOrigin(0.1, 1);  // change origin to bottom center
+    backstoryHurtIcon.setVisible(false);
+    backstoryHurtIcon.setDepth(2);  // set depth below the text and above the bounding box
+
+    // Add a label for "hurts"
+    let hurtsLabel = scene.add.text(backstoryHurtIcon.x - backstoryHurtIcon.displayWidth / 2, backstoryHurtIcon.y - backstoryHurtIcon.displayHeight - 10, 'Hurts', {
+        fontSize: '16px',
+        fontFamily: 'Roboto',
+        color: textColor,
+        align: 'center'
+    });
+    hurtsLabel.setOrigin(0.5, 1);
+    hurtsLabel.setVisible(false);
+    hurtsLabel.setDepth(2);
+
+    let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+    let backstoryText = scene.add.text(x + xOffset, backstoryIcon.y, formattedBackstory, {
+        fontSize: '24px',
+        fontFamily: 'Roboto',
+        color: textColor,
+        align: 'center'
+    });  // Position the text below the icon
+    backstoryText.setOrigin(0.5, 0);
+    backstoryText.setVisible(false);
+    backstoryText.setDepth(3);  // increase depth to be on top
+
+    // Increase the height of the bounding box to accommodate the icon and the text, and adjust its position
+    let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y - backstoryIcon.displayHeight / 2, backstoryText.width, backstoryText.height + backstoryIcon.displayHeight, 0x000000, 1);  // Add some padding between the icon and the text
+    backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
+    backstoryBox.isStroked = true;
+    backstoryBox.setOrigin(0.5, 0);
+    backstoryBox.setVisible(false);
+    backstoryBox.setDepth(1);
+
+    const mouseOver = () => {
+        backstoryText.setVisible(true);
+        backstoryBox.setVisible(true);
+        backstoryIcon.setVisible(true);
+        backstoryHurtIcon.setVisible(true);
+        helpsLabel.setVisible(true);
+        hurtsLabel.setVisible(true);
+    };
+
+    const mouseOff = () => {
+        backstoryText.setVisible(false);
+        backstoryBox.setVisible(false);
+        backstoryIcon.setVisible(false);
+        backstoryHurtIcon.setVisible(false);
+        helpsLabel.setVisible(false);
+        hurtsLabel.setVisible(false);
+    };
+
+    slider.on('pointerover', mouseOver);
+    characterText.on('pointerover', mouseOver);
+
+    slider.on('pointerout', mouseOff);
+    characterText.on('pointerout', mouseOff);
+}
+
+/*
         function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
             // Set text color based on affiliation
             let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
@@ -503,6 +611,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             characterText.on('pointerout', mouseOff);
 
         }
+        */
         //====================================================================================
         //    insertLinezBreaks(str, charsPerLine) {
         //====================================================================================
