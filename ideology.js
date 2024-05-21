@@ -460,12 +460,12 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
     // Add a label for "helps"
     let helpsLabel = scene.add.text(backstoryIcon.x - backstoryIcon.displayWidth / 2, backstoryIcon.y - backstoryIcon.displayHeight - 10, 'Helps', {
-        fontSize: '16px',
+        fontSize: '28px',
         fontFamily: 'Roboto',
         color: textColor,
         align: 'center'
     });
-    helpsLabel.setOrigin(0.5, 1);
+    helpsLabel.setOrigin(0.9, 1);
     helpsLabel.setVisible(false);
     helpsLabel.setDepth(2);
 
@@ -477,12 +477,12 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
     // Add a label for "hurts"
     let hurtsLabel = scene.add.text(backstoryHurtIcon.x - backstoryHurtIcon.displayWidth / 2, backstoryHurtIcon.y - backstoryHurtIcon.displayHeight - 10, 'Hurts', {
-        fontSize: '16px',
+        fontSize: '28px',
         fontFamily: 'Roboto',
         color: textColor,
         align: 'center'
     });
-    hurtsLabel.setOrigin(0.5, 1);
+    hurtsLabel.setOrigin(0.1, 1);
     hurtsLabel.setVisible(false);
     hurtsLabel.setDepth(2);
 
