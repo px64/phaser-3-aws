@@ -962,7 +962,7 @@ export class Politics extends BaseScene {
                         let tutorial = secondScreenTutorial[1];
                         let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
         
-                        let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                        let backstoryText = this.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
                         backstoryText.setDepth(2);
