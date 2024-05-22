@@ -478,18 +478,17 @@ export class Politics extends BaseScene {
             {
                 story: [
                     "After you have endorsed a liaison, a token appears that can be dragged",
-                    "into a societal aspect to improve it.  When the token is dropped into the",
-                    "societal aspect, it causes a release of protestors that will attack an opposing",
-                    "aspect."
+                    "into the indicated societal aspect to improve it.  Be careful there isn't too much unrest though, because",
+                    "when the token is dropped in, protestors are released that will attack the protested aspect,",
+                    "indicated by the glow around it."
                 ],
                 reference: 'polCapText',
                 offset: { x: 280, y: 70 } // Offset from polCapText
             },
             {
                 story: [
-                    "Spend Political Capital",
-                    "to endorse your liaisons. They will provide",
-                    "you with valuable resources to improve society and prevent collapse."
+                    "The Hacker Token can be dropped into ANY ONE Societal Aspect",
+                    "to protect it from all future protests and Putin cyber-attacks."
                 ],
                 reference: 'polCapText',
                 offset: { x: 240, y: 380 } // Offset from characterTexts
@@ -942,7 +941,7 @@ export class Politics extends BaseScene {
                     let hurtIcon = scene.sharedData.icons[character.hurts];
                     hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
                     //console.log(hurtIcon);
-                } else if (character.powerTokenType == 'type_3') {
+                } else if (character.powerTokenType == 'type_3') { // TODO: It would be cool if an informational dialog popped up for HACKER explaining exactly how it works here
                     // Light up all the shields to provide hint that hacker can be used everywhere
                     for (let key in scene.sharedData.icons) {
                         let iconData = scene.sharedData.icons[key];
@@ -955,6 +954,85 @@ export class Politics extends BaseScene {
                         }
                         // Provide a hint by changing the tint of the shield of the helped and hurt Icons
                         iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
+                    }
+                    if (!this.firstHackerEver && this.difficultyLevel().multiplier == 1) {
+                        this.firstHackerEver = 1;
+                        let timeoutHandle;
+        
+                        let tutorial = secondScreenTutorial[1];
+                        let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
+        
+                        let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                        backstoryText.setOrigin(0.5);
+                        backstoryText.setVisible(true);
+                        backstoryText.setDepth(2);
+        
+                        let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                        backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                        backstoryBox.isStroked = true;
+                        backstoryBox.setOrigin(0.5);
+                        backstoryBox.setVisible(true);
+                        backstoryBox.setDepth(1);
+                        console.log(backstoryBox.x + backstoryBox.width/2);
+                        
+                        // Assuming scene.sharedData.helperTokens is an object
+                        let helperTokens = scene.sharedData.helperTokens;
+                        
+                        for (let key in scene.sharedData.icons) {
+                            let iconData = scene.sharedData.icons[key].shieldWoke;
+                        
+                            // Check if helperToken exists
+                            if (iconData) {
+                                let snog = { x: iconData.x, y: iconData.y };
+                        
+                                // Draw the arrow from backstoryBox to snog
+                                let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                        
+                                // Store the arrow graphic in the array
+                                arrowGraphicsArray.push(arrow);
+                            }
+                        });
+
+                        this.tweens.add({
+                            targets: [backstoryText, backstoryBox],
+                            alpha: { from: 1, to: .5 },
+                            ease: 'Linear',
+                            duration: 1000,
+                            repeat: -1,
+                            yoyo: true
+                        });
+        
+                        // Optional: Add a full-screen invisible sprite to capture clicks anywhere
+                        if (0){//}!backdrop) {
+                            backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
+                        }
+        
+                        // Cleanup function to clear current tutorial item
+                        const clearCurrentTutorial = () => {
+                            clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                            backstoryText.setVisible(false);
+                            backstoryBox.setVisible(false);
+                            this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                            //backdrop.off('pointerdown');
+                            this.input.keyboard.off('keydown-ENTER');
+        
+                            // Clear all pending timers for drawing arrows
+                            arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                            arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+        
+                            // Destroy all arrow graphics
+                            arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                            arrowGraphicsArray = []; // Clear the array after destruction
+        
+                            //displayTutorial(); // Display next item
+                        };
+        
+                        // Set up listeners for pointer down and ENTER key
+                        //backdrop.on('pointerdown', clearCurrentTutorial);
+                        this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+        
+                        // Set a timeout to automatically advance
+                        timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
                     }
                     //console.log(hurtIcon);
                 }
