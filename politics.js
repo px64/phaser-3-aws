@@ -991,7 +991,7 @@ export class Politics extends BaseScene {
                                 // Store the arrow graphic in the array
                                 arrowGraphicsArray.push(arrow);
                             }
-                        });
+                        }
 
                         this.tweens.add({
                             targets: [backstoryText, backstoryBox],
