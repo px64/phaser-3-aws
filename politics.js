@@ -503,8 +503,11 @@ export class Politics extends BaseScene {
             return result;
         }
 
+        let currentIndex = 0;
+        if (this.hasBeenCreatedBefore) {
+            currentIndex = 99;
+        }
         if (this.difficultyLevel().multiplier == 1 && !this.hasBeenCreatedBefore) {
-            let currentIndex = 0;
             let backdrop;  // Optional: A background to capture clicks on the entire game area
             let timeoutHandle;
             let arrowGraphics; // Store the reference to the arrow graphics
