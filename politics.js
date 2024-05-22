@@ -955,7 +955,7 @@ export class Politics extends BaseScene {
                         // Provide a hint by changing the tint of the shield of the helped and hurt Icons
                         iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                     }
-                    if (!this.firstHackerEver && this.difficultyLevel().multiplier == 1) {
+                    if (!this.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
                         this.firstHackerEver = 1;
                         let timeoutHandle;
         
