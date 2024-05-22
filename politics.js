@@ -864,8 +864,23 @@ export class Politics extends BaseScene {
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
                     character.endorsement -= 2;
+                    
+                    let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+                    let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
+                    // Recreate text here
+                    character.charText.setText(character.name + ',\nBacking: ' + healthText);
+                    // Make sure color of text is normal
+                    if (character.faction == 'maga') {
+                        character.charText.setColor('#ff4040');
+                    } else {
+                        character.charText.setColor('#8080ff');
+                    }
+                    if ((character.endorsement + character.value) > 1){
+                        character.charText.setColor('#0f0');
+                    }
                 }
             });
+            
             // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
             if (!this.firstPowerTokenEver && helpfulTokenIndex > 0) {
                 this.firstPowerTokenEver = 1;
@@ -949,21 +964,7 @@ export class Politics extends BaseScene {
                 // Set a timeout to automatically advance
                 timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
             }
-            let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
-            let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
-            // Recreate text here
-            character.charText.setText(character.name + ',\nBacking: ' + healthText);
-            // Make sure color of text is normal
-            if (character.faction == 'maga') {
-                character.charText.setColor('#ff4040');
-            } else {
-                character.charText.setColor('#8080ff');
-            }
-            if ((character.endorsement + character.value) > 1){
-                character.charText.setColor('#0f0');
-            }
         }
-
         // // TODO: Add a character power type that "calms down" insurrectionists and gets them to go home.
         // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
         // just reduce whichever is largest
