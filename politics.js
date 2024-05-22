@@ -473,11 +473,14 @@ export class Politics extends BaseScene {
                 offset: { x: -280, y: -75 }
             }
         ];
-        
+
         let secondScreenTutorial = [
             {
                 story: [
-                    "Hork dog-e-dog"
+                    "After you have endorsed a liaison, a token appears that can be dragged",
+                    "into a societal aspect to improve it.  When the token is dropped into the",
+                    "societal aspect, it causes a release of protestors that will attack an opposing",
+                    "aspect."
                 ],
                 reference: 'polCapText',
                 offset: { x: 280, y: 70 } // Offset from polCapText
@@ -492,7 +495,7 @@ export class Politics extends BaseScene {
                 offset: { x: 240, y: 380 } // Offset from characterTexts
             }
             ];
-        
+
         function getValueByPath(obj, path) {
             let result = path.split(/[\[\]'.]+/).filter(Boolean).reduce((o, key) => (o && o[key] !== undefined) ? o[key] : undefined, obj);
             if (result === undefined) {
@@ -500,7 +503,11 @@ export class Politics extends BaseScene {
             }
             return result;
         }
+        /*
         if (this.secondTimeThrough) {
+            let timeoutHandle;
+            let arrowGraphics; // Store the reference to the arrow graphics
+
             let backdrop;  // Optional: A background to capture clicks on the entire game area
             this.secondTimeThrough = 0;
             let currentIndex = 0;
@@ -526,7 +533,6 @@ export class Politics extends BaseScene {
                         startBlinkingCheckbox(this, characters[0].checkbox.checkboxUnchecked, characters[0].checkbox.checkboxChecked, characters[0].checkbox.checkboxUncheckedAction, characters[0].checkbox.checkboxCheckedAction);
                     }
 
-                    console.log(referenceObject.length);
                     //console.log(typeof(referenceObject));
                     //console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
@@ -606,14 +612,15 @@ export class Politics extends BaseScene {
 
             displayTutorial(); // Start the tutorial display
         }
-            
+        */
+
         if (!this.hasBeenCreatedBefore) {
             let currentIndex = 0;
             let backdrop;  // Optional: A background to capture clicks on the entire game area
             let timeoutHandle;
             let arrowGraphics; // Store the reference to the arrow graphics
             this.secondTimeThrough = 1;
-            
+
             const displayTutorial = () => {
                 if (currentIndex < nextScreenTutorial.length) {
                     let snog;
@@ -640,7 +647,7 @@ export class Politics extends BaseScene {
                     //console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
 
-                    let backstoryText = this.add.text(this.cameras.main.width/5*2, this.cameras.main.height/5*2+currentIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                    let backstoryText = this.add.text(window.innerWidth/5*2, window.innerHeight/5*2+currentIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
 
                     backstoryText.setOrigin(0.5);
                     backstoryText.setVisible(true);
@@ -857,6 +864,76 @@ export class Politics extends BaseScene {
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
                     character.endorsement -= 2;
+                    // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
+                    if (!this.firstPowerTokenEver) {
+                        this.firstPowerTokenEver = 1;
+                        let backdrop;
+                        let timeoutHandle;
+
+                        let tutorial = secondScreenTutorial[0];
+                        let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
+
+                        let backstoryText = this.add.text(this.cameras.main.width/5*3, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+
+                        backstoryText.setOrigin(0.5);
+                        backstoryText.setVisible(true);
+                        backstoryText.setDepth(2);
+
+                        let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                        backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                        backstoryBox.isStroked = true;
+                        backstoryBox.setOrigin(0.5);
+                        backstoryBox.setVisible(true);
+                        backstoryBox.setDepth(1);
+                        console.log(backstoryBox.x + backstoryBox.width/2);
+
+                        if (0){
+                            let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                            arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                        }
+
+                        this.tweens.add({
+                            targets: [backstoryText, backstoryBox],
+                            alpha: { from: 1, to: .5 },
+                            ease: 'Linear',
+                            duration: 1000,
+                            repeat: -1,
+                            yoyo: true
+                        });
+
+                        // Optional: Add a full-screen invisible sprite to capture clicks anywhere
+                        if (0){//}!backdrop) {
+                            backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
+                        }
+
+                        // Cleanup function to clear current tutorial item
+                        const clearCurrentTutorial = () => {
+                            clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                            backstoryText.setVisible(false);
+                            backstoryBox.setVisible(false);
+                            this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                            backdrop.off('pointerdown');
+                            this.input.keyboard.off('keydown-ENTER');
+
+                            // Clear all pending timers for drawing arrows
+                            //arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                            //arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+
+                            // Destroy all arrow graphics
+                            //arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                            //arrowGraphicsArray = []; // Clear the array after destruction
+
+                            //displayTutorial(); // Display next item
+                        };
+
+                        // Set up listeners for pointer down and ENTER key
+                        backdrop.on('pointerdown', clearCurrentTutorial);
+                        this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+
+                        // Set a timeout to automatically advance
+                        timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+                    }
+
                 }
                 let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                 let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
