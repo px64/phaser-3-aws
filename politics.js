@@ -888,7 +888,7 @@ export class Politics extends BaseScene {
 
                         if (1){
                             // Assuming scene.sharedData.helperTokens is an array of objects
-                            let helperTokens = this.sharedData.helperTokens;
+                            let helperTokens = scene.sharedData.helperTokens;
                             
                             helperTokens.forEach(helperToken => {
                                 // Check if helperToken exists
