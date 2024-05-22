@@ -873,8 +873,7 @@ export class Politics extends BaseScene {
                         let tutorial = secondScreenTutorial[0];
                         let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
 
-                        let backstoryText = this.add.text(this.cameras.main.width/5*3, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-
+                        let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
                         backstoryText.setDepth(2);
@@ -887,9 +886,22 @@ export class Politics extends BaseScene {
                         backstoryBox.setDepth(1);
                         console.log(backstoryBox.x + backstoryBox.width/2);
 
-                        if (0){
-                            let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
-                            arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                        if (1){
+                            // Assuming scene.sharedData.helperTokens is an array of objects
+                            let helperTokens = this.sharedData.helperTokens;
+                            
+                            helperTokens.forEach(helperToken => {
+                                // Check if helperToken exists
+                                if (helperToken) {
+                                    let snog = { x: helperToken.x, y: helperToken.y };
+                            
+                                    // Draw the arrow from backstoryBox to snog
+                                    let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                            
+                                    // Store the arrow graphic in the array
+                                    arrowGraphicsArray.push(arrow);
+                                }
+                            });
                         }
 
                         this.tweens.add({
