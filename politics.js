@@ -865,7 +865,7 @@ export class Politics extends BaseScene {
                     helpfulTokenIndex++;
                     character.endorsement -= 2;
                 }
-            }
+            });
             // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
             if (!this.firstPowerTokenEver && helpfulTokenIndex > 0) {
                 this.firstPowerTokenEver = 1;
