@@ -962,7 +962,7 @@ export class Politics extends BaseScene {
             if ((character.endorsement + character.value) > 1){
                 character.charText.setColor('#0f0');
             }
-        });
+        }
 
         // // TODO: Add a character power type that "calms down" insurrectionists and gets them to go home.
         // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
