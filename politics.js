@@ -958,19 +958,19 @@ export class Politics extends BaseScene {
                         // Provide a hint by changing the tint of the shield of the helped and hurt Icons
                         iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                     }
-                    if (!this.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
-                        this.firstHackerEver = 1;
+                    if (!scene.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
+                        scene.firstHackerEver = 1;
                         let timeoutHandle;
         
                         let tutorial = secondScreenTutorial[1];
                         let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
         
-                        let backstoryText = this.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                        let backstoryText = scane.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
                         backstoryText.setDepth(2);
         
-                        let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                        let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                         backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
                         backstoryBox.isStroked = true;
                         backstoryBox.setOrigin(0.5);
@@ -989,14 +989,14 @@ export class Politics extends BaseScene {
                                 let snog = { x: iconData.x, y: iconData.y };
                         
                                 // Draw the arrow from backstoryBox to snog
-                                let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                                let arrow = drawArrow(scene, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
                         
                                 // Store the arrow graphic in the array
                                 arrowGraphicsArray.push(arrow);
                             }
                         }
 
-                        this.tweens.add({
+                        scene.tweens.add({
                             targets: [backstoryText, backstoryBox],
                             alpha: { from: 1, to: .5 },
                             ease: 'Linear',
@@ -1004,20 +1004,16 @@ export class Politics extends BaseScene {
                             repeat: -1,
                             yoyo: true
                         });
-        
-                        // Optional: Add a full-screen invisible sprite to capture clicks anywhere
-                        if (0){//}!backdrop) {
-                            backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
-                        }
+
         
                         // Cleanup function to clear current tutorial item
                         const clearCurrentTutorial = () => {
                             clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
                             backstoryText.setVisible(false);
                             backstoryBox.setVisible(false);
-                            this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                            scene.tweens.killTweensOf([backstoryText, backstoryBox]);
                             //backdrop.off('pointerdown');
-                            this.input.keyboard.off('keydown-ENTER');
+                            scene.input.keyboard.off('keydown-ENTER');
         
                             // Clear all pending timers for drawing arrows
                             arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
@@ -1032,7 +1028,7 @@ export class Politics extends BaseScene {
         
                         // Set up listeners for pointer down and ENTER key
                         //backdrop.on('pointerdown', clearCurrentTutorial);
-                        this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+                        scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
         
                         // Set a timeout to automatically advance
                         timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
