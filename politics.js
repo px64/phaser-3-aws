@@ -982,7 +982,7 @@ export class Politics extends BaseScene {
                         let helperTokens = scene.sharedData.helperTokens;
                         
                         for (let key in scene.sharedData.icons) {
-                            let iconData = scene.sharedData.icons[key].shieldWoke;
+                            let iconData = scene.sharedData.icons[key].gaugeMaga;
                         
                             // Check if helperToken exists
                             if (iconData) {
