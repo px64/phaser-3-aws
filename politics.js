@@ -887,13 +887,15 @@ export class Politics extends BaseScene {
                         console.log(backstoryBox.x + backstoryBox.width/2);
 
                         if (1){
-                            // Assuming scene.sharedData.helperTokens is an array of objects
+                            // Assuming scene.sharedData.helperTokens is an object
                             let helperTokens = scene.sharedData.helperTokens;
                             
-                            helperTokens.forEach(helperToken => {
+                            Object.keys(helperTokens).forEach(key => {
+                                let storedData = helperTokens[key];
+                            
                                 // Check if helperToken exists
-                                if (helperToken) {
-                                    let snog = { x: helperToken.x, y: helperToken.y };
+                                if (storedData) {
+                                    let snog = { x: storedData.x, y: storedData.y };
                             
                                     // Draw the arrow from backstoryBox to snog
                                     let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
