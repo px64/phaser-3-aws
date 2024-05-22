@@ -1248,8 +1248,11 @@ export class Politics extends BaseScene {
             if (scene.sharedData.ideology.faction == 'maga') { // no outreach tokens is too hard lol!
                 numEntries = 1;
             }
+            if (scene.difficultyLevel().multiplier == 1) { // Beginner level gets an extra community outreach token
+                numEntries++;
+            }
+            
             if (scene.hasBeenCreatedBefore) {
-
                 numEntries = scene.extraMisinformationTokens;
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
                 scene.extraMisinformationTokens = 0;
