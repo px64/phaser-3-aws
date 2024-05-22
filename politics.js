@@ -867,7 +867,7 @@ export class Politics extends BaseScene {
                     // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
                     if (!this.firstPowerTokenEver) {
                         this.firstPowerTokenEver = 1;
-                        let backdrop;
+                       // let backdrop;
                         let timeoutHandle;
 
                         let tutorial = secondScreenTutorial[0];
@@ -912,7 +912,7 @@ export class Politics extends BaseScene {
                             backstoryText.setVisible(false);
                             backstoryBox.setVisible(false);
                             this.tweens.killTweensOf([backstoryText, backstoryBox]);
-                            backdrop.off('pointerdown');
+                            //backdrop.off('pointerdown');
                             this.input.keyboard.off('keydown-ENTER');
 
                             // Clear all pending timers for drawing arrows
@@ -927,7 +927,7 @@ export class Politics extends BaseScene {
                         };
 
                         // Set up listeners for pointer down and ENTER key
-                        backdrop.on('pointerdown', clearCurrentTutorial);
+                        //backdrop.on('pointerdown', clearCurrentTutorial);
                         this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
 
                         // Set a timeout to automatically advance
