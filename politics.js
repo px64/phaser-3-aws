@@ -771,8 +771,8 @@ export class Politics extends BaseScene {
                 }
             });
             
-            // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
-            if (!this.firstPowerTokenEver && helpfulTokenIndex > 0) {
+            // If this is the first time a helpful token has appeared, and it's beginner level, provide a tutorial on what to do with it
+            if (this.difficultyLevel().multiplier == 1 && !this.firstPowerTokenEver && helpfulTokenIndex > 0) {
                 this.firstPowerTokenEver = 1;
                // let backdrop;
                 let timeoutHandle;
