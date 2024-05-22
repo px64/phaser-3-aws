@@ -932,12 +932,12 @@ export class Politics extends BaseScene {
                     this.input.keyboard.off('keydown-ENTER');
 
                     // Clear all pending timers for drawing arrows
-                    //arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
-                    //arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+                    arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                    arrowTimerIDs = []; // Clear the timer IDs array after cancellation
 
                     // Destroy all arrow graphics
-                    //arrowGraphicsArray.forEach(arrow => arrow.destroy());
-                    //arrowGraphicsArray = []; // Clear the array after destruction
+                    arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                    arrowGraphicsArray = []; // Clear the array after destruction
 
                     //displayTutorial(); // Display next item
                 };
