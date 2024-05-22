@@ -864,106 +864,105 @@ export class Politics extends BaseScene {
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
                     character.endorsement -= 2;
-                    // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
-                    if (!this.firstPowerTokenEver) {
-                        this.firstPowerTokenEver = 1;
-                       // let backdrop;
-                        let timeoutHandle;
+                }
+            }
+            // If this is the first time a helpful token has appeared, provide a tutorial on what to do with it
+            if (!this.firstPowerTokenEver && helpfulTokenIndex > 0) {
+                this.firstPowerTokenEver = 1;
+               // let backdrop;
+                let timeoutHandle;
 
-                        let tutorial = secondScreenTutorial[0];
-                        let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
+                let tutorial = secondScreenTutorial[0];
+                let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
 
-                        let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-                        backstoryText.setOrigin(0.5);
-                        backstoryText.setVisible(true);
-                        backstoryText.setDepth(2);
+                let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                backstoryText.setOrigin(0.5);
+                backstoryText.setVisible(true);
+                backstoryText.setDepth(2);
 
-                        let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-                        backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-                        backstoryBox.isStroked = true;
-                        backstoryBox.setOrigin(0.5);
-                        backstoryBox.setVisible(true);
-                        backstoryBox.setDepth(1);
-                        console.log(backstoryBox.x + backstoryBox.width/2);
+                let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                backstoryBox.isStroked = true;
+                backstoryBox.setOrigin(0.5);
+                backstoryBox.setVisible(true);
+                backstoryBox.setDepth(1);
+                console.log(backstoryBox.x + backstoryBox.width/2);
 
-                        if (1){
-                            // Assuming scene.sharedData.helperTokens is an object
-                            let helperTokens = scene.sharedData.helperTokens;
-                            
-                            Object.keys(helperTokens).forEach(key => {
-                                let storedData = helperTokens[key];
-                            
-                                // Check if helperToken exists
-                                if (storedData) {
-                                    let snog = { x: storedData.x, y: storedData.y };
-                            
-                                    // Draw the arrow from backstoryBox to snog
-                                    let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
-                            
-                                    // Store the arrow graphic in the array
-                                    arrowGraphicsArray.push(arrow);
-                                }
-                            });
+                if (1){
+                    // Assuming scene.sharedData.helperTokens is an object
+                    let helperTokens = scene.sharedData.helperTokens;
+                    
+                    Object.keys(helperTokens).forEach(key => {
+                        let storedData = helperTokens[key];
+                    
+                        // Check if helperToken exists
+                        if (storedData) {
+                            let snog = { x: storedData.x, y: storedData.y };
+                    
+                            // Draw the arrow from backstoryBox to snog
+                            let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                    
+                            // Store the arrow graphic in the array
+                            arrowGraphicsArray.push(arrow);
                         }
-
-                        this.tweens.add({
-                            targets: [backstoryText, backstoryBox],
-                            alpha: { from: 1, to: .5 },
-                            ease: 'Linear',
-                            duration: 1000,
-                            repeat: -1,
-                            yoyo: true
-                        });
-
-                        // Optional: Add a full-screen invisible sprite to capture clicks anywhere
-                        if (0){//}!backdrop) {
-                            backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
-                        }
-
-                        // Cleanup function to clear current tutorial item
-                        const clearCurrentTutorial = () => {
-                            clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                            backstoryText.setVisible(false);
-                            backstoryBox.setVisible(false);
-                            this.tweens.killTweensOf([backstoryText, backstoryBox]);
-                            //backdrop.off('pointerdown');
-                            this.input.keyboard.off('keydown-ENTER');
-
-                            // Clear all pending timers for drawing arrows
-                            //arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
-                            //arrowTimerIDs = []; // Clear the timer IDs array after cancellation
-
-                            // Destroy all arrow graphics
-                            //arrowGraphicsArray.forEach(arrow => arrow.destroy());
-                            //arrowGraphicsArray = []; // Clear the array after destruction
-
-                            //displayTutorial(); // Display next item
-                        };
-
-                        // Set up listeners for pointer down and ENTER key
-                        //backdrop.on('pointerdown', clearCurrentTutorial);
-                        this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-
-                        // Set a timeout to automatically advance
-                        timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
-                    }
-
+                    });
                 }
-                let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
-                let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
-                // Recreate text here
-                character.charText.setText(character.name + ',\nBacking: ' + healthText);
-                // Make sure color of text is normal
-                if (character.faction == 'maga') {
-                    character.charText.setColor('#ff4040');
-                } else {
-                    character.charText.setColor('#8080ff');
+
+                this.tweens.add({
+                    targets: [backstoryText, backstoryBox],
+                    alpha: { from: 1, to: .5 },
+                    ease: 'Linear',
+                    duration: 1000,
+                    repeat: -1,
+                    yoyo: true
+                });
+
+                // Optional: Add a full-screen invisible sprite to capture clicks anywhere
+                if (0){//}!backdrop) {
+                    backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
                 }
-                if ((character.endorsement + character.value) > 1){
-                    character.charText.setColor('#0f0');
-                }
-            });
-        }
+
+                // Cleanup function to clear current tutorial item
+                const clearCurrentTutorial = () => {
+                    clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                    backstoryText.setVisible(false);
+                    backstoryBox.setVisible(false);
+                    this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                    //backdrop.off('pointerdown');
+                    this.input.keyboard.off('keydown-ENTER');
+
+                    // Clear all pending timers for drawing arrows
+                    //arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                    //arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+
+                    // Destroy all arrow graphics
+                    //arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                    //arrowGraphicsArray = []; // Clear the array after destruction
+
+                    //displayTutorial(); // Display next item
+                };
+
+                // Set up listeners for pointer down and ENTER key
+                //backdrop.on('pointerdown', clearCurrentTutorial);
+                this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+
+                // Set a timeout to automatically advance
+                timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+            }
+            let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+            let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
+            // Recreate text here
+            character.charText.setText(character.name + ',\nBacking: ' + healthText);
+            // Make sure color of text is normal
+            if (character.faction == 'maga') {
+                character.charText.setColor('#ff4040');
+            } else {
+                character.charText.setColor('#8080ff');
+            }
+            if ((character.endorsement + character.value) > 1){
+                character.charText.setColor('#0f0');
+            }
+        });
 
         // // TODO: Add a character power type that "calms down" insurrectionists and gets them to go home.
         // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
