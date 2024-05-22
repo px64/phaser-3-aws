@@ -534,7 +534,7 @@ export class Politics extends BaseScene {
                         startBlinkingCheckbox(this, characters[0].checkbox.checkboxUnchecked, characters[0].checkbox.checkboxChecked, characters[0].checkbox.checkboxUncheckedAction, characters[0].checkbox.checkboxCheckedAction);
                     }
 
-                    console.log(referenceObject.length);
+                    //console.log(referenceObject.length);
                     //console.log(typeof(referenceObject));
                     //console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
@@ -551,7 +551,7 @@ export class Politics extends BaseScene {
                     backstoryBox.setOrigin(0.5);
                     backstoryBox.setVisible(true);
                     backstoryBox.setDepth(1);
-                    console.log(backstoryBox.x + backstoryBox.width/2);
+                    //console.log(backstoryBox.x + backstoryBox.width/2);
 
                     // Check if snog is an array or a single object
                     if (Array.isArray(snog)) {
