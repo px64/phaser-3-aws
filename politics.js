@@ -375,9 +375,9 @@ export class Politics extends BaseScene {
             },
             {
                 story: [
-                    "The scale indicates the balance of MAGA vs. Woke.  It is best if",
-                    "MAGA and Woke are balanced AND there aren't too many MAGA or Woke activists",
-                    "protesting the aspect.  Too many activists can cause a revolt!"
+                    "The scale indicates the balance of MAGA vs. Woke activists.  It is best if",
+                    "MAGA and Woke are equal.  When the scale is out of balance, more activists",
+                    "will protest, causing bigger concerns since too many activists can cause a revolt!"
                 ],
                 reference: "gaugeMagaArray",
                 offset: { x: 140, y: 120 } // Offset from characterTexts
