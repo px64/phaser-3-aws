@@ -964,7 +964,7 @@ export const characters = [
         shortstory: [
             "As a seasoned senator, Patricia has always stood for unity and compromise in politics.",
             "Her efforts to bridge the gap between MAGA and Woke factions could help maintain balance and stability in the game. ",
-            "She helps government but puts Woke pressure on Justice."
+            "She helps government but puts MAGA pressure on Justice."
         ],
         faction: 'maga',
         power: 'Senator Greenfield is\nWorking Across\nThe Aisle',
