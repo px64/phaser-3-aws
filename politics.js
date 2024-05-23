@@ -606,6 +606,10 @@ export class Politics extends BaseScene {
                     // Set up listeners for pointer down and ENTER key
                     backdrop.on('pointerdown', clearCurrentTutorial);
                     this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+                    this.nextButton.on('pointerdown', () => {
+                        currentIndex = 99;
+                        clearCurrentTutorial();
+                    }
 
                     // Set a timeout to automatically advance
                     timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
