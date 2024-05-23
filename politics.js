@@ -609,7 +609,7 @@ export class Politics extends BaseScene {
                     this.nextButton.on('pointerdown', () => {
                         currentIndex = 99;
                         clearCurrentTutorial();
-                    }
+                    });
 
                     // Set a timeout to automatically advance
                     timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
