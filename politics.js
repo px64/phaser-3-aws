@@ -1498,6 +1498,7 @@ export class Politics extends BaseScene {
         });
 
  */
+        // Go through all of the societal aspect Icons and set up interactions with various threats
         for (let key in scene.sharedData.icons) {
             let icon = scene.sharedData.icons[key];
 
@@ -1571,7 +1572,6 @@ export class Politics extends BaseScene {
                 delete scene.sharedData.misinformation[helper.container.misinformationIndex];
                 helper.container.destroy();
 
-                //let numReturns = Math.min(5,(icon.faction -  icon[otherFaction])/5);
                 let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
                 let validTerritory = findValidTerritory('woke', 'woke');
                 if (icon.maga > icon.woke) {
@@ -1595,19 +1595,22 @@ export class Politics extends BaseScene {
                 handleHelperOverlap(icon, base, helper, 70, '', icon.gaugeWoke, '');
             });
 
+            // Handle all wokeThreats interactions with this icon.  Beginner level has less impact
             scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
-                handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
+                handleOverlap(icon, defense, threat, 3 + this.difficultyLevel().multiplier, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
             });
-
+            
+            // Handle all magaThreats interactions with this icon. Beginner level has less impact
             scene.physics.add.overlap(icon.icon, scene.magaThreats, function(defense, threat) {
-                handleOverlap(icon, defense, threat, 5, 'maga', icon.gaugeMaga, '\nMake America Great Again!');
+                handleOverlap(icon, defense, threat, 3 + this.difficultyLevel().multiplier, 'maga', icon.gaugeMaga, '\nMake America Great Again!');
             });
 
+            // Handle all PutieThreats interaction with this icon.
             scene.physics.add.overlap(icon.icon, scene.putieThreats, function(defense, threat) {
-                handleOverlap(icon, defense, threat, 2, 'maga', icon.gaugeMaga, '\nToo Much Putin!');
+                handleOverlap(icon, defense, threat, 1 + this.difficultyLevel().multiplier/2, 'maga', icon.gaugeMaga, '\nToo Much Putin!');
                 if (!threat.isPutieDestroyed) {
                     threat.isPutieDestroyed = true;
-                    icon['woke'] += 5;
+                    icon['woke'] += 1 + this.difficultyLevel().multiplier/2;
                     icon.littleHats = scene.drawHealthGauge(scene, icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke, icon['maga'],icon['woke'], icon.scaleSprite, icon.littleHats);
                 }
             });
