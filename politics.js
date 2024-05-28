@@ -923,7 +923,13 @@ export class Politics extends BaseScene {
                 size = 'large';
             }
 
-            let helpfulToken = createPowerToken(scene, character.faction, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
+            if (character.powerTokenType == 'type_2')
+            {
+                containerColor = 'neutral';
+            } else {
+                containerColor = character.faction;
+            }
+            let helpfulToken = createPowerToken(scene, containerColor, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
 
             scene.helperIcons.add(helpfulToken.sprite);
             helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
@@ -1064,7 +1070,6 @@ export class Politics extends BaseScene {
                 helpfulToken.container.x = 680;
                 helpfulToken.container.y = 290;
                 helpfulToken.container.setAlpha(.25);
-                helpfulToken.container.setTint(0x800080); // change to purple for 'working across the aisle'
                 scene.tweens.add({
                     targets: helpfulToken.container,
                     alpha: .8,
