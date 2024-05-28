@@ -196,7 +196,7 @@ export class Politics extends BaseScene {
                     });
                     // Need to go to scene to indicate additional military strength
                     this.scene.get('TutorialScene').setup(this.sharedData);
-                    this.scene.start('TutorialScene', { nextScene: 'dilemmaOrInsurrection', message: 'Military Capital has been allocated.\nYour Alien Defense is stronger!' });
+                    this.scene.start('TutorialScene', { nextScene: 'dilemmaOrInsurrection', message: 'Beginner Level Military Capital automatically allocated.\nYour Alien Defense is now stronger!' });
                     //this.scene.pause('politics');
 
                     //handleDilemmaOrInsurrection();
