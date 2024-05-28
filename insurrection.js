@@ -945,15 +945,15 @@ export class Insurrection extends BaseScene {
                     }
                     switch (Math.floor(nonPutieThreats / 4)) {
                         case 0:
-                            message = 'Activists Apply Pressure!';
+                            message = 'Activists Continue to Apply Pressure';
                             changeBackgroundImage(backgroundImage);
                             break;
                         case 1:
-                            message = 'Protest Marches Erupt!';
+                            message = 'Protest Marches Erupt in Areas of Unrest!';
                             changeBackgroundImage(backgroundImage);
                             break;
                         case 2:
-                            message = 'Insurrectionists Attack!';
+                            message = 'Insurrectionists Attack Unstable Aspects!';
                             if (magaThreats > wokeThreats) {
                                 changeBackgroundImage('maga_riot');
                             } else {
@@ -961,14 +961,14 @@ export class Insurrection extends BaseScene {
                             }
                             break;
                         default:
-                            message = 'Riots in the Streets!';
+                            message = 'Riots in the Streets!  Destruction of Society!';
                             if (magaThreats > wokeThreats) {
                                 changeBackgroundImage('maga_riot');
                             } else {
                                 changeBackgroundImage('woke_riot');
                             }                    }
                     if (putieThreats > 0) {
-                        message += '\n\nAnd Russian Troll Farms Create Instability!';
+                        message += '\n\nAnd Russian Troll Farms Create Additional Instability!';
                     }
                 }
                 // Create a text object to display a victory message
