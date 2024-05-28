@@ -1064,6 +1064,7 @@ export class Politics extends BaseScene {
                 helpfulToken.container.x = 680;
                 helpfulToken.container.y = 290;
                 helpfulToken.container.setAlpha(.25);
+                helpfulToken.container.setTint(0x800080); // change to purple for 'working across the aisle'
                 scene.tweens.add({
                     targets: helpfulToken.container,
                     alpha: .8,
