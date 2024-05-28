@@ -922,7 +922,7 @@ export class Politics extends BaseScene {
             if (character.powerTokenType == 'type_2') {
                 size = 'large';
             }
-
+            let containerColor;
             if (character.powerTokenType == 'type_2')
             {
                 containerColor = 'neutral';
