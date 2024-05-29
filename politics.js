@@ -1296,6 +1296,7 @@ export class Politics extends BaseScene {
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
             
                 misinformation.container.misinformationIndex = index;
+            
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
                     scene.yMagaOffset += misinformation.container.displayHeight;
@@ -1319,16 +1320,18 @@ export class Politics extends BaseScene {
             
             for (let i = 0; i < numEntries; i++) {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
-                    let data = misinformationData[scene.currentMisinformationIndex];
-                    
+                    let currentIndex = scene.currentMisinformationIndex;
+                    let data = misinformationData[currentIndex]; // Capture the correct data
+            
                     scene.time.addEvent({
                         delay: i * delay,
                         callback: function() {
-                            createMisinformationToken(scene, data, scene.currentMisinformationIndex);
+                            createMisinformationToken(scene, data, currentIndex);
                         },
                         callbackScope: scene
                     });
-                    scene.currentMisinformationIndex++;
+            
+                    scene.currentMisinformationIndex++; // Increment the index after capturing the correct data
                 }
             }
         }
