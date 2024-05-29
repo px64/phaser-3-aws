@@ -1096,6 +1096,7 @@ export class Politics extends BaseScene {
                     },
                     callbackScope: scene
                 });
+            }
 
 /*
             // Add action for specific character's power
