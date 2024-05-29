@@ -1070,23 +1070,33 @@ export class Politics extends BaseScene {
                 helpfulToken.container.x = 680;
                 helpfulToken.container.y = 290;
                 helpfulToken.container.setAlpha(.25);
+                
+                // First tween: Increase alpha to 0.8 over 2 seconds
                 scene.tweens.add({
                     targets: helpfulToken.container,
                     alpha: .8,
-                    scaleX: 0.1, // Shrink to 1/10th of the width
-                    scaleY: 0.1, // Shrink to 1/10th of the height
-                    //ease: 'Sine.easeInOut', ease: 'Linear' is a possibility too
-                    //yoyo: true,
-                    duration: 4000,
+                    ease: 'Sine.easeInOut',
+                    duration: 2000,
                     onComplete: function () {
-                        helpfulToken.container.destroy();
-                        delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
-                        //tooltip.text.setVisible(false);
-                        //tooltip.box.setVisible(false);
+                        // Second tween: Shrink to 1/10th size over 2 seconds
+                        scene.tweens.add({
+                            targets: helpfulToken.container,
+                            scaleX: 0.1, // Shrink to 1/10th of the width
+                            scaleY: 0.1, // Shrink to 1/10th of the height
+                            ease: 'Sine.easeInOut',
+                            duration: 2000,
+                            onComplete: function () {
+                                helpfulToken.container.destroy();
+                                delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
+                                //tooltip.text.setVisible(false);
+                                //tooltip.box.setVisible(false);
+                            },
+                            callbackScope: scene
+                        });
                     },
                     callbackScope: scene
                 });
-            }
+
 /*
             // Add action for specific character's power
             if (character.powerTokenType == 'type_3') {
