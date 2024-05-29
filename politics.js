@@ -1313,9 +1313,6 @@ export class Politics extends BaseScene {
                 }
             }
             
-            // Create misinformation tokens at intervals of 0.5 seconds
-            scene.extraMisinformationTokens = 4;
-            
             let delay = 500; // 0.5 seconds
             
             for (let i = 0; i < numEntries; i++) {
@@ -1324,7 +1321,7 @@ export class Politics extends BaseScene {
                     let data = misinformationData[currentIndex]; // Capture the correct data
             
                     scene.time.addEvent({
-                        delay: i * delay + delay,
+                        delay: i * delay + numEntries*500,
                         callback: function() {
                             createMisinformationToken(scene, data, currentIndex);
                         },
