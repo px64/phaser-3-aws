@@ -1310,7 +1310,7 @@ export class Politics extends BaseScene {
                     }
                     console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                 }
-                scene.currentMisinformationIndex++; // increment the index for the next call
+                //scene.currentMisinformationIndex++; // increment the index for the next call
             }
             
             // Create misinformation tokens at intervals of 0.5 seconds
@@ -1320,7 +1320,7 @@ export class Politics extends BaseScene {
             
             for (let i = 0; i < numEntries; i++) {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
-                    let data = misinformationData[scene.currentMisinformationIndex];
+                    let data = misinformationData[scene.currentMisinformationIndex++];
                     
                     scene.time.addEvent({
                         delay: i * delay,
