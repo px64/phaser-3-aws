@@ -1273,7 +1273,7 @@ export class Politics extends BaseScene {
 
             // This block should run regardless of whether the scene has been created before
             // Function to create and place a single misinformation token
-            function createMisinformationToken(scene, data) {
+            function createMisinformationToken(scene, data, index) {
                 let xOffset = data.type === 'maga' ? scene.sys.game.config.width * .39 : scene.sys.game.config.width * .625;
                 let yOffset = data.type === 'maga' ? scene.yMagaOffset : scene.yWokeOffset;
             
@@ -1283,10 +1283,10 @@ export class Politics extends BaseScene {
                     y: yOffset,
                     type: data.type,
                     text: data.text,
-                    misinformationIndex: scene.currentMisinformationIndex
+                    misinformationIndex: index
                 };
             
-                scene.sharedData.misinformation[scene.currentMisinformationIndex] = storedData;
+                scene.sharedData.misinformation[index] = storedData;
             
                 let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once');
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
@@ -1295,7 +1295,7 @@ export class Politics extends BaseScene {
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
             
-                misinformation.container.misinformationIndex = scene.currentMisinformationIndex;
+                misinformation.container.misinformationIndex = index;
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
                     scene.yMagaOffset += misinformation.container.displayHeight;
@@ -1310,7 +1310,6 @@ export class Politics extends BaseScene {
                     }
                     console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                 }
-                //scene.currentMisinformationIndex++; // increment the index for the next call
             }
             
             // Create misinformation tokens at intervals of 0.5 seconds
@@ -1320,15 +1319,16 @@ export class Politics extends BaseScene {
             
             for (let i = 0; i < numEntries; i++) {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
-                    let data = misinformationData[scene.currentMisinformationIndex++];
+                    let data = misinformationData[scene.currentMisinformationIndex];
                     
                     scene.time.addEvent({
                         delay: i * delay,
                         callback: function() {
-                            createMisinformationToken(scene, data);
+                            createMisinformationToken(scene, data, scene.currentMisinformationIndex);
                         },
                         callbackScope: scene
                     });
+                    scene.currentMisinformationIndex++;
                 }
             }
         }
