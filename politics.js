@@ -1071,10 +1071,10 @@ export class Politics extends BaseScene {
                 helpfulToken.container.y = 290;
                 helpfulToken.container.setAlpha(.25);
                 
-                // First tween: Increase alpha to 0.8 over 2 seconds
+                // First tween: Increase alpha to 0.5 over 2 seconds
                 scene.tweens.add({
                     targets: helpfulToken.container,
-                    alpha: .8,
+                    alpha: .5,
                     ease: 'Sine.easeInOut',
                     duration: 2000,
                     onComplete: function () {
@@ -1324,7 +1324,7 @@ export class Politics extends BaseScene {
                     let data = misinformationData[currentIndex]; // Capture the correct data
             
                     scene.time.addEvent({
-                        delay: i * delay,
+                        delay: i * delay + delay,
                         callback: function() {
                             createMisinformationToken(scene, data, currentIndex);
                         },
