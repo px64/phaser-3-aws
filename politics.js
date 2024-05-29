@@ -1272,52 +1272,66 @@ export class Politics extends BaseScene {
             }
 
             // This block should run regardless of whether the scene has been created before
-            for (let i = 0; i < numEntries; i++) { // create n entries the first time, then some number depending on politics
+            // Function to create and place a single misinformation token
+            function createMisinformationToken(scene, data) {
+                let xOffset = data.type === 'maga' ? scene.sys.game.config.width * .39 : scene.sys.game.config.width * .625;
+                let yOffset = data.type === 'maga' ? scene.yMagaOffset : scene.yWokeOffset;
+            
+                // Store the position data
+                let storedData = {
+                    x: xOffset,
+                    y: yOffset,
+                    type: data.type,
+                    text: data.text,
+                    misinformationIndex: scene.currentMisinformationIndex
+                };
+            
+                scene.sharedData.misinformation[scene.currentMisinformationIndex] = storedData;
+            
+                let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once');
+                scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
+                scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
+            
+                misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
+                misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
+            
+                misinformation.container.misinformationIndex = scene.currentMisinformationIndex;
+                // Increment the corresponding offset for next time
+                if (data.type === 'maga') {
+                    scene.yMagaOffset += misinformation.container.displayHeight;
+                    if (scene.yMagaOffset > scene.game.config.height * .9) {
+                        scene.yMagaOffset -= scene.game.config.height * .7;
+                    }
+                    console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
+                } else {
+                    scene.yWokeOffset += misinformation.container.displayHeight;
+                    if (scene.yWokeOffset > scene.game.config.height * .9) {
+                        scene.yWokeOffset -= scene.game.config.height * .7;
+                    }
+                    console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
+                }
+                scene.currentMisinformationIndex++; // increment the index for the next call
+            }
+            
+            // Create misinformation tokens at intervals of 0.5 seconds
+            scene.extraMisinformationTokens = 4;
+            
+            let delay = 500; // 0.5 seconds
+            let numEntries = 10; // or however many entries you want to create
+            
+            for (let i = 0; i < numEntries; i++) {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
                     let data = misinformationData[scene.currentMisinformationIndex];
-
-                    let xOffset = data.type === 'maga' ? scene.sys.game.config.width * .39 : scene.sys.game.config.width * .625;
-                    let yOffset = data.type === 'maga' ? scene.yMagaOffset: scene.yWokeOffset;
-
-                    // Store the position data
-                    let storedData = {
-                        x: xOffset,
-                        y: yOffset,
-                        type: data.type,
-                        text: data.text,
-                        misinformationIndex: scene.currentMisinformationIndex
-                    };
-
-                    scene.sharedData.misinformation[scene.currentMisinformationIndex] = storedData;
-
-                    let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once');
-                    scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
-                    scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
-
-                    misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
-                    misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
-
-                    misinformation.container.misinformationIndex = scene.currentMisinformationIndex;
-                    // Increment the corresponding offset for next time
-                    if (data.type === 'maga') {
-                        scene.yMagaOffset += misinformation.container.displayHeight;
-                        if (scene.yMagaOffset > scene.game.config.height * .9) {
-                            scene.yMagaOffset -= scene.game.config.height * .7;
-                        }
-                        console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
-                    } else {
-                        scene.yWokeOffset += misinformation.container.displayHeight;
-                        if (scene.yWokeOffset > scene.game.config.height * .9) {
-                            scene.yWokeOffset -= scene.game.config.height * .7;
-                        }
-                        //scene.yWokeOffset = Phaser.Math.Wrap(scene.yWokeOffset, scene.game.config.height *.2 ,scene.game.config.height * .8);
-                        console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
-                    }
-                    scene.currentMisinformationIndex++; // increment the index for the next call
+                    
+                    scene.time.addEvent({
+                        delay: i * delay,
+                        callback: function() {
+                            createMisinformationToken(scene, data);
+                        },
+                        callbackScope: scene
+                    });
                 }
             }
-
-
         }
         //====================================================================================
         //
