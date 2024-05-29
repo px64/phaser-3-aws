@@ -1073,6 +1073,8 @@ export class Politics extends BaseScene {
                 scene.tweens.add({
                     targets: helpfulToken.container,
                     alpha: .8,
+                    scaleX: 0.1, // Shrink to 1/10th of the width
+                    scaleY: 0.1, // Shrink to 1/10th of the height
                     ease: 'Sine.easeInOut',
                     yoyo: true,
                     duration: 4000,
