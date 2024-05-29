@@ -1317,7 +1317,6 @@ export class Politics extends BaseScene {
             scene.extraMisinformationTokens = 4;
             
             let delay = 500; // 0.5 seconds
-            let numEntries = 10; // or however many entries you want to create
             
             for (let i = 0; i < numEntries; i++) {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
