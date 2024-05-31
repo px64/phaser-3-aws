@@ -1238,6 +1238,7 @@ export class Politics extends BaseScene {
             if (scene.sharedData.ideology.faction == 'maga') { // no outreach tokens is too hard lol!
                 numEntries = 1;
             }
+            numEntries = 2; // JCS too hard to start with 0 or 1.  Give both players 2 (or 3)
             if (scene.difficultyLevel().multiplier == 1) { // Beginner level gets an extra community outreach token
                 numEntries++;
             }
