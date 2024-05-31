@@ -801,7 +801,7 @@ export class Politics extends BaseScene {
                         tooltip.box.setVisible(true);
                         if (icon.iconName == 'military') {
                             scene.militaryAllocation = true;
-                            scene.totalMilitaryAllocThisScene += 20;
+                            scene.totalMilitaryAllocThisScene += 80;
                         }
                         helper.isDestroyed = true;
                     }
