@@ -1472,7 +1472,7 @@ export class Politics extends BaseScene {
                         tooltip.box.setVisible(true);
                         if (icon.iconName == 'military' && !scene.difficultyLevel().militaryAutoSpend) {
                             scene.militaryAllocation = true;
-                            scene.totalMilitaryAllocThisScene += 80;
+                            scene.totalMilitaryAllocThisScene += 46;
                         }
                         helper.isDestroyed = true;
                     }
