@@ -1363,8 +1363,8 @@ export const difficultyList = {
                     || (Math.random() < .3));
         },
         militaryTechBoost: 0,
-        oddsOfAlienAttack: 0.5,
-        oddsOfAlienAttackFirstRound: .5,
+        oddsOfAlienAttack: 0.6,
+        oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
         putieThreat: 2,
         collapseImbalance: 80,
