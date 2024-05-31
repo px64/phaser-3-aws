@@ -1365,7 +1365,7 @@ export const difficultyList = {
         militaryTechBoost: 0,
         oddsOfAlienAttack: 0.5,
         oddsOfAlienAttackFirstRound: .5,
-        startingEndorsement: 'nospecial',
+        startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
         putieThreat: 2,
         collapseImbalance: 80,
         multiplier: 3
