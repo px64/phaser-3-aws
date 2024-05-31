@@ -1470,7 +1470,7 @@ export class Politics extends BaseScene {
                         scene.drawGauges(scene, hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
                         tooltip.text.setVisible(true);
                         tooltip.box.setVisible(true);
-                        if (icon.iconName == 'military' && !this.difficultyLevel().militaryAutoSpend) {
+                        if (icon.iconName == 'military' && !scene.difficultyLevel().militaryAutoSpend) {
                             scene.militaryAllocation = true;
                             scene.totalMilitaryAllocThisScene += 80;
                         }
