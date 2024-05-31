@@ -726,7 +726,7 @@ export class DilemmaScene extends BaseScene {
             if (this.difficultyLevel().multiplier == 1) {
                 choice.helpBenefit *= 2;
             }
-            choice.hurtCost = choice.hurtCost / 2; // JCS tuning: reduce number of activists -- too hard!
+            choice.hurtCost = Math.floor(choice.hurtCost / 2); // JCS tuning: reduce number of activists -- too hard!
             if (choice.helpBenefit > 0) {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.helps) + ' gets stronger!\nBut! ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
                 fruit += '\n\nGood news!  Political Capital will be boosted by +'+choice.helpBenefit/40+'/year for many years to come!';
