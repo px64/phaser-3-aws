@@ -335,10 +335,10 @@ export class DilemmaScene extends BaseScene {
             this.drawHealthGauge(this.icons[choice.helps].health/ this.icons[choice.helps].healthScale/ 100, this.icons[choice.helps].icon.x, this.icons[choice.helps].icon.y, 'Health', this.icons[choice.helps].gaugeHealth);
 
             if (choice.hurtFaction == 'both') {
-                this.createThreat(territories[3], 'maga', this.icons[choice.hurts], choice.hurtCost);
-                this.createThreat(territories[3], 'woke', this.icons[choice.hurts], choice.hurtCost);
+                this.createThreat(territories[3], 'maga', this.icons[choice.hurts], choice.hurtCost/2);
+                this.createThreat(territories[3], 'woke', this.icons[choice.hurts], choice.hurtCost/2);
             } else {
-                this.createThreat(territories[3], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost);
+                this.createThreat(territories[3], choice.hurtFaction, this.icons[choice.hurts], choice.hurtCost/2);
             }
 
 /*
