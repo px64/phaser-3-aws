@@ -1,6 +1,33 @@
 // characterUtils.js
 
-export function introduceCharacters(scene, characters, sharedData) {
+export class CharacterIntroductionScene extends Phaser.Scene {
+    constructor() {
+        super({ key: 'CharacterIntroductionScene' });
+        this.sharedData = {};
+    }
+
+    init(data) {
+        this.sharedData = data;
+    }
+
+    create() {
+        // Call the introduceCharacters method
+        introduceCharacters(this, characters, this.sharedData);
+
+        // Create a button to proceed to the politics scene
+        let proceedButton = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 50, 'Proceed', { fontSize: '32px', fill: '#fff' })
+            .setOrigin(0.5)
+            .setInteractive();
+
+        proceedButton.on('pointerdown', () => {
+            // Transition to the politics scene
+            this.scene.get('politics').setup(this.sharedData);
+            this.scene.start('politics');
+        });
+    }
+}
+
+function introduceCharacters(scene, characters, sharedData) {
   let Wokeindex = 0;
   let MAGAindex = 0;
   let xOffset = 0;
