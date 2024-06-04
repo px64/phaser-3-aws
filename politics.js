@@ -118,27 +118,36 @@ export class Politics extends BaseScene {
             // Proceed with the rest of the create method logic
             this.continueCreate();
         } else {
-            // Launch CharacterIntroductionScene
-            this.scene.launch('CharacterIntroductionScene', {
-                sharedData: this.sharedData,
-                callback: (data) => {
-                    this.scene.stop('CharacterIntroductionScene');
-                    this.setup(data);
-                    this.recreateIcons();
-                }
-            });
+            this.MAGAness = this.sharedData.MAGAness;
+            this.Wokeness = this.sharedData.Wokeness;
+            this.putieTerritories = this.sharedData.putieTerritories;
+            console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
+            this.shieldsMaga = this.physics.add.group();
+            this.shieldsWoke = this.physics.add.group();
+            this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
+        
+            console.log ('total capital = ' + this.totalPoliticalCapital);
+            this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
+            if (this.totalPoliticalCapital / 30 != this.sharedData.totalPoliticalCapital/30)
+            {
+                // Launch CharacterIntroductionScene
+                this.scene.launch('CharacterIntroductionScene', {
+                    sharedData: this.sharedData,
+                    callback: (data) => {
+                        this.scene.stop('CharacterIntroductionScene');
+                        this.setup(data);
+                        this.recreateIcons();
+                    }
+                });
+            }
         }
     }
 
     recreateIcons() {
-        this.MAGAness = this.sharedData.MAGAness;
-        this.Wokeness = this.sharedData.Wokeness;
-        this.putieTerritories = this.sharedData.putieTerritories;
-        console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
-        this.shieldsMaga = this.physics.add.group();
-        this.shieldsWoke = this.physics.add.group();
-        this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
 
+        
+
+        
         // Recreate the icons with the saved state
         for (let key in this.sharedData.icons) {
             let iconData = this.sharedData.icons[key];
@@ -720,13 +729,8 @@ export class Politics extends BaseScene {
         // As you advance to the next level, new characters are added to your arsenal
         // to go up a level you get political experience points -- total political capital earned so far!
 
-        scene.totalPoliticalCapital += scene.MAGAness + scene.Wokeness;//+= this.maganess + this.wokeness;
-        console.log ('Maganess = ' + scene.MAGAness);
-        console.log ('Wokeness = ' + scene.Wokeness);
-        console.log ('total capital = ' + scene.totalPoliticalCapital);
-
-        let experienceLevel = scene.totalPoliticalCapital/30;
-
+        let experienceLevel = this.totalPoliticalCapital/30;
+        
         characters.forEach((character, index) => {
             let matchHelps = false;
             let matchHurts = false;
