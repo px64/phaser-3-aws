@@ -31,7 +31,7 @@ import BaseScene from './BaseScene.js';
 import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
-import { introduceCharacters } from './characterUtils.js';
+import { CharacterIntroductionScene } from './characterUtils.js';
 
 //var MAGAness = 0;
 var MAGAupdate = 0;
@@ -707,8 +707,9 @@ export class Politics extends BaseScene {
         console.log ('total capital = ' + scene.totalPoliticalCapital);
 
         let experienceLevel = scene.totalPoliticalCapital/30;
-        
-        introduceCharacters(this, characters, this.sharedData);
+
+        scene.scene.get('CharacterIntroductionScene').setup(scene.sharedData);
+        scene.scene.start('CharacterIntroductionScene');
 
         characters.forEach((character, index) => {
             let matchHelps = false;
