@@ -98,11 +98,12 @@ export class Politics extends BaseScene {
     // create()
     //
     //====================================================================================
+
     create() {
         this.input.setDefaultCursor('default');
 
         if (!Object.keys(this.sharedData.icons).length) {
-            // initialize icons...
+            // Initialize icons
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
             this.initializeIcons();
@@ -114,38 +115,56 @@ export class Politics extends BaseScene {
             this.extraMisinformationTokens = 0;
             this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
 
-            // ...similarly for other icons
+            // Proceed with the rest of the create method logic
+            this.continueCreate();
         } else {
-            //this.icons = this.sharedData.icons;
-            this.MAGAness = this.sharedData.MAGAness;
-            this.Wokeness = this.sharedData.Wokeness;
-            this.putieTerritories = this.sharedData.putieTerritories;
-            console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
-            this.shieldsMaga = this.physics.add.group();
-            this.shieldsWoke = this.physics.add.group();
-            this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
-
-            // recreate the icons with the saved state
-            for (let key in this.sharedData.icons) {
-                let iconData = this.sharedData.icons[key];
-                console.log(key + ' shieldStrength = ', iconData.shieldStrength);
-                let fontSize = parseInt(iconData.iconText.style.fontSize, 10);
-                this.icons[key] = this.createIconWithGauges(
-                    iconData.icon.x,
-                    iconData.icon.y,
-                    iconData.icon.scaleX,
-                    key,
-                    iconData.maga,
-                    iconData.woke,
-                    iconData.health,
-                    iconData.textBody,
-                    iconData.healthScale,
-                    fontSize,
-                    iconData.shieldStrength,
-                    iconData.iconTitle
-                );
-            }
+            // Launch CharacterIntroductionScene
+            this.scene.launch('CharacterIntroductionScene', {
+                sharedData: this.sharedData,
+                callback: (data) => {
+                    this.scene.stop('CharacterIntroductionScene');
+                    this.setup(data);
+                    this.recreateIcons();
+                }
+            });
         }
+    }
+
+    recreateIcons() {
+        this.MAGAness = this.sharedData.MAGAness;
+        this.Wokeness = this.sharedData.Wokeness;
+        this.putieTerritories = this.sharedData.putieTerritories;
+        console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
+        this.shieldsMaga = this.physics.add.group();
+        this.shieldsWoke = this.physics.add.group();
+        this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
+
+        // Recreate the icons with the saved state
+        for (let key in this.sharedData.icons) {
+            let iconData = this.sharedData.icons[key];
+            console.log(key + ' shieldStrength = ', iconData.shieldStrength);
+            let fontSize = parseInt(iconData.iconText.style.fontSize, 10);
+            this.icons[key] = this.createIconWithGauges(
+                iconData.icon.x,
+                iconData.icon.y,
+                iconData.icon.scaleX,
+                key,
+                iconData.maga,
+                iconData.woke,
+                iconData.health,
+                iconData.textBody,
+                iconData.healthScale,
+                fontSize,
+                iconData.shieldStrength,
+                iconData.iconTitle
+            );
+        }
+
+        // Proceed with the rest of the create method logic
+        this.continueCreate();
+    }
+
+    continueCreate() {
 
         let scene = this;
 
@@ -708,18 +727,6 @@ export class Politics extends BaseScene {
 
         let experienceLevel = scene.totalPoliticalCapital/30;
 
-        // Call the CharacterIntroductionScene
-        this.scene.launch('CharacterIntroductionScene', {
-            sharedData: this.sharedData,
-            callback: (data) => {
-                this.scene.stop('CharacterIntroductionScene');
-                this.setup(data);
-                this.continueCreate();
-            }
-        });
-    }
-
-    continueCreate() {
         characters.forEach((character, index) => {
             let matchHelps = false;
             let matchHurts = false;
