@@ -35,17 +35,17 @@ export function introduceCharacters(scene, characters, sharedData) {
         let matchHelps = true; // for now just assume all icons are visible
         let matchHurts = true;
         // Go through all the icons and confirm that the character has any kind of interaction with the icon.  If not, leave it out
-        for (let key in this.sharedData.icons) {
-            let iconData = this.sharedData.icons[key];
+        for (let key in scene.sharedData.icons) {
+            let iconData = scene.sharedData.icons[key];
             if (character.helps == iconData.iconName) matchHelps = true;
             if (character.hurts == iconData.iconName) matchHurts = true;
         };
         // Idea is to have levels of advocates for Maga, Woke, and Don't care
         character.dne = false;
         if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true;return;}
-        if (character.magaLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'maga') {character.dne = true;return;}
-        if (character.wokeLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
-        if (character.fogLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'none') {character.dne = true;return;}
+        if (character.magaLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'maga') {character.dne = true;return;}
+        if (character.wokeLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
+        if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
   
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
@@ -60,7 +60,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         }
         else {
             Wokeindex++;
-            xOffset = this.sys.game.config.width * .7;
+            xOffset = scene.sys.game.config.width * .7;
             xSpriteOffset = xOffset;
             factionIcon = 'wokeBase';
          }
@@ -91,23 +91,23 @@ export function introduceCharacters(scene, characters, sharedData) {
              //scaleFactor.hurts = 0.13;
              //console.log('negotiation');
          }
-        characterText = this.add.text(80+xOffset, 250 + (rowIndex * 60), character.name,
-                            { fontSize: this.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+        characterText = scene.add.text(80+xOffset, 250 + (rowIndex * 60), character.name,
+                            { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
         if (character.faction == 'maga') {
             xSpriteOffset += characterText.width+70;
         } else {
             xSpriteOffset -= 60;
         }
-        let icon = this.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor.helps/2);
-        let hatType = this.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), factionIcon).setScale(.1);
+        let icon = scene.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor.helps/2);
+        let hatType = scene.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), factionIcon).setScale(.1);
   
         //character.charText = characterText; // back reference to text so we can find the location later
   
-        createCharacterTooltip(this, character, 50+xOffset, Math.min(this.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText, scaleFactor, tmpHelp);
+        createCharacterTooltip(scene, character, 50+xOffset, Math.min(scene.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText, scaleFactor, tmpHelp);
   
-        //characterText.on('pointerdown', () => this.selectIdeology(this.ideologies[i]));
-        characterText.on('pointerover', () => this.enterButtonHoverState(characterText));
-        characterText.on('pointerout', () => this.enterButtonRestState(characterText, textColor));
+        //characterText.on('pointerdown', () => scene.selectIdeology(scene.ideologies[i]));
+        characterText.on('pointerover', () => scene.enterButtonHoverState(characterText));
+        characterText.on('pointerout', () => scene.enterButtonRestState(characterText, textColor));
     });
 
     //====================================================================================
