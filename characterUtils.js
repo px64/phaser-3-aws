@@ -285,4 +285,12 @@ export function introduceCharacters(scene, characters, sharedData) {
 
         return lines.join('\n');
     }
+    
+    enterButtonHoverState(button) {
+        button.setStyle({ fill: '#ff0'}); // change color to yellow
+    }
+
+    enterButtonRestState(button, fillColor) {
+        button.setStyle({ fill: fillColor}); // change color back to white
+    }
 }
