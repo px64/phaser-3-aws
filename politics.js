@@ -145,8 +145,8 @@ export class Politics extends BaseScene {
 
     recreateIcons() {
 
-        
-
+        // Save the updated sharedData for next time
+        this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
         
         // Recreate the icons with the saved state
         for (let key in this.sharedData.icons) {
