@@ -708,7 +708,6 @@ export class Politics extends BaseScene {
 
         let experienceLevel = scene.totalPoliticalCapital/30;
 
-        this.scene.start('CharacterIntroductionScene');
         // Call the CharacterIntroductionScene
         this.scene.launch('CharacterIntroductionScene', {
             sharedData: this.sharedData,
