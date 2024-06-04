@@ -551,6 +551,7 @@ let config = {
     scene: [
         TitleScene,
         ChooseYourIdeologyScene,
+        CharacterIntroductionScene,
         Insurrection,
         Politics,
         AliensAttack,
