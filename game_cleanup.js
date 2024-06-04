@@ -57,6 +57,7 @@ import {MilitaryAllocation} from './MilitaryAllocation.js';
 import {Scene2} from './aliens_attack.js';
 import {AliensAttack} from './aliens_attack.js';
 import {ChooseYourIdeologyScene} from './ideology.js';
+import {CharacterIntroductionScene} from './characterUtils.js';
 
 import { territories } from './BaseScene.js'
 import { characters } from './BaseScene.js';
