@@ -61,6 +61,8 @@ export function introduceCharacters(scene, characters, sharedData) {
   underline.strokePath();
   
   let experienceLevel = sharedData.totalPoliticalCapital/30;
+
+  console.log('experience level = ' + experienceLevel);
     
   characters.forEach((character, index) => {
         let characterText;
@@ -80,6 +82,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         if (character.wokeLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
         if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
 
+        console.log('charLevel: maga:' + character.magaLevel + ' woke:' + character.wokeLevel + ' experience:' + experienceLevel+1)
         // Only introduce new characters that were not introduced before
         if (character.magaLevel < experienceLevel+1 && scene.sharedData.ideology.faction == 'maga') { return };
         if (character.wokeLevel < experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') { return };
