@@ -27,7 +27,7 @@ export class CharacterIntroductionScene extends Phaser.Scene {
     }
 }
 
-function introduceCharacters(scene, characters, sharedData) {
+export function introduceCharacters(scene, characters, sharedData) {  
   let Wokeindex = 0;
   let MAGAindex = 0;
   let xOffset = 0;
