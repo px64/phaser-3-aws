@@ -57,7 +57,8 @@ import { characters } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
 import { difficultyList } from './BaseScene.js';
 import {AliensAttack} from './aliens_attack.js';
-//foo
+import { introduceCharacters } from './characterUtils.js';
+
 var healthBar;
 var healthBox;
 var healthGauge;
@@ -279,7 +280,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.ideologyButtonGroup.forEach(button => button.destroy());
         this.ideologyButtonGroup = []; // reset the radio button group
 
-        this.introduceCharacters();
+        introduceCharacters();
 
         // Create a button using an image
         let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
@@ -314,7 +315,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         button.setStyle({ fill: fillColor}); // change color back to white
     }
 
-
+/*
     introduceCharacters() {
         let Wokeindex = 0;
         let MAGAindex = 0;
@@ -570,7 +571,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             return lines.join('\n');
         }
     }
-
+*/
     runTutorial(nextButton) {
         let nextScreenTutorial = [
             {
