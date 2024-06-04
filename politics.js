@@ -706,7 +706,8 @@ export class Politics extends BaseScene {
         console.log ('total capital = ' + scene.totalPoliticalCapital);
 
         let experienceLevel = scene.totalPoliticalCapital/30;
-        this.introduceCharacters();
+        
+        this.scene.get('ChooseYourIdeologyScene').introduceCharacters();
 
         characters.forEach((character, index) => {
             let matchHelps = false;
