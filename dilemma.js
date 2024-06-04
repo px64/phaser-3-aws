@@ -85,7 +85,8 @@ export class DilemmaScene extends BaseScene {
             year: 2023,
             misinformation: {},
             helperTokens: {},
-            militaryAllocation: 0
+            militaryAllocation: 0,
+            totalPoliticalCapital: 0
         };
 
         this.picker = new ScenarioPicker([0, 1, 2, 3]);

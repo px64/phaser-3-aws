@@ -75,6 +75,7 @@ var polCapText;
 var yearText;
 
 
+// This constructor leads them all!  MAGAness: 0
 class TitleScene extends Phaser.Scene {
     constructor () {
         super({ key: 'titlescene'});
@@ -92,7 +93,8 @@ class TitleScene extends Phaser.Scene {
             thisRoundTerritoriesWithMissiles: 6,
             MAGAnessVelocity: 0,
             WokenessVelocity: 0,
-            difficultyLevel: 'A Beginner'
+            difficultyLevel: 'A Beginner',
+            totalPoliticalCapital: -20
         };
     }
 

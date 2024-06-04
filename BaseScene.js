@@ -1,8 +1,8 @@
 
-var MAGAness = 0;
+//var MAGAness = 0;
 var MAGAupdate = 0;
 var MAGAnessText;
-var Wokeness = 0;
+//var Wokeness = 0;
 var WokeUpdate = 0;
 var WokenessText;
 var year = 2023; // the starting year
@@ -26,14 +26,6 @@ const ICON_SPACING = 10;
 const ICON_SCALE = 0.03;
 
 export default class BaseScene extends Phaser.Scene {
-/*
-    constructor() {
-        super();
-
-        this.MAGAness = 0;
-        this.Wokeness = 0;
-    }
- */
 
     preload() {
         this.load.image('track', 'assets/track.png');

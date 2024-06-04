@@ -87,7 +87,8 @@ export class AliensAttack extends BaseScene {
             Wokeness: 0,
             putieTerritories: 0,
             alienTerritories: 0,
-            year: 2023
+            year: 2023,
+            totalPoliticalCapital: 0
         };
     }
     setup(data) {
@@ -213,7 +214,8 @@ export class Scene2 extends BaseScene {
             year: 2023,
             misinformation: {},
             helperTokens: {},
-            ideology: 'maga'
+            ideology: 'maga',
+            totalPoliticalCapital: 0
         };
 
     }
@@ -697,4 +699,3 @@ export class Scene2 extends BaseScene {
 
     }
 }
-

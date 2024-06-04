@@ -85,7 +85,8 @@ export class ChooseYourIdeologyScene extends BaseScene {
             helperTokens: {},
             ideology: 'maga',
             thisRoundAlienAttacks: 1,
-            thisRoundTerritoriesWithMissiles: 6
+            thisRoundTerritoriesWithMissiles: 6,
+            totalPoliticalCapital: 0
         };
     }
     setup(data) {
@@ -356,8 +357,6 @@ export class ChooseYourIdeologyScene extends BaseScene {
             };
             // Idea is to have levels of advocates for Maga, Woke, and Don't care
             character.dne = false;
-            console.log(character);
-            console.log(character.fogLevel);
             if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true;return;}
             if (character.magaLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'maga') {character.dne = true;return;}
             if (character.wokeLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'woke') {character.dne = true;return;}

@@ -68,7 +68,8 @@ export class Politics extends BaseScene {
             misinformation: {},
             helperTokens: {},
             militaryAllocation: 0,
-            littleHats: {}
+            littleHats: {},
+            totalPolitcalCapital: 0
         };
         // hack: decrease all character's endorsements by 3
         characters.forEach((character, index) => {
@@ -110,6 +111,7 @@ export class Politics extends BaseScene {
             this.Wokeness = this.sharedData.Wokeness;
             this.putieTerritories = this.sharedData.putieTerritories;
             this.extraMisinformationTokens = 0;
+            this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
 
             // ...similarly for other icons
         } else {
@@ -120,6 +122,7 @@ export class Politics extends BaseScene {
             console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
+            this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
 
             // recreate the icons with the saved state
             for (let key in this.sharedData.icons) {
@@ -174,6 +177,7 @@ export class Politics extends BaseScene {
             this.sharedData.icons = this.icons;
             this.sharedData.MAGAness = this.MAGAness;
             this.sharedData.Wokeness = this.Wokeness;
+            this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
 
             //Function to handle dilemma or insurrection
             const handleDilemmaOrInsurrection = () => {
@@ -682,11 +686,12 @@ export class Politics extends BaseScene {
         // As you advance to the next level, new characters are added to your arsenal
         // to go up a level you get political experience points -- total political capital earned so far!
 
-        this.totalPoliticalCapital += this.maganess + this.wokeness;//+= this.maganess + this.wokeness;
+        scene.totalPoliticalCapital += scene.MAGAness + scene.Wokeness;//+= this.maganess + this.wokeness;
+        console.log ('Maganess = ' + scene.MAGAness);
+        console.log ('Wokeness = ' + scene.Wokeness);
+        console.log ('total capital = ' + scene.totalPoliticalCapital);
 
-        console.log ('total capital = ' + this.totalPoliticalCapital);
-        
-        let experienceLevel = this.totalPoliticalCapital/20;
+        let experienceLevel = scene.totalPoliticalCapital/20;
 
         characters.forEach((character, index) => {
             let matchHelps = false;

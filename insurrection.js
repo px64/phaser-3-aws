@@ -55,7 +55,8 @@ export class Insurrection extends BaseScene {
             thisRoundAlienAttacks: 1,
             thisRoundTerritoriesWithMissiles: 6,
             MAGAnessVelocity: 0,
-            WokenessVelocity: 0
+            WokenessVelocity: 0,
+            totalPoliticalCapital: 0
         };
 
     }
