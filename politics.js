@@ -675,9 +675,18 @@ export class Politics extends BaseScene {
         underline.closePath();
         underline.strokePath();
 
-        // We have a problem where we are creating the characters and the checkboxes here, but that also includes
-        // recreating the characters and keeping the checkbox settings from the previous round.
-        // There is a catch-22 where we think the endorsement is 2, so we color it green, but then it gets set to zero.
+        // ====
+        // New idea: each round we go through all the available characters and potentially add new characters to the pool
+        // For now we have the simplest rule in place.
+        // The plan: Each character is assigned a maga, woke, and independent level.  Level 1 characters appear at the beginning.
+        // As you advance to the next level, new characters are added to your arsenal
+        // to go up a level you get political experience points -- total political capital earned so far!
+
+        this.totalPoliticalCapital += this.maganess + this.wokeness;//+= this.maganess + this.wokeness;
+
+        console.log ('total capital = ' + this.totalPoliticalCapital);
+        
+        let experienceLevel = this.totalPoliticalCapital/20;
 
         characters.forEach((character, index) => {
             let matchHelps = false;
@@ -687,9 +696,23 @@ export class Politics extends BaseScene {
                 if (character.helps == iconData.iconName) matchHelps = true;
                 if (character.hurts == iconData.iconName) matchHurts = true;
             };
-            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true; return;}
-            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true; return}
-            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true; return}
+            character.dne = false;
+            //console.log(character);
+            //console.log('character.noneLevel = ' + character.fogLevel + '  faction = ' + this.sharedData.ideology.faction);
+            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true;}
+            if (character.magaLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'maga') {character.dne = true;}
+            if (character.wokeLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'woke') {character.dne = true;}
+            if (character.fogLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'none') {character.dne = true;}
+            //if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true;}
+            //if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true;}
+        });
+
+        // We have a problem where we are creating the characters and the checkboxes here, but that also includes
+        // recreating the characters and keeping the checkbox settings from the previous round.
+        // There is a catch-22 where we think the endorsement is 2, so we color it green, but then it gets set to zero.
+
+        characters.forEach((character, index) => {
+            if (character.dne == true) {return;}
             // Keep separate track of the MAGA and Woke character placement row offsets
             let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
             // Set text color based on affiliation
@@ -760,7 +783,7 @@ export class Politics extends BaseScene {
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
                     character.endorsement -= 2;
-                    
+
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                     let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
                     // Recreate text here
@@ -776,7 +799,7 @@ export class Politics extends BaseScene {
                     }
                 }
             });
-            
+
             // If this is the first time a helpful token has appeared, and it's beginner level, provide a tutorial on what to do with it
             if (this.difficultyLevel().multiplier == 1 && !this.firstPowerTokenEver && helpfulTokenIndex > 0) {
                 this.firstPowerTokenEver = 1;
@@ -802,17 +825,17 @@ export class Politics extends BaseScene {
                 if (1){
                     // Assuming scene.sharedData.helperTokens is an object
                     let helperTokens = scene.sharedData.helperTokens;
-                    
+
                     Object.keys(helperTokens).forEach(key => {
                         let storedData = helperTokens[key];
-                    
+
                         // Check if helperToken exists
                         if (storedData) {
                             let snog = { x: storedData.x, y: storedData.y };
-                    
+
                             // Draw the arrow from backstoryBox to snog
                             let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
-                    
+
                             // Store the arrow graphic in the array
                             arrowGraphicsArray.push(arrow);
                         }
@@ -971,15 +994,15 @@ export class Politics extends BaseScene {
                     if (!scene.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
                         scene.firstHackerEver = 1;
                         let timeoutHandle;
-        
+
                         let tutorial = secondScreenTutorial[1];
                         let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
-        
+
                         let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
                         backstoryText.setDepth(2);
-        
+
                         let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                         backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
                         backstoryBox.isStroked = true;
@@ -987,20 +1010,20 @@ export class Politics extends BaseScene {
                         backstoryBox.setVisible(true);
                         backstoryBox.setDepth(1);
                         console.log(backstoryBox.x + backstoryBox.width/2);
-                        
+
                         // Assuming scene.sharedData.helperTokens is an object
                         let helperTokens = scene.sharedData.helperTokens;
-                        
+
                         for (let key in scene.sharedData.icons) {
                             let iconData = scene.sharedData.icons[key].gaugeMaga;
-                        
+
                             // Check if helperToken exists
                             if (iconData) {
                                 let snog = { x: iconData.x, y: iconData.y };
-                        
+
                                 // Draw the arrow from backstoryBox to snog
                                 let arrow = drawArrow(scene, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
-                        
+
                                 // Store the arrow graphic in the array
                                 arrowGraphicsArray.push(arrow);
                             }
@@ -1015,7 +1038,7 @@ export class Politics extends BaseScene {
                             yoyo: true
                         });
 
-        
+
                         // Cleanup function to clear current tutorial item
                         const clearCurrentTutorial = () => {
                             clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
@@ -1024,22 +1047,22 @@ export class Politics extends BaseScene {
                             scene.tweens.killTweensOf([backstoryText, backstoryBox]);
                             //backdrop.off('pointerdown');
                             scene.input.keyboard.off('keydown-ENTER');
-        
+
                             // Clear all pending timers for drawing arrows
                             arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
                             arrowTimerIDs = []; // Clear the timer IDs array after cancellation
-        
+
                             // Destroy all arrow graphics
                             arrowGraphicsArray.forEach(arrow => arrow.destroy());
                             arrowGraphicsArray = []; // Clear the array after destruction
-        
+
                             //displayTutorial(); // Display next item
                         };
-        
+
                         // Set up listeners for pointer down and ENTER key
                         //backdrop.on('pointerdown', clearCurrentTutorial);
                         scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-        
+
                         // Set a timeout to automatically advance
                         timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
                     }
@@ -1066,11 +1089,12 @@ export class Politics extends BaseScene {
                 }
             });
             if (character.powerTokenType === 'type_2') {
-                scene.extraMisinformationTokens = 4;
-                helpfulToken.container.x = 680;
+                scene.extraMisinformationTokens += 4;
+                helpfulToken.container.x = 720;
+                if (character.faction == 'maga') helpfulToken.container.x -= scene.cameras.main.width/4;
                 helpfulToken.container.y = 290;
                 helpfulToken.container.setAlpha(.25);
-                
+
                 // First tween: Increase alpha to 0.5 over 2 seconds
                 scene.tweens.add({
                     targets: helpfulToken.container,
@@ -1242,7 +1266,7 @@ export class Politics extends BaseScene {
             if (scene.difficultyLevel().multiplier == 1) { // Beginner level gets an extra community outreach token
                 numEntries++;
             }
-            
+
             if (scene.hasBeenCreatedBefore) {
                 numEntries = scene.extraMisinformationTokens;
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
@@ -1277,7 +1301,7 @@ export class Politics extends BaseScene {
             function createMisinformationToken(scene, data, index) {
                 let xOffset = data.type === 'maga' ? scene.sys.game.config.width * .39 : scene.sys.game.config.width * .625;
                 let yOffset = data.type === 'maga' ? scene.yMagaOffset : scene.yWokeOffset;
-            
+
                 // Store the position data
                 let storedData = {
                     x: xOffset,
@@ -1286,18 +1310,18 @@ export class Politics extends BaseScene {
                     text: data.text,
                     misinformationIndex: index
                 };
-            
+
                 scene.sharedData.misinformation[index] = storedData;
-            
+
                 let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once');
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
-            
+
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
-            
+
                 misinformation.container.misinformationIndex = index;
-            
+
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
                     scene.yMagaOffset += misinformation.container.displayHeight;
@@ -1313,14 +1337,14 @@ export class Politics extends BaseScene {
                     console.log('new yWokeOffset = ' + scene.yWokeOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                 }
             }
-            
+
             let delay = 500; // 0.5 seconds
-            
+
             for (let i = 0; i < numEntries; i++) {
                 if (scene.currentMisinformationIndex < misinformationData.length) { // if we haven't reached the end of the array
                     let currentIndex = scene.currentMisinformationIndex;
                     let data = misinformationData[currentIndex]; // Capture the correct data
-            
+
                     scene.time.addEvent({
                         delay: i * delay + numEntries*500,
                         callback: function() {
@@ -1328,7 +1352,7 @@ export class Politics extends BaseScene {
                         },
                         callbackScope: scene
                     });
-            
+
                     scene.currentMisinformationIndex++; // Increment the index after capturing the correct data
                 }
             }
@@ -1632,7 +1656,7 @@ export class Politics extends BaseScene {
             scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
                 handleOverlap(icon, defense, threat, 3 + scene.difficultyLevel().multiplier, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
             });
-            
+
             // Handle all magaThreats interactions with this icon. Beginner level has less impact
             scene.physics.add.overlap(icon.icon, scene.magaThreats, function(defense, threat) {
                 handleOverlap(icon, defense, threat, 3 + scene.difficultyLevel().multiplier, 'maga', icon.gaugeMaga, '\nMake America Great Again!');

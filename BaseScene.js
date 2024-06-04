@@ -767,7 +767,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 1,
+        wokeLevel: 3,
+        fogLevel: 2
     },
     {
         name: 'Commander Jackson',
@@ -792,7 +795,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        fogLevel: 2,
+        magaLevel: 1,
+        wokeLevel: 3
     },
     {
         name: 'Dr. Emily Hartwell',
@@ -817,7 +823,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        fogLevel: 2,
+        magaLevel: 2,
+        wokeLevel: 4
     },
     {
         name: 'Andrew "Drew" Barnes',
@@ -840,7 +849,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 1,
+        wokeLevel: 3,
+        fogLevel: 2
     },
     {
         name: "Ethan 'EagleEye' Thompson",
@@ -859,7 +871,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 1,
+        wokeLevel: 2,
+        fogLevel: 1
     },
     {
         name:  'Ambassador Aria Chen',
@@ -883,7 +898,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 3,
+        wokeLevel: 1,
+        fogLevel: 2
     },
     {
         name:  'Dr. James Baldwin',
@@ -907,7 +925,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 3,
+        wokeLevel: 1,
+        fogLevel: 2
     },
     {
         name:  'Maya Rodriguez',
@@ -928,7 +949,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 2,
+        wokeLevel: 1,
+        fogLevel: 1
     },
     {
         name: 'Sasha Goldman',
@@ -950,7 +974,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 2,
+        wokeLevel: 1,
+        fogLevel: 1
     },
     {
         name: 'Senator Patricia Greenfield',
@@ -974,7 +1001,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 1,
+        wokeLevel: 2,
+        fogLevel: 1
 },
 {
         name: "Rene Stellar",
@@ -997,7 +1027,10 @@ export const characters = [
         value: 0,
         prevValue: 0,
         endorsement: 5,
-        dne: false
+        dne: false,
+        magaLevel: 3,
+        wokeLevel: 1,
+        fogLevel: 2
 },
 {
     name: "Justice Benjamin Harmon",
@@ -1021,7 +1054,10 @@ export const characters = [
     value: 0,
     prevValue: 0,
     endorsement: 5,
-    dne: false
+    dne: false,
+    magaLevel: 1,
+    wokeLevel: 3,
+    fogLevel: 2
 },
 {
     name: "Professor Isabelle Martinez",
@@ -1045,7 +1081,10 @@ export const characters = [
     value: 0,
     prevValue: 0,
     endorsement: 5,
-    dne: false
+    dne: false,
+    magaLevel: 3,
+    wokeLevel: 1,
+    fogLevel: 2
 },
 {
     name: "Dr. Max Greenfield",
@@ -1066,7 +1105,10 @@ export const characters = [
     value: 0,
     prevValue: 0,
     endorsement: 5,
-    dne: false
+    dne: false,
+    magaLevel: 3,
+    wokeLevel: 1,
+    fogLevel: 2
 },
 {
     name: "Dr. Laura Franklin",
@@ -1086,7 +1128,10 @@ export const characters = [
     value: 0,
     prevValue: 0,
     endorsement: 5,
-    dne: false
+    dne: false,
+    magaLevel: 4,
+    wokeLevel: 2,
+    fogLevel: 2
 },
 {
     name: "Senator John Caldwell",
@@ -1106,7 +1151,10 @@ export const characters = [
     value: 0,
     prevValue: 0,
     endorsement: 5,
-    dne: false
+    dne: false,
+    magaLevel: 2,
+    wokeLevel: 4,
+    fogLevel: 2
 },
 {
     name: 'Senator Linda Sterling',
@@ -1129,32 +1177,36 @@ export const characters = [
     value: 0,
     prevValue: 0,
     endorsement: 5,
-    dne: false
+    dne: false,
+    magaLevel: 1,
+    wokeLevel: 3,
+    fogLevel: 2
+},
+
+
+{
+    name: "Ambassador Charlotte Grant",
+    faction: "maga",
+    backstory: [
+        "A distinguished diplomat with decades of experience in foreign policy. Ambassador Grant's skilled diplomacy and negotiation tactics have",
+        "helped foster peace and strong international relations for the country."
+    ],
+    shortstory: [
+        "Ambassador Grant's diplomatic skills improve international relations, enhancing global diplomacy. However, her focus on maintaining good relations",
+        "can sometimes cause great harm to the economy"
+    ],
+    power: 'Diplomacy\nand International Relations',
+    helps: 'diplomacy',
+    hurts: 'economy',
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false,
+    magaLevel: 2,
+    wokeLevel: 4,
+    fogLevel: 2
 }
-
-
-// {
-//     name: "Ambassador Charlotte Grant",
-//     faction: "woke",
-//     backstory: [
-//         "A distinguished diplomat with decades of experience in foreign policy. Ambassador Grant's skilled diplomacy and negotiation tactics have",
-//         "helped foster peace and strong international relations for the country."
-//     ],
-//     shortstory: [
-//         "Ambassador Grant's diplomatic skills improve international relations, enhancing global diplomacy. However, her focus on maintaining good relations",
-//         "can sometimes cause great harm to the economy"
-//     ],
-//     power: 'Diplomacy\nand International Relations',
-//     helps: 'diplomacy',
-//     hurts: 'economy',
-//     powerTokenType: "type_5",
-//     value: 0,
-//     prevValue: 0,
-//     endorsement: 5,
-//     dne: false
-// }
-
-
 
 
 

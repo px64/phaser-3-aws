@@ -342,20 +342,27 @@ export class ChooseYourIdeologyScene extends BaseScene {
         underline.closePath();
         underline.strokePath();
 
+        let experienceLevel = 0;
         characters.forEach((character, index) => {
             let characterText;
 
             let matchHelps = true; // for now just assume all icons are visible
             let matchHurts = true;
+            // Go through all the icons and confirm that the character has any kind of interaction with the icon.  If not, leave it out
             for (let key in this.sharedData.icons) {
                 let iconData = this.sharedData.icons[key];
                 if (character.helps == iconData.iconName) matchHelps = true;
                 if (character.hurts == iconData.iconName) matchHurts = true;
             };
+            // Idea is to have levels of advocates for Maga, Woke, and Don't care
+            character.dne = false;
+            console.log(character);
+            console.log(character.fogLevel);
+            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true;return;}
+            if (character.magaLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'maga') {character.dne = true;return;}
+            if (character.wokeLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
+            if (character.fogLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'none') {character.dne = true;return;}
 
-            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true; return;}
-            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true; return}
-            if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true; return}
             // Keep separate track of the MAGA and Woke character placement row offsets
             let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
             // Set text color based on affiliation
@@ -407,7 +414,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             } else {
                 xSpriteOffset -= 60;
             }
-            let icon = this.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor/2);
+            let icon = this.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor.helps/2);
             let hatType = this.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), factionIcon).setScale(.1);
 
             //character.charText = characterText; // back reference to text so we can find the location later
@@ -429,7 +436,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             // Format the text to be centered and with the color based on the affiliation
             let roughSize = character.backstory.length * character.backstory[0].length;
-            console.log(character.name + ' ' + character.backstory.length + 'x' + character.backstory[0].length + '=' + (y + roughSize / 3));
+            //console.log(character.name + ' ' + character.backstory.length + 'x' + character.backstory[0].length + '=' + (y + roughSize / 3));
             let lineLength;
             let yOffset;
             if (roughSize > 800 && scene.sys.game.config.width > 1000) {
