@@ -1,6 +1,9 @@
 // characterUtils.js
+import BaseScene from './BaseScene.js';
+import { characters } from './BaseScene.js';
+import { territories } from './BaseScene.js';
 
-export class CharacterIntroductionScene extends Phaser.Scene {
+export class CharacterIntroductionScene extends BaseScene {
     constructor() {
         super({ key: 'CharacterIntroductionScene' });
         this.sharedData = {};
