@@ -535,7 +535,21 @@ export class Politics extends BaseScene {
                     }
                     if (tutorial.reference == "characterTexts")
                     {
-                        startBlinkingCheckbox(this, characters[0].checkbox.checkboxUnchecked, characters[0].checkbox.checkboxChecked, characters[0].checkbox.checkboxUncheckedAction, characters[0].checkbox.checkboxCheckedAction);
+                        // Assuming characters is an array of objects and startBlinkingCheckbox is defined
+                        const character = characters.find(character => character.dne === false);
+
+                        console.log(character);
+                        if (character) {
+                          startBlinkingCheckbox(
+                            this,
+                            character.checkbox.checkboxUnchecked,
+                            character.checkbox.checkboxChecked,
+                            character.checkbox.checkboxUncheckedAction,
+                            character.checkbox.checkboxCheckedAction
+                          );
+                        } else {
+                          console.log('No character with dne == false found.');
+                        }
                     }
 
                     //console.log(referenceObject.length);
@@ -691,7 +705,8 @@ export class Politics extends BaseScene {
         console.log ('Wokeness = ' + scene.Wokeness);
         console.log ('total capital = ' + scene.totalPoliticalCapital);
 
-        let experienceLevel = scene.totalPoliticalCapital/20;
+        let experienceLevel = scene.totalPoliticalCapital/30;
+        this.introduceCharacters();
 
         characters.forEach((character, index) => {
             let matchHelps = false;
