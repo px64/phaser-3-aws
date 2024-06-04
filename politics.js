@@ -31,6 +31,7 @@ import BaseScene from './BaseScene.js';
 import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
+import { introduceCharacters } from './characterUtils.js';
 
 //var MAGAness = 0;
 var MAGAupdate = 0;
@@ -707,15 +708,7 @@ export class Politics extends BaseScene {
 
         let experienceLevel = scene.totalPoliticalCapital/30;
         
-        // Ensure the target scene is started
-        if (!this.scene.isActive('ChooseYourIdeologyScene')) {
-            this.scene.start('ChooseYourIdeologyScene');
-        }
-
-        // Use the scene once it's active
-        this.scene.get('ChooseYourIdeologyScene').events.once('create', () => {
-            this.scene.get('ChooseYourIdeologyScene').introduceCharacters();
-        });
+        introduceCharacters(this, characters, this.sharedData);
 
         characters.forEach((character, index) => {
             let matchHelps = false;
