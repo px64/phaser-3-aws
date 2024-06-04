@@ -10,7 +10,7 @@ export class CharacterIntroductionScene extends Phaser.Scene {
         this.callback = null;
     }
 
-    setup(data) {
+    init(data) {
         this.sharedData = data.sharedData;
         this.callback = data.callback;
     }
