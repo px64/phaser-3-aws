@@ -2273,26 +2273,7 @@ export class Politics extends BaseScene {
                 //scene.govTime.paused = false;
             }
         }
-        //====================================================================================
-        //    function insertLineBreaks(str, charsPerLine) {
-        //====================================================================================
-        function insertLineBreaks(str, charsPerLine) {
-            let words = str.split(' ');
-            let lines = [];
-            let currentLine = words[0];
 
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            lines.push(currentLine);
-
-            return lines.join('\n');
-        }
         //====================================================================================
         //    function createTooltip(scene, character, x, y, slider, characterText)
         //====================================================================================
@@ -2483,3 +2464,24 @@ export class Politics extends BaseScene {
     }
 
 }
+
+//====================================================================================
+//    function insertLineBreaks(str, charsPerLine) {
+//====================================================================================
+function insertLineBreaks(str, charsPerLine) {
+    let words = str.split(' ');
+    let lines = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+        if (currentLine.length + words[i].length + 1 > charsPerLine) {
+            lines.push(currentLine);
+            currentLine = words[i];
+        } else {
+            currentLine += ' ' + words[i];
+        }
+    }
+    lines.push(currentLine);
+
+    return lines.join('\n');
+        }
