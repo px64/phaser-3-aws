@@ -60,7 +60,8 @@ export function introduceCharacters(scene, characters, sharedData) {
   underline.closePath();
   underline.strokePath();
   
-  let experienceLevel = 0;
+  let experienceLevel = scene.totalPoliticalCapital/30;
+    
   characters.forEach((character, index) => {
         let characterText;
   
