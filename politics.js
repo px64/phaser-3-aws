@@ -707,7 +707,15 @@ export class Politics extends BaseScene {
 
         let experienceLevel = scene.totalPoliticalCapital/30;
         
-        this.scene.get('ChooseYourIdeologyScene').introduceCharacters();
+        // Ensure the target scene is started
+        if (!this.scene.isActive('ChooseYourIdeologyScene')) {
+            this.scene.start('ChooseYourIdeologyScene');
+        }
+
+        // Use the scene once it's active
+        this.scene.get('ChooseYourIdeologyScene').events.once('create', () => {
+            this.scene.get('ChooseYourIdeologyScene').introduceCharacters();
+        });
 
         characters.forEach((character, index) => {
             let matchHelps = false;
