@@ -79,7 +79,11 @@ export function introduceCharacters(scene, characters, sharedData) {
         if (character.magaLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'maga') {character.dne = true;return;}
         if (character.wokeLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
         if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
-  
+
+        // Only introduce new characters that were not introduced before
+        if (character.magaLevel < experienceLevel+1 && scene.sharedData.ideology.faction == 'maga') { return };
+        if (character.wokeLevel < experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') { return };
+      
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
         // Set text color based on affiliation
@@ -138,9 +142,8 @@ export function introduceCharacters(scene, characters, sharedData) {
   
         createCharacterTooltip(scene, character, 50+xOffset, Math.min(scene.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText, scaleFactor, tmpHelp);
   
-        //characterText.on('pointerdown', () => scene.selectIdeology(scene.ideologies[i]));
-        characterText.on('pointerover', () => scene.enterButtonHoverState(characterText));
-        characterText.on('pointerout', () => scene.enterButtonRestState(characterText, textColor));
+        characterText.on('pointerover', () => enterButtonHoverState(characterText));
+        characterText.on('pointerout', () => enterButtonRestState(characterText, textColor));
     });
 
     //====================================================================================
@@ -286,12 +289,12 @@ export function introduceCharacters(scene, characters, sharedData) {
 
         return lines.join('\n');
     }
-    
-    enterButtonHoverState(button) {
-        button.setStyle({ fill: '#ff0'}); // change color to yellow
-    }
+}
 
-    enterButtonRestState(button, fillColor) {
-        button.setStyle({ fill: fillColor}); // change color back to white
-    }
+function enterButtonHoverState(button) {
+    button.setStyle({ fill: '#ff0'}); // change color to yellow
+}
+
+function enterButtonRestState(button, fillColor) {
+    button.setStyle({ fill: fillColor}); // change color back to white
 }
