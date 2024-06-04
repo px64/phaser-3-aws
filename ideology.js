@@ -280,7 +280,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.ideologyButtonGroup.forEach(button => button.destroy());
         this.ideologyButtonGroup = []; // reset the radio button group
 
-        introduceCharacters();
+        introduceCharacters(this, characters, this.sharedData);
 
         // Create a button using an image
         let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
