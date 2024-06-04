@@ -6,7 +6,7 @@ export class CharacterIntroductionScene extends Phaser.Scene {
         this.sharedData = {};
     }
 
-    init(data) {
+    setup(data) {
         this.sharedData = data;
     }
 
