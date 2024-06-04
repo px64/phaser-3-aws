@@ -708,9 +708,19 @@ export class Politics extends BaseScene {
 
         let experienceLevel = scene.totalPoliticalCapital/30;
 
-        this.scene.get('CharacterIntroductionScene').setup(this.sharedData);
         this.scene.start('CharacterIntroductionScene');
+        // Call the CharacterIntroductionScene
+        this.scene.launch('CharacterIntroductionScene', {
+            sharedData: this.sharedData,
+            callback: (data) => {
+                this.scene.stop('CharacterIntroductionScene');
+                this.setup(data);
+                this.continueCreate();
+            }
+        });
+    }
 
+    continueCreate() {
         characters.forEach((character, index) => {
             let matchHelps = false;
             let matchHurts = false;
