@@ -38,7 +38,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   let xOffset = 0;
   let xSpriteOffset = 0;
 
-  scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'Meet Your Advocates', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
+  scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'These Advocates Join Your Cause', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
   let endorseMaga = scene.add.text(40, 200, 'MAGA',
                       { fontSize: '24px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
