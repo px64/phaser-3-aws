@@ -1038,18 +1038,20 @@ export class Politics extends BaseScene {
                     hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
                     //console.log(hurtIcon);
                 } else if (character.powerTokenType == 'type_3') { // TODO: It would be cool if an informational dialog popped up for HACKER explaining exactly how it works here
-                    // Light up all the shields to provide hint that hacker can be used everywhere
+                    // Light up all the nonprotected shields to provide hint that hacker can be used everywhere
                     for (let key in scene.sharedData.icons) {
                         let iconData = scene.sharedData.icons[key];
 
                         //console.log(helpedIcon);
-                        if (character.faction == 'maga') {
-                            helpedColor = 0xff4040;
-                        } else {
-                            helpedColor = 0x8080ff;
+                        if (iconData.shieldStrength < .1) {
+                            if (character.faction == 'maga') {
+                                helpedColor = 0xff4040;
+                            } else {
+                                helpedColor = 0x8080ff;
+                            }
+                            // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                            iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                         }
-                        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
-                        iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                     }
                     if (!scene.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
                         scene.firstHackerEver = 1;
