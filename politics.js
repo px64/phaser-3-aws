@@ -707,25 +707,36 @@ export class Politics extends BaseScene {
 
         }
 
-        let endorseMaga = this.add.text(0, 220, 'Endorse?',
-                            { fontSize: '22px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
-        let underline = this.add.graphics();
-        underline.lineStyle(2, 0xff4040); // Set the line thickness and color
-        underline.beginPath();
-        underline.moveTo(endorseMaga.x, endorseMaga.y + endorseMaga.height);
-        underline.lineTo(endorseMaga.x + endorseMaga.width, endorseMaga.y + endorseMaga.height);
-        underline.closePath();
-        underline.strokePath();
+        // Check if there are any characters to endorse for MAGA faction
+        let hasMagaCharacters = characters.some(character => character.faction === 'maga' && !character.dne);
+        
+        // Check if there are any characters to endorse for Woke faction
+        let hasWokeCharacters = characters.some(character => character.faction === 'woke' && !character.dne);
+        
+        // Display "Endorse?" headline for MAGA faction if there are eligible characters
+        if (hasMagaCharacters) {
+            let endorseMaga = this.add.text(0, 220, 'Endorse?',
+                                { fontSize: '22px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
+            let underline = this.add.graphics();
+            underline.lineStyle(2, 0xff4040); // Set the line thickness and color
+            underline.beginPath();
+            underline.moveTo(endorseMaga.x, endorseMaga.y + endorseMaga.height);
+            underline.lineTo(endorseMaga.x + endorseMaga.width, endorseMaga.y + endorseMaga.height);
+            underline.closePath();
+            underline.strokePath();
+        }
 
-        let endorseWoke = this.add.text(0 + this.sys.game.config.width * .74, 220, 'Endorse?',
-                                                { fontSize: '22px', fontFamily: 'Roboto', color: '#8080ff', align: 'left' })
-        underline = this.add.graphics();
-        underline.lineStyle(2, 0x8080ff); // Set the line thickness and color
-        underline.beginPath();
-        underline.moveTo(endorseWoke.x, endorseWoke.y + endorseWoke.height);
-        underline.lineTo(endorseWoke.x + endorseWoke.width, endorseWoke.y + endorseWoke.height);
-        underline.closePath();
-        underline.strokePath();
+        if (hasWokeCharacters) {
+            let endorseWoke = this.add.text(0 + this.sys.game.config.width * .74, 220, 'Endorse?',
+                                                    { fontSize: '22px', fontFamily: 'Roboto', color: '#8080ff', align: 'left' })
+            underline = this.add.graphics();
+            underline.lineStyle(2, 0x8080ff); // Set the line thickness and color
+            underline.beginPath();
+            underline.moveTo(endorseWoke.x, endorseWoke.y + endorseWoke.height);
+            underline.lineTo(endorseWoke.x + endorseWoke.width, endorseWoke.y + endorseWoke.height);
+            underline.closePath();
+            underline.strokePath();
+        }
 
         // ====
         // New idea: each round we go through all the available characters and potentially add new characters to the pool
@@ -736,7 +747,7 @@ export class Politics extends BaseScene {
         console.log('this.totalPoliticalCapital = ' + this.totalPoliticalCapital);
         let experienceLevel = Math.floor(this.totalPoliticalCapital/60);
         console.log('experienceLevel = ' + experienceLevel);
-
+/*
         characters.forEach((character, index) => {
             let matchHelps = false;
             let matchHurts = false;
@@ -755,7 +766,7 @@ export class Politics extends BaseScene {
             //if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true;}
             //if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true;}
         });
-
+*/
         // We have a problem where we are creating the characters and the checkboxes here, but that also includes
         // recreating the characters and keeping the checkbox settings from the previous round.
         // There is a catch-22 where we think the endorsement is 2, so we color it green, but then it gets set to zero.
