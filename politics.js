@@ -729,7 +729,7 @@ export class Politics extends BaseScene {
         if (hasWokeCharacters) {
             let endorseWoke = this.add.text(0 + this.sys.game.config.width * .74, 220, 'Endorse?',
                                                     { fontSize: '22px', fontFamily: 'Roboto', color: '#8080ff', align: 'left' })
-            underline = this.add.graphics();
+            let underline = this.add.graphics();
             underline.lineStyle(2, 0x8080ff); // Set the line thickness and color
             underline.beginPath();
             underline.moveTo(endorseWoke.x, endorseWoke.y + endorseWoke.height);
