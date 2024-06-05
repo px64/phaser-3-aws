@@ -243,7 +243,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         // get a free endorsement
         console.log('starting endorsement = '+this.difficultyLevel().startingEndorsement);
         characters.forEach((character, index) => {
-            if (this.difficultyLevel().startingEndorsement === 'all') {
+            if (this.difficultyLevel().startingEndorsement === 'all' || ideology.faction == 'none') {
                 character.endorsement += 1;
             } else if (this.difficultyLevel().startingEndorsement === 'ideology') {
                     if (character.faction == ideology.faction) {
