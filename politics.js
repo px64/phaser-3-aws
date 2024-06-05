@@ -1233,7 +1233,6 @@ export class Politics extends BaseScene {
             }
             threat.destroy();
             this.roundThreats--;
-            console.log('defense destroyed threat.  Down to ' + this.roundThreats);
             if (Math.random() < .1) {
                 this.tweens.add({
                     targets: defense,
@@ -1349,9 +1348,7 @@ export class Politics extends BaseScene {
                     let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
-                    //misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
-                    console.log('restore misinformation index '+ misinformation.container.misinformationIndex);
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
                 }
             }
@@ -1843,7 +1840,6 @@ export class Politics extends BaseScene {
                 });
             }
             if (hasBeenCreatedBefore == true) {
-                console.log('hasBeenCreatedBefore, so stop Tweening and make position static');
                 outlineTween.stop();
                 rectangleTween.stop();
                 misinformation.disableInteractive();
