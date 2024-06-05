@@ -1134,17 +1134,17 @@ export class Politics extends BaseScene {
                 if (character.powerTokenType == 'type_5') {
                     let helpedIcon = scene.sharedData.icons[character.helps];
                     if (helpedIcon) {
-                        helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.1:0);
+                        helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.6:0);
                     }
                     let hurtIcon = scene.sharedData.icons[character.hurts];
                     if (hurtIcon) {
-                        hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength > 0 ? 0.1:0);
+                        hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength > 0 ? 0.6:0);
                     }
                 } else if (character.powerTokenType == 'type_3') {
                     for (let key in scene.sharedData.icons) {
                         let iconData = scene.sharedData.icons[key];
                         // Provide a hint by changing the tint of the shield of the helped and hurt Icons
-                        iconData.icon.shieldWoke.setAlpha(iconData.icon.shieldStrength > 0 ? 0.1:0);
+                        iconData.icon.shieldWoke.setAlpha(iconData.icon.shieldStrength > 0 ? 0.8:0);
                     }
                 }
             });
