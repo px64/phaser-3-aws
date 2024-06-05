@@ -32,14 +32,14 @@ export class CharacterIntroductionScene extends Phaser.Scene {
     }
 }
 
-export function introduceCharacters(scene, characters, sharedData) {  
+export function introduceCharacters(scene, characters, sharedData) {
   let Wokeindex = 0;
   let MAGAindex = 0;
   let xOffset = 0;
   let xSpriteOffset = 0;
-  
+
   scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'Meet Your Advocates', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
-  
+
   let endorseMaga = scene.add.text(40, 200, 'MAGA',
                       { fontSize: '24px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
   let underline = scene.add.graphics();
@@ -49,7 +49,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   underline.lineTo(endorseMaga.x + endorseMaga.width, endorseMaga.y + endorseMaga.height);
   underline.closePath();
   underline.strokePath();
-  
+
   let endorseWoke = scene.add.text(40 + scene.sys.game.config.width * .74, 200, 'WOKE',
                                           { fontSize: '24px', fontFamily: 'Roboto', color: '#8080ff', align: 'left' })
   underline = scene.add.graphics();
@@ -59,14 +59,14 @@ export function introduceCharacters(scene, characters, sharedData) {
   underline.lineTo(endorseWoke.x + endorseWoke.width, endorseWoke.y + endorseWoke.height);
   underline.closePath();
   underline.strokePath();
-  
-  let experienceLevel = sharedData.totalPoliticalCapital/30;
+
+  let experienceLevel = Math.floor(sharedData.totalPoliticalCapital/60);
 
   console.log('experience level = ' + experienceLevel);
-    
+
   characters.forEach((character, index) => {
         let characterText;
-  
+
         let matchHelps = true; // for now just assume all icons are visible
         let matchHurts = true;
         // Go through all the icons and confirm that the character has any kind of interaction with the icon.  If not, leave it out
@@ -82,11 +82,13 @@ export function introduceCharacters(scene, characters, sharedData) {
         if (character.wokeLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
         if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
 
-        console.log('charLevel: maga:' + character.magaLevel + ' woke:' + character.wokeLevel + ' experience:' + experienceLevel+1)
+        const newExperienceLevel = Math.floor(experienceLevel+1);
+
+        console.log('charLevel: maga:' + character.magaLevel + ' woke:' + character.wokeLevel + ' experience+1:' + newExperienceLevel)
         // Only introduce new characters that were not introduced before
-        if (character.magaLevel < experienceLevel+1 && scene.sharedData.ideology.faction == 'maga') { return };
-        if (character.wokeLevel < experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') { return };
-      
+        if (character.magaLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'maga') { return };
+        if (character.wokeLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'woke') { return };
+
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
         // Set text color based on affiliation
@@ -113,13 +115,13 @@ export function introduceCharacters(scene, characters, sharedData) {
             "diplomacy" : 0.16,
             "military" : 0.13
          };
-  
+
         // Create the scaleFactor object with substructures
         let scaleFactor = {
             helps: scaleTable[character.helps],
             hurts: scaleTable[character.hurts]
         };
-  
+
          if (character.powerTokenType == 'type_3') {
              tmpHelp = 'hacker';
              scaleFactor.helps = 0.19;
@@ -140,11 +142,11 @@ export function introduceCharacters(scene, characters, sharedData) {
         }
         let icon = scene.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor.helps/2);
         let hatType = scene.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), factionIcon).setScale(.1);
-  
+
         //character.charText = characterText; // back reference to text so we can find the location later
-  
+
         createCharacterTooltip(scene, character, 50+xOffset, Math.min(scene.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText, scaleFactor, tmpHelp);
-  
+
         characterText.on('pointerover', () => enterButtonHoverState(characterText));
         characterText.on('pointerout', () => enterButtonRestState(characterText, textColor));
     });
@@ -217,7 +219,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         backstoryBox.setOrigin(0.5, 0);
         backstoryBox.setVisible(false);
         backstoryBox.setDepth(1);
-      
+
         let backstoryHurtIcon = scene.add.image(x + xOffset, backstoryBox.y + backstoryBox.displayHeight, character.hurts);  // Position the icon at the original y position
         backstoryHurtIcon.setScale(scaleFactor.hurts);  // scale the icon
         backstoryHurtIcon.setOrigin(0.5, 1);  // change origin to bottom center

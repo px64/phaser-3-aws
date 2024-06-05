@@ -125,11 +125,13 @@ export class Politics extends BaseScene {
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
             this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
-        
+
             console.log ('total capital = ' + this.totalPoliticalCapital);
             this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
-            if (this.totalPoliticalCapital / 30 != this.sharedData.totalPoliticalCapital/30)
+            if (Math.floor(this.totalPoliticalCapital / 60) != Math.floor(this.sharedData.totalPoliticalCapital/60))
             {
+                // Save the updated sharedData for characterintroduction
+                this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
                 // Launch CharacterIntroductionScene
                 this.scene.launch('CharacterIntroductionScene', {
                     sharedData: this.sharedData,
@@ -140,6 +142,9 @@ export class Politics extends BaseScene {
                     }
                 });
             }
+            else {
+                this.recreateIcons();
+            }
         }
     }
 
@@ -147,7 +152,7 @@ export class Politics extends BaseScene {
 
         // Save the updated sharedData for next time
         this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
-        
+
         // Recreate the icons with the saved state
         for (let key in this.sharedData.icons) {
             let iconData = this.sharedData.icons[key];
@@ -728,9 +733,10 @@ export class Politics extends BaseScene {
         // The plan: Each character is assigned a maga, woke, and independent level.  Level 1 characters appear at the beginning.
         // As you advance to the next level, new characters are added to your arsenal
         // to go up a level you get political experience points -- total political capital earned so far!
+        console.log('this.totalPoliticalCapital = ' + this.totalPoliticalCapital);
+        let experienceLevel = Math.floor(this.totalPoliticalCapital/60);
+        console.log('experienceLevel = ' + experienceLevel);
 
-        let experienceLevel = this.totalPoliticalCapital/30;
-        
         characters.forEach((character, index) => {
             let matchHelps = false;
             let matchHurts = false;
@@ -1778,7 +1784,6 @@ export class Politics extends BaseScene {
 
             // Group the text, outline, and rectangle into a single container
             if (tokenIcon) { // ... and group tokenIcon too if it exists
-                console.log(tokenIcon);
                 let tokenIconTween = scene.tweens.add({
                     targets: tokenIcon, // object that the tween affects
                     scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
@@ -2020,13 +2025,11 @@ export class Politics extends BaseScene {
                 character.value = value;
                 if (character.endorsement + value > 2){
                     undoCheck = true;
-                    console.log('fully endorsed and helpful token generated.  undo check');
                 } else {
                     // If we are out of political capital, undo the check
                     undoCheck = updateCharVal(character, value, characterText);
                 }
                 if (undoCheck == true) {
-                    console.log('undo check!');
                     checkboxUnchecked.setVisible(true);
                     checkboxChecked.setVisible(false);
                     character.value = 0;
