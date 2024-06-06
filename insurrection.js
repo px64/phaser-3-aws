@@ -170,6 +170,7 @@ export class Insurrection extends BaseScene {
             }
             // If Putie has only a few territories, then check collapse all the time
             // If Putie has a lot of territories, then only check for collapse 50% of the time (just to give the player a chance)
+            /*
             if (this.sharedData.putieTerritories < territories.length/2 || Math.random() < .5) {
                 for (let key in this.sharedData.icons) {
                     let iconData = this.sharedData.icons[key];
@@ -240,6 +241,88 @@ export class Insurrection extends BaseScene {
                     }
                 }
             }
+            */
+            if (this.sharedData.putieTerritories < territories.length / 2 || Math.random() < 0.5) {
+                for (let key in this.sharedData.icons) {
+                    let iconData = this.sharedData.icons[key];
+                    if (Math.abs(iconData.maga - iconData.woke) > this.difficultyLevel().collapseImbalance) {
+                        console.log('collapse! health: ' + iconData.health + ' maga: ' + iconData.maga + ' woke: ' + iconData.woke);
+                        this.sharedData.putieTerritories++;
+                        this.putieTerritories = this.sharedData.putieTerritories;
+                        iconData.maga = 0;
+                        iconData.woke = 0;
+                        iconData.health = 5;
+                        ///
+                        let size = 2;
+                        let numExplosions = 8;
+                        let lifeSpan = 400;
+                        let volume = 25;
+                        let delay = 20;
+                        let angleRange = { min: 0, max: 360 };
+                        let speedRange = { min: 225 - size * 20, max: 375 - size * 20 };
+                        let velocityRange = { min: 0, max: 0 };
+                        const createExplosion = (x, y) => {
+                            for (let i = 0; i < numExplosions; i++) {
+                                setTimeout(() => {
+                                    let emitter = this.add.particles(400, 250, 'flares', {
+                                        frame: ['red', 'yellow', 'green'],
+                                        lifespan: lifeSpan,
+                                        speed: speedRange,
+                                        scale: { start: 0.25, end: 0 }, // Reduced scale values
+                                        gravityY: 250,
+                                        blendMode: 'ADD',
+                                        angle: angleRange,
+                                        velocityX: velocityRange,
+                                        velocityY: velocityRange,
+                                        emitting: false
+                                    });
+                                    emitter.setPosition(x + Phaser.Math.Between(-volume, volume),
+                                                        y + Phaser.Math.Between(-volume, volume));
+                                    emitter.explode(16);
+                                }, i * delay); // Delay in milliseconds
+                            }
+                        };
+                        let originalY = iconData.icon.y;
+                        let tweenCompleted = false;
+            
+                        // Collapse the sprite from top to bottom and create fire and explosion effects
+                        this.tweens.add({
+                            targets: iconData.icon,
+                            y: iconData.icon.y + iconData.icon.displayHeight / 2,
+                            displayHeight: 0,
+                            ease: 'Power1',
+                            duration: 1000, // Adjust the duration as needed
+                            onStart: function() {
+                                // Start fire and explosion effects
+                                createExplosion(iconData.icon.x, iconData.icon.y);
+                            },
+                            onComplete: () => {
+                                // Reset the icon's position and size after the collapse
+                                iconData.icon.y = originalY;
+                                iconData.icon.scaleY = 1;
+                                tweenCompleted = true;
+                            }
+                        });
+            
+                        const checkAndProceed = () => {
+                            if (tweenCompleted) {
+                                this.scene.get('TutorialScene').setup(this.sharedData);
+                                if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
+                                    this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
+                                } else {
+                                    this.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
+                                }
+                            } else {
+                                setTimeout(checkAndProceed, 100); // Check again after a short delay
+                            }
+                        };
+            
+                        setTimeout(checkAndProceed, 1000); // Start checking after 1000ms
+                        return;
+                    }
+                }
+            }
+
             let sanity_check = Math.random();
             // If you spent all your capital and it's early in the game then you need more capital!
             // Better would be the dilemma screen giving you lots of capital so it doesn't have to be about the aliens
