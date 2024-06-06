@@ -309,6 +309,7 @@ export class Insurrection extends BaseScene {
                     if (tweenCompleted) {
                         // Add code here to have Putie move in and take over a territory
                         createPutieThreat(scene);
+                        tweenCompleted = false;
                     } else if (scene.putieCompleted) {
                         scene.scene.get('TutorialScene').setup(scene.sharedData);
                         if (scene.sharedData.putieTerritories + scene.sharedData.alienTerritories < territories.length) {
