@@ -336,7 +336,8 @@ export class Insurrection extends BaseScene {
                     let iconData = this.sharedData.icons[key];
                     if (Math.abs(iconData.maga - iconData.woke) > this.difficultyLevel().collapseImbalance) {
                         handleCollapse(this, iconData, key, territories, createPutieThreat);
-                        //return; //JCS test
+                        this.switchScene = true;
+                        return;
                     }
                 }
             }
@@ -454,7 +455,8 @@ export class Insurrection extends BaseScene {
                     let iconData = this.sharedData.icons[key];
                     if (iconData.health < 1 || Math.abs(iconData.maga - iconData.woke) > 100 || iconData.maga + iconData.woke > 145) {
                         handleCollapse(this, iconData, key, territories, createPutieThreat);
-                        // return; // JCS test
+                        this.switchScene = true;
+                        return;
                     }
                 }
 
