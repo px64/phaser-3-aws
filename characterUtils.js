@@ -30,6 +30,11 @@ export class CharacterIntroductionScene extends Phaser.Scene {
                     this.callback(this.sharedData);
                 }
             });
+        } else {
+            // If no characters are introduced, proceed back to the previous scene immediately
+            if (this.callback) {
+                this.callback(this.sharedData);
+            }
         }
     }
 }
