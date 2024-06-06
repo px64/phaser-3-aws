@@ -306,11 +306,15 @@ export class Insurrection extends BaseScene {
                 });
             
                 const checkAndProceed = () => {
+                    console.log('checkandProceed');
                     if (tweenCompleted) {
+                        console.log('tweenCompleted');
                         // Add code here to have Putie move in and take over a territory
                         createPutieThreat(scene);
                         tweenCompleted = false;
+                        console.log('putiethreat has been created');
                     } else if (scene.putieCompleted) {
+                        console.log('putiethreat complete');
                         scene.scene.get('TutorialScene').setup(scene.sharedData);
                         if (scene.sharedData.putieTerritories + scene.sharedData.alienTerritories < territories.length) {
                             scene.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
@@ -318,6 +322,7 @@ export class Insurrection extends BaseScene {
                             scene.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                         }
                     } else {
+                        console.log('keep checking...');
                         setTimeout(checkAndProceed, 100); // Check again after a short delay
                     }
                 };
@@ -331,7 +336,7 @@ export class Insurrection extends BaseScene {
                     let iconData = this.sharedData.icons[key];
                     if (Math.abs(iconData.maga - iconData.woke) > this.difficultyLevel().collapseImbalance) {
                         handleCollapse(this, iconData, key, territories, createPutieThreat);
-                        return;
+                        //return; //JCS test
                     }
                 }
             }
@@ -449,7 +454,7 @@ export class Insurrection extends BaseScene {
                     let iconData = this.sharedData.icons[key];
                     if (iconData.health < 1 || Math.abs(iconData.maga - iconData.woke) > 100 || iconData.maga + iconData.woke > 145) {
                         handleCollapse(this, iconData, key, territories, createPutieThreat);
-                        return;
+                        // return; // JCS test
                     }
                 }
 
@@ -548,6 +553,7 @@ export class Insurrection extends BaseScene {
         
                 // Transition to the next scene
                 scene.putieCompleted = true;
+                console.log('putie has made contact');
             });
         }
             
