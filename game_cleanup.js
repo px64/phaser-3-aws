@@ -525,11 +525,15 @@ class TutorialScene extends BaseScene {
                 }
             }
         }, this);
-
+        // Define the switchScene function
+        const switchScene = (sceneName) => {
+            this.scene.get(sceneName).setup(this.sharedData);
+            this.scene.start(sceneName);
+        };
         // Setup a timeout to automatically switch scenes if there is no interaction
         this.sceneSwitchTimeout = setTimeout(() => {
             if (data.nextScene !== 'youLose' && data.nextScene !== 'dilemmaOrInsurrection') {
-                switchScene.call(this, 'politics');
+                switchScene.call('politics');
             } else if (data.nextScene === 'dilemmaOrInsurrection') {
                 handleDilemmaOrInsurrection.call(this);
             }

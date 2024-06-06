@@ -71,6 +71,7 @@ export class Insurrection extends BaseScene {
                 this.load.image('maga_protest', 'assets/maga_protest.jpg');
                 this.load.image('woke_riot', 'assets/woke_riot.jpg');
                 this.load.image('maga_riot', 'assets/maga_riot.jpg');
+                this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
         }
         //====================================================================================
         //
@@ -179,15 +180,67 @@ export class Insurrection extends BaseScene {
                         iconData.maga = 0;
                         iconData.woke = 0;
                         iconData.health = 5;
+                        ///
+                        let size = 2;
+                        let numExplosions = 8;
+                        let lifeSpan = 400;
+                        let volume = 25;
+                        let delay = 20;
+                        let angleRange = { min: 0, max: 360};
+                        let speedRange = { min: 225-size*20, max: 375-size*20 };
+                        let velocityRange = {min: 0, max: 0 };
+                        const createExplosion = (x, y) => {
+                            for (let i = 0; i < numExplosions; i++) {
+                                setTimeout(() => {
+                                    let emitter = this.add.particles(400, 250, 'flares', {
+                                        frame: [ 'red', 'yellow', 'green' ],
+                                        lifespan: lifeSpan,
+                                        speed: speedRange,
+                                        scale: { start: 0.25, end: 0 }, // Reduced scale values
+                                        gravityY: 250,
+                                        blendMode: 'ADD',
+                                        angle: angleRange,
+                                        velocityX: velocityRange,
+                                        velocityY: velocityRange,
+                                        emitting: false
+                                    });
+                                    emitter.setPosition(x + Phaser.Math.Between(-volume, volume),
+                                                        y + Phaser.Math.Between(-volume,volume));
+                                    emitter.explode(16);
+                                }, i * delay); // Delay in milliseconds
+                            }
+                        }
+
+                        // Collapse the sprite from top to bottom and create fire and explosion effects
+                        this.tweens.add({
+                            targets: iconData.icon,
+                            y: iconData.icon.y + iconData.icon.displayHeight / 2,
+                            displayHeight: 0,
+                            ease: 'Power1',
+                            duration: 1000, // Adjust the duration as needed
+                            onStart: function() {
+                                // Start fire and explosion effects
+                                createExplosion(iconData.icon.x, iconData.icon.y);
+                            },
+                            onComplete: function() {
+                                // Optionally, you can destroy the sprite after the animation is complete
+                                //mySprite.destroy();
+                            }
+                        });
+
+                        // Store the original position of the icon
+                        let originalY = iconData.icon.y;
+
                         // Create a tween to scale the sprite's height down to 0
                         this.tweens.add({
                             targets: iconData.icon,
                             scaleY: 0,
                             ease: 'Power1',
                             duration: 1000, // Adjust the duration as needed
-                            onComplete: function() {
-                                // Optionally, you can destroy the sprite after the animation is complete
-                                //mySprite.destroy();
+                            onComplete: () => {
+                                // Reset the icon's position and size after the collapse
+                                iconData.icon.y = originalY;
+                                iconData.icon.displayHeight = iconData.icon.height;
                             }
                         });
                         setTimeout(() => {
