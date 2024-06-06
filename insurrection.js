@@ -503,7 +503,7 @@ export class Insurrection extends BaseScene {
             let testTerritory = territories.length - 1; // Start at the end of the territories array
             
             // Make sure number of putie territories is accurate in case an alien claimed something
-            while (putieCount < scene.putieTerritories && testTerritory >= 0) {
+            while (putieCount < (scene.putieTerritories+1) && testTerritory >= 0) {
                 if (territories[testTerritory].faction !== "alien") {
                     territories[testTerritory].faction = "putieVille";
                     territories[testTerritory].name = "PutieVille";
