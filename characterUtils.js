@@ -38,6 +38,25 @@ export function introduceCharacters(scene, characters, sharedData) {
   let xOffset = 0;
   let xSpriteOffset = 0;
 
+  let experienceLevel = Math.floor(sharedData.totalPoliticalCapital/60);
+  const newExperienceLevel = Math.floor(experienceLevel+1);
+  console.log('experience level = ' + experienceLevel);
+    
+  // Early return if all characters' experience levels are less than newExperienceLevel for the relevant faction
+  const allCharactersBelowNewExperience = characters.every(character => {
+        if (sharedData.ideology.faction == 'maga') {
+            return character.magaLevel < newExperienceLevel;
+        } else if (sharedData.ideology.faction == 'woke') {
+            return character.wokeLevel < newExperienceLevel;
+        } else if (sharedData.ideology.faction == 'none') {
+            return character.fogLevel < newExperienceLevel;
+        }
+        return true; // Default case
+  });
+    
+  if (allCharactersBelowNewExperience) {
+      return;
+  }
   scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'These Advocates Join Your Cause', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
   let endorseMaga = scene.add.text(40, 200, 'MAGA',
@@ -60,10 +79,6 @@ export function introduceCharacters(scene, characters, sharedData) {
   underline.closePath();
   underline.strokePath();
 
-  let experienceLevel = Math.floor(sharedData.totalPoliticalCapital/60);
-
-  console.log('experience level = ' + experienceLevel);
-
   characters.forEach((character, index) => {
         let characterText;
 
@@ -82,12 +97,11 @@ export function introduceCharacters(scene, characters, sharedData) {
         if (character.wokeLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
         if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
 
-        const newExperienceLevel = Math.floor(experienceLevel+1);
-
         console.log('charLevel: maga:' + character.magaLevel + ' woke:' + character.wokeLevel + ' experience+1:' + newExperienceLevel)
         // Only introduce new characters that were not introduced before
         if (character.magaLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'maga') { return };
         if (character.wokeLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'woke') { return };
+        if (character.fogLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'none') { return }; 
 
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
