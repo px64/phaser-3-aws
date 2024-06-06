@@ -179,12 +179,25 @@ export class Insurrection extends BaseScene {
                         iconData.maga = 0;
                         iconData.woke = 0;
                         iconData.health = 5;
-                        this.scene.get('TutorialScene').setup(this.sharedData);
-                        if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
-                            this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
-                        } else {
-                            this.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
-                        }
+                        // Create a tween to scale the sprite's height down to 0
+                        this.tweens.add({
+                            targets: iconData.icon,
+                            scaleY: 0,
+                            ease: 'Power1',
+                            duration: 1000, // Adjust the duration as needed
+                            onComplete: function() {
+                                // Optionally, you can destroy the sprite after the animation is complete
+                                //mySprite.destroy();
+                            }
+                        });
+                        setTimeout(() => {
+                            this.scene.get('TutorialScene').setup(this.sharedData);
+                            if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
+                                this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
+                            } else {
+                                this.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
+                            }
+                        }, 1000 ); // Delay exit by 1000ms
                         //
                         // this.physics.world.gravity.y = 500;
                         //
