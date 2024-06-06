@@ -407,14 +407,14 @@ export class Insurrection extends BaseScene {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
         function createPutieThreat(scene) {
+            let territoryWidth = scene.sys.game.config.width / territories.length;
             // Calculate the putie territory with the lowest x value
             let targetTerritory = null;
             let lowestX = Infinity;
             let i = 0;
             for (i = 0; i < territories.length; i++) {
-                if (territories[i].faction === "putieVille" && territories[i].x < lowestX) {
-                    targetTerritory = territories[i];
-                    lowestX = territories[i].x;
+                if (territories[i].faction === "putieVille" ) {
+                    break;
                 }
             }
             
@@ -422,21 +422,21 @@ export class Insurrection extends BaseScene {
             lowestX = territories[i-1].x;
         
             // Create the putie threat sprite off the left side of the screen
-            let mySprite = scene.physics.add.sprite(-50, targetTerritory.y, 'putieBase').setScale(0.5);
+            let mySprite = scene.physics.add.sprite(this.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
         
             // Set the bounce property
             mySprite.setBounce(1.02);
         
             // Set the sprite to collide with the world bounds
-            mySprite.setCollideWorldBounds(true);
+            //mySprite.setCollideWorldBounds(true);
         
             // Calculate the velocity needed to reach the target territory
-            let targetX = targetTerritory.x;
+            let targetX = targetTerritory.x+territoryWidth/2;
             let targetY = targetTerritory.y;
         
             // Calculate the velocity vector
-            let velocityX = (targetX - mySprite.x) / 100; // Adjust the divisor to control speed
-            let velocityY = (targetY - mySprite.y) / 100;
+            let velocityX = (targetX - mySprite.x) / 5; // Adjust the divisor to control speed
+            let velocityY = (targetY - mySprite.y) / 5;
         
             // Set the initial velocity of the sprite
             mySprite.setVelocity(velocityX, velocityY);
