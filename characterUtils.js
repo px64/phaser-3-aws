@@ -17,18 +17,20 @@ export class CharacterIntroductionScene extends Phaser.Scene {
 
     create() {
         // Call the introduceCharacters method
-        introduceCharacters(this, characters, this.sharedData);
+        this.charactersIntroduced = introduceCharacters(this, characters, this.sharedData);
 
         // Create a button to proceed back to the previous scene
-        let proceedButton = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 50, 'Proceed', { fontSize: '32px', fill: '#fff' })
-            .setOrigin(0.5)
-            .setInteractive();
+        if (this.charactersIntroduced) {
+            let proceedButton = this.add.text(this.sys.game.config.width / 2, this.sys.game.config.height - 50, 'Proceed', { fontSize: '32px', fill: '#fff' })
+                .setOrigin(0.5)
+                .setInteractive();
 
-        proceedButton.on('pointerdown', () => {
-            if (this.callback) {
-                this.callback(this.sharedData);
-            }
-        });
+            proceedButton.on('pointerdown', () => {
+                if (this.callback) {
+                    this.callback(this.sharedData);
+                }
+            });
+        }
     }
 }
 
@@ -55,7 +57,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   });
     
   if (allCharactersBelowNewExperience) {
-      return;
+      return false;
   }
   scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'These Advocates Join Your Cause', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
@@ -164,7 +166,9 @@ export function introduceCharacters(scene, characters, sharedData) {
         characterText.on('pointerover', () => enterButtonHoverState(characterText));
         characterText.on('pointerout', () => enterButtonRestState(characterText, textColor));
     });
-
+    
+    return true; // Indicate that characters were introduced
+    
     //====================================================================================
     //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
     //====================================================================================
