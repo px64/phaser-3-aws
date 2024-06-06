@@ -210,7 +210,7 @@ export class Insurrection extends BaseScene {
                                 }, i * delay); // Delay in milliseconds
                             }
                         }
-
+                        let originalY = iconData.icon.y;
                         // Collapse the sprite from top to bottom and create fire and explosion effects
                         this.tweens.add({
                             targets: iconData.icon,
@@ -222,25 +222,10 @@ export class Insurrection extends BaseScene {
                                 // Start fire and explosion effects
                                 createExplosion(iconData.icon.x, iconData.icon.y);
                             },
-                            onComplete: function() {
-                                // Optionally, you can destroy the sprite after the animation is complete
-                                //mySprite.destroy();
-                            }
-                        });
-
-                        // Store the original position of the icon
-                        let originalY = iconData.icon.y;
-
-                        // Create a tween to scale the sprite's height down to 0
-                        this.tweens.add({
-                            targets: iconData.icon,
-                            scaleY: 0,
-                            ease: 'Power1',
-                            duration: 1000, // Adjust the duration as needed
                             onComplete: () => {
                                 // Reset the icon's position and size after the collapse
                                 iconData.icon.y = originalY;
-                                iconData.icon.displayHeight = iconData.icon.height;
+                                iconData.icon.scaleY = 1;
                             }
                         });
                         setTimeout(() => {
@@ -251,22 +236,6 @@ export class Insurrection extends BaseScene {
                                 this.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                             }
                         }, 1000 ); // Delay exit by 1000ms
-                        //
-                        // this.physics.world.gravity.y = 500;
-                        //
-                        // for (let i = 0; i < 8; i++) {
-                        //     // Create the sprite at the center of the screen
-                        //     let mySprite = this.physics.add.sprite(this.cameras.main.centerX, this.sys.game.config.height - 100, 'putieBase').setScale(.1);
-                        //
-                        //     // Set the bounce property
-                        //     mySprite.setBounce(1.02);
-                        //
-                        //     // Set the sprite to collide with the world bounds
-                        //     mySprite.setCollideWorldBounds(true);
-                        //
-                        //     // Give the sprite an initial velocity
-                        //     mySprite.setVelocity(100, -20);
-                        //}
                         return;
                     }
                 }
