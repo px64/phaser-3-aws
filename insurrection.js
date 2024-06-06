@@ -299,13 +299,14 @@ export class Insurrection extends BaseScene {
                             onComplete: () => {
                                 // Reset the icon's position and size after the collapse
                                 iconData.icon.y = originalY;
-                                iconData.icon.scaleY = 1;
+                                //iconData.icon.scaleY = 1;  // JCS: test not resetting scaleY
                                 tweenCompleted = true;
                             }
                         });
             
                         const checkAndProceed = () => {
                             if (tweenCompleted) {
+                                // Add code here to have Putie move in and take over a territory
                                 this.scene.get('TutorialScene').setup(this.sharedData);
                                 if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
                                     this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
@@ -317,7 +318,7 @@ export class Insurrection extends BaseScene {
                             }
                         };
             
-                        setTimeout(checkAndProceed, 1000); // Start checking after 1000ms
+                        setTimeout(checkAndProceed, 1005); // Start checking after 1005ms
                         return;
                     }
                 }
