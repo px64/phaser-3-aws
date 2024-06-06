@@ -422,7 +422,7 @@ export class Insurrection extends BaseScene {
             lowestX = territories[i-1].x;
         
             // Create the putie threat sprite off the left side of the screen
-            let mySprite = scene.physics.add.sprite(this.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
+            let mySprite = scene.physics.add.sprite(scene.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
         
             // Set the bounce property
             mySprite.setBounce(1.02);
@@ -447,7 +447,7 @@ export class Insurrection extends BaseScene {
                 mySprite.destroy();
         
                 // Transition to the next scene
-                this.putieCompleted = true;
+                scene.putieCompleted = true;
             });
         }
             
