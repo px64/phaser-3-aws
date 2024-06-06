@@ -513,6 +513,8 @@ export class Insurrection extends BaseScene {
                 testTerritory--;
             }      
 
+            let foo = testTerritory+1;
+            console.log('targetTerritory is territory number ' + foo);
             targetTerritory = territories[testTerritory+1];
             
             // Create the putie threat sprite off the left side of the screen
@@ -535,6 +537,7 @@ export class Insurrection extends BaseScene {
             // Set the initial velocity of the sprite
             mySprite.setVelocity(velocityX, velocityY);
 
+            console.log('add collider to hit ' + targetTerritory);
             // Add a collider to detect when the sprite reaches the target territory
             scene.physics.add.collider(mySprite, targetTerritory, () => {
                 // Make the sprite disappear
