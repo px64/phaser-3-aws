@@ -511,15 +511,9 @@ export class Insurrection extends BaseScene {
                     putieCount++;
                 }
                 testTerritory--;
-            }                                                                                    
-            
-            // Find the putie territory with the lowest x value
-            for (let i = 0; i < territories.length; i++) {
-                if (territories[i].faction === "putieVille" && territories[i].x < lowestX) {
-                    lowestX = territories[i].x;
-                    targetTerritory = territories[i];
-                }                        
-            }
+            }      
+
+            targetTerritory = territories[testTerritory+1];
             
             // Create the putie threat sprite off the left side of the screen
             let mySprite = scene.physics.add.sprite(scene.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
