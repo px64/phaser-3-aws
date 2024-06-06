@@ -300,21 +300,15 @@ export class Insurrection extends BaseScene {
                     onComplete: () => {
                         // Reset the icon's position and size after the collapse
                         iconData.icon.y = originalY;
-                        //iconData.icon.scaleY = 1;  // JCS: test not resetting scaleY
+                        createPutieThreat(scene);
                         tweenCompleted = true;
                     }
                 });
             
                 const checkAndProceed = () => {
-                    console.log('checkandProceed');
-                    if (tweenCompleted) {
-                        console.log('tweenCompleted');
-                        // Add code here to have Putie move in and take over a territory
-                        createPutieThreat(scene);
-                        tweenCompleted = false;
-                        console.log('putiethreat has been created');
-                    } else if (scene.putieCompleted) {
-                        console.log('putiethreat complete');
+                    if (tweenCompleted && scene.putieCompleted) {
+                        // Show the collapse screen
+                        scene.collapseScreenShown = true;
                         scene.scene.get('TutorialScene').setup(scene.sharedData);
                         if (scene.sharedData.putieTerritories + scene.sharedData.alienTerritories < territories.length) {
                             scene.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
@@ -322,7 +316,6 @@ export class Insurrection extends BaseScene {
                             scene.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                         }
                     } else {
-                        console.log('keep checking...');
                         setTimeout(checkAndProceed, 100); // Check again after a short delay
                     }
                 };
