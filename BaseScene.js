@@ -371,15 +371,17 @@ export default class BaseScene extends Phaser.Scene {
                 // Adjust the size of the icons if necessary
                 icon.setScale(ICON_SCALE);
         
-                // Add the hopping tween to the icon
+                // Add the hopping mad tween to the icon
                 scene.tweens.add({
                     targets: icon,
-                    y: icon.y - 10, // Adjust the amount of hop as needed
+                    y: icon.y - 20, // Increase the hop height
+                    x: icon.x + Phaser.Math.Between(-5, 5), // Add a slight shake effect
                     yoyo: true,
                     repeat: -1,
-                    ease: 'Sine.easeInOut',
-                    duration: 500, // Duration of the hop
-                    delay: Math.random() * 1000 // Random delay to desynchronize the hops
+                    ease: 'Power1',
+                    duration: 300, // Reduce the duration for a faster hop
+                    delay: Math.random() * 500, // Random delay to desynchronize the hops
+                    repeatDelay: 100 // Add a slight delay between hops
                 });
         
                 littleHats.push(icon);
