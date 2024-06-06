@@ -284,6 +284,7 @@ export class Insurrection extends BaseScene {
                         };
                         let originalY = iconData.icon.y;
                         let tweenCompleted = false;
+                        this.putieCompleted = false;
             
                         // Collapse the sprite from top to bottom and create fire and explosion effects
                         this.tweens.add({
@@ -307,6 +308,8 @@ export class Insurrection extends BaseScene {
                         const checkAndProceed = () => {
                             if (tweenCompleted) {
                                 // Add code here to have Putie move in and take over a territory
+                                createPutieThreat(this);
+                            } else if (this.putieCompleted) {
                                 this.scene.get('TutorialScene').setup(this.sharedData);
                                 if (this.sharedData.putieTerritories + this.sharedData.alienTerritories < territories.length) {
                                     this.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
@@ -403,6 +406,50 @@ export class Insurrection extends BaseScene {
         function capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
+        function createPutieThreat(scene) {
+            // Calculate the putie territory with the lowest x value
+            let targetTerritory = null;
+            let lowestX = Infinity;
+            for (let i = 0; i < territories.length; i++) {
+                if (territories[i].faction === "putieVille" && territories[i].x < lowestX) {
+                    targetTerritory = territories[i];
+                    lowestX = territories[i].x;
+                }
+            }
+            
+            targetTerritory = territories[i-1];
+            lowestX = territories[i-1].x;
+        
+            // Create the putie threat sprite off the left side of the screen
+            let mySprite = scene.physics.add.sprite(-50, targetTerritory.y, 'putieBase').setScale(0.5);
+        
+            // Set the bounce property
+            mySprite.setBounce(1.02);
+        
+            // Set the sprite to collide with the world bounds
+            mySprite.setCollideWorldBounds(true);
+        
+            // Calculate the velocity needed to reach the target territory
+            let targetX = targetTerritory.x;
+            let targetY = targetTerritory.y;
+        
+            // Calculate the velocity vector
+            let velocityX = (targetX - mySprite.x) / 100; // Adjust the divisor to control speed
+            let velocityY = (targetY - mySprite.y) / 100;
+        
+            // Set the initial velocity of the sprite
+            mySprite.setVelocity(velocityX, velocityY);
+
+            // Add a collider to detect when the sprite reaches the target territory
+            scene.physics.add.collider(mySprite, targetTerritory, () => {
+                // Make the sprite disappear
+                mySprite.destroy();
+        
+                // Transition to the next scene
+                this.putieCompleted = true;
+            });
+        }
+            
         //====================================================================================
         //
         // function governmentGrowth()
