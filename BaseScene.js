@@ -378,10 +378,10 @@ export default class BaseScene extends Phaser.Scene {
                     x: icon.x + Phaser.Math.Between(-5, 5), // Add a slight shake effect
                     yoyo: true,
                     repeat: -1,
-                    ease: 'Power1',
+                    ease: 'Bounce.easeOut', // Use Bounce easing for jumping effect
                     duration: 300, // Reduce the duration for a faster hop
                     delay: Math.random() * 500, // Random delay to desynchronize the hops
-                    repeatDelay: 100 // Add a slight delay between hops
+                    repeatDelay: 300 // Add a slight delay between hops
                 });
         
                 littleHats.push(icon);
