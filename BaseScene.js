@@ -374,20 +374,22 @@ export default class BaseScene extends Phaser.Scene {
                 const jumpHeight = 20; // Adjust the height of the jump
                 const durationUp = 150; // Duration for the upward movement
                 const durationDown = 300; // Duration for the downward movement with bounce
-        
+                // Store the original position
+                const originalY = icon.y;
+                
                 // Create an infinite loop of jumping
                 const jump = () => {
                     // Add the upward movement tween
                     scene.tweens.add({
                         targets: icon,
-                        y: icon.y - jumpHeight,
+                        y: originalY - jumpHeight,
                         ease: 'Power1', // Fast upward movement
                         duration: durationUp,
                         onComplete: () => {
                             // Add the downward movement tween with bounce effect
                             scene.tweens.add({
                                 targets: icon,
-                                y: icon.y,
+                                y: originalY,
                                 ease: 'Bounce.easeOut', // Bounce effect on downward movement
                                 duration: durationDown,
                                 onComplete: jump // Chain the jump to repeat
