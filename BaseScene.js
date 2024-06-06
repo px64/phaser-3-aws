@@ -363,6 +363,33 @@ export default class BaseScene extends Phaser.Scene {
         // Draw little hats
         function drawIcons(scene, x, y, count, texture, littleHats) {
             for (let i = 0; i < count; i++) {
+                let xOffset = (i % 5) * ICON_SPACING;
+                let yOffset = Math.floor(i / 5) * ICON_SPACING;
+                // Each icon will be positioned slightly to the right of the previous one
+                let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+        
+                // Adjust the size of the icons if necessary
+                icon.setScale(ICON_SCALE);
+        
+                // Add the hopping tween to the icon
+                scene.tweens.add({
+                    targets: icon,
+                    y: icon.y - 10, // Adjust the amount of hop as needed
+                    yoyo: true,
+                    repeat: -1,
+                    ease: 'Sine.easeInOut',
+                    duration: 500, // Duration of the hop
+                    delay: Math.random() * 1000 // Random delay to desynchronize the hops
+                });
+        
+                littleHats.push(icon);
+            }
+            return littleHats;
+        }
+
+        /*
+        function drawIcons(scene, x, y, count, texture, littleHats) {
+            for (let i = 0; i < count; i++) {
                 let xOffset = (i%5) * ICON_SPACING;
                 let yOffset = Math.floor(i/5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
@@ -376,6 +403,7 @@ export default class BaseScene extends Phaser.Scene {
             }
             return littleHats;
         }
+        */
 
     }
 
