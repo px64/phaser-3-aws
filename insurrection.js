@@ -411,16 +411,28 @@ export class Insurrection extends BaseScene {
             // Calculate the putie territory with the lowest x value
             let targetTerritory = null;
             let lowestX = Infinity;
-            let i = 0;
-            for (i = 0; i < territories.length; i++) {
-                if (territories[i].faction === "putieVille" ) {
-                    break;
+            let putieCount = 0;
+            let testTerritory = territories.length - 1; // Start at the end of the territories array
+            
+            // Make sure number of putie territories is accurate in case an alien claimed something
+            while (putieCount < scene.putieTerritories && testTerritory >= 0) {
+                if (territories[testTerritory].faction !== "alien") {
+                    territories[testTerritory].faction = "putieVille";
+                    territories[testTerritory].name = "PutieVille";
+                    territories[testTerritory].color = '0x654321';
+                    putieCount++;
                 }
+                testTerritory--;
+            }                                                                                    
+            
+            // Find the putie territory with the lowest x value
+            for (let i = 0; i < territories.length; i++) {
+                if (territories[i].faction === "putieVille" && territories[i].x < lowestX) {
+                    lowestX = territories[i].x;
+                    targetTerritory = territories[i];
+                }                        
             }
             
-            targetTerritory = territories[i-1];
-            lowestX = territories[i-1].x;
-        
             // Create the putie threat sprite off the left side of the screen
             let mySprite = scene.physics.add.sprite(scene.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
         
