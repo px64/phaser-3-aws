@@ -368,21 +368,30 @@ export default class BaseScene extends Phaser.Scene {
                 // Each icon will be positioned slightly to the right of the previous one
                 let icon = scene.add.image(x + xOffset, y + yOffset, texture);
         
-                // Adjust the size of the icons if necessary
-                icon.setScale(ICON_SCALE);
+                const jumpHeight = 20; // Adjust the height of the jump
+                const durationUp = 150; // Duration for the upward movement
+                const durationDown = 300; // Duration for the downward movement with bounce
         
-                // Add the hopping mad tween to the icon
-                scene.tweens.add({
-                    targets: icon,
-                    y: icon.y - 20, // Increase the hop height
-                    x: icon.x + Phaser.Math.Between(-5, 5), // Add a slight shake effect
-                    yoyo: true,
-                    repeat: -1,
-                    ease: 'Bounce.easeOut', // Use Bounce easing for jumping effect
-                    duration: 300, // Reduce the duration for a faster hop
-                    delay: Math.random() * 500, // Random delay to desynchronize the hops
-                    repeatDelay: 300 // Add a slight delay between hops
-                });
+                // Create an infinite loop of jumping
+                const jump = () => {
+                    // Add the upward movement tween
+                    scene.tweens.add({
+                        targets: icon,
+                        y: icon.y - jumpHeight,
+                        ease: 'Power1', // Fast upward movement
+                        duration: durationUp,
+                        onComplete: () => {
+                            // Add the downward movement tween with bounce effect
+                            scene.tweens.add({
+                                targets: icon,
+                                y: icon.y,
+                                ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                                duration: durationDown,
+                                onComplete: jump // Chain the jump to repeat
+                            });
+                        }
+                    });
+                };
         
                 littleHats.push(icon);
             }
