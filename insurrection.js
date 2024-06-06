@@ -410,7 +410,8 @@ export class Insurrection extends BaseScene {
             // Calculate the putie territory with the lowest x value
             let targetTerritory = null;
             let lowestX = Infinity;
-            for (let i = 0; i < territories.length; i++) {
+            let i = 0;
+            for (i = 0; i < territories.length; i++) {
                 if (territories[i].faction === "putieVille" && territories[i].x < lowestX) {
                     targetTerritory = territories[i];
                     lowestX = territories[i].x;
