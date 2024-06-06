@@ -395,6 +395,9 @@ export default class BaseScene extends Phaser.Scene {
                         }
                     });
                 };
+
+                // Start the jumping animation with a random delay
+                scene.time.delayedCall(Math.random() * 500, jump);
         
                 littleHats.push(icon);
             }
