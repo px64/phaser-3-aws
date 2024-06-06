@@ -1413,7 +1413,7 @@ export const difficultyList = {
         oddsOfAlienAttackFirstRound: 0, // New plan: aliens don't attack immediately: too confusing!
         startingEndorsement: 'all',
         putieThreat: 1,
-        collapseImbalance: 100,
+        collapseImbalance: 10,///100,
         multiplier: 1
     },
     'Going to Need Some Help': {
@@ -1458,7 +1458,7 @@ export const difficultyList = {
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
         putieThreat: 2,
-        collapseImbalance: 80,
+        collapseImbalance: 10,//80,
         multiplier: 3
     }
 };
