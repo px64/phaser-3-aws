@@ -367,6 +367,9 @@ export default class BaseScene extends Phaser.Scene {
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
                 let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+                
+                // Adjust the size of the icons if necessary
+                icon.setScale(ICON_SCALE);
         
                 const jumpHeight = 20; // Adjust the height of the jump
                 const durationUp = 150; // Duration for the upward movement
