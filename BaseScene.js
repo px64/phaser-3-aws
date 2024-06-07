@@ -1452,7 +1452,7 @@ export const difficultyList = {
         alienAttackForCapitalFunc: function(sharedData) {
             return sharedData.MAGAness === 0
                     && sharedData.Wokeness === 0
-                    && sharedData.totalPoliticalCapital < 60
+                    && sharedData.totalPoliticalCapital < 20
                     && sharedData.putieTerritories < territories.length / 2;
         },
         dilemmaOddsFunc: function(sharedData) {

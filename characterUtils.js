@@ -45,7 +45,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   let xOffset = 0;
   let xSpriteOffset = 0;
 
-  let experienceLevel = Math.floor(sharedData.totalPoliticalCapital/60);
+  let experienceLevel = Math.floor(sharedData.totalPoliticalCapital/20);
   const newExperienceLevel = Math.floor(experienceLevel+1);
   console.log('experience level = ' + experienceLevel);
     

@@ -128,7 +128,7 @@ export class Politics extends BaseScene {
 
             console.log ('total capital = ' + this.totalPoliticalCapital);
             //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
-            if (Math.floor(this.totalPoliticalCapital / 60) != Math.floor(this.sharedData.totalPoliticalCapital/60))
+            if (Math.floor(this.totalPoliticalCapital / 20) != Math.floor(this.sharedData.totalPoliticalCapital/20))
             {
                 // Save the updated sharedData for characterintroduction
                 this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
@@ -746,28 +746,9 @@ export class Politics extends BaseScene {
         // As you advance to the next level, new characters are added to your arsenal
         // to go up a level you get political experience points -- total political capital earned so far!
         console.log('this.totalPoliticalCapital = ' + this.totalPoliticalCapital);
-        let experienceLevel = Math.floor(this.totalPoliticalCapital/60);
+        let experienceLevel = Math.floor(this.totalPoliticalCapital/20);
         console.log('experienceLevel = ' + experienceLevel);
-/*
-        characters.forEach((character, index) => {
-            let matchHelps = false;
-            let matchHurts = false;
-            for (let key in this.sharedData.icons) {
-                let iconData = this.sharedData.icons[key];
-                if (character.helps == iconData.iconName) matchHelps = true;
-                if (character.hurts == iconData.iconName) matchHurts = true;
-            };
-            character.dne = false;
-            //console.log(character);
-            //console.log('character.noneLevel = ' + character.fogLevel + '  faction = ' + this.sharedData.ideology.faction);
-            if (character.powerTokenType == 'type_5' && (matchHurts == false || matchHelps == false)) {character.dne = true;}
-            if (character.magaLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'maga') {character.dne = true;}
-            if (character.wokeLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'woke') {character.dne = true;}
-            if (character.fogLevel > experienceLevel+1 && this.sharedData.ideology.faction == 'none') {character.dne = true;}
-            //if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'maga' && character.faction == 'woke') {character.dne = true;}
-            //if ((character.powerTokenType == 'type_3' || character.powerTokenType == 'type_2') && this.sharedData.ideology.faction == 'woke' && character.faction == 'maga') {character.dne = true;}
-        });
-*/
+
         // We have a problem where we are creating the characters and the checkboxes here, but that also includes
         // recreating the characters and keeping the checkbox settings from the previous round.
         // There is a catch-22 where we think the endorsement is 2, so we color it green, but then it gets set to zero.
