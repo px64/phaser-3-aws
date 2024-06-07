@@ -622,8 +622,11 @@ export class Scene2 extends BaseScene {
             } else {
                 this.Wokeness += 10;
             }
+            this.sharedData.totalPoliticalCapital += (this.Wokeness + this.MAGAness - this.sharedData.Wokeness - this.sharedData.MAGAness);
+            console.log('new total political capital = ' + this.sharedData.totalPoliticalCapital);
             this.sharedData.Wokeness = this.Wokeness;
             this.sharedData.MAGAness = this.MAGAness;
+ 
             this.sharedData.icons = this.icons;
             this.cameras.main.fadeOut(3000, 0, 0, 0);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
