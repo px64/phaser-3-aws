@@ -325,7 +325,7 @@ export class Insurrection extends BaseScene {
             this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
             this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
             //console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
-            this.totalPoliticalCapital = Phaser.Math.Clamp(this.totalPoliticalCapital  + thisRoundHealthChange, 0, 100);
+            this.totalPoliticalCapital = Phaser.Math.Clamp(this.sharedData.totalPoliticalCapital  + thisRoundHealthChange, 0, 100);
 
             console.log('total political capital is now '+ this.totalPoliticalCapital);
             polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
