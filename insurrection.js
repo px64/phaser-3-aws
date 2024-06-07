@@ -732,7 +732,6 @@ export class Insurrection extends BaseScene {
                 if (scene.roundThreats == 1) {
                     console.log('all threats destroyed but stay here til time ends anyway');
                     scene.victoryText.destroy();
-                    environmentalImpact();
                     //scene.scene.get('politics').setup(this.sharedData);
                     //scene.scene.start('politics');
                 }
@@ -835,6 +834,7 @@ export class Insurrection extends BaseScene {
                     threat.isDestroyed = true;
                     scene.roundThreats--;
                     if (scene.roundThreats < 2) {
+                        environmentalImpact();
                         scene.time.delayedCall(2000, function() {
                             scene.victoryText.destroy();
                         });
