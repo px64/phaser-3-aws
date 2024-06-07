@@ -142,6 +142,7 @@ export class Politics extends BaseScene {
                 });
             }
             else {
+                this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
                 this.recreateIcons();
             }
         }
