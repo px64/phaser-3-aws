@@ -1399,6 +1399,7 @@ export const difficultyList = {
         alienIncreasePerRound: 1,
         alienDefenseFromSameBase: true,
         militaryAutoSpend: true,
+        militaryAllocationAmount: 10,
         alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
             return sharedData.MAGAness < 4
                     && sharedData.Wokeness < 4
@@ -1421,6 +1422,7 @@ export const difficultyList = {
         alienIncreasePerRound: 2,
         alienDefenseFromSameBase: false,
         militaryAutoSpend: true,
+        militaryAllocationAmount: 10,
         alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
             return sharedData.MAGAness === 0
                     && sharedData.Wokeness === 0
@@ -1446,6 +1448,7 @@ export const difficultyList = {
         alienIncreasePerRound: 3,
         alienDefenseFromSameBase: false,
         militaryAutoSpend: false,
+        militaryAllocationAmount: 38,
         alienAttackForCapitalFunc: function(sharedData) {
             return sharedData.MAGAness === 0
                     && sharedData.Wokeness === 0
