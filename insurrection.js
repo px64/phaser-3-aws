@@ -1068,7 +1068,7 @@ export class Insurrection extends BaseScene {
                     } else {
                         backgroundImage = 'woke_protest';
                     }
-                    switch (Math.floor(nonPutieThreats / 4)) {
+                    switch (Math.floor(nonPutieThreats / 8)) {
                         case 0:
                             message = 'Activists Continue to Apply Pressure';
                             changeBackgroundImage(backgroundImage);
