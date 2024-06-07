@@ -912,7 +912,7 @@ export const characters = [
         endorsement: 5,
         dne: false,
         magaLevel: 1,
-        wokeLevel: 3,
+        wokeLevel: 2,
         fogLevel: 1
     },
     {
@@ -1169,7 +1169,7 @@ export const characters = [
     endorsement: 5,
     dne: false,
     magaLevel: 4,
-    wokeLevel: 2,
+    wokeLevel: 3,
     fogLevel: 2
 },
 {
