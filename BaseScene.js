@@ -912,7 +912,7 @@ export const characters = [
         endorsement: 5,
         dne: false,
         magaLevel: 1,
-        wokeLevel: 2,
+        wokeLevel: 3,
         fogLevel: 1
     },
     {
@@ -1014,7 +1014,7 @@ export const characters = [
         prevValue: 0,
         endorsement: 5,
         dne: false,
-        magaLevel: 2,
+        magaLevel: 3,
         wokeLevel: 1,
         fogLevel: 1
     },
@@ -1042,7 +1042,7 @@ export const characters = [
         endorsement: 5,
         dne: false,
         magaLevel: 1,
-        wokeLevel: 2,
+        wokeLevel: 3,
         fogLevel: 1
 },
 {
@@ -1161,7 +1161,7 @@ export const characters = [
         "but her efforts can be expensive and put a significant strain on the economy."
     ],
     power: 'Climatology\nand Environmental Activism',
-    helps: 'environment',
+    helps: 'government',
     hurts: 'economy',
     powerTokenType: "type_5",
     value: 0,
@@ -1218,7 +1218,7 @@ export const characters = [
     endorsement: 5,
     dne: false,
     magaLevel: 1,
-    wokeLevel: 3,
+    wokeLevel: 2,
     fogLevel: 2
 },
 
