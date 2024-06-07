@@ -268,7 +268,7 @@ export class Insurrection extends BaseScene {
             let sanity_check = Math.random();
             // If you spent all your capital and it's early in the game then you need more capital!
             // Better would be the dilemma screen giving you lots of capital so it doesn't have to be about the aliens
-            sanity_check = this.difficultyLevel().alienAttackForCapital ? 0 : sanity_check;
+            sanity_check = this.difficultyLevel().alienAttackForCapital ? sanity_check*.8 : sanity_check;
 
             // if (this.sharedData.MAGAness == 0 && this.sharedData.Wokeness == 0 && this.sharedData.putieTerritories < territories.length/2) {
             //                 sanity_check = 0;
@@ -277,7 +277,7 @@ export class Insurrection extends BaseScene {
             if ((this.sharedData.year > 2030) && (sanity_check < this.difficultyLevel().oddsOfAlienAttack)  && this.switchScene == false) {
                 this.switchScene = true;
                 console.log('go to Aliens Attack screen.  this.switchscene = true');
-                this.cameras.main.fadeOut(2000, 0, 0, 0);
+                this.cameras.main.fadeOut(8000, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('AliensAttack').setup(this.sharedData);
                     this.scene.start('AliensAttack');

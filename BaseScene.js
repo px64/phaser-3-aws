@@ -1452,6 +1452,7 @@ export const difficultyList = {
         alienAttackForCapitalFunc: function(sharedData) {
             return sharedData.MAGAness === 0
                     && sharedData.Wokeness === 0
+                    && sharedData.totalPoliticalCapital < 60
                     && sharedData.putieTerritories < territories.length / 2;
         },
         dilemmaOddsFunc: function(sharedData) {
@@ -1460,7 +1461,7 @@ export const difficultyList = {
         },
         militaryTechBoost: 0,
         hackerShieldStrength: .75,
-        oddsOfAlienAttack: 0.6,
+        oddsOfAlienAttack: 0.5,
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
         putieThreat: 2,
