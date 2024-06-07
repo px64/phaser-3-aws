@@ -1433,7 +1433,7 @@ export class Politics extends BaseScene {
                     "is temporarily immune to all political attacks"];
                 //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
                 let tooltip = createTooltip(scene, tmpChar, helpedIcon.icon.x, helpedIcon.icon.y+150, helpedIcon.icon);
-                scene.icons[icon.iconName].shieldStrength = 1;  // Hacker changes shield strength to 1.0
+                scene.icons[icon.iconName].shieldStrength = .75;  // Hacker changes shield strength to 75%
                 helpedIcon.icon.shieldWoke.setAlpha(0.5);
                 scene.time.delayedCall(5000, () => {
                     tooltip.text.setVisible(false);
@@ -2395,8 +2395,8 @@ export class Politics extends BaseScene {
                 backstoryIcon.setVisible(false);
                 let helpedIcon = scene.icons[character.helps];
                 if (helpedIcon) {
-                    helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.1:0);
-                    helpedIcon.icon.shieldMaga.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.1:0);
+                    helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.25:0);
+                    helpedIcon.icon.shieldMaga.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.25:0);
                 }
                 let hurtIcon = scene.icons[character.hurts];
                 if (hurtIcon){
