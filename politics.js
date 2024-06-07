@@ -424,8 +424,9 @@ export class Politics extends BaseScene {
                 story: [
                     "This is an informational token.  It can",
                     "dispell agression and create mutual",
-                    "understanding among upset MAGA and Woke activists. Feel free to drag the",
-                    "token around to block attacking Insurrectionists"
+                    "understanding among upset MAGA and Woke activists. You can drag the",
+                    "token around to block attacking Insurrectionists, or you can drop the",
+                    "token into an aspect to cause insurrectionists to go home!"
                 ],
                 reference: "sharedData.misinformation[0]",
                 offset: { x: 430, y: 300 } // Offset from characterTexts
