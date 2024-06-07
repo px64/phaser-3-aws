@@ -1460,7 +1460,7 @@ export const difficultyList = {
                     || (Math.random() < .3));
         },
         militaryTechBoost: 0,
-        hackerShieldStrength: .75,
+        hackerShieldStrength: .333,
         oddsOfAlienAttack: 0.5,
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
