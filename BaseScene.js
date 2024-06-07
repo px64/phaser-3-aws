@@ -44,8 +44,8 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('shield', 'assets/shield.png');
         this.load.image('libertarian', 'assets/libertarian.png');
         this.load.image('independent', 'assets/IPNY_Logo.png');
-        this.load.image('scale_arms', 'assets/scale_arms2.png');
-        this.load.image('scale_body', 'assets/scale_body2.png');
+        //this.load.image('scale_arms', 'assets/scale_arms2.png');
+        //this.load.image('scale_body', 'assets/scale_body2.png');
         this.load.image('negotiation', 'assets/negotiation.png');
         this.load.image('hacker', 'assets/hacker.png');
         this.load.image('aliens_win', 'assets/aliens_win.jpg');
@@ -367,16 +367,16 @@ export default class BaseScene extends Phaser.Scene {
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
                 let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-                
+
                 // Adjust the size of the icons if necessary
                 icon.setScale(ICON_SCALE);
-        
+
                 const jumpHeight = 20; // Adjust the height of the jump
                 const durationUp = 150; // Duration for the upward movement
                 const durationDown = 300; // Duration for the downward movement with bounce
                 // Store the original position
                 const originalY = icon.y;
-                
+
                 // Create an infinite loop of jumping
                 const jump = () => {
                     // Add the upward movement tween
@@ -400,7 +400,7 @@ export default class BaseScene extends Phaser.Scene {
 
                 // Start the jumping animation with a random delay
                 scene.time.delayedCall(Math.random() * 500, jump);
-        
+
                 littleHats.push(icon);
             }
             return littleHats;

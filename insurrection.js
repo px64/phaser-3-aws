@@ -214,9 +214,10 @@ export class Insurrection extends BaseScene {
 
                 // Collapse the sprite from top to bottom and create fire and explosion effects
                 scene.tweens.add({
-                    targets: iconData.icon,
-                    y: iconData.icon.y + iconData.icon.displayHeight / 2,
-                    displayHeight: 0,
+                    targets: [iconData.icon, iconData.gaugeHealth],
+                    y: iconData.icon.y + iconData.icon.displayHeight / 3,
+                    //scaleX: 0.1, // Shrink to 1/10th of the width
+                    scaleY: 0, // Shrink to 1/10th of the height
                     ease: 'Power1',
                     duration: 1000, // Adjust the duration as needed
                     onStart: function() {
@@ -362,7 +363,7 @@ export class Insurrection extends BaseScene {
             targetTerritory = territories[testTerritory+1];
 
             // Create the putie threat sprite off the left side of the screen
-            let mySprite = scene.physics.add.sprite(scene.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
+            let mySprite = scene.physics.add.sprite(scene.sys.game.config.width+150, targetTerritory.y-400, 'putieBase').setScale(0.5);
 
             // Set the bounce property
             mySprite.setBounce(1.02);
@@ -371,7 +372,7 @@ export class Insurrection extends BaseScene {
             //mySprite.setCollideWorldBounds(true);
 
             // Calculate the velocity needed to reach the target territory
-            let targetX = targetTerritory.x+territoryWidth/2;
+            let targetX = targetTerritory.x+territoryWidth*1;
             let targetY = targetTerritory.y;
 
             // Calculate the velocity vector
@@ -389,6 +390,7 @@ export class Insurrection extends BaseScene {
                 // Make the sprite disappear
                 scene.tweens.add({
                     targets: mySprite,
+                    x: mySprite.x - mySprite.displayWidth / 3,
                     y: mySprite.y + mySprite.displayHeight / 2,
                     scaleX: 0.1, // Shrink to 1/10th of the width
                     scaleY: 0.1, // Shrink to 1/10th of the height
