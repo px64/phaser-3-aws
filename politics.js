@@ -130,7 +130,7 @@ export class Politics extends BaseScene {
             if (1)//Math.floor(this.totalPoliticalCapital / 20) != Math.floor(this.sharedData.totalPoliticalCapital/20))
             {
                 // Save the updated sharedData for characterintroduction
-                this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
+                this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
                 // Launch CharacterIntroductionScene
                 this.scene.launch('CharacterIntroductionScene', {
                     sharedData: this.sharedData,
