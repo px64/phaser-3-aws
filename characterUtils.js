@@ -104,7 +104,6 @@ export function introduceCharacters(scene, characters, sharedData) {
         if (character.wokeLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'woke') {character.dne = true;return;}
         if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
 
-        console.log('charLevel: maga:' + character.magaLevel + ' woke:' + character.wokeLevel + ' experience+1:' + newExperienceLevel)
         // Only introduce new characters that were not introduced before
         if (character.magaLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'maga') { return };
         if (character.wokeLevel < newExperienceLevel && scene.sharedData.ideology.faction == 'woke') { return };
