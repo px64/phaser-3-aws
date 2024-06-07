@@ -591,7 +591,9 @@ export class Insurrection extends BaseScene {
                     hitIcon(icon.iconText, iconColor);
                     threat.isDestroyed = true;
                     scene.roundThreats--;
+                    console.log('scene.roundThreats = ' + scene.roundThreats);
                     if (scene.roundThreats == 1) {
+                        environmentalImpact();
                         scene.cameras.main.fadeOut(2000, 0, 0, 0);
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                             scene.scene.get('politics').setup(scene.sharedData);
