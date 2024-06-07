@@ -256,6 +256,7 @@ export class Insurrection extends BaseScene {
             if (this.sharedData.putieTerritories < territories.length / 2 || Math.random() < 0.5) {
                 for (let key in this.sharedData.icons) {
                     let iconData = this.sharedData.icons[key];
+                    console.log(key + ' collapse imbalance = '+ Math.abs(iconData.maga - iconData.woke));
                     if (Math.abs(iconData.maga - iconData.woke) > this.difficultyLevel().collapseImbalance) {
                         handleCollapse(this, iconData, key, territories, createPutieThreat);
                         this.switchScene = true;
