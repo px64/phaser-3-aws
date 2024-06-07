@@ -1409,6 +1409,7 @@ export const difficultyList = {
                     || (Math.random() < .3));
         },
         militaryTechBoost: 50,
+        hackerShieldStrength: 1,
         oddsOfAlienAttack: 0.66, //more attacks: easier to get capital,
         oddsOfAlienAttackFirstRound: 0, // New plan: aliens don't attack immediately: too confusing!
         startingEndorsement: 'all',
@@ -1433,6 +1434,7 @@ export const difficultyList = {
                         || (sanity_check < .3)));
         },
         militaryTechBoost: 15,
+        hackerShieldStrength: 1,
         oddsOfAlienAttack: 0.58,
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',
@@ -1454,6 +1456,7 @@ export const difficultyList = {
                     || (Math.random() < .3));
         },
         militaryTechBoost: 0,
+        hackerShieldStrength: .75,
         oddsOfAlienAttack: 1,//0.6,
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
