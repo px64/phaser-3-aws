@@ -127,7 +127,7 @@ export class Politics extends BaseScene {
             this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
 
             console.log ('total capital = ' + this.totalPoliticalCapital);
-            this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
+            //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
             if (Math.floor(this.totalPoliticalCapital / 60) != Math.floor(this.sharedData.totalPoliticalCapital/60))
             {
                 // Save the updated sharedData for characterintroduction
