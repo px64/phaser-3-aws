@@ -124,11 +124,10 @@ export class Politics extends BaseScene {
             console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
-            this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
 
-            console.log ('total capital = ' + this.totalPoliticalCapital);
+            console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital);
             //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
-            if (Math.floor(this.totalPoliticalCapital / 20) != Math.floor(this.sharedData.totalPoliticalCapital/20))
+            if (1)//Math.floor(this.totalPoliticalCapital / 20) != Math.floor(this.sharedData.totalPoliticalCapital/20))
             {
                 // Save the updated sharedData for characterintroduction
                 this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
