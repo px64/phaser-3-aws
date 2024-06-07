@@ -242,7 +242,7 @@ export class Insurrection extends BaseScene {
                 }
             }
             */
-            
+
             function handleCollapse(scene, iconData, key, territories, createPutieThreat) {
                 console.log('collapse! health: ' + iconData.health + ' maga: ' + iconData.maga + ' woke: ' + iconData.woke);
                 scene.sharedData.putieTerritories++;
@@ -250,7 +250,7 @@ export class Insurrection extends BaseScene {
                 iconData.maga = 0;
                 iconData.woke = 0;
                 iconData.health = 5;
-            
+
                 let size = 2;
                 let numExplosions = 8;
                 let lifeSpan = 400;
@@ -259,7 +259,7 @@ export class Insurrection extends BaseScene {
                 let angleRange = { min: 0, max: 360 };
                 let speedRange = { min: 225 - size * 20, max: 375 - size * 20 };
                 let velocityRange = { min: 0, max: 0 };
-            
+
                 const createExplosion = (x, y) => {
                     for (let i = 0; i < numExplosions; i++) {
                         setTimeout(() => {
@@ -281,11 +281,11 @@ export class Insurrection extends BaseScene {
                         }, i * delay); // Delay in milliseconds
                     }
                 };
-            
+
                 let originalY = iconData.icon.y;
                 let tweenCompleted = false;
                 scene.putieCompleted = false;
-            
+
                 // Collapse the sprite from top to bottom and create fire and explosion effects
                 scene.tweens.add({
                     targets: iconData.icon,
@@ -304,9 +304,10 @@ export class Insurrection extends BaseScene {
                         tweenCompleted = true;
                     }
                 });
-            
+
                 const checkAndProceed = () => {
                     if (tweenCompleted && scene.putieCompleted) {
+                        setTimeout(() => {
                         // Show the collapse screen
                         scene.collapseScreenShown = true;
                         scene.scene.get('TutorialScene').setup(scene.sharedData);
@@ -315,14 +316,15 @@ export class Insurrection extends BaseScene {
                         } else {
                             scene.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                         }
+                    }, 1000);
                     } else {
                         setTimeout(checkAndProceed, 100); // Check again after a short delay
                     }
                 };
-            
+
                 setTimeout(checkAndProceed, 1005); // Start checking after 1005ms
             }
-            
+
             // Original collapse condition
             if (this.sharedData.putieTerritories < territories.length / 2 || Math.random() < 0.5) {
                 for (let key in this.sharedData.icons) {
@@ -334,7 +336,7 @@ export class Insurrection extends BaseScene {
                     }
                 }
             }
-            
+
 
 /*
             if (this.sharedData.putieTerritories < territories.length / 2 || Math.random() < 0.5) {
@@ -380,7 +382,7 @@ export class Insurrection extends BaseScene {
                         let originalY = iconData.icon.y;
                         let tweenCompleted = false;
                         this.putieCompleted = false;
-            
+
                         // Collapse the sprite from top to bottom and create fire and explosion effects
                         this.tweens.add({
                             targets: iconData.icon,
@@ -399,7 +401,7 @@ export class Insurrection extends BaseScene {
                                 tweenCompleted = true;
                             }
                         });
-            
+
                         const checkAndProceed = () => {
                             if (tweenCompleted) {
                                 // Add code here to have Putie move in and take over a territory
@@ -415,7 +417,7 @@ export class Insurrection extends BaseScene {
                                 setTimeout(checkAndProceed, 100); // Check again after a short delay
                             }
                         };
-            
+
                         setTimeout(checkAndProceed, 1005); // Start checking after 1005ms
                         return;
                     }
@@ -501,54 +503,59 @@ export class Insurrection extends BaseScene {
             let lowestX = Infinity;
             let putieCount = 0;
             let testTerritory = territories.length - 1; // Start at the end of the territories array
-            
+
             // Make sure number of putie territories is accurate in case an alien claimed something
             while (putieCount < (scene.putieTerritories+1) && testTerritory >= 0) {
                 if (territories[testTerritory].faction !== "alien") {
+/*
                     territories[testTerritory].faction = "putieVille";
                     territories[testTerritory].name = "PutieVille";
                     territories[testTerritory].color = '0x654321';
+*/
                     putieCount++;
                 }
                 testTerritory--;
-            }      
+            }
+
 
             let foo = testTerritory+1;
             console.log('targetTerritory is territory number ' + foo);
             targetTerritory = territories[testTerritory+1];
-            
+
             // Create the putie threat sprite off the left side of the screen
             let mySprite = scene.physics.add.sprite(scene.sys.game.config.width+50, targetTerritory.y-200, 'putieBase').setScale(0.5);
-        
+
             // Set the bounce property
             mySprite.setBounce(1.02);
-        
+
             // Set the sprite to collide with the world bounds
             //mySprite.setCollideWorldBounds(true);
-        
+
             // Calculate the velocity needed to reach the target territory
-            let targetX = targetTerritory.x+territoryWidth/2;
+            let targetX = targetTerritory.x+territoryWidth;
             let targetY = targetTerritory.y;
-        
+
             // Calculate the velocity vector
             let velocityX = (targetX - mySprite.x) / 5; // Adjust the divisor to control speed
             let velocityY = (targetY - mySprite.y) / 5;
-        
+
             // Set the initial velocity of the sprite
             mySprite.setVelocity(velocityX, velocityY);
+            // Create a physics-enabled placeholder for the target territory
+            let territorySprite = scene.physics.add.staticImage(targetX, targetY, null).setSize(50, 50).setVisible(false);
 
             console.log('add collider to hit ' + targetTerritory);
             // Add a collider to detect when the sprite reaches the target territory
-            scene.physics.add.collider(mySprite, targetTerritory, () => {
+            scene.physics.add.collider(mySprite, territorySprite, () => {
                 // Make the sprite disappear
                 mySprite.destroy();
-        
+                scene.createTerritories();
                 // Transition to the next scene
                 scene.putieCompleted = true;
                 console.log('putie has made contact');
             });
         }
-            
+
         //====================================================================================
         //
         // function governmentGrowth()
