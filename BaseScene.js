@@ -44,8 +44,8 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('shield', 'assets/shield.png');
         this.load.image('libertarian', 'assets/libertarian.png');
         this.load.image('independent', 'assets/IPNY_Logo.png');
-        //this.load.image('scale_arms', 'assets/scale_arms2.png');
-        //this.load.image('scale_body', 'assets/scale_body2.png');
+        this.load.image('scale_arms', 'assets/scale_arms2.png');
+        this.load.image('scale_body', 'assets/scale_body2.png');
         this.load.image('negotiation', 'assets/negotiation.png');
         this.load.image('hacker', 'assets/hacker.png');
         this.load.image('aliens_win', 'assets/aliens_win.jpg');
@@ -1441,7 +1441,7 @@ export const difficultyList = {
         oddsOfAlienAttackFirstRound: .8,
         startingEndorsement: 'ideology',
         putieThreat: 2,
-        collapseImbalance: 10, // 100 (leave this for testing collapses for now)
+        collapseImbalance: 90, // 100 (leave this for testing collapses for now)
         multiplier: 2
     },
     'Realistic': {
