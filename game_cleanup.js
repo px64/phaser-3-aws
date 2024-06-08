@@ -98,6 +98,11 @@ class TitleScene extends Phaser.Scene {
             totalPoliticalCapital: 1 // this initilization matters
         };
     }
+    preload() {
+        // Load images
+        this.load.image('magaImage', 'assets/maga_riot.jpg');
+        this.load.image('wokeImage', 'assets/woke_riot.jpg');
+    }
 
     create() {
         //localStorage.setItem('highScore', 0);
@@ -273,9 +278,9 @@ class TitleScene extends Phaser.Scene {
             this.sharedData.charFont = '28px';
         }
 
-        let textObjects = [];  // Array to store all text objects
-        let timerEvents = [];  // Array to store all timer events
-
+//        let textObjects = [];  // Array to store all text objects
+//        let timerEvents = [];  // Array to store all timer events
+/*
         let displayStoryLine = (storyLines) => {
             // Destroy all previous text objects
             textObjects.forEach(text => text.destroy());
@@ -335,6 +340,79 @@ class TitleScene extends Phaser.Scene {
         };
 
         displayStoryLine(storyLinesSet[currentStoryLineIndex]);
+        */
+
+
+
+        // Initial parameters
+        const centerX = this.cameras.main.centerX;
+        const centerY = this.cameras.main.centerY;
+
+        // Start with the MAGA image and message
+        let magaImage = this.add.image(centerX, centerY, 'magaImage').setScale(0.1).setAlpha(0);
+        let magaText = this.add.text(centerX, centerY + 200, 'MAGA!', { fontSize: '128px', fill: '#ff0000' }).setOrigin(0.5).setAlpha(0);
+
+        // Expand MAGA image and show text
+        this.tweens.add({
+            targets: magaImage,
+            alpha: 1,
+            scale: 1,
+            ease: 'Power1',
+            duration: 1000,
+            onComplete: () => {
+                this.tweens.add({
+                    targets: magaText,
+                    alpha: 1,
+                    duration: 500,
+                    onComplete: () => {
+                        // Show VS text
+                        let vsText = this.add.text(centerX, centerY, 'VS', { fontSize: '128px', fill: '#ffffff' }).setOrigin(0.5).setAlpha(0);
+                        this.tweens.add({
+                            targets: vsText,
+                            alpha: 1,
+                            duration: 500,
+                            delay: 1000,
+                            onComplete: () => {
+                                // Hide MAGA image and text
+                                this.tweens.add({
+                                    targets: [magaImage, magaText],
+                                    alpha: 0,
+                                    duration: 500,
+                                    onComplete: () => {
+                                        // Show WOKE image and message
+                                        let wokeImage = this.add.image(centerX, centerY, 'wokeImage').setScale(0.1).setAlpha(0);
+                                        let wokeText = this.add.text(centerX, centerY + 200, 'WOKE!', { fontSize: '128px', fill: '#0000ff' }).setOrigin(0.5).setAlpha(0);
+
+                                        // Expand WOKE image and show text
+                                        this.tweens.add({
+                                            targets: wokeImage,
+                                            alpha: 1,
+                                            scale: 1,
+                                            ease: 'Power1',
+                                            duration: 1000,
+                                            onComplete: () => {
+                                                this.tweens.add({
+                                                    targets: wokeText,
+                                                    alpha: 1,
+                                                    duration: 500,
+                                                    onComplete: () => {
+                                                        // Proceed to the next scene or whatever action you want
+                                                        this.time.delayedCall(2000, () => {
+                                                            this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
+                                                            this.scene.start('ChooseYourIdeologyScene');
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 }
 
