@@ -114,7 +114,7 @@ export class Politics extends BaseScene {
             this.putieTerritories = this.sharedData.putieTerritories;
             this.extraMisinformationTokens = 0;
             this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
-            this.oldExperienceLevel = 1;
+            this.oldExperienceLevel = this.sharedData.oldExperienceLevel;
 
             // Proceed with the rest of the create method logic
             this.continueCreate();
