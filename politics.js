@@ -542,7 +542,7 @@ export class Politics extends BaseScene {
                 ],
                 reference: 'polCapText',
                 offset: { x: 240, y: 380 } // Offset from characterTexts
-            
+            }
             ];
 
         function getValueByPath(obj, path) {
