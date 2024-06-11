@@ -525,7 +525,7 @@ export class Politics extends BaseScene {
                     "indicated by the glow around it."
                 ],
                 reference: 'polCapText',
-                offset: { x: 280, y: 70 } // Offset from polCapText
+                offset: { x: 200, y: 70 } // Offset from polCapText
             },
             {
                 story: [
@@ -541,7 +541,7 @@ export class Politics extends BaseScene {
                     "to protect societal aspects from future protests and Putin cyber-attacks."
                 ],
                 reference: 'polCapText',
-                offset: { x: 240, y: 380 } // Offset from characterTexts
+                offset: { x: 420, y: 680 } // Offset from characterTexts
             }
             ];
 
