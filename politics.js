@@ -114,6 +114,7 @@ export class Politics extends BaseScene {
             this.putieTerritories = this.sharedData.putieTerritories;
             this.extraMisinformationTokens = 0;
             this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
+            this.oldExperienceLevel = 1;
 
             // Proceed with the rest of the create method logic
             this.continueCreate();
@@ -125,7 +126,8 @@ export class Politics extends BaseScene {
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
 
-            console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital);
+            console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital + ' this.oldExperienceLevel = ' + this.oldExperienceLevel );
+            
             //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
             if (this.oldExperienceLevel != Math.floor(this.sharedData.totalPoliticalCapital/20)+1)
             {
