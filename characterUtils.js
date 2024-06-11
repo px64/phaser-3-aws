@@ -116,9 +116,9 @@ export function introduceCharacters(scene, characters, sharedData) {
         if (character.fogLevel > experienceLevel+1 && scene.sharedData.ideology.faction == 'none') {character.dne = true;return;}
 
         // Only introduce new characters that were not introduced before
-        if (character.magaLevel < oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'maga') { return };
-        if (character.wokeLevel < oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'woke') { return };
-        if (character.fogLevel < oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'none') { return }; 
+        if (character.magaLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'maga') { return };
+        if (character.wokeLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'woke') { return };
+        if (character.fogLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'none') { return }; 
 
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
