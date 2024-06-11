@@ -53,7 +53,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   if (typeof scene.oldExperienceLevel === 'undefined' || isNaN(scene.oldExperienceLevel)) {
      scene.oldExperienceLevel = 0;
   }
-  let oldExperienceLevelUponEntry = scene.oldExperienceLevel;
+  let oldExperienceLevelUponEntry = scene.sharedData.oldExperienceLevel;
   scene.oldExperienceLevel = newExperienceLevel;
   scene.sharedData.oldExperienceLevel = scene.oldExperienceLevel;
   console.log('oldExperienceLevel = ' + oldExperienceLevelUponEntry);
