@@ -824,6 +824,7 @@ export class Politics extends BaseScene {
                 helpfulToken.container.character = storedData.character;
             }
 
+            let enableTokenTutorial = false;
             let helpfulTokenIndex = Object.keys(scene.sharedData.helperTokens).length; // Starting index for new tokens
             console.log('starting index helpfulTokenIndex is equal to ' + helpfulTokenIndex);
 
@@ -835,6 +836,8 @@ export class Politics extends BaseScene {
                     // Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
+                    if (character.powerTokenType == 'type_5') {
+                        enableTokenTutorial = true;
                     character.endorsement -= 2;
 
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
@@ -854,7 +857,7 @@ export class Politics extends BaseScene {
             });
 
             // If this is the first time a helpful token has appeared, and it's beginner level, provide a tutorial on what to do with it
-            if (this.difficultyLevel().multiplier == 1 && !this.firstPowerTokenEver && helpfulTokenIndex > 0) {
+            if (this.difficultyLevel().multiplier == 1 && !this.firstPowerTokenEver && enableTokenTutorial == true) {
                 this.firstPowerTokenEver = 1;
                // let backdrop;
                 let timeoutHandle;
