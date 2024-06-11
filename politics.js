@@ -70,7 +70,7 @@ export class Politics extends BaseScene {
             helperTokens: {},
             militaryAllocation: 0,
             littleHats: {},
-            totalPolitcalCapital: 0
+            totalPoliticalCapital: 0
         };
         // hack: decrease all character's endorsements by 3
         characters.forEach((character, index) => {
