@@ -836,8 +836,7 @@ export class Politics extends BaseScene {
                     // Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
-                    if (character.powerTokenType == 'type_5') {
-                        enableTokenTutorial = true;
+                    if (character.powerTokenType == 'type_5') {enableTokenTutorial = true;}
                     character.endorsement -= 2;
 
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
