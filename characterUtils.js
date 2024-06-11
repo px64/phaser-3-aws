@@ -46,20 +46,26 @@ export function introduceCharacters(scene, characters, sharedData) {
   let xSpriteOffset = 0;
 
   let experienceLevel = Math.floor(sharedData.totalPoliticalCapital/20);
+
   const newExperienceLevel = Math.floor(experienceLevel+1);
   console.log('experience level = ' + experienceLevel);
-    
-  // Early return if all characters' experience levels are less than newExperienceLevel for the relevant faction
+  // Initialize oldExperienceLevel if not defined
+  if (typeof scene.oldExperienceLevel === 'undefined' || isNaN(scene.oldExperienceLevel)) {
+     scene.oldExperienceLevel = 0; // or any default value you find appropriate
+  }
+  // Early return if all characters' experience levels are less than oldExperienceLevel for the relevant faction
   const allCharactersBelowNewExperience = characters.every(character => {
         if (sharedData.ideology.faction == 'maga') {
-            return character.magaLevel < newExperienceLevel;
+            return character.magaLevel < scene.oldExperienceLevel;
         } else if (sharedData.ideology.faction == 'woke') {
-            return character.wokeLevel < newExperienceLevel;
+            return character.wokeLevel < scene.oldExperienceLevel;
         } else if (sharedData.ideology.faction == 'none') {
-            return character.fogLevel < newExperienceLevel;
+            return character.fogLevel < scene.oldExperienceLevel;
         }
         return true; // Default case
   });
+    
+  scene.oldExperienceLevel = newExperienceLevel;
     
   if (allCharactersBelowNewExperience) {
       return false;
