@@ -73,7 +73,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   if (allCharactersBelowNewExperience) {
       return false;
   }
-*/
+
   scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'These Advocates Join Your Cause', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
   let endorseMaga = scene.add.text(40, 200, 'MAGA',
