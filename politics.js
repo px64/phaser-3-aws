@@ -749,7 +749,7 @@ export class Politics extends BaseScene {
         // As you advance to the next level, new characters are added to your arsenal
         // to go up a level you get political experience points -- total political capital earned so far!
         console.log('this.totalPoliticalCapital = ' + this.totalPoliticalCapital);
-        let experienceLevel = Math.floor(this.totalPoliticalCapital/20);
+        let experienceLevel = Math.floor(this.totalPoliticalCapital/30);
         console.log('experienceLevel = ' + experienceLevel);
 
         // We have a problem where we are creating the characters and the checkboxes here, but that also includes
