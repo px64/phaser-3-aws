@@ -534,7 +534,15 @@ export class Politics extends BaseScene {
                 ],
                 reference: 'polCapText',
                 offset: { x: 240, y: 380 } // Offset from characterTexts
-            }
+            },
+            {
+                story: [
+                    "Don't forget to position the community forum blockers strategically",
+                    "to protect societal aspects from future protests and Putin cyber-attacks."
+                ],
+                reference: 'polCapText',
+                offset: { x: 240, y: 380 } // Offset from characterTexts
+            
             ];
 
         function getValueByPath(obj, path) {
@@ -1167,7 +1175,51 @@ export class Politics extends BaseScene {
                     },
                     callbackScope: scene
                 });
-            }
+                
+                if (!scene.firstType2Ever && scene.difficultyLevel().multiplier == 1) {
+                    scene.firstType2Ever = 1;
+                    let timeoutHandle;
+    
+                    let tutorial = secondScreenTutorial[2];
+                    let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
+    
+                    let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                    backstoryText.setOrigin(0.5);
+                    backstoryText.setVisible(true);
+                    backstoryText.setDepth(2);
+    
+                    let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                    backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                    backstoryBox.isStroked = true;
+                    backstoryBox.setOrigin(0.5);
+                    backstoryBox.setVisible(true);
+                    backstoryBox.setDepth(1);
+                    console.log(backstoryBox.x + backstoryBox.width/2);
+                    
+                    // Cleanup function to clear current tutorial item
+                    const clearCurrentTutorial = () => {
+                        clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                        backstoryText.setVisible(false);
+                        backstoryBox.setVisible(false);
+                        scene.tweens.killTweensOf([backstoryText, backstoryBox]);
+                        scene.input.keyboard.off('keydown-ENTER');
+
+                        // Clear all pending timers for drawing arrows
+                        arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                        arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+
+                        // Destroy all arrow graphics
+                        arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                        arrowGraphicsArray = []; // Clear the array after destruction
+                    };
+
+                    // Set up listeners for pointer down and ENTER key
+                    scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+
+                    // Set a timeout to automatically advance
+                    timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+                    }
+                }
 
 /*
             // Add action for specific character's power
