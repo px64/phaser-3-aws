@@ -710,10 +710,10 @@ export class Politics extends BaseScene {
 
         // Check if there are any characters to endorse for MAGA faction
         let hasMagaCharacters = characters.some(character => character.faction === 'maga' && !character.dne);
-        
+
         // Check if there are any characters to endorse for Woke faction
         let hasWokeCharacters = characters.some(character => character.faction === 'woke' && !character.dne);
-        
+
         // Display "Endorse?" headline for MAGA faction if there are eligible characters
         if (hasMagaCharacters) {
             let endorseMaga = this.add.text(0, 220, 'Endorse?',
@@ -1823,7 +1823,7 @@ export class Politics extends BaseScene {
                     rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
                 });
             }
-            if (hasBeenCreatedBefore == true) {
+            if (hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
                 outlineTween.stop();
                 rectangleTween.stop();
                 misinformation.disableInteractive();

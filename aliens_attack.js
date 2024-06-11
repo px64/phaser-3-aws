@@ -383,7 +383,7 @@ export class Scene2 extends BaseScene {
         }
         // If diplomacy is good, then both MAGA and Woke work together on defending
         if (this.sharedData.ideology.faction == 'none' || diplomacy > 95) {
-            if (diplomacy < 96) {
+            if (diplomacy < 96 && this.difficultyLevel().multiplier != 1) {
                 this.roundRobinLaunch++;  // if no affiliation and poor diplomacy, random bases fire
             }
             otherFaction = (thisFaction == 'maga' ? 'woke': 'maga');
@@ -414,7 +414,7 @@ export class Scene2 extends BaseScene {
             if (this.sharedData.ideology.faction == 'none') {
                 thisFaction = 'maga';
                 otherFaction = 'woke';
-                if (diplomacy < 96) {
+                if (diplomacy < 96 && this.difficultyLevel().multiplier != 1) {
                     this.roundRobinLaunch++;  // if no affiliation and poor diplomacy, random bases fire
                 }
             }
@@ -626,7 +626,7 @@ export class Scene2 extends BaseScene {
             console.log('new total political capital = ' + this.sharedData.totalPoliticalCapital);
             this.sharedData.Wokeness = this.Wokeness;
             this.sharedData.MAGAness = this.MAGAness;
- 
+
             this.sharedData.icons = this.icons;
             this.cameras.main.fadeOut(3000, 0, 0, 0);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
