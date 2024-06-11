@@ -122,6 +122,7 @@ export class Politics extends BaseScene {
             this.MAGAness = this.sharedData.MAGAness;
             this.Wokeness = this.sharedData.Wokeness;
             this.putieTerritories = this.sharedData.putieTerritories;
+            this.oldExperienceLevel = this.sharedData.oldExperienceLevel;
             console.log('in create, MAGA: ' + this.MAGAness + ' Woke: ' + this.Wokeness);
             this.shieldsMaga = this.physics.add.group();
             this.shieldsWoke = this.physics.add.group();
