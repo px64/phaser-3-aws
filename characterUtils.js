@@ -56,20 +56,19 @@ export function introduceCharacters(scene, characters, sharedData) {
   let oldExperienceLevelUponEntry = scene.oldExperienceLevel;
   scene.oldExperienceLevel = newExperienceLevel;
   console.log('oldExperienceLevel = ' + scene.oldExperienceLevel);
-/*
-  // Early return if all characters' experience levels are less than oldExperienceLevel for the relevant faction
+
+  // Once every advocate has joined the cause, exit early if
+  // all characters' experience levels are less than oldExperienceLevel for the relevant faction
   const allCharactersBelowNewExperience = characters.every(character => {
         if (sharedData.ideology.faction == 'maga') {
-            return character.magaLevel < scene.oldExperienceLevel;
+            return character.magaLevel < oldExperienceLevelUponEntry;
         } else if (sharedData.ideology.faction == 'woke') {
-            return character.wokeLevel < scene.oldExperienceLevel;
+            return character.wokeLevel < oldExperienceLevelUponEntry;
         } else if (sharedData.ideology.faction == 'none') {
-            return character.fogLevel < scene.oldExperienceLevel;
+            return character.fogLevel < oldExperienceLevelUponEntry;
         }
         return true; // Default case
   });
-    
-
     
   if (allCharactersBelowNewExperience) {
       return false;
