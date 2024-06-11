@@ -654,7 +654,7 @@ export class Insurrection extends BaseScene {
                     let territory = territories[4]; // for now woke always returns to territory 4
                     let territoryWidth = scene.sys.game.config.width / territories.length;
 
-                    if (Math.random() < shieldStrength || isItPutie) { // Putie is always reflected
+                    if (Math.random() < shieldStrength || (isItPutie && shieldStrength > .1) { // Putie is always reflected
                         //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
                         let helpedIcon = scene.sharedData.icons['environment'];
                         let shortstory;
