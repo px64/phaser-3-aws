@@ -55,6 +55,7 @@ export function introduceCharacters(scene, characters, sharedData) {
   }
   let oldExperienceLevelUponEntry = scene.oldExperienceLevel;
   scene.oldExperienceLevel = newExperienceLevel;
+  scene.sharedData.oldExperienceLevel = scene.oldExperienceLevel;
   console.log('oldExperienceLevel = ' + scene.oldExperienceLevel);
 
   // Once every advocate has joined the cause, exit early if
