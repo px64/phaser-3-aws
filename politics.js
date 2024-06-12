@@ -1134,7 +1134,7 @@ export class Politics extends BaseScene {
                         scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
                         
                         // Add event listener for mouse movement
-                        scene.input.on('pointermove', clearCurrentTutorial);
+                        scene.input.on('pointermove', setTimeout(clearCurrentTutorial,1000));
 
                         // Set a timeout to automatically advance
                         timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
