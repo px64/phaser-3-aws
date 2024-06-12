@@ -553,9 +553,9 @@ export class Politics extends BaseScene {
             return result;
         }
 
-        let currentIndex = 0;
+        this.currentTutorialIndex = 0;
         if (this.hasBeenCreatedBefore) {
-            currentIndex = 99;
+            this.currentTutorialIndex = 99;
         }
         if (this.difficultyLevel().multiplier == 1 && !this.hasBeenCreatedBefore) {
             let backdrop;  // Optional: A background to capture clicks on the entire game area
@@ -564,11 +564,11 @@ export class Politics extends BaseScene {
             this.secondTimeThrough = 1;
 
             const displayTutorial = () => {
-                if (currentIndex < nextScreenTutorial.length) {
+                if (this.currentTutorialIndex < nextScreenTutorial.length) {
                     // Initialize an array to store arrow graphics
                     let arrowGraphicsArray = [];
                     let snog;
-                    let tutorial = nextScreenTutorial[currentIndex];
+                    let tutorial = nextScreenTutorial[this.currentTutorialIndex];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
                     let referenceObject = getValueByPath(this, tutorial.reference);
                     if (tutorial.reference == "polCapText")
@@ -605,7 +605,7 @@ export class Politics extends BaseScene {
                     //console.log(referenceObject);
                     //let referenceObject = this[tutorial.reference];
 
-                    let backstoryText = this.add.text(window.innerWidth/5*2, window.innerHeight/5*2+currentIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                    let backstoryText = this.add.text(window.innerWidth/5*2, window.innerHeight/5*2+this.currentTutorialIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
 
                     backstoryText.setOrigin(0.5);
                     backstoryText.setVisible(true);
@@ -665,7 +665,7 @@ export class Politics extends BaseScene {
                         arrowGraphicsArray.forEach(arrow => arrow.destroy());
                         arrowGraphicsArray = []; // Clear the array after destruction
 
-                        currentIndex++;
+                        this.currentTutorialIndex++;
                         displayTutorial(); // Display next item
                     };
 
@@ -673,7 +673,7 @@ export class Politics extends BaseScene {
                     backdrop.on('pointerdown', clearCurrentTutorial);
                     this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
                     this.nextButton.on('pointerdown', () => {
-                        currentIndex = 99;
+                        this.currentTutorialIndex = 99;
                         clearCurrentTutorial();
                     });
 
@@ -2074,6 +2074,7 @@ export class Politics extends BaseScene {
 
             // New feature: If you've spent all your political capital, go to the next scene!
             if (scene.MAGAness + scene.Wokeness < 4) {
+                scene.currentTutorialIndex = 99;
                 scene.startNextScene();
             }
 
