@@ -1133,8 +1133,28 @@ export class Politics extends BaseScene {
                         //backdrop.on('pointerdown', clearCurrentTutorial);
                         scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
                         
+                        // Variables to track mouse position
+                        let lastPointerPosition = null;
+                        const movementThreshold = 100; // 100 pixels
+                        
                         // Add event listener for mouse movement
-                        scene.input.on('pointermove', setTimeout(clearCurrentTutorial,1000));
+                        scene.input.on('pointermove', function(pointer) {
+                            if (lastPointerPosition) {
+                                const distance = Phaser.Math.Distance.Between(
+                                    lastPointerPosition.x, lastPointerPosition.y,
+                                    pointer.x, pointer.y
+                                );
+                        
+                                if (distance > movementThreshold) {
+                                    clearCurrentTutorial();
+                                    // Reset last pointer position after clearing the tutorial
+                                    lastPointerPosition = { x: pointer.x, y: pointer.y };
+                                }
+                            } else {
+                                // Initialize last pointer position if not set
+                                lastPointerPosition = { x: pointer.x, y: pointer.y };
+                            }
+                        });
 
                         // Set a timeout to automatically advance
                         timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
