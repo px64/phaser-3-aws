@@ -1116,7 +1116,7 @@ export class Politics extends BaseScene {
                         
                                 arrowTimerIDs.push(timerID);
                             }
-                        }
+                        });
 
                         scene.tweens.add({
                             targets: [backstoryText, backstoryBox],
