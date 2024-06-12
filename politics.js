@@ -1110,7 +1110,7 @@ export class Politics extends BaseScene {
                         
                             if (iconData) {
                                 const timerID = setTimeout(() => {
-                                    let arrow = drawArrow(scene, iconData.x, iconData.y, backstoryBox.x, backstoryBox.y);
+                                    let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.x, helpfulToken.y); //backstoryBox.x, backstoryBox.y);
                                     arrowGraphicsArray.push(arrow);
                                 }, (index + 1) * 400);
                         
