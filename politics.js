@@ -2091,6 +2091,7 @@ export class Politics extends BaseScene {
                 });
                 nextSceneText.setOrigin(0.5);  // Center align the text
                 nextSceneText.setAlpha(0.8);
+                nextSceneText.setDepth(10);
             
                 // Create a black overlay
                 let overlay = scene.add.rectangle(scene.cameras.main.centerX, scene.cameras.main.centerY, scene.cameras.main.width, scene.cameras.main.height, 0x000000);
