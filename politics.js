@@ -128,7 +128,7 @@ export class Politics extends BaseScene {
             this.shieldsWoke = this.physics.add.group();
 
             console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital + ' this.oldExperienceLevel = ' + this.oldExperienceLevel );
-            
+
             //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
             if (this.oldExperienceLevel != Math.floor(this.sharedData.totalPoliticalCapital/30)+1)
             {
@@ -425,10 +425,10 @@ export class Politics extends BaseScene {
             },
             {
                 story: [
-                    "This is an informational token.  It can",
+                    "This is a community forum token.  It can",
                     "dispell agression and create mutual",
-                    "understanding among upset MAGA and Woke activists. You can drag the",
-                    "token around to block attacking Insurrectionists, or you can drop the",
+                    "understanding. You can drag the",
+                    "token to block attacking Insurrectionists, or you can drop the",
                     "token into an aspect to cause insurrectionists to go home!"
                 ],
                 reference: "sharedData.misinformation[0]",
@@ -540,8 +540,8 @@ export class Politics extends BaseScene {
                     "Don't forget to position the community forum blockers strategically",
                     "to protect societal aspects from future protests and Putin cyber-attacks."
                 ],
-                reference: 'polCapText',
-                offset: { x: 420, y: 680 } // Offset from characterTexts
+                reference: "sharedData.misinformation[0]",
+                offset: { x: 430, y: 300 } // Offset from characterTexts
             }
             ];
 
@@ -714,6 +714,7 @@ export class Politics extends BaseScene {
             graphics.fillStyle(0xa000a0, 1);
             graphics.fillPath();
             graphics.strokePath();
+            graphics.setDepth(1);
 
             return graphics; // Ensure the graphics object is returned
 
@@ -1177,51 +1178,79 @@ export class Politics extends BaseScene {
                     },
                     callbackScope: scene
                 });
-                
+
                 if (!scene.firstType2Ever && scene.difficultyLevel().multiplier == 1) {
                     scene.firstType2Ever = 1;
                     let timeoutHandle;
-    
+                    let timeoutHandle2;
+
                     let tutorial = secondScreenTutorial[2];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
-    
-                    let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-                    backstoryText.setOrigin(0.5);
-                    backstoryText.setVisible(true);
-                    backstoryText.setDepth(2);
-    
-                    let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-                    backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-                    backstoryBox.isStroked = true;
-                    backstoryBox.setOrigin(0.5);
-                    backstoryBox.setVisible(true);
-                    backstoryBox.setDepth(1);
-                    console.log(backstoryBox.x + backstoryBox.width/2);
-                    
-                    // Cleanup function to clear current tutorial item
-                    const clearCurrentTutorial = () => {
-                        clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                        backstoryText.setVisible(false);
-                        backstoryBox.setVisible(false);
-                        scene.tweens.killTweensOf([backstoryText, backstoryBox]);
-                        scene.input.keyboard.off('keydown-ENTER');
+                    timeoutHandle2 = setTimeout(() => {
+                        let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/2, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                        backstoryText.setOrigin(0.5);
+                        backstoryText.setVisible(true);
+                        backstoryText.setDepth(2);
 
-                        // Clear all pending timers for drawing arrows
-                        arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
-                        arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+                        let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                        backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                        backstoryBox.isStroked = true;
+                        backstoryBox.setOrigin(0.5);
+                        backstoryBox.setVisible(true);
+                        backstoryBox.setDepth(1);
+                        console.log(backstoryBox.x + backstoryBox.width/2);
 
-                        // Destroy all arrow graphics
-                        arrowGraphicsArray.forEach(arrow => arrow.destroy());
-                        arrowGraphicsArray = []; // Clear the array after destruction
-                    };
+                        // Assuming scene.sharedData.helperTokens is an object
+                        let helperTokens = scene.sharedData.misinformation;
 
-                    // Set up listeners for pointer down and ENTER key
-                    scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+                        Object.keys(helperTokens).forEach(key => {
+                            let storedData = helperTokens[key];
 
-                    // Set a timeout to automatically advance
-                    timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
-                    }
+                            // Check if helperToken exists
+                            if (storedData) {
+                                let snog = { x: storedData.x, y: storedData.y };
+
+                                // Draw the arrow from backstoryBox to snog
+                                let arrow = drawArrow(scene, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+
+                                // Store the arrow graphic in the array
+                                arrowGraphicsArray.push(arrow);
+                            }
+                        });
+
+                        scene.tweens.add({
+                            targets: [backstoryText, backstoryBox],
+                            alpha: { from: 1, to: .5 },
+                            ease: 'Linear',
+                            duration: 1000,
+                            repeat: -1,
+                            yoyo: true
+                        });
+                        // Cleanup function to clear current tutorial item
+                        const clearCurrentTutorial = () => {
+                            clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                            backstoryText.setVisible(false);
+                            backstoryBox.setVisible(false);
+                            scene.tweens.killTweensOf([backstoryText, backstoryBox]);
+                            scene.input.keyboard.off('keydown-ENTER');
+
+                            // Clear all pending timers for drawing arrows
+                            arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                            arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+
+                            // Destroy all arrow graphics
+                            arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                            arrowGraphicsArray = []; // Clear the array after destruction
+                        };
+
+                        // Set up listeners for pointer down and ENTER key
+                        scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+
+                        // Set a timeout to automatically advance
+                        timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+                    }, 5000);
                 }
+            }
 
 /*
             // Add action for specific character's power
