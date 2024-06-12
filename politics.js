@@ -882,6 +882,14 @@ export class Politics extends BaseScene {
                     // Assuming scene.sharedData.helperTokens is an object
                     let helperTokens = scene.sharedData.helperTokens;
 
+                    helperTokens.forEach((element, index) => {
+                        const timerID = setTimeout(() => {
+                            let arrow = drawArrow(this, element.x, element.y, backstoryBox.x, backstoryBox.y);
+                            arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                        }, (index+1) * 400 ); // Delay each arrow by index * 400 milliseconds
+                        arrowTimerIDs.push(timerID); // Store the timer ID
+                    });
+                    /*
                     Object.keys(helperTokens).forEach(key => {
                         let storedData = helperTokens[key];
 
@@ -896,6 +904,7 @@ export class Politics extends BaseScene {
                             arrowGraphicsArray.push(arrow);
                         }
                     });
+                    */
                 }
 
                 this.tweens.add({
