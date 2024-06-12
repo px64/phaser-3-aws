@@ -339,8 +339,8 @@ export default class BaseScene extends Phaser.Scene {
                 color = 0xffffff;
             }
 
-            healthGauge.setTint(color);
-            scaleSprite.setTint(color);
+            healthGauge.setTint(color).setDepth(1);
+            scaleSprite.setTint(color).setDepth(1);
 
 
 
