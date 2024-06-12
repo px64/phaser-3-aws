@@ -884,7 +884,7 @@ export class Politics extends BaseScene {
 
                     Object.keys(helperTokens).forEach((element, index) => {
                         const timerID = setTimeout(() => {
-                            let arrow = drawArrow(this, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
+                            let arrow = drawArrow(scene, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
                             arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
                         }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                         arrowTimerIDs.push(timerID); // Store the timer ID
@@ -1085,7 +1085,7 @@ export class Politics extends BaseScene {
                             let iconData = scene.sharedData.icons[key].gaugeMaga;
                             Object.keys(iconData).forEach((element, index) => {
                                 const timerID = setTimeout(() => {
-                                    let arrow = drawArrow(this, iconData[element].x, iconData[element].y, backstoryBox.x, backstoryBox.y);
+                                    let arrow = drawArrow(scene, iconData[element].x, iconData[element].y, backstoryBox.x, backstoryBox.y);
                                     arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
                                 }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                                 arrowTimerIDs.push(timerID); // Store the timer ID
@@ -1221,7 +1221,7 @@ export class Politics extends BaseScene {
                         let helperTokens = scene.sharedData.misinformation;
                         Object.keys(helperTokens).forEach((element, index) => {
                             const timerID = setTimeout(() => {
-                                let arrow = drawArrow(this, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
+                                let arrow = drawArrow(scene, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
                                 arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
                             }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                             arrowTimerIDs.push(timerID); // Store the timer ID
