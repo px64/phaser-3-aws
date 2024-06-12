@@ -351,8 +351,7 @@ export class Politics extends BaseScene {
         let defaultValue = 0;
         let characterText;
 
-        // Initialize an array to store arrow graphics
-        let arrowGraphicsArray = [];
+
         this.territoryReference = territories;
         this.gaugeMagaArray = [];
         this.iconArray = [];
@@ -565,6 +564,8 @@ export class Politics extends BaseScene {
 
             const displayTutorial = () => {
                 if (currentIndex < nextScreenTutorial.length) {
+                    // Initialize an array to store arrow graphics
+                    let arrowGraphicsArray = [];
                     let snog;
                     let tutorial = nextScreenTutorial[currentIndex];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
@@ -861,7 +862,8 @@ export class Politics extends BaseScene {
                 this.firstPowerTokenEver = 1;
                // let backdrop;
                 let timeoutHandle;
-
+                // Initialize an array to store arrow graphics
+                let arrowGraphicsArray = [];
                 let tutorial = secondScreenTutorial[0];
                 let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
 
@@ -1061,7 +1063,8 @@ export class Politics extends BaseScene {
                     if (!scene.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
                         scene.firstHackerEver = 1;
                         let timeoutHandle;
-
+                        // Initialize an array to store arrow graphics
+                        let arrowGraphicsArray = [];
                         let tutorial = secondScreenTutorial[1];
                         let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
 
@@ -1080,28 +1083,6 @@ export class Politics extends BaseScene {
 
                         // Assuming scene.sharedData.helperTokens is an object
                         let helperTokens = scene.sharedData.helperTokens;
-                        /*
-                        for (let key in scene.sharedData.icons) {
-                            let iconData = scene.sharedData.icons[key].gaugeMaga;
-                            Object.keys(iconData).forEach((element, index) => {
-                                const timerID = setTimeout(() => {
-                                    let arrow = drawArrow(scene, iconData[element].x, iconData[element].y, backstoryBox.x, backstoryBox.y);
-                                    arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
-                                }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
-                                arrowTimerIDs.push(timerID); // Store the timer ID
-                            });
-
-                            // Check if helperToken exists
-                            if (iconData) {
-                                let snog = { x: iconData.x, y: iconData.y };
-
-                                // Draw the arrow from backstoryBox to snog
-                                let arrow = drawArrow(scene, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
-
-                                // Store the arrow graphic in the array
-                                arrowGraphicsArray.push(arrow);
-                            }
-                            */
                             
                         let iconKeys = Object.keys(scene.sharedData.icons);
 
@@ -1110,7 +1091,7 @@ export class Politics extends BaseScene {
                         
                             if (iconData) {
                                 const timerID = setTimeout(() => {
-                                    let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.x, helpfulToken.y); //backstoryBox.x, backstoryBox.y);
+                                    let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.container.x, helpfulToken.container.y); //backstoryBox.x, backstoryBox.y);
                                     arrowGraphicsArray.push(arrow);
                                 }, (index + 1) * 400);
                         
@@ -1214,7 +1195,8 @@ export class Politics extends BaseScene {
                     scene.firstType2Ever = 1;
                     let timeoutHandle;
                     let timeoutHandle2;
-
+                    // Initialize an array to store arrow graphics
+                    let arrowGraphicsArray = [];
                     let tutorial = secondScreenTutorial[2];
                     let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
                     timeoutHandle2 = setTimeout(() => {
