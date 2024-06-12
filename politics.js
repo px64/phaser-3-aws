@@ -1103,21 +1103,19 @@ export class Politics extends BaseScene {
                             }
                             */
                             
-                            let iconKeys = Object.keys(scene.sharedData.icons);
+                        let iconKeys = Object.keys(scene.sharedData.icons);
 
-                            iconKeys.forEach((key, index) => {
-                                const iconData = scene.sharedData.icons[key].gaugeMaga;
-                            
-                                if (iconData) {
-                                    const timerID = setTimeout(() => {
-                                        let arrow = drawArrow(scene, iconData.x, iconData.y, backstoryBox.x, backstoryBox.y);
-                                        arrowGraphicsArray.push(arrow);
-                                    }, (index + 1) * 400);
-                            
-                                    arrowTimerIDs.push(timerID);
-                                }
-                            });
-
+                        iconKeys.forEach((key, index) => {
+                            const iconData = scene.sharedData.icons[key].gaugeMaga;
+                        
+                            if (iconData) {
+                                const timerID = setTimeout(() => {
+                                    let arrow = drawArrow(scene, iconData.x, iconData.y, backstoryBox.x, backstoryBox.y);
+                                    arrowGraphicsArray.push(arrow);
+                                }, (index + 1) * 400);
+                        
+                                arrowTimerIDs.push(timerID);
+                            }
                         }
 
                         scene.tweens.add({
