@@ -207,8 +207,7 @@ export class Politics extends BaseScene {
         // Create a button using an image
         this.nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
-        // When the button is clicked, start the next scene
-        this.nextButton.on('pointerdown', () => {
+        function startNextScene() {
             // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
             // question: does this scene's sharedData ever even get used?
             this.sharedData.icons = this.icons;
@@ -249,8 +248,10 @@ export class Politics extends BaseScene {
             } else {
                 handleDilemmaOrInsurrection();
             }
-        });
-
+        }
+        // When the button is clicked, start the next scene
+        this.nextButton.on('pointerdown', startnextScene);
+        
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
         this.roundThreats = 0;
