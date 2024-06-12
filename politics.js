@@ -1778,17 +1778,20 @@ export class Politics extends BaseScene {
                 //console.log('icon faction = '+icon[infoToken.type]+' other faction = '+icon[otherFaction]);
                 //let numReturns = Math.min(5,icon.maga/5);
                 let validTerritory = findValidTerritory('maga', 'maga');
-                if (icon.maga > icon.woke) {
-                    let numReturns = Math.min(5,Math.max(0, icon.maga/5 -  icon.woke/5));
+                let magaValue = Math.floor(icon.maga / 5);
+                let wokeValue = Math.floor(icon.woke / 5);
+                
+                if (magaValue > wokeValue) {
+                    let numReturns = Math.min(5, Math.max(0, magaValue - wokeValue));
                     scene.returnThreat(validTerritory, 'maga', icon, numReturns);
-                } else if (icon.woke > icon.maga){
-                    let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
+                } else if (wokeValue > magaValue) {
+                    let numReturns = Math.min(5, Math.max(0, wokeValue - magaValue));
                     scene.returnThreat(validTerritory, 'woke', icon, numReturns);
                 } else {
-                    let numReturns = Math.min(5,icon.woke/5);
+                    let numReturns = Math.min(5, wokeValue);
                     scene.returnThreat(validTerritory, 'woke', icon, numReturns);
                     scene.time.delayedCall(300, () => {
-                        let numReturns = Math.min(5,icon.maga/5);
+                        let numReturns = Math.min(5, magaValue);
                         scene.returnThreat(validTerritory, 'maga', icon, numReturns);
                     });
                 }
@@ -1802,23 +1805,26 @@ export class Politics extends BaseScene {
                 delete scene.sharedData.misinformation[helper.container.misinformationIndex];
                 helper.container.destroy();
 
-                let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
+                let magaValue = Math.floor(icon.maga / 5);
+                let wokeValue = Math.floor(icon.woke / 5);
+                
+                let numReturns;
                 let validTerritory = findValidTerritory('woke', 'woke');
-                if (icon.maga > icon.woke) {
-                    let numReturns = Math.min(5,Math.max(0, icon.maga/5 -  icon.woke/5));
+                
+                if (magaValue > wokeValue) {
+                    numReturns = Math.min(5, Math.max(0, magaValue - wokeValue));
                     scene.returnThreat(validTerritory, 'maga', icon, numReturns);
-                } else if (icon.woke > icon.maga){
-                    let numReturns = Math.min(5,Math.max(0, icon.woke/5 -  icon.maga/5));
+                } else if (wokeValue > magaValue) {
+                    numReturns = Math.min(5, Math.max(0, wokeValue - magaValue));
                     scene.returnThreat(validTerritory, 'woke', icon, numReturns);
                 } else {
-                    let numReturns = Math.min(5,icon.woke/5);
+                    numReturns = Math.min(5, wokeValue);
                     scene.returnThreat(validTerritory, 'woke', icon, numReturns);
                     scene.time.delayedCall(300, () => {
-                        let numReturns = Math.min(5,icon.maga/5);
+                        let numReturns = Math.min(5, magaValue);
                         scene.returnThreat(validTerritory, 'maga', icon, numReturns);
                     });
                 }
-
             });
 
             scene.physics.add.overlap(icon.icon, scene.helperIcons, function(base, helper) {
