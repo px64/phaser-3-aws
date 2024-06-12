@@ -2072,6 +2072,11 @@ export class Politics extends BaseScene {
             scene.MAGAness = Math.floor(tmpMAG);
             scene.Wokeness = Math.floor(tmpWok);
 
+            // New feature: If you've spent all your political capital, go to the next scene!
+            if (scene.MAGAness + scene.Wokeness < 4) {
+                scene.startNextScene();
+            }
+
             return undoCheck;
         }
 
