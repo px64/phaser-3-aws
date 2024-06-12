@@ -2082,6 +2082,7 @@ export class Politics extends BaseScene {
             if (scene.MAGAness + scene.Wokeness < 4) {
                 scene.currentTutorialIndex = 99;
                 let message = 'Political Capital has been Allocated!';
+            
                 // Create a text object to display a victory message
                 let nextSceneText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, message, {
                     font: 'bold 48px Arial',
@@ -2090,14 +2091,30 @@ export class Politics extends BaseScene {
                 });
                 nextSceneText.setOrigin(0.5);  // Center align the text
                 nextSceneText.setAlpha(0.8);
-                scene.time.delayedCall(1000, () => {
-                    scene.cameras.main.fadeOut(1000, 0, 0, 0);
-                    scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                        scene.startNextScene();
-                    });
+            
+                // Create a black overlay
+                let overlay = scene.add.rectangle(scene.cameras.main.centerX, scene.cameras.main.centerY, scene.cameras.main.width, scene.cameras.main.height, 0x000000);
+                overlay.setOrigin(0.5);
+                overlay.setAlpha(0); // Start with the overlay invisible
+            
+                // Ensure the message text is above the overlay
+                scene.children.bringToTop(nextSceneText);
+            
+                // Fade in the black overlay
+                scene.tweens.add({
+                    targets: overlay,
+                    alpha: 1, // Fade to fully opaque
+                    duration: 1000, // Duration of the fade
+                    onComplete: () => {
+                        scene.time.delayedCall(1, () => {
+                            scene.cameras.main.fadeOut(1000, 0, 0, 0);
+                            scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                                scene.startNextScene();
+                            });
+                        });
+                    }
                 });
             }
-
             return undoCheck;
         }
 
