@@ -1093,7 +1093,7 @@ export class Politics extends BaseScene {
                                 const timerID = setTimeout(() => {
                                     let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.container.x, helpfulToken.container.y); //backstoryBox.x, backstoryBox.y);
                                     arrowGraphicsArray.push(arrow);
-                                }, (index + 1) * 400);
+                                }, (index + 1) * 80);
                         
                                 arrowTimerIDs.push(timerID);
                             }
@@ -1132,6 +1132,9 @@ export class Politics extends BaseScene {
                         // Set up listeners for pointer down and ENTER key
                         //backdrop.on('pointerdown', clearCurrentTutorial);
                         scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+                        
+                        // Add event listener for mouse movement
+                        scene.input.on('pointermove', clearCurrentTutorial);
 
                         // Set a timeout to automatically advance
                         timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
