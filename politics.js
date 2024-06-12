@@ -868,7 +868,7 @@ export class Politics extends BaseScene {
                 let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                 backstoryText.setOrigin(0.5);
                 backstoryText.setVisible(true);
-                backstoryText.setDepth(2);
+                backstoryText.setDepth(1);  //JCS try changing this from 2 to 1 in hopes that the arrows are behind it
 
                 let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                 backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
@@ -1083,7 +1083,14 @@ export class Politics extends BaseScene {
 
                         for (let key in scene.sharedData.icons) {
                             let iconData = scene.sharedData.icons[key].gaugeMaga;
-
+                            Object.keys(iconData).forEach((element, index) => {
+                                const timerID = setTimeout(() => {
+                                    let arrow = drawArrow(this, iconData[element].x, iconData[element].y, backstoryBox.x, backstoryBox.y);
+                                    arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                                }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
+                                arrowTimerIDs.push(timerID); // Store the timer ID
+                            });
+                            /*
                             // Check if helperToken exists
                             if (iconData) {
                                 let snog = { x: iconData.x, y: iconData.y };
@@ -1094,6 +1101,7 @@ export class Politics extends BaseScene {
                                 // Store the arrow graphic in the array
                                 arrowGraphicsArray.push(arrow);
                             }
+                            */
                         }
 
                         scene.tweens.add({
@@ -1199,7 +1207,7 @@ export class Politics extends BaseScene {
                         let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/2, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
-                        backstoryText.setDepth(2);
+                        backstoryText.setDepth(1);
 
                         let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                         backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
@@ -1211,7 +1219,14 @@ export class Politics extends BaseScene {
 
                         // Assuming scene.sharedData.helperTokens is an object
                         let helperTokens = scene.sharedData.misinformation;
-
+                        Object.keys(helperTokens).forEach((element, index) => {
+                            const timerID = setTimeout(() => {
+                                let arrow = drawArrow(this, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
+                                arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                            }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
+                            arrowTimerIDs.push(timerID); // Store the timer ID
+                        });
+                        /*
                         Object.keys(helperTokens).forEach(key => {
                             let storedData = helperTokens[key];
 
@@ -1226,6 +1241,7 @@ export class Politics extends BaseScene {
                                 arrowGraphicsArray.push(arrow);
                             }
                         });
+                        */
 
                         scene.tweens.add({
                             targets: [backstoryText, backstoryBox],
