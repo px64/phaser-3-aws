@@ -714,7 +714,7 @@ export class Politics extends BaseScene {
             graphics.fillStyle(0xa000a0, 1);
             graphics.fillPath();
             graphics.strokePath();
-            graphics.setDepth(1);
+            graphics.setDepth(2);
 
             return graphics; // Ensure the graphics object is returned
 
@@ -884,9 +884,9 @@ export class Politics extends BaseScene {
 
                     Object.keys(helperTokens).forEach((element, index) => {
                         const timerID = setTimeout(() => {
-                            let arrow = drawArrow(this, element.x, element.y, backstoryBox.x, backstoryBox.y);
+                            let arrow = drawArrow(this, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
                             arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
-                        }, (index+1) * 400 ); // Delay each arrow by index * 400 milliseconds
+                        }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                         arrowTimerIDs.push(timerID); // Store the timer ID
                     });
                     /*
