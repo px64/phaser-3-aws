@@ -607,14 +607,14 @@ export class Politics extends BaseScene {
 
                     backstoryText.setOrigin(0.5);
                     backstoryText.setVisible(true);
-                    backstoryText.setDepth(2);
+                    backstoryText.setDepth(4);
 
                     let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                     backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
                     backstoryBox.isStroked = true;
                     backstoryBox.setOrigin(0.5);
                     backstoryBox.setVisible(true);
-                    backstoryBox.setDepth(1);
+                    backstoryBox.setDepth(3);
                     //console.log(backstoryBox.x + backstoryBox.width/2);
 
                     // Check if snog is an array or a single object
@@ -868,14 +868,14 @@ export class Politics extends BaseScene {
                 let backstoryText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                 backstoryText.setOrigin(0.5);
                 backstoryText.setVisible(true);
-                backstoryText.setDepth(1);  //JCS try changing this from 2 to 1 in hopes that the arrows are behind it
+                backstoryText.setDepth(4);  //JCS try changing this from 2 to 1 in hopes that the arrows are behind it
 
                 let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                 backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
                 backstoryBox.isStroked = true;
                 backstoryBox.setOrigin(0.5);
                 backstoryBox.setVisible(true);
-                backstoryBox.setDepth(1);
+                backstoryBox.setDepth(3);
                 console.log(backstoryBox.x + backstoryBox.width/2);
 
                 if (1){
@@ -1068,14 +1068,14 @@ export class Politics extends BaseScene {
                         let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
-                        backstoryText.setDepth(2);
+                        backstoryText.setDepth(4);
 
                         let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                         backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
                         backstoryBox.isStroked = true;
                         backstoryBox.setOrigin(0.5);
                         backstoryBox.setVisible(true);
-                        backstoryBox.setDepth(1);
+                        backstoryBox.setDepth(3);
                         console.log(backstoryBox.x + backstoryBox.width/2);
 
                         // Assuming scene.sharedData.helperTokens is an object
@@ -1207,14 +1207,14 @@ export class Politics extends BaseScene {
                         let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/2, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
                         backstoryText.setOrigin(0.5);
                         backstoryText.setVisible(true);
-                        backstoryText.setDepth(1);
+                        backstoryText.setDepth(4);
 
                         let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
                         backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
                         backstoryBox.isStroked = true;
                         backstoryBox.setOrigin(0.5);
                         backstoryBox.setVisible(true);
-                        backstoryBox.setDepth(1);
+                        backstoryBox.setDepth(3);
                         console.log(backstoryBox.x + backstoryBox.width/2);
 
                         // Assuming scene.sharedData.helperTokens is an object
@@ -1226,6 +1226,7 @@ export class Politics extends BaseScene {
                             }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                             arrowTimerIDs.push(timerID); // Store the timer ID
                         });
+                        
                         /*
                         Object.keys(helperTokens).forEach(key => {
                             let storedData = helperTokens[key];
