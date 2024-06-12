@@ -1080,7 +1080,7 @@ export class Politics extends BaseScene {
 
                         // Assuming scene.sharedData.helperTokens is an object
                         let helperTokens = scene.sharedData.helperTokens;
-
+                        /*
                         for (let key in scene.sharedData.icons) {
                             let iconData = scene.sharedData.icons[key].gaugeMaga;
                             Object.keys(iconData).forEach((element, index) => {
@@ -1090,7 +1090,7 @@ export class Politics extends BaseScene {
                                 }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                                 arrowTimerIDs.push(timerID); // Store the timer ID
                             });
-                            /*
+
                             // Check if helperToken exists
                             if (iconData) {
                                 let snog = { x: iconData.x, y: iconData.y };
@@ -1102,6 +1102,22 @@ export class Politics extends BaseScene {
                                 arrowGraphicsArray.push(arrow);
                             }
                             */
+                            
+                            let iconKeys = Object.keys(scene.sharedData.icons);
+
+                            iconKeys.forEach((key, index) => {
+                                const iconData = scene.sharedData.icons[key].gaugeMaga;
+                            
+                                if (iconData) {
+                                    const timerID = setTimeout(() => {
+                                        let arrow = drawArrow(scene, iconData.x, iconData.y, backstoryBox.x, backstoryBox.y);
+                                        arrowGraphicsArray.push(arrow);
+                                    }, (index + 1) * 400);
+                            
+                                    arrowTimerIDs.push(timerID);
+                                }
+                            });
+
                         }
 
                         scene.tweens.add({
