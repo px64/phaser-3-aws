@@ -2091,9 +2091,11 @@ export class Politics extends BaseScene {
                 nextSceneText.setOrigin(0.5);  // Center align the text
                 nextSceneText.setAlpha(0.8);
                 scene.time.delayedCall(1000, () => {
-                    scene.startNextScene();
+                    scene.cameras.main.fadeOut(1000, 0, 0, 0);
+                    scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                        scene.startNextScene();
+                    });
                 });
-
             }
 
             return undoCheck;
