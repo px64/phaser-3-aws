@@ -2083,7 +2083,7 @@ export class Politics extends BaseScene {
                 scene.currentTutorialIndex = 99;
                 let message = 'Political Capital has been Allocated!';
                 // Create a text object to display a victory message
-                let nextSceneText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, message, {
+                let nextSceneText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, message, {
                     font: 'bold 48px Arial',
                     fill: '#ffffff',
                     align: 'center'
