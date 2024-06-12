@@ -2081,7 +2081,15 @@ export class Politics extends BaseScene {
             // New feature: If you've spent all your political capital, go to the next scene!
             if (scene.MAGAness + scene.Wokeness < 4) {
                 scene.currentTutorialIndex = 99;
-                
+                let message = 'Political Capital has been Allocated!';
+                // Create a text object to display a victory message
+                let nextSceneText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, message, {
+                    font: 'bold 48px Arial',
+                    fill: '#ffffff',
+                    align: 'center'
+                });
+                nextSceneText.setOrigin(0.5);  // Center align the text
+                nextSceneText.setAlpha(0.8);
                 scene.time.delayedCall(1000, () => {
                     scene.startNextScene();
                 });
