@@ -2079,7 +2079,8 @@ export class Politics extends BaseScene {
             scene.Wokeness = Math.floor(tmpWok);
 
             // New feature: If you've spent all your political capital, go to the next scene!
-            if (scene.MAGAness + scene.Wokeness < 4) {
+            if (scene.MAGAness + scene.Wokeness < 4 && !scene.transitionToNewScene) {
+                scene.transitionToNewScene = 1;
                 scene.currentTutorialIndex = 99;
                 let message = 'Political Capital has been Allocated!';
             
@@ -2110,6 +2111,7 @@ export class Politics extends BaseScene {
                         scene.time.delayedCall(1, () => {
                             scene.cameras.main.fadeOut(1000, 0, 0, 0);
                             scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                                scene.transitionToNewScene = 0;
                                 scene.startNextScene();
                             });
                         });
