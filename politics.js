@@ -207,7 +207,7 @@ export class Politics extends BaseScene {
         // Create a button using an image
         this.nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
-        function startNextScene() {
+        this.startNextScene = () => {
             // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
             // question: does this scene's sharedData ever even get used?
             this.sharedData.icons = this.icons;
@@ -250,7 +250,7 @@ export class Politics extends BaseScene {
             }
         }
         // When the button is clicked, start the next scene
-        this.nextButton.on('pointerdown', startnextScene);
+        this.nextButton.on('pointerdown', this.startNextScene);
         
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
@@ -2163,32 +2163,7 @@ export class Politics extends BaseScene {
             }
 
             createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
-/*
-            // Blink only this checkbox on and off 3 times
-            let toggleCount = 0;
-            const maxToggles = 3; // Blink 3 times (each blink consists of two toggles)
 
-            const toggleCheckbox = () => {
-                if (toggleCount < maxToggles) {
-                    if (checkboxUnchecked.visible) {
-                        checkboxUncheckedAction();
-                    } else {
-                        checkboxCheckedAction();
-                    }
-                    toggleCount++;
-                }
-                else {
-                    checkboxCheckedAction();
-                    toggleEvent.remove(); // Remove the event after the desired number of toggles
-                }
-            };
-
-            const toggleEvent = scene.time.addEvent({
-                delay: 1000, // Delay in milliseconds
-                callback: toggleCheckbox,
-                loop: true
-            });
-*/
             return { checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction };
         }
 
