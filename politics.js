@@ -2081,7 +2081,11 @@ export class Politics extends BaseScene {
             // New feature: If you've spent all your political capital, go to the next scene!
             if (scene.MAGAness + scene.Wokeness < 4) {
                 scene.currentTutorialIndex = 99;
-                scene.startNextScene();
+                
+                scene.time.delayedCall(1000, () => {
+                    scene.startNextScene();
+                });
+
             }
 
             return undoCheck;
