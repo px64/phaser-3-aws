@@ -1459,7 +1459,15 @@ export class Politics extends BaseScene {
                     // Look up the stored data
                     let storedData = scene.sharedData.misinformation[key];
                     //console.log(storedData);
-
+                    
+                    // Add an icon or graphic and scale it
+                    let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
+                    helpfulTokenIcon.setScale(.1);  // scale the icon
+                    helpfulTokenIcon.setOrigin(0.5, 0.82);  // change origin to bottom center
+                    helpfulTokenIcon.setVisible(true);
+                    //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
+                    helpfulTokenIcon.setAlpha(1);
+                    
                     // Use the stored data when creating the token
                     let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
