@@ -1467,6 +1467,9 @@ export class Politics extends BaseScene {
                     helpfulTokenIcon.setVisible(true);
                     // Crop the image to use only the top half
                     helpfulTokenIcon.setCrop(0, 0, helpfulTokenIcon.width, helpfulTokenIcon.height / 2);
+                    // Adjust the display size of the image
+                    helpfulTokenIcon.displayHeight = helpfulTokenIcon.displayHeight / 2;
+                    helpfulTokenIcon.displayWidth = originalWidth * (helpfulTokenIcon.displayHeight / (originalHeight / 2));
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
                     helpfulTokenIcon.setAlpha(1);
                     
