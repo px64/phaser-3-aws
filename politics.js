@@ -1465,7 +1465,7 @@ export class Politics extends BaseScene {
                     helpfulTokenIcon.setScale(.08);  // scale the icon
                     helpfulTokenIcon.setOrigin(0.5, 0.82);  // change origin to bottom center
                     helpfulTokenIcon.setVisible(true);
-                    
+                    /*
                     // Get the original dimensions of the image
                     let originalWidth = helpfulTokenIcon.width;
                     let originalHeight = helpfulTokenIcon.height;
@@ -1474,7 +1474,10 @@ export class Politics extends BaseScene {
                     helpfulTokenIcon.setCrop(0, 0, helpfulTokenIcon.width, helpfulTokenIcon.height / 2);
                     // Adjust the display size of the image
                     helpfulTokenIcon.displayHeight = helpfulTokenIcon.displayHeight / 2;
-                    helpfulTokenIcon.displayWidth = originalWidth * (helpfulTokenIcon.displayHeight / (originalHeight / 2));
+                    helpfulTokenIcon.displayWidth = originalWidth * (helpfulTokenIcon.displayHeight / originalHeight);
+                    */
+                    helpfulTokenIcon.cutHeight(helpfulTokenIcon.height/2);
+                    
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
                     helpfulTokenIcon.setAlpha(1);
                     
