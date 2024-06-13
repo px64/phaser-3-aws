@@ -46,7 +46,8 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('independent', 'assets/IPNY_Logo.png');
         this.load.image('scale_arms', 'assets/scale_arms2.png');
         this.load.image('scale_body', 'assets/scale_body2.png');
-        this.load.image('negotiation', 'assets/negotiation.png');
+        //this.load.image('negotiation', 'assets/negotiation.png');
+        this.load.image('negotiation', 'assets/file.png');
         this.load.image('hacker', 'assets/hacker.png');
         this.load.image('aliens_win', 'assets/aliens_win.jpg');
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
