@@ -1469,7 +1469,8 @@ export class Politics extends BaseScene {
                     helpfulTokenIcon.setAlpha(1);
                     
                     // Use the stored data when creating the token
-                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, helpfulTokenIcon);
+                    //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) 
+                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
