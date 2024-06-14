@@ -1463,7 +1463,7 @@ export class Politics extends BaseScene {
                     // Add an icon or graphic and scale it
                     let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
                     helpfulTokenIcon.setScale(.12);  // scale the icon
-                    helpfulTokenIcon.setOrigin(0.5, .33);  // change origin to bottom center
+                    helpfulTokenIcon.setOrigin(0.5, .66);  // change origin to bottom center
                     helpfulTokenIcon.setVisible(true);
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
                     helpfulTokenIcon.setAlpha(.9);
@@ -1495,7 +1495,7 @@ export class Politics extends BaseScene {
                 // Add an icon or graphic and scale it
                 let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
                 helpfulTokenIcon.setScale(.12);  // scale the icon
-                helpfulTokenIcon.setOrigin(0.5, .33);  // change origin to bottom center
+                helpfulTokenIcon.setOrigin(0.5, .66);  // change origin to bottom center
                 helpfulTokenIcon.setVisible(true);
                 //helpfulTokenIcon.setDepth(1);  // set depth below the text and above the bounding box
                 helpfulTokenIcon.setAlpha(.9);
@@ -1513,13 +1513,15 @@ export class Politics extends BaseScene {
 
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
-                    scene.yMagaOffset += misinformation.container.displayHeight;
+                    scene.yMagaOffset += misinformation.container.displayHeight/2;
+                    console.log('container height = ' + misinformation.container.displayHeight);
                     if (scene.yMagaOffset > scene.game.config.height * .9) {
                         scene.yMagaOffset -= scene.game.config.height * .7;
                     }
                     console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                 } else {
-                    scene.yWokeOffset += misinformation.container.displayHeight;
+                    scene.yWokeOffset += misinformation.container.displayHeight/2;
+                    console.log('container height = ' + misinformation.container.displayHeight);
                     if (scene.yWokeOffset > scene.game.config.height * .9) {
                         scene.yWokeOffset -= scene.game.config.height * .7;
                     }
@@ -1946,7 +1948,9 @@ export class Politics extends BaseScene {
                 if (faction == 'neutral' && size != 'large'){
                     outline.setVisible(false);
                     rectangle.setVisible(false);
-                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [text, tokenIcon, misinformationSprite]);}
+                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
+                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight/2);
+                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
                 else {
                     misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
                 }
@@ -1983,13 +1987,14 @@ export class Politics extends BaseScene {
                     rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
                 });
             }
-            if (hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
+            if (0) {//hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
                 outlineTween.stop();
                 rectangleTween.stop();
                 misinformation.disableInteractive();
                 misinformationSprite.setImmovable(true);
-                let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
-                rectangle.setFillStyle(0x228B22); // Now the rectangle is green
+                //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                //rectangle.setFillStyle(0x228B22); // Now the rectangle is green
+                text.setColor(0x229B22);
             }
 
             return {
