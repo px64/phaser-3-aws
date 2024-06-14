@@ -251,7 +251,7 @@ export class Politics extends BaseScene {
         }
         // When the button is clicked, start the next scene
         this.nextButton.on('pointerdown', this.startNextScene);
-        
+
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
         this.roundThreats = 0;
@@ -1084,18 +1084,18 @@ export class Politics extends BaseScene {
 
                         // Assuming scene.sharedData.helperTokens is an object
                         let helperTokens = scene.sharedData.helperTokens;
-                            
+
                         let iconKeys = Object.keys(scene.sharedData.icons);
 
                         iconKeys.forEach((key, index) => {
                             const iconData = scene.sharedData.icons[key].gaugeMaga;
-                        
+
                             if (iconData) {
                                 const timerID = setTimeout(() => {
                                     let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.container.x, helpfulToken.container.y); //backstoryBox.x, backstoryBox.y);
                                     arrowGraphicsArray.push(arrow);
                                 }, (index + 1) * 80);
-                        
+
                                 arrowTimerIDs.push(timerID);
                             }
                         });
@@ -1133,11 +1133,11 @@ export class Politics extends BaseScene {
                         // Set up listeners for pointer down and ENTER key
                         //backdrop.on('pointerdown', clearCurrentTutorial);
                         scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-                        
+
                         // Variables to track mouse position
                         let lastPointerPosition = null;
                         const movementThreshold = 100; // 100 pixels
-                        
+
                         // Add event listener for mouse movement
                         scene.input.on('pointermove', function(pointer) {
                             if (lastPointerPosition) {
@@ -1145,7 +1145,7 @@ export class Politics extends BaseScene {
                                     lastPointerPosition.x, lastPointerPosition.y,
                                     pointer.x, pointer.y
                                 );
-                        
+
                                 if (distance > movementThreshold) {
                                     clearCurrentTutorial();
                                     // Reset last pointer position after clearing the tutorial
@@ -1246,7 +1246,7 @@ export class Politics extends BaseScene {
                             }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
                             arrowTimerIDs.push(timerID); // Store the timer ID
                         });
-                        
+
                         /*
                         Object.keys(helperTokens).forEach(key => {
                             let storedData = helperTokens[key];
@@ -1459,7 +1459,7 @@ export class Politics extends BaseScene {
                     // Look up the stored data
                     let storedData = scene.sharedData.misinformation[key];
                     //console.log(storedData);
-                    
+
                     // Add an icon or graphic and scale it
                     let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
                     helpfulTokenIcon.setScale(.08);  // scale the icon
@@ -1469,20 +1469,19 @@ export class Politics extends BaseScene {
                     // Get the original dimensions of the image
                     let originalWidth = helpfulTokenIcon.width;
                     let originalHeight = helpfulTokenIcon.height;
-                    
+
                     // Crop the image to use only the top half
                     helpfulTokenIcon.setCrop(0, 0, helpfulTokenIcon.width, helpfulTokenIcon.height / 2);
                     // Adjust the display size of the image
                     helpfulTokenIcon.displayHeight = helpfulTokenIcon.displayHeight / 2;
                     helpfulTokenIcon.displayWidth = originalWidth * (helpfulTokenIcon.displayHeight / originalHeight);
                     */
-                    helpfulTokenIcon.cutHeight(helpfulTokenIcon.height/2);
-                    
+
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
                     helpfulTokenIcon.setAlpha(1);
-                    
+
                     // Use the stored data when creating the token
-                    //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) 
+                    //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
                     let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
@@ -1802,7 +1801,7 @@ export class Politics extends BaseScene {
                 let validTerritory = findValidTerritory('maga', 'maga');
                 let magaValue = Math.floor(icon.maga / 5);
                 let wokeValue = Math.floor(icon.woke / 5);
-                
+
                 if (magaValue > wokeValue) {
                     let numReturns = Math.min(5, Math.max(0, magaValue - wokeValue));
                     scene.returnThreat(validTerritory, 'maga', icon, numReturns);
@@ -1829,10 +1828,10 @@ export class Politics extends BaseScene {
 
                 let magaValue = Math.floor(icon.maga / 5);
                 let wokeValue = Math.floor(icon.woke / 5);
-                
+
                 let numReturns;
                 let validTerritory = findValidTerritory('woke', 'woke');
-                
+
                 if (magaValue > wokeValue) {
                     numReturns = Math.min(5, Math.max(0, magaValue - wokeValue));
                     scene.returnThreat(validTerritory, 'maga', icon, numReturns);
@@ -2105,7 +2104,7 @@ export class Politics extends BaseScene {
                 scene.transitionToNewScene = 1;
                 scene.currentTutorialIndex = 99;
                 let message = 'Political Capital has been Allocated!';
-            
+
                 // Create a text object to display a victory message
                 let nextSceneText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, message, {
                     font: 'bold 48px Arial',
@@ -2115,15 +2114,15 @@ export class Politics extends BaseScene {
                 nextSceneText.setOrigin(0.5);  // Center align the text
                 nextSceneText.setAlpha(0.8);
                 nextSceneText.setDepth(10);
-            
+
                 // Create a black overlay
                 let overlay = scene.add.rectangle(scene.cameras.main.centerX, scene.cameras.main.centerY, scene.cameras.main.width, scene.cameras.main.height, 0x000000);
                 overlay.setOrigin(0.5);
                 overlay.setAlpha(0); // Start with the overlay invisible
-            
+
                 // Ensure the message text is above the overlay
                 scene.children.bringToTop(nextSceneText);
-            
+
                 // Fade in the black overlay
                 scene.tweens.add({
                     targets: overlay,
