@@ -1419,10 +1419,10 @@ export class Politics extends BaseScene {
 
             // Initialize the offset if it's not yet set
             if (!scene.yMagaOffset) {
-                scene.yMagaOffset = 250;
+                scene.yMagaOffset = 300;
             }
             if (!scene.yWokeOffset) {
-                scene.yWokeOffset = 250;
+                scene.yWokeOffset = 300;
             }
 
 
@@ -1462,23 +1462,11 @@ export class Politics extends BaseScene {
 
                     // Add an icon or graphic and scale it
                     let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
-                    helpfulTokenIcon.setScale(.08);  // scale the icon
-                    helpfulTokenIcon.setOrigin(0.5, 0.82);  // change origin to bottom center
+                    helpfulTokenIcon.setScale(.12);  // scale the icon
+                    helpfulTokenIcon.setOrigin(0.5, .33);  // change origin to bottom center
                     helpfulTokenIcon.setVisible(true);
-                    /*
-                    // Get the original dimensions of the image
-                    let originalWidth = helpfulTokenIcon.width;
-                    let originalHeight = helpfulTokenIcon.height;
-
-                    // Crop the image to use only the top half
-                    helpfulTokenIcon.setCrop(0, 0, helpfulTokenIcon.width, helpfulTokenIcon.height / 2);
-                    // Adjust the display size of the image
-                    helpfulTokenIcon.displayHeight = helpfulTokenIcon.displayHeight / 2;
-                    helpfulTokenIcon.displayWidth = originalWidth * (helpfulTokenIcon.displayHeight / originalHeight);
-                    */
-
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
-                    helpfulTokenIcon.setAlpha(1);
+                    helpfulTokenIcon.setAlpha(.9);
 
                     // Use the stored data when creating the token
                     //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
@@ -1504,10 +1492,17 @@ export class Politics extends BaseScene {
                     text: data.text,
                     misinformationIndex: index
                 };
+                // Add an icon or graphic and scale it
+                let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
+                helpfulTokenIcon.setScale(.12);  // scale the icon
+                helpfulTokenIcon.setOrigin(0.5, .33);  // change origin to bottom center
+                helpfulTokenIcon.setVisible(true);
+                //helpfulTokenIcon.setDepth(1);  // set depth below the text and above the bounding box
+                helpfulTokenIcon.setAlpha(.9);
 
                 scene.sharedData.misinformation[index] = storedData;
 
-                let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once');
+                let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once', helpfulTokenIcon);
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
 
@@ -1895,7 +1890,7 @@ export class Politics extends BaseScene {
                 ? '#ffffff'
                 : faction === 'woke'
                     ? '#ffffff'
-                    : '#80ff80';
+                    : '#ff00ff';
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
             if (size == 'large' ) {text.setFontSize(36);}
@@ -1948,7 +1943,13 @@ export class Politics extends BaseScene {
                 outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
                 text.y += tokenIcon.displayHeight/2;
                 //rectangle.x adjustment??
-                misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                if (faction == 'neutral' && size != 'large'){
+                    outline.setVisible(false);
+                    rectangle.setVisible(false);
+                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [text, tokenIcon, misinformationSprite]);}
+                else {
+                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                }
                 misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
             } else {
                 misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);

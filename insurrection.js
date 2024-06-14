@@ -510,9 +510,16 @@ export class Insurrection extends BaseScene {
             for (let key in scene.sharedData.misinformation) {
                 // Look up the stored data
                 let storedData = scene.sharedData.misinformation[key];
-
+                // Add an icon or graphic and scale it
+                let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
+                helpfulTokenIcon.setScale(.08);  // scale the icon
+                helpfulTokenIcon.setOrigin(0.5, .82);  // change origin to bottom center
+                helpfulTokenIcon.setVisible(true);
+                //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
+                helpfulTokenIcon.setAlpha(1);
                 // Use the stored data when creating the token
-                let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData);
+                //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
+                let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData,'normal', true, false, helpfulTokenIcon);
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                 misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
@@ -903,7 +910,7 @@ export class Insurrection extends BaseScene {
         //
         //====================================================================================
 
-        function createPowerToken(scene, faction, message, x, y, storedData) {
+        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, helpfulTokenIcon) {
             let factionColor = faction === 'maga'
                 ? '0xff0000'
                 : faction === 'woke'
@@ -932,7 +939,7 @@ export class Insurrection extends BaseScene {
             misinformationSprite.setScale(.6);
 
             // Group the text, outline, and rectangle into a single container
-            let misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+            let misinformation = scene.add.container(x, y, [outline, rectangle, text, helpfulTokenIcon, misinformationSprite]);
 
             // Attach the container to the sprite
             misinformationSprite.container = misinformation;
