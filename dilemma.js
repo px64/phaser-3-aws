@@ -622,7 +622,7 @@ export class DilemmaScene extends BaseScene {
 
         this.isTweening = false;
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, 620 + index * 20, choice.name , { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, 620 + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
