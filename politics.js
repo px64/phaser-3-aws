@@ -68,7 +68,7 @@ export class Politics extends BaseScene {
             year: 2023,
             misinformation: {},
             helperTokens: {},
-            militaryAllocation: 0,
+            militaryAllocation: false,
             littleHats: {},
             totalPoliticalCapital: 0
         };
@@ -207,50 +207,50 @@ export class Politics extends BaseScene {
         // Create a button using an image
         this.nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
-        this.startNextScene = () => {
+        function startNextScene(scene) {
             // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
             // question: does this scene's sharedData ever even get used?
-            this.sharedData.icons = this.icons;
-            this.sharedData.MAGAness = this.MAGAness;
-            this.sharedData.Wokeness = this.Wokeness;
-            this.sharedData.totalPoliticalCapital = this.totalPoliticalCapital;
-
+            scene.sharedData.icons = scene.icons;
+            scene.sharedData.MAGAness = scene.MAGAness;
+            scene.sharedData.Wokeness = scene.Wokeness;
+            scene.sharedData.totalPoliticalCapital = scene.totalPoliticalCapital;
+            console.log('start next scene');
             //Function to handle dilemma or insurrection
             const handleDilemmaOrInsurrection = () => {
-                console.log('before calling dilemmaOdds, WokenessVelocity = ' + this.sharedData.WokenessVelocity);
-                if (this.difficultyLevel().dilemmaOdds) {
-                    this.scene.get('dilemma').setup(this.sharedData);
-                    this.scene.start('dilemma');
+                console.log('before calling dilemmaOdds, WokenessVelocity = ' + scene.sharedData.WokenessVelocity);
+                if (scene.difficultyLevel().dilemmaOdds) {
+                    scene.scene.get('dilemma').setup(scene.sharedData);
+                    scene.scene.start('dilemma');
                 } else {
-                    this.scene.get('insurrection').setup(this.sharedData);
-                    this.scene.start('insurrection');
+                    scene.scene.get('insurrection').setup(scene.sharedData);
+                    scene.scene.start('insurrection');
                 }
             };
 
-            if (this.militaryAllocation == true) {
-                this.militaryAllocation = false;
-                if (this.difficultyLevel().militaryAutoSpend == true) {
+            if (scene.militaryAllocation == true) {
+                scene.militaryAllocation = false;
+                if (scene.difficultyLevel().militaryAutoSpend == true) {
                     militaryAssets.forEach((asset, index) => {
-                        asset.techLevel += this.totalMilitaryAllocThisScene/10;
+                        asset.techLevel += scene.totalMilitaryAllocThisScene/10;
                         console.log(asset.name + ' has a new tech level of ' + asset.techLevel);
                     });
                     // Need to go to scene to indicate additional military strength
-                    this.scene.get('TutorialScene').setup(this.sharedData);
-                    this.scene.start('TutorialScene', { nextScene: 'dilemmaOrInsurrection', message: 'Beginner Level\nMilitary Capital automatically invested.\nYour Alien Defense is now stronger!' });
+                    scene.scene.get('TutorialScene').setup(scene.sharedData);
+                    scene.scene.start('TutorialScene', { nextScene: 'dilemmaOrInsurrection', message: 'Beginner Level\nMilitary Capital automatically invested.\nYour Alien Defense is now stronger!' });
                     //this.scene.pause('politics');
 
                     //handleDilemmaOrInsurrection();
                 } else { // if autospend is false
-                    this.sharedData.militaryAllocation = this.totalMilitaryAllocThisScene;
-                    this.scene.get('military allocation').setup(this.sharedData);
-                    this.scene.start('military allocation');
+                    scene.sharedData.militaryAllocation = scene.totalMilitaryAllocThisScene;
+                    scene.scene.get('military allocation').setup(scene.sharedData);
+                    scene.scene.start('military allocation');
                 }
             } else {
                 handleDilemmaOrInsurrection();
             }
         }
         // When the button is clicked, start the next scene
-        this.nextButton.on('pointerdown', this.startNextScene);
+        this.nextButton.on('pointerdown', () => startNextScene(this));
 
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
@@ -1685,7 +1685,7 @@ export class Politics extends BaseScene {
                         scene.drawGauges(scene, hurtIcon.icon.x, hurtIcon.icon.y, hurtIcon.maga, hurtIcon.woke, hurtIcon.health, hurtIcon.healthScale, hurtIcon.gaugeMaga, hurtIcon.gaugeWoke, hurtIcon.gaugeHealth, hurtIcon.scaleSprite, hurtIcon.littleHats);
                         tooltip.text.setVisible(true);
                         tooltip.box.setVisible(true);
-                        if (icon.iconName == 'military' && !scene.difficultyLevel().militaryAutoSpend) {
+                        if (icon.iconName == 'military'){//} && !scene.difficultyLevel().militaryAutoSpend) {
                             scene.militaryAllocation = true;
                             scene.totalMilitaryAllocThisScene += scene.difficultyLevel().militaryAllocationAmount;
                         }
@@ -2106,7 +2106,10 @@ export class Politics extends BaseScene {
             scene.Wokeness = Math.floor(tmpWok);
 
             // New feature: If you've spent all your political capital, go to the next scene!
-            if (scene.MAGAness + scene.Wokeness < 4 && !scene.transitionToNewScene) {
+            if (scene.MAGAness + scene.Wokeness < 4
+                && (Object.keys(scene.sharedData.helperTokens).length == 0)
+                && !scene.transitionToNewScene
+                && characters.every(character => character.endorsement <= 1)) {
                 scene.transitionToNewScene = 1;
                 scene.currentTutorialIndex = 99;
                 let message = 'Political Capital has been Allocated!';
@@ -2139,7 +2142,7 @@ export class Politics extends BaseScene {
                             scene.cameras.main.fadeOut(1000, 0, 0, 0);
                             scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                                 scene.transitionToNewScene = 0;
-                                scene.startNextScene();
+                                startNextScene(scene);
                             });
                         });
                     }
