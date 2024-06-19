@@ -77,7 +77,7 @@ function renderCharacters(scene) {
         if (!scene.hasBeenCreatedBefore) {
             //charVal[character.name] = 250 + xOffset;
         } else {
-            character.endorsement += character.value;
+            //character.endorsement += character.value;
             character.prevValue = 0;
             character.backing = character.value;
             //character.value = 0;
