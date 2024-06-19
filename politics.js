@@ -362,7 +362,7 @@ export class Politics extends BaseScene {
         });
         
         // Function to check and render characters
-        function checkAndRenderCharacters() {
+        function checkAndRenderCharacters(scene) {
             // Check if helper tokens have been allocated and characters have not been rendered yet
             if (Object.keys(scene.sharedData.helperTokens).length === 0 && !charactersRendered 
                 && characters.every(character => character.endorsement <= 1)) {
@@ -381,7 +381,7 @@ export class Politics extends BaseScene {
         }
         
         // Call the check function initially
-        checkAndRenderCharacters();
+        checkAndRenderCharacters(this);
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
