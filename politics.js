@@ -362,7 +362,7 @@ export class Politics extends BaseScene {
                 console.log('RENDER CHARACTERS!');
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
                 console.log('charactersRendered = ' + scene.charactersRendered);
-                console.log('endorsements are all 1 or less: ' + scene.sharedData.characters.every(character => character.endorsement <= 1));
+                console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
                 
                 renderCharacters(scene); // Render characters only when tokens are fully allocated
                 scene.charactersRendered = true; // Set the flag to true after rendering
