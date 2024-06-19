@@ -364,7 +364,8 @@ export class Politics extends BaseScene {
         // Function to check and render characters
         function checkAndRenderCharacters() {
             // Check if helper tokens have been allocated and characters have not been rendered yet
-            if (Object.keys(scene.sharedData.helperTokens).length === 0 && !charactersRendered) {
+            if (Object.keys(scene.sharedData.helperTokens).length === 0 && !charactersRendered 
+                && characters.every(character => character.endorsement <= 1)) {
                 renderCharacters(scene); // Render characters only when tokens are fully allocated
                 charactersRendered = true; // Set the flag to true after rendering
         
