@@ -530,7 +530,7 @@ export class Politics extends BaseScene {
 
             console.log('begin tutorial');
 
-            this.displayTutorial(); // Start the tutorial display
+            this.displayTutorial.call(this); // Start the tutorial display
         }
 
         /* don't deal with this yet
