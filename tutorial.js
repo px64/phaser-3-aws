@@ -186,8 +186,9 @@ import { insertLineBreaks} from './politicsUtils.js';
     }
 
     export function displayTutorial(scene) {
-    //export let displayTutorial = () => {
-        console.log('current index = '+ scene.currentTutorialIndex + ' total length = ' + nextScreenTutorial.length);
+        let backdrop;  // Optional: A background to capture clicks on the entire game area
+        let timeoutHandle;
+        let arrowGraphics; // Store the reference to the arrow graphics
         if (scene.currentTutorialIndex < nextScreenTutorial.length) {
             // Initialize an array to store arrow graphics
             let arrowGraphicsArray = [];
