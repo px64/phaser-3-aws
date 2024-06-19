@@ -184,7 +184,7 @@
         return result;
     }
 
-    const displayTutorial = () => {
+    export const displayTutorial = () => {
         if (this.currentTutorialIndex < nextScreenTutorial.length) {
             // Initialize an array to store arrow graphics
             let arrowGraphicsArray = [];
