@@ -185,6 +185,7 @@
     }
 
     export const displayTutorial = () => {
+        console.log('current index = '+ this.currentTutorialIndex + ' total length = ' + nextScreenTutorial.length);
         if (this.currentTutorialIndex < nextScreenTutorial.length) {
             // Initialize an array to store arrow graphics
             let arrowGraphicsArray = [];
