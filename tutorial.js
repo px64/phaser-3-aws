@@ -304,7 +304,7 @@
     };
 
 // Function to draw an arrow with the head on the starting point
-function drawArrow(scene, startX, startY, endX, endY) {
+export function drawArrow(scene, startX, startY, endX, endY) {
     let graphics = scene.add.graphics();
     graphics.lineStyle(5, 0xa000a0, 1);
 
@@ -339,5 +339,3 @@ function drawArrow(scene, startX, startY, endX, endY) {
     return graphics; // Ensure the graphics object is returned
 
 }
-
-export {displayTutorial, drawArrow};
