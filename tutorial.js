@@ -184,7 +184,7 @@
         return result;
     }
 
-    export const displayTutorial = () => {
+    export let displayTutorial = () => {
         console.log(this);
         console.log('current index = '+ this.currentTutorialIndex + ' total length = ' + nextScreenTutorial.length);
         if (this.currentTutorialIndex < nextScreenTutorial.length) {
