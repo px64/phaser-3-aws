@@ -365,7 +365,7 @@ export class Politics extends BaseScene {
         this.time.addEvent({
             delay: 1000, // Check every second
             callback: checkAndRenderCharacters,
-            callbackScope: this,
+            callbackScope: scene,
             loop: true
         });
 
