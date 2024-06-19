@@ -189,6 +189,7 @@ import { insertLineBreaks} from './politicsUtils.js';
         let backdrop;  // Optional: A background to capture clicks on the entire game area
         let timeoutHandle;
         let arrowGraphics; // Store the reference to the arrow graphics
+        let arrowTimerIDs = [];
         if (scene.currentTutorialIndex < nextScreenTutorial.length) {
             // Initialize an array to store arrow graphics
             let arrowGraphicsArray = [];
