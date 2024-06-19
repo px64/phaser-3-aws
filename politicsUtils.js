@@ -147,6 +147,8 @@ function updateCharVal(scene, character, value, characterText) {
     let MAGAupdate;
     let WokeUpdate;
 
+    console.log(character);
+    
     // Calculate MAGAupdate/WokeUpdate here
     if (character.faction == 'maga') {
         MAGAupdate = (value - character.prevValue)*4;
