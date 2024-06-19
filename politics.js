@@ -348,7 +348,26 @@ export class Politics extends BaseScene {
             token.setAlpha(0.2); // Set alpha to 20% (or any desired value)
         });
         */
-        renderCharacters(this);
+        // Function to check and render characters
+        function checkAndRenderCharacters() {
+            // Check if helper tokens have been allocated
+            if (Object.keys(scene.sharedData.helperTokens).length === 0) {
+                renderCharacters(scene); // Render characters only when tokens are fully allocated
+            } else {
+                console.log('Waiting for helper tokens to be allocated.');
+            }
+        }
+    
+        // Call the check function initially
+        checkAndRenderCharacters();
+    
+        // Optionally, set up an interval or an event to re-check periodically
+        this.time.addEvent({
+            delay: 1000, // Check every second
+            callback: checkAndRenderCharacters,
+            callbackScope: this,
+            loop: true
+        });
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
