@@ -345,3 +345,27 @@ export function drawArrow(scene, startX, startY, endX, endY) {
     return graphics; // Ensure the graphics object is returned
 
 }
+function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction) {
+    let toggleCount = 0;
+    const maxToggles = 6; // Blink 3 times (each blink consists of two toggles)
+
+    const toggleCheckbox = () => {
+        if (toggleCount < maxToggles) {
+            if (checkboxUnchecked.visible) {
+                checkboxUncheckedAction();
+            } else {
+                checkboxCheckedAction();
+            }
+            toggleCount++;
+        } else {
+            checkboxCheckedAction();
+            toggleEvent.remove(); // Remove the event after the desired number of toggles
+        }
+    };
+
+    const toggleEvent = scene.time.addEvent({
+        delay: 1000, // Delay in milliseconds
+        callback: toggleCheckbox,
+        loop: true
+    });
+}
