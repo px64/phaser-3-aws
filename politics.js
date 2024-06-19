@@ -357,7 +357,7 @@ export class Politics extends BaseScene {
         function checkAndRenderCharacters() {
             if (Object.keys(scene.sharedData.helperTokens).length === 0 && 
                 !scene.charactersRendered &&
-                characters.every(character => character.endorsement <= 1)) {
+                characters.every(character => (character.endorsement + character.value <= 1))) {
                 
                 console.log('RENDER CHARACTERS!');
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
@@ -383,7 +383,7 @@ export class Politics extends BaseScene {
         });
 
         // Call the check function initially
-        //checkAndRenderCharacters.call(this);
+        checkAndRenderCharacters.call(this);
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
@@ -405,6 +405,7 @@ export class Politics extends BaseScene {
             // Go through each character, recreate the slider and track, and check if any new helpful tokens need to be generated
             characters.forEach((character, index) => {
                 if (character.dne == true) {return;}
+                character.endorsement += character.value;
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
                     // Create new helpful token
