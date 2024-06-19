@@ -526,7 +526,9 @@ export class Politics extends BaseScene {
             let arrowGraphics; // Store the reference to the arrow graphics
             this.secondTimeThrough = 1;
 
-            displayTutorial(); // Start the tutorial display
+            // Bind the imported arrow function to the class instance
+            this.displayTutorial = displayTutorial.bind(this);
+            //displayTutorial(); // Start the tutorial display
         }
 
         /* don't deal with this yet
