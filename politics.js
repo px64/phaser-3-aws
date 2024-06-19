@@ -416,16 +416,18 @@ export class Politics extends BaseScene {
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                     let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
                     // Recreate text here
-                    character.charText.setText(character.name + ',\nBacking: ' + healthText);
-                    // Make sure color of text is normal
-                    if (character.faction == 'maga') {
-                        character.charText.setColor('#ff4040');
-                    } else {
-                        character.charText.setColor('#8080ff');
-                    }
-                    if ((character.endorsement + character.value) > 1){
-                        character.charText.setColor('#0f0');
-                    }
+    /* going to have to do this when characters are rendered
+    character.charText.setText(character.name + ',\nBacking: ' + healthText);
+    // Make sure color of text is normal
+    if (character.faction == 'maga') {
+        character.charText.setColor('#ff4040');
+    } else {
+        character.charText.setColor('#8080ff');
+    }
+    if ((character.endorsement + character.value) > 1){
+        character.charText.setColor('#0f0');
+    }
+    */
                 }
             });
 
