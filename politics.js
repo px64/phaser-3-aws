@@ -352,6 +352,9 @@ export class Politics extends BaseScene {
         // Initialize a flag to track if characters have been rendered
         let charactersRendered = false;
         
+        // Declare the interval variable
+        let checkInterval;
+        
         // Function to check and render characters
         function checkAndRenderCharacters() {
             // Check if helper tokens have been allocated and characters have not been rendered yet
