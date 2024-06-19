@@ -37,6 +37,7 @@ import { insertLineBreaks } from './politicsUtils.js';
 import { startNextScene } from './politicsUtils.js';
 import { secondScreenTutorial} from './tutorial.js';
 import { displayTutorial } from './tutorial.js';
+import { drawArrow } from './tutorial.js';
 
 //var MAGAness = 0;
 var MAGAupdate = 0;
