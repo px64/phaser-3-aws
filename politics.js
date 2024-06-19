@@ -81,6 +81,8 @@ export class Politics extends BaseScene {
         characters.forEach((character, index) => {
             character.endorsement = 0;
         });
+        // Bind the imported arrow function to the class instance
+        this.displayTutorial = displayTutorial.bind(this);
     }
     // politics
     setup(data) {
@@ -527,8 +529,7 @@ export class Politics extends BaseScene {
             this.secondTimeThrough = 1;
 
             console.log('begin tutorial');
-            // Bind the imported arrow function to the class instance
-            this.displayTutorial = displayTutorial.bind(this);
+
             this.displayTutorial(); // Start the tutorial display
         }
 
