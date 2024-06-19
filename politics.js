@@ -373,7 +373,7 @@ export class Politics extends BaseScene {
         checkAndRenderCharacters();
         
         // Set up an interval or an event to re-check periodically
-        let checkInterval = this.time.addEvent({
+        checkInterval = this.time.addEvent({
             delay: 1000, // Check every second
             callback: checkAndRenderCharacters,
             callbackScope: this,
