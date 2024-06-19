@@ -369,7 +369,7 @@ export class Politics extends BaseScene {
                 charactersRendered = true; // Set the flag to true after rendering
         
                 // Clear the interval after rendering characters
-                checkInterval.remove(false);
+                //checkInterval.remove(false);
             } else {
                 console.log('Waiting for helper tokens to be allocated.');
             }
