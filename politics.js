@@ -35,7 +35,7 @@ import { CharacterIntroductionScene } from './characterUtils.js';
 import { renderCharacters } from './politicsUtils.js';
 import { insertLineBreaks } from './politicsUtils.js';
 import { startNextScene } from './politicsUtils.js';
-import { nextScreenTutorial} from './tutorial.js';
+import { secondScreenTutorial} from './tutorial.js';
 import { displayTutorial } from './tutorial.js';
 
 //var MAGAness = 0;
