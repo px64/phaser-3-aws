@@ -1652,7 +1652,7 @@ export class Politics extends BaseScene {
                 iconText.setColor('white');
             });
         };
-
+/*
         function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction) {
             let toggleCount = 0;
             const maxToggles = 6; // Blink 3 times (each blink consists of two toggles)
@@ -1677,6 +1677,7 @@ export class Politics extends BaseScene {
                 loop: true
             });
         }
+        */
 
 
         //====================================================================================
