@@ -351,37 +351,40 @@ export class Politics extends BaseScene {
         */
         
         // Initialize a flag to track if characters have been rendered
-        let charactersRendered = false;
+        scene.charactersRendered = false;
         
- // Set up an interval or an event to re-check periodically
+        // Function to check and render characters
+        function checkAndRenderCharacters() {
+            if (Object.keys(scene.sharedData.helperTokens).length === 0 && 
+                !scene.charactersRendered &&
+                characters.every(character => character.endorsement <= 1)) {
+                
+                console.log('RENDER CHARACTERS!');
+                console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
+                console.log('charactersRendered = ' + scene.charactersRendered);
+                console.log('endorsements are all 1 or less: ' + scene.sharedData.characters.every(character => character.endorsement <= 1));
+                
+                renderCharacters(scene); // Render characters only when tokens are fully allocated
+                scene.charactersRendered = true; // Set the flag to true after rendering
+
+                // Clear the interval after rendering characters
+                checkInterval.remove(false);
+            } else {
+                console.log('Waiting for helper tokens to be allocated.');
+            }
+        }
+
+        // Set up an interval or an event to re-check periodically
         let checkInterval = this.time.addEvent({
             delay: 1000, // Check every second
             callback: checkAndRenderCharacters,
             callbackScope: this,
             loop: true
         });
-        
-        // Function to check and render characters
-        function checkAndRenderCharacters(scene) {
-            // Check if helper tokens have been allocated and characters have not been rendered yet
-            if (Object.keys(scene.sharedData.helperTokens).length === 0 && !charactersRendered 
-                && characters.every(character => character.endorsement <= 1)) {
-                console.log('RENDER CHARACTERS!');
-                console.log('helpertokenlength = ' +Object.keys(scene.sharedData.helperTokens).length);
-                console.log('charactersRendered = ' + charactersRendered);
-                console.log('endorsements are all 1 or less' + characters.every(character => character.endorsement <= 1));
-                renderCharacters(scene); // Render characters only when tokens are fully allocated
-                charactersRendered = true; // Set the flag to true after rendering
-        
-                // Clear the interval after rendering characters
-                //checkInterval.remove(false);
-            } else {
-                console.log('Waiting for helper tokens to be allocated.');
-            }
-        }
-        
+
         // Call the check function initially
-        checkAndRenderCharacters(this);
+        checkAndRenderCharacters.call(this);
+    }
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
