@@ -289,7 +289,7 @@
                 arrowGraphicsArray = []; // Clear the array after destruction
 
                 scene.currentTutorialIndex++;
-                displayTutorial(); // Display next item
+                displayTutorial(scene); // Display next item
             };
 
             // Set up listeners for pointer down and ENTER key
