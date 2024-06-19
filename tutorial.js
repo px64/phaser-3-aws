@@ -194,7 +194,7 @@ import { insertLineBreaks} from './politicsUtils.js';
             let snog;
             let tutorial = nextScreenTutorial[scene.currentTutorialIndex];
             let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
-            let referenceObject = getValueByPath(this, tutorial.reference);
+            let referenceObject = getValueByPath(scene, tutorial.reference);
             if (tutorial.reference == "polCapText")
             {
                 // make a copy of referenceObject so we can pretend to move the x, y coordinates over
@@ -213,7 +213,7 @@ import { insertLineBreaks} from './politicsUtils.js';
                 console.log(character);
                 if (character) {
                   startBlinkingCheckbox(
-                    this,
+                    scene,
                     character.checkbox.checkboxUnchecked,
                     character.checkbox.checkboxChecked,
                     character.checkbox.checkboxUncheckedAction,
@@ -227,7 +227,7 @@ import { insertLineBreaks} from './politicsUtils.js';
             //console.log(referenceObject.length);
             //console.log(typeof(referenceObject));
             //console.log(referenceObject);
-            //let referenceObject = this[tutorial.reference];
+            //let referenceObject = scene[tutorial.reference];
 
             let backstoryText = scene.add.text(window.innerWidth/5*2, window.innerHeight/5*2+scene.currentTutorialIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
 
@@ -247,14 +247,14 @@ import { insertLineBreaks} from './politicsUtils.js';
             if (Array.isArray(snog)) {
                 snog.forEach((element, index) => {
                     const timerID = setTimeout(() => {
-                        let arrow = drawArrow(this, element.x, element.y, backstoryBox.x, backstoryBox.y);
+                        let arrow = drawArrow(scene, element.x, element.y, backstoryBox.x, backstoryBox.y);
                         arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
                     }, (index+1) * 400 ); // Delay each arrow by index * 400 milliseconds
                     arrowTimerIDs.push(timerID); // Store the timer ID
                 });
 
             } else {
-                let arrow = drawArrow(this, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
+                let arrow = drawArrow(scene, snog.x, snog.y, backstoryBox.x, backstoryBox.y);
                 arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
             }
 
