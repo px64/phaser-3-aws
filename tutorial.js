@@ -1,4 +1,5 @@
 import { insertLineBreaks} from './politicsUtils.js';
+import { characters } from './BaseScene.js';
 
         export let nextScreenTutorial = [
             {
