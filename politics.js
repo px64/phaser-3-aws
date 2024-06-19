@@ -348,24 +348,32 @@ export class Politics extends BaseScene {
             token.setAlpha(0.2); // Set alpha to 20% (or any desired value)
         });
         */
+        
+        // Initialize a flag to track if characters have been rendered
+        let charactersRendered = false;
+        
         // Function to check and render characters
         function checkAndRenderCharacters() {
-            // Check if helper tokens have been allocated
-            if (Object.keys(scene.sharedData.helperTokens).length === 0) {
+            // Check if helper tokens have been allocated and characters have not been rendered yet
+            if (Object.keys(scene.sharedData.helperTokens).length === 0 && !charactersRendered) {
                 renderCharacters(scene); // Render characters only when tokens are fully allocated
+                charactersRendered = true; // Set the flag to true after rendering
+        
+                // Clear the interval after rendering characters
+                checkInterval.remove(false);
             } else {
                 console.log('Waiting for helper tokens to be allocated.');
             }
         }
-    
+        
         // Call the check function initially
         checkAndRenderCharacters();
-    
-        // Optionally, set up an interval or an event to re-check periodically
-        this.time.addEvent({
+        
+        // Set up an interval or an event to re-check periodically
+        let checkInterval = this.time.addEvent({
             delay: 1000, // Check every second
             callback: checkAndRenderCharacters,
-            callbackScope: scene,
+            callbackScope: this,
             loop: true
         });
 
