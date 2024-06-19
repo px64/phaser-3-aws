@@ -184,14 +184,14 @@
         return result;
     }
 
-    export let displayTutorial = () => {
-        console.log(this);
-        console.log('current index = '+ this.currentTutorialIndex + ' total length = ' + nextScreenTutorial.length);
-        if (this.currentTutorialIndex < nextScreenTutorial.length) {
+    export function displayTutorial(scene) {
+    //export let displayTutorial = () => {
+        console.log('current index = '+ scene.currentTutorialIndex + ' total length = ' + nextScreenTutorial.length);
+        if (scene.currentTutorialIndex < nextScreenTutorial.length) {
             // Initialize an array to store arrow graphics
             let arrowGraphicsArray = [];
             let snog;
-            let tutorial = nextScreenTutorial[this.currentTutorialIndex];
+            let tutorial = nextScreenTutorial[scene.currentTutorialIndex];
             let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
             let referenceObject = getValueByPath(this, tutorial.reference);
             if (tutorial.reference == "polCapText")
@@ -228,13 +228,13 @@
             //console.log(referenceObject);
             //let referenceObject = this[tutorial.reference];
 
-            let backstoryText = this.add.text(window.innerWidth/5*2, window.innerHeight/5*2+this.currentTutorialIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            let backstoryText = scene.add.text(window.innerWidth/5*2, window.innerHeight/5*2+scene.currentTutorialIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
 
             backstoryText.setOrigin(0.5);
             backstoryText.setVisible(true);
             backstoryText.setDepth(4);
 
-            let backstoryBox = this.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
             backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
             backstoryBox.isStroked = true;
             backstoryBox.setOrigin(0.5);
@@ -257,7 +257,7 @@
                 arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
             }
 
-            this.tweens.add({
+            scene.tweens.add({
                 targets: [backstoryText, backstoryBox],
                 alpha: { from: 1, to: .5 },
                 ease: 'Linear',
@@ -268,7 +268,7 @@
 
             // Optional: Add a full-screen invisible sprite to capture clicks anywhere
             if (!backdrop) {
-                backdrop = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
+                backdrop = scene.add.rectangle(0, 0, scene.cameras.main.width, scene.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
             }
 
             // Cleanup function to clear current tutorial item
@@ -276,9 +276,9 @@
                 clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
                 backstoryText.setVisible(false);
                 backstoryBox.setVisible(false);
-                this.tweens.killTweensOf([backstoryText, backstoryBox]);
+                scene.tweens.killTweensOf([backstoryText, backstoryBox]);
                 backdrop.off('pointerdown');
-                this.input.keyboard.off('keydown-ENTER');
+                scene.input.keyboard.off('keydown-ENTER');
 
                 // Clear all pending timers for drawing arrows
                 arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
@@ -288,15 +288,15 @@
                 arrowGraphicsArray.forEach(arrow => arrow.destroy());
                 arrowGraphicsArray = []; // Clear the array after destruction
 
-                this.currentTutorialIndex++;
+                scene.currentTutorialIndex++;
                 displayTutorial(); // Display next item
             };
 
             // Set up listeners for pointer down and ENTER key
             backdrop.on('pointerdown', clearCurrentTutorial);
-            this.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-            this.nextButton.on('pointerdown', () => {
-                this.currentTutorialIndex = 99;
+            scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+            scene.nextButton.on('pointerdown', () => {
+                scene.currentTutorialIndex = 99;
                 clearCurrentTutorial();
             });
 
