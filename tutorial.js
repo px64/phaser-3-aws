@@ -149,7 +149,7 @@ import { characters } from './BaseScene.js';
             }
         ];
 
-        let secondScreenTutorial = [
+        export let secondScreenTutorial = [
             {
                 story: [
                     "After you have endorsed a liaison, a token appears that can be dragged",
