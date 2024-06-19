@@ -352,8 +352,13 @@ export class Politics extends BaseScene {
         // Initialize a flag to track if characters have been rendered
         let charactersRendered = false;
         
-        // Declare the interval variable
-        let checkInterval;
+ // Set up an interval or an event to re-check periodically
+        let checkInterval = this.time.addEvent({
+            delay: 1000, // Check every second
+            callback: checkAndRenderCharacters,
+            callbackScope: this,
+            loop: true
+        });
         
         // Function to check and render characters
         function checkAndRenderCharacters() {
@@ -371,14 +376,6 @@ export class Politics extends BaseScene {
         
         // Call the check function initially
         checkAndRenderCharacters();
-        
-        // Set up an interval or an event to re-check periodically
-        checkInterval = this.time.addEvent({
-            delay: 1000, // Check every second
-            callback: checkAndRenderCharacters,
-            callbackScope: this,
-            loop: true
-        });
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
