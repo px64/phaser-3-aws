@@ -383,7 +383,7 @@ export class Politics extends BaseScene {
         });
 
         // Call the check function initially
-        checkAndRenderCharacters.call(this);
+        //checkAndRenderCharacters.call(this);
 
         if (this.hasBeenCreatedBefore) {
             // Recreate all previously created helpful tokens that have not been used yet
