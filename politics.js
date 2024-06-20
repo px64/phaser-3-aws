@@ -409,7 +409,9 @@ export class Politics extends BaseScene {
                 if (character.dne == true) {return;}
                 character.endorsement += character.value;
                 character.prevValue = 0;
-                character.backing = character.value;
+                //character.backing = character.value;
+                character.backing = 0;
+                character.value = 0;
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
                     // Create new helpful token
