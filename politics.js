@@ -376,11 +376,15 @@ export class Politics extends BaseScene {
                 if (scene.oldExperienceLevel != Math.floor(scene.sharedData.totalPoliticalCapital / 30) + 1) {
                     // Save the updated sharedData for characterintroduction
                     scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
+                    // Pause the current scene
+                    scene.scene.pause();
                     // Launch CharacterIntroductionScene
                     scene.scene.launch('CharacterIntroductionScene', {
                         sharedData: scene.sharedData,
                         callback: (data) => {
                             scene.scene.stop('CharacterIntroductionScene');
+                            // Resume the current scene
+                            scene.scene.resume();
                             scene.setup(data);
                             renderCharactersCallback(); // Continue to renderCharacters
                         }
