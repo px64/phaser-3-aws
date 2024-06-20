@@ -136,7 +136,7 @@ export class Politics extends BaseScene {
             console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital + ' this.oldExperienceLevel = ' + this.oldExperienceLevel );
 
             //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
-            if (this.oldExperienceLevel != Math.floor(this.sharedData.totalPoliticalCapital/30)+1)
+            if (0)// this.oldExperienceLevel != Math.floor(this.sharedData.totalPoliticalCapital/30)+1)
             {
                 // Save the updated sharedData for characterintroduction
                 this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
@@ -366,11 +366,29 @@ export class Politics extends BaseScene {
                 scene.misinformationTokens.forEach(token => {
                     token.setAlpha(0.5); // Set the alpha to lower the visibility
                 });
-                renderCharacters(scene); // Render characters only when tokens are fully allocated
-                scene.charactersRendered = true; // Set the flag to true after rendering
-
-                // Clear the interval after rendering characters
-                checkInterval.remove(false);
+                
+                const renderCharactersCallback = () => {
+                    renderCharacters(scene); // Render characters only when tokens are fully allocated
+                    scene.charactersRendered = true; // Set the flag to true after rendering
+                    checkInterval.remove(false); // Clear the interval after rendering characters
+                };
+        
+                if (scene.oldExperienceLevel != Math.floor(scene.sharedData.totalPoliticalCapital / 30) + 1) {
+                    // Save the updated sharedData for characterintroduction
+                    scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
+                    // Launch CharacterIntroductionScene
+                    scene.scene.launch('CharacterIntroductionScene', {
+                        sharedData: scene.sharedData,
+                        callback: (data) => {
+                            scene.scene.stop('CharacterIntroductionScene');
+                            scene.setup(data);
+                            renderCharactersCallback(); // Continue to renderCharacters
+                        }
+                    });
+                } else {
+                    scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
+                    renderCharactersCallback(); // Continue to renderCharacters
+                }
             } else {
                 console.log('Waiting for helper tokens to be allocated.');
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
