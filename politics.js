@@ -81,6 +81,7 @@ export class Politics extends BaseScene {
         characters.forEach((character, index) => {
             character.endorsement = 0;
         });
+        this.misinformationTokens = []; // Initialize the stack to store tokens
     }
     // politics
     setup(data) {
@@ -362,7 +363,9 @@ export class Politics extends BaseScene {
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
                 console.log('charactersRendered = ' + scene.charactersRendered);
                 console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
-
+                scene.misinformationTokens.forEach(token => {
+                    token.setAlpha(0.5); // Set the alpha to lower the visibility
+                });
                 renderCharacters(scene); // Render characters only when tokens are fully allocated
                 scene.charactersRendered = true; // Set the flag to true after rendering
 
@@ -1023,6 +1026,8 @@ export class Politics extends BaseScene {
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
 
                 misinformation.container.misinformationIndex = index;
+
+                scene.misinformationTokens.push(helpfulTokenIcon); // Push token to stack
 
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
