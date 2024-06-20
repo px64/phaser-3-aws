@@ -376,15 +376,19 @@ export class Politics extends BaseScene {
                 if (scene.oldExperienceLevel != Math.floor(scene.sharedData.totalPoliticalCapital / 30) + 1) {
                     // Save the updated sharedData for characterintroduction
                     scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
-                    // Pause the current scene
-                    scene.scene.pause();
+                    
+                    // Hide all game objects in the current scene
+                    scene.children.each(child => child.setVisible(false));
+                    
                     // Launch CharacterIntroductionScene
                     scene.scene.launch('CharacterIntroductionScene', {
                         sharedData: scene.sharedData,
                         callback: (data) => {
                             scene.scene.stop('CharacterIntroductionScene');
-                            // Resume the current scene
-                            scene.scene.resume();
+                   
+                            // Unhide all game objects in the current scene
+                            scene.children.each(child => child.setVisible(true));
+                            
                             scene.setup(data);
                             renderCharactersCallback(); // Continue to renderCharacters
                         }
