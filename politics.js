@@ -30,7 +30,6 @@
 import BaseScene from './BaseScene.js';
 import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
-import { militaryAssets } from './BaseScene.js';
 import { CharacterIntroductionScene } from './characterUtils.js';
 import { renderCharacters } from './politicsUtils.js';
 import { insertLineBreaks } from './politicsUtils.js';
@@ -336,7 +335,7 @@ export class Politics extends BaseScene {
         if (this.hasBeenCreatedBefore) {
             this.currentTutorialIndex = 99;
         }
-        
+
         if (this.difficultyLevel().multiplier == 1 && !this.hasBeenCreatedBefore) {
             this.secondTimeThrough = 1;
 
@@ -349,21 +348,21 @@ export class Politics extends BaseScene {
             token.setAlpha(0.2); // Set alpha to 20% (or any desired value)
         });
         */
-        
+
         // Initialize a flag to track if characters have been rendered
         scene.charactersRendered = false;
-        
+
         // Function to check and render characters
         function checkAndRenderCharacters() {
-            if (Object.keys(scene.sharedData.helperTokens).length === 0 && 
+            if (Object.keys(scene.sharedData.helperTokens).length === 0 &&
                 !scene.charactersRendered &&
-                characters.every(character => (character.endorsement + character.value <= 1))) {
-                
+                characters.every(character => character.endorsement + character.value <= 1 )) {
+
                 console.log('RENDER CHARACTERS!');
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
                 console.log('charactersRendered = ' + scene.charactersRendered);
                 console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
-                
+
                 renderCharacters(scene); // Render characters only when tokens are fully allocated
                 scene.charactersRendered = true; // Set the flag to true after rendering
 
@@ -371,6 +370,9 @@ export class Politics extends BaseScene {
                 checkInterval.remove(false);
             } else {
                 console.log('Waiting for helper tokens to be allocated.');
+                console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
+                console.log('charactersRendered = ' + scene.charactersRendered);
+                console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
             }
         }
 
@@ -406,6 +408,8 @@ export class Politics extends BaseScene {
             characters.forEach((character, index) => {
                 if (character.dne == true) {return;}
                 character.endorsement += character.value;
+                character.prevValue = 0;
+                character.backing = character.value;
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
                     // Create new helpful token

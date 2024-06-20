@@ -213,7 +213,6 @@ import { characters } from './BaseScene.js';
                 // Assuming characters is an array of objects and startBlinkingCheckbox is defined
                 const character = characters.find(character => character.dne === false);
 
-                console.log(character);
                 if (character) {
                   startBlinkingCheckbox(
                     scene,

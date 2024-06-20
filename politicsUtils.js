@@ -1,5 +1,6 @@
 import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
+import { militaryAssets } from './BaseScene.js';
 
 // Cleanup function to clear current tutorial item
 const clearCurrentTutorial = () => {
@@ -78,8 +79,8 @@ function renderCharacters(scene) {
             //charVal[character.name] = 250 + xOffset;
         } else {
             //character.endorsement += character.value;
-            character.prevValue = 0;
-            character.backing = character.value;
+            //character.prevValue = 0;
+            //character.backing = character.value;
             //character.value = 0;
         }
         let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
@@ -147,8 +148,6 @@ function updateCharVal(scene, character, value, characterText) {
     let MAGAupdate;
     let WokeUpdate;
 
-    console.log(character);
-    
     // Calculate MAGAupdate/WokeUpdate here
     if (character.faction == 'maga') {
         MAGAupdate = (value - character.prevValue)*4;
@@ -338,7 +337,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     }
 
     // Initial checkbox state
-    if(initialValue) {
+    if(0){//initialValue) { // skip this fancy stuff for now
         let undoCheck;
 
         checkboxUnchecked.setVisible(false);
