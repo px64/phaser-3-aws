@@ -991,6 +991,8 @@ export class Politics extends BaseScene {
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
+                    scene.misinformationTokens.push(helpfulTokenIcon); // Push token to stack
+
                 }
             }
 
