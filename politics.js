@@ -916,13 +916,16 @@ export class Politics extends BaseScene {
                     defense.littleHats = [];
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 1, 'wokeBase', defense.littleHats);
+                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, defense.littleHats.length, 'wokeBase', defense.littleHats);
             }
         }, null, this);
         
         // Draw little hats
-        function drawIcons(scene, x, y, count, texture, littleHats) {
-            for (let i = 0; i < count; i++) {
+        function drawIcons(scene, x, y, texture, startIndex, littleHats) {
+        
+            let count = startIndex + 1; // Increment the count by 1 for the new hat
+        
+            for (let i = startIndex; i < count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
