@@ -337,7 +337,7 @@ export class Politics extends BaseScene {
             this.currentTutorialIndex = 99;
         }
 
-        if (this.difficultyLevel().multiplier == 1 && !this.hasBeenCreatedBefore) {
+        if (this.difficultyLevel().runTutorial && !this.hasBeenCreatedBefore) {
             this.secondTimeThrough = 1;
 
             displayTutorial(this); // Start the tutorial display
@@ -468,7 +468,7 @@ export class Politics extends BaseScene {
             });
 
             // If this is the first time a helpful token has appeared, and it's beginner level, provide a tutorial on what to do with it
-            if (this.difficultyLevel().multiplier == 1 && !this.firstPowerTokenEver && enableTokenTutorial == true) {
+            if (this.difficultyLevel().runTutorial && !this.firstPowerTokenEver && enableTokenTutorial == true) {
                 this.firstPowerTokenEver = 1;
                // let backdrop;
                 let timeoutHandle;
@@ -653,7 +653,7 @@ export class Politics extends BaseScene {
                             iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                         }
                     }
-                    if (!scene.firstHackerEver && scene.difficultyLevel().multiplier == 1) {
+                    if (!scene.firstHackerEver && scene.difficultyLevel().runTutorial) {
                         scene.firstHackerEver = 1;
                         let timeoutHandle;
                         // Initialize an array to store arrow graphics
@@ -807,7 +807,7 @@ export class Politics extends BaseScene {
                     callbackScope: scene
                 });
 
-                if (!scene.firstType2Ever && scene.difficultyLevel().multiplier == 1) {
+                if (!scene.firstType2Ever && scene.difficultyLevel().runTutorial) {
                     scene.firstType2Ever = 1;
                     let timeoutHandle;
                     let timeoutHandle2;
