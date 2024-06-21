@@ -59,6 +59,10 @@ var justiceWoke = 20;
 var justiceStrength = 5;
 var charVal = {};
 
+const ICON_MARGIN = 10;
+const GAUGE_HEIGHT = 50;
+const ICON_SPACING = 10;
+const ICON_SCALE = 0.03;
 
 export class Politics extends BaseScene {
 
@@ -907,9 +911,6 @@ export class Politics extends BaseScene {
                     callbackScope: scene
                 });
             } else {
-                const ICON_SPACING = 30; // Adjust the spacing between icons
-                const ICON_SCALE = 0.5; // Adjust the scale of the icons
-                const ICON_MARGIN = 10; // Margin from the top
                 // Initialize defense.littleHats if it doesn't exist yet
                 if (!defense.littleHats) {
                     defense.littleHats = [];
