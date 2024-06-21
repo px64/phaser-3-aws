@@ -985,10 +985,18 @@ export class Politics extends BaseScene {
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                        defense.littleHats.forEach(hat => hat.destroy());
                         defense.container.destroy();
                     },
                     callbackScope: scene
                 });
+            } else {
+                // Initialize defense.littleHats if it doesn't exist yet
+                if (!defense.littleHats) {
+                    defense.littleHats = [];
+                }
+                let iconY = defense.container.y + ICON_MARGIN;
+                defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
             }
         }, null, this);
 
