@@ -906,6 +906,7 @@ export class Politics extends BaseScene {
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                        defense.littleHats.destroy();
                         defense.container.destroy();
                     },
                     callbackScope: scene
