@@ -358,7 +358,8 @@ export class Politics extends BaseScene {
             if (Object.keys(scene.sharedData.helperTokens).length === 0 &&
                 !scene.charactersRendered &&
                 characters.every(character => character.endorsement + character.value <= 1 )) {
-
+                scene.charactersRendered = true;
+                checkInterval.remove(false); // Clear the interval after rendering characters
                 console.log('RENDER CHARACTERS!');
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
                 console.log('charactersRendered = ' + scene.charactersRendered);
@@ -366,32 +367,34 @@ export class Politics extends BaseScene {
                 scene.misinformationTokens.forEach(token => {
                     token.setAlpha(0.5); // Set the alpha to lower the visibility
                 });
-                
+
                 const renderCharactersCallback = () => {
                     renderCharacters(scene); // Render characters only when tokens are fully allocated
-                    scene.charactersRendered = true; // Set the flag to true after rendering
-                    checkInterval.remove(false); // Clear the interval after rendering characters
+
                 };
-        
+
                 if (scene.oldExperienceLevel != Math.floor(scene.sharedData.totalPoliticalCapital / 30) + 1) {
                     // Save the updated sharedData for characterintroduction
                     scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
-                    
-                    // Hide all game objects in the current scene
-                    scene.children.each(child => child.setVisible(false));
-                    
-                    // Launch CharacterIntroductionScene
-                    scene.scene.launch('CharacterIntroductionScene', {
-                        sharedData: scene.sharedData,
-                        callback: (data) => {
-                            scene.scene.stop('CharacterIntroductionScene');
-                   
-                            // Unhide all game objects in the current scene
-                            scene.children.each(child => child.setVisible(true));
-                            
-                            scene.setup(data);
-                            renderCharactersCallback(); // Continue to renderCharacters
-                        }
+
+                    scene.cameras.main.fadeOut(2400, 0, 0, 0);
+                    scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                        // Hide all game objects in the current scene
+                        scene.children.each(child => child.setVisible(false));
+                        scene.cameras.main.fadeIn(400, 0, 0, 0);
+                        // Launch CharacterIntroductionScene
+                        scene.scene.launch('CharacterIntroductionScene', {
+                            sharedData: scene.sharedData,
+                            callback: (data) => {
+                                scene.scene.stop('CharacterIntroductionScene');
+
+                                // Unhide all game objects in the current scene
+                                scene.children.each(child => child.setVisible(true));
+
+                                scene.setup(data);
+                                renderCharactersCallback(); // Continue to renderCharacters
+                            }
+                        });
                     });
                 } else {
                     scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
@@ -399,9 +402,6 @@ export class Politics extends BaseScene {
                 }
             } else {
                 console.log('Waiting for helper tokens to be allocated.');
-                console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
-                console.log('charactersRendered = ' + scene.charactersRendered);
-                console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
             }
         }
 

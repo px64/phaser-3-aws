@@ -271,7 +271,7 @@ import { characters } from './BaseScene.js';
 
             // Optional: Add a full-screen invisible sprite to capture clicks anywhere
             if (!backdrop) {
-                backdrop = scene.add.rectangle(0, 0, scene.cameras.main.width, scene.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
+                backdrop = scene.add.rectangle(scene.cameras.main.width/4, scene.cameras.main.height/4, scene.cameras.main.width, scene.cameras.main.height-100, 0x000000, 0).setOrigin(0, 0).setInteractive();
             }
 
             // Cleanup function to clear current tutorial item
