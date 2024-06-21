@@ -916,7 +916,7 @@ export class Politics extends BaseScene {
                     defense.littleHats = [];
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, defense.littleHats.length, 'wokeBase', defense.littleHats);
+                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
             }
         }, null, this);
         
