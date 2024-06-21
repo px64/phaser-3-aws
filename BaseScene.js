@@ -1417,7 +1417,32 @@ export const difficultyList = {
         startingEndorsement: 'all',
         putieThreat: 1,
         collapseImbalance: 100,
-        multiplier: 1
+        multiplier: 1,
+        runTutorial: true
+    },    
+    'A Beginner but skip the tutorial': {
+        alienIncreasePerRound: 1,
+        alienDefenseFromSameBase: true,
+        militaryAutoSpend: true,
+        militaryAllocationAmount: 10,
+        alienAttackForCapitalFunc: function(sharedData) { // Give opportunity for extra capital if you have none
+            return sharedData.MAGAness < 4
+                    && sharedData.Wokeness < 4
+                    && sharedData.putieTerritories < territories.length / 2;
+        },
+        dilemmaOddsFunc: function(sharedData) {
+            return (sharedData.WokenessVelocity < 1
+                    || (Math.random() < .3));
+        },
+        militaryTechBoost: 50,
+        hackerShieldStrength: 1,
+        oddsOfAlienAttack: 0.66, //more attacks: easier to get capital,
+        oddsOfAlienAttackFirstRound: 0, // New plan: aliens don't attack immediately: too confusing!
+        startingEndorsement: 'all',
+        putieThreat: 1,
+        collapseImbalance: 100,
+        multiplier: 1,
+        runTutorial: false
     },
     'Going to Need Some Help': {
         alienIncreasePerRound: 2,
@@ -1443,7 +1468,8 @@ export const difficultyList = {
         startingEndorsement: 'ideology',
         putieThreat: 2,
         collapseImbalance: 90, // 100 (leave this for testing collapses for now)
-        multiplier: 2
+        multiplier: 2,
+        runTutorial: false
     },
     'Realistic': {
         alienIncreasePerRound: 3,
@@ -1467,6 +1493,7 @@ export const difficultyList = {
         startingEndorsement: 'ideology',  //JCS tuning: give hacker and peacekeeper a starting endorsement
         putieThreat: 2,
         collapseImbalance: 50,
-        multiplier: 3
+        multiplier: 3,
+        runTutorial: false
     }
 };
