@@ -1114,8 +1114,8 @@ export class Politics extends BaseScene {
                 scene.icons[icon.iconName].shieldStrength = scene.difficultyLevel().hackerShieldStrength // Hacker changes shield strength
                 helpedIcon.icon.shieldWoke.setAlpha(0.5);
                 scene.time.delayedCall(5000, () => {
-                    tooltip.text.setVisible(false);
-                    tooltip.box.setVisible(false);
+                    tooltip.text.destroy();
+                    tooltip.box.destroy();
                 });
                 scene.tweens.add({
                     targets: helper.container,
@@ -1169,8 +1169,8 @@ export class Politics extends BaseScene {
                     let helpedIcon = scene.icons[helper.container.character.helps];
                     let tooltip = createTooltip(scene, helper.container.character, 500, 500, helpedIcon.icon, helpedIcon.iconText);
                     scene.time.delayedCall(5000, () => {
-                        tooltip.text.setVisible(false);
-                        tooltip.box.setVisible(false);
+                        tooltip.text.destroy();
+                        tooltip.box.destroy();
                     });
 
                     scene.tweens.add({
