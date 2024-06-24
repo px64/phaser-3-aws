@@ -1560,7 +1560,7 @@ export class Politics extends BaseScene {
                 misinformation.setSize(outline.width, outline.height);
             }
            if (size != 'large' || faction != 'neutral' ){
-                misinformation.container.setSize(outline.width * 0.1, outline.height * 0.1);
+                misinformation.setSize(outline.width * 0.1, outline.height * 0.1);
 
                const timerID = setTimeout(() => {
                     // Add a tween to expand the container and its contents
