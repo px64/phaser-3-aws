@@ -1545,10 +1545,6 @@ export class Politics extends BaseScene {
                     callbackScope: scene
                 });
             }
-        
-            // Return the created misinformation container
-            return misinformation;
-        }
 
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
