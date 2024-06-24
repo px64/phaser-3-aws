@@ -461,20 +461,20 @@ export class Politics extends BaseScene {
                     let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
                     
                     // Recreate text here
-    /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
-      back to their regular color if they were green before and are no longer fully endorsed */
-    /*
-    character.charText.setText(character.name + ',\nBacking: ' + healthText);
-    // Make sure color of text is normal
-    if (character.faction == 'maga') {
-        character.charText.setColor('#ff4040');
-    } else {
-        character.charText.setColor('#8080ff');
-    }
-    if ((character.endorsement + character.value) > 1){
-        character.charText.setColor('#0f0');
-    }
-    */
+                    /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
+                    back to their regular color if they were green before and are no longer fully endorsed */
+                    /*
+                    character.charText.setText(character.name + ',\nBacking: ' + healthText);
+                    // Make sure color of text is normal
+                    if (character.faction == 'maga') {
+                        character.charText.setColor('#ff4040');
+                    } else {
+                        character.charText.setColor('#8080ff');
+                    }
+                    if ((character.endorsement + character.value) > 1){
+                        character.charText.setColor('#0f0');
+                    }
+                    */
                 }
             });
 
@@ -882,8 +882,8 @@ export class Politics extends BaseScene {
                         timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
                     }, 5000);
                 }
-            }
-        }
+            } // end of token type 2
+        } // end of CreateHelpfulToken()
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
@@ -1064,7 +1064,7 @@ export class Politics extends BaseScene {
                 numEntries = scene.extraMisinformationTokens;
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
                 scene.extraMisinformationTokens = 0;
-// comment out for now because it's too confusing                if (Math.random < .2) numEntries += 1;
+                // comment out for now because it's too confusing                if (Math.random < .2) numEntries += 1;
                 /*
                     for (let tmpHelper in scene.helperIcons) {
                         if (tmpHelper.powerTokenType == 'type_2') {
@@ -1169,7 +1169,7 @@ export class Politics extends BaseScene {
                     scene.currentMisinformationIndex++; // Increment the index after capturing the correct data
                 }
             }
-        }
+        } // end of misinformationmanagement()
         //====================================================================================
         //
         // Helper function to handle common overlap logic between Helpful Token and icon
@@ -1605,7 +1605,7 @@ export class Politics extends BaseScene {
                 iconText.setColor('white');
             });
         };
-/*
+        /*
         function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction) {
             let toggleCount = 0;
             const maxToggles = 6; // Blink 3 times (each blink consists of two toggles)
@@ -1844,4 +1844,5 @@ export class Politics extends BaseScene {
         this.hasBeenCreatedBefore = true;
     }
 
+}
 }
