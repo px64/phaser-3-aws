@@ -354,6 +354,10 @@ export class Politics extends BaseScene {
         });
         */
 
+        // New Idea: It would be cool that the character associated with the helper token is we render the characters right away but make them invisible.  No, actually that won't work because the checkboxes will still be active.
+        // Also the checkboxes might be in front of the discussion tokens, creating a problem.
+        // how about some new funky graphic showing how the token eminates from the checkbox?
+        // 
         // Initialize a flag to track if characters have been rendered
         scene.charactersRendered = false;
 
@@ -456,7 +460,8 @@ export class Politics extends BaseScene {
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                     let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
                     // Recreate text here
-    /* going to have to do this when characters are rendered
+    /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
+      back to their regular color if they were green before and are no longer fully endorsed */
     character.charText.setText(character.name + ',\nBacking: ' + healthText);
     // Make sure color of text is normal
     if (character.faction == 'maga') {
@@ -547,8 +552,8 @@ export class Politics extends BaseScene {
                 // Set a timeout to automatically advance
                 timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
             }
-        }
-        // // TODO: Add a character power type that "calms down" insurrectionists and gets them to go home.
+        
+        // type_2 character power type "calms down" insurrectionists and gets them to go home.
         // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
         // just reduce whichever is largest
         function createHelpfulToken(scene, character, helpfulTokenIndex) {
@@ -1486,7 +1491,7 @@ export class Politics extends BaseScene {
                     : '#ff00ff';
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
-            if (size == 'large' ) {text.setFontSize(36);}
+            if (size == 'large' ) {text.setFontSize(36);} // By making the font large, the rectangle and container automatically become large
 
             // Create a larger white rectangle for outline
             let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
@@ -1536,7 +1541,8 @@ export class Politics extends BaseScene {
                 outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
                 text.y += tokenIcon.displayHeight/2;
                 //rectangle.x adjustment??
-                if (faction == 'neutral' && size != 'large'){
+                // Make the 'discussion' icons look different from the other power tokens
+                if (faction == 'neutral' && size != 'large') {
                     outline.setVisible(false);
                     rectangle.setVisible(false);
                     rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
@@ -1548,7 +1554,20 @@ export class Politics extends BaseScene {
                 misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
             } else {
                 misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
-                misinformation.setSize(outline.width, outline.height);
+                misinformation.setSize(outline.width*.1, outline.height*.1);
+                scene.tweens.add({
+                    targets: misinformation.container,
+                    scaleX: 10, // expand to 10x the width
+                    scaleY: 10, // expand to 10x the height
+                    ease: 'Sine.easeInOut',
+                    duration: 2000,
+                    onComplete: function () {
+                        misinformation.setSize(outline.width, outline.height);
+                    },
+                    callbackScope: scene
+                });
+                
+
             }
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
