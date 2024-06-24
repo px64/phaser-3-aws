@@ -461,7 +461,7 @@ export class Politics extends BaseScene {
                     let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
                     // Recreate text here
     /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
-      back to their regular color if they were green before and are no longer fully endorsed */
+      back to their regular color if they were green before and are no longer fully endorsed 
     character.charText.setText(character.name + ',\nBacking: ' + healthText);
     // Make sure color of text is normal
     if (character.faction == 'maga') {
