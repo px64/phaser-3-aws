@@ -1557,20 +1557,25 @@ export class Politics extends BaseScene {
                 misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
             } else {
                 misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+                misinformation.setSize(outline.width, outline.height);
+            }
+           if (size != 'large'){
                 misinformation.setSize(outline.width * 0.1, outline.height * 0.1);
-                
-                // Add a tween to expand the container and its contents
-                scene.tweens.add({
-                    targets: misinformation,
-                    scaleX: 10, // expand to 10x the width
-                    scaleY: 10, // expand to 10x the height
-                    ease: 'Sine.easeInOut',
-                    duration: 2000,
-                    onComplete: function () {
-                        misinformation.setSize(outline.width, outline.height);
-                    },
-                    callbackScope: scene
-                });
+
+               const timerID = setTimeout(() => {
+                    // Add a tween to expand the container and its contents
+                    scene.tweens.add({
+                        targets: misinformation,
+                        scaleX: 10, // expand to 10x the width
+                        scaleY: 10, // expand to 10x the height
+                        ease: 'Sine.easeInOut',
+                        duration: 2000,
+                        onComplete: function () {
+                            misinformation.setSize(outline.width, outline.height);
+                        },
+                        callbackScope: scene
+                    });
+               }, scene.helperIcons.length*400);
             }
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
