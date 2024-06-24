@@ -359,6 +359,7 @@ export class Politics extends BaseScene {
         // how about some new funky graphic showing how the token eminates from the checkbox?
         // 
         // Initialize a flag to track if characters have been rendered
+        
         scene.charactersRendered = false;
 
         // Function to check and render characters
@@ -555,335 +556,336 @@ export class Politics extends BaseScene {
                 timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
             }
         
-        // type_2 character power type "calms down" insurrectionists and gets them to go home.
-        // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
-        // just reduce whichever is largest
-        function createHelpfulToken(scene, character, helpfulTokenIndex) {
-            let text = character.power;
-            let charText = character.charText;
-            let xOffset, yOffset;
-            if (character.faction === 'maga') {
-                xOffset = charText.x + 250;
-            } else {
-                xOffset = charText.x - 140;
-            }
-            yOffset = charText.y + 25;
-
-            //===========
-            // Add an icon or graphic
-            let helpedIcon;
-            let characterHelps = character.helps; // don't want to change character.helps permanently
-            if (character.helps){
-                helpedIcon = scene.sharedData.icons[character.helps];
-            } else {
-                helpedIcon = scene.sharedData.icons['environment']; // placeholder for now for undefined helps
-                if (character.powerTokenType == 'type_3') {
-                    characterHelps = 'hacker';
-                    helpedIcon.scaleFactor = 0.19;
-                    //console.log('hacker');
+            // type_2 character power type "calms down" insurrectionists and gets them to go home.
+            // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
+            // just reduce whichever is largest
+            function createHelpfulToken(scene, character, helpfulTokenIndex) {
+                let text = character.power;
+                let charText = character.charText;
+                let xOffset, yOffset;
+                if (character.faction === 'maga') {
+                    xOffset = charText.x + 250;
                 } else {
-                    characterHelps = 'negotiation';
-                    helpedIcon.scaleFactor = 0.13;
-                    //console.log('negotiation');
+                    xOffset = charText.x - 140;
                 }
-            }
-
-            // Add an icon or graphic and scale it
-            let helpfulTokenIcon = scene.add.image(0, 0, characterHelps);  // Position the icon at the original y position
-            helpfulTokenIcon.setScale(helpedIcon.scaleFactor*.6);  // scale the icon
-            helpfulTokenIcon.setOrigin(0.5, 0.82);  // change origin to bottom center
-            helpfulTokenIcon.setVisible(true);
-            //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
-            helpfulTokenIcon.setAlpha(1);
-            //=====
-
-            // Store position data
-            let storedData = {
-                x: xOffset,
-                y: yOffset,
-                type: character.faction,
-                text: text,
-                character: character,
-                helperTokenIndex: helpfulTokenIndex,
-                helperTokenIcon: helpfulTokenIcon
-            };
-
-            // Store new helpful token data indexed by character.name
-            scene.sharedData.helperTokens[character.name] = storedData;
-
-            // Create new helpful token
-            let size = 'normal';
-            if (character.powerTokenType == 'type_2') {
-                size = 'large';
-            }
-            let containerColor;
-            if (character.powerTokenType == 'type_2')
-            {
-                containerColor = 'neutral';
-            } else {
-                containerColor = character.faction;
-            }
-            let helpfulToken = createPowerToken(scene, containerColor, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
-
-            scene.helperIcons.add(helpfulToken.sprite);
-            helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
-            // link the helpfultoken sprite to with the character
-            helpfulToken.container.character = character;
-            helpfulToken.container.on('pointerdown', function (pointer, dragX, dragY) {
-                //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
-                let helpedColor;
-                let hurtColor;
-                if (character.powerTokenType == 'type_5') {
-                    let helpedIcon = scene.sharedData.icons[character.helps];
-                    //console.log(helpedIcon);
-                    if (character.faction == 'maga') {
-                        helpedColor = 0xffffff;
-                        hurtColor = 0xff0000;
+                yOffset = charText.y + 25;
+    
+                //===========
+                // Add an icon or graphic
+                let helpedIcon;
+                let characterHelps = character.helps; // don't want to change character.helps permanently
+                if (character.helps){
+                    helpedIcon = scene.sharedData.icons[character.helps];
+                } else {
+                    helpedIcon = scene.sharedData.icons['environment']; // placeholder for now for undefined helps
+                    if (character.powerTokenType == 'type_3') {
+                        characterHelps = 'hacker';
+                        helpedIcon.scaleFactor = 0.19;
+                        //console.log('hacker');
                     } else {
-                        helpedColor = 0xffffff;
-                        hurtColor = 0x0000ff;
+                        characterHelps = 'negotiation';
+                        helpedIcon.scaleFactor = 0.13;
+                        //console.log('negotiation');
                     }
-                    // Provide a hint by changing the tint of the shield of the helped and hurt Icons
-                    helpedIcon.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
-                    let hurtIcon = scene.sharedData.icons[character.hurts];
-                    hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
-                    //console.log(hurtIcon);
-                } else if (character.powerTokenType == 'type_3') { // TODO: It would be cool if an informational dialog popped up for HACKER explaining exactly how it works here
-                    // Light up all the nonprotected shields to provide hint that hacker can be used everywhere
-                    for (let key in scene.sharedData.icons) {
-                        let iconData = scene.sharedData.icons[key];
-
+                }
+    
+                // Add an icon or graphic and scale it
+                let helpfulTokenIcon = scene.add.image(0, 0, characterHelps);  // Position the icon at the original y position
+                helpfulTokenIcon.setScale(helpedIcon.scaleFactor*.6);  // scale the icon
+                helpfulTokenIcon.setOrigin(0.5, 0.82);  // change origin to bottom center
+                helpfulTokenIcon.setVisible(true);
+                //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
+                helpfulTokenIcon.setAlpha(1);
+                //=====
+    
+                // Store position data
+                let storedData = {
+                    x: xOffset,
+                    y: yOffset,
+                    type: character.faction,
+                    text: text,
+                    character: character,
+                    helperTokenIndex: helpfulTokenIndex,
+                    helperTokenIcon: helpfulTokenIcon
+                };
+    
+                // Store new helpful token data indexed by character.name
+                scene.sharedData.helperTokens[character.name] = storedData;
+    
+                // Create new helpful token
+                let size = 'normal';
+                if (character.powerTokenType == 'type_2') {
+                    size = 'large';
+                }
+                let containerColor;
+                if (character.powerTokenType == 'type_2')
+                {
+                    containerColor = 'neutral';
+                } else {
+                    containerColor = character.faction;
+                }
+                let helpfulToken = createPowerToken(scene, containerColor, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
+    
+                scene.helperIcons.add(helpfulToken.sprite);
+                helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
+                // link the helpfultoken sprite to with the character
+                helpfulToken.container.character = character;
+                helpfulToken.container.on('pointerdown', function (pointer, dragX, dragY) {
+                    //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
+                    let helpedColor;
+                    let hurtColor;
+                    if (character.powerTokenType == 'type_5') {
+                        let helpedIcon = scene.sharedData.icons[character.helps];
                         //console.log(helpedIcon);
-                        if (iconData.shieldStrength < .1) {
-                            if (character.faction == 'maga') {
-                                helpedColor = 0xff4040;
-                            } else {
-                                helpedColor = 0x8080ff;
-                            }
-                            // Provide a hint by changing the tint of the shield of the helped and hurt Icons
-                            iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
+                        if (character.faction == 'maga') {
+                            helpedColor = 0xffffff;
+                            hurtColor = 0xff0000;
+                        } else {
+                            helpedColor = 0xffffff;
+                            hurtColor = 0x0000ff;
                         }
-                    }
-                    if (!scene.firstHackerEver && scene.difficultyLevel().runTutorial) {
-                        scene.firstHackerEver = 1;
-                        let timeoutHandle;
-                        // Initialize an array to store arrow graphics
-                        let arrowGraphicsArray = [];
-                        let tutorial = secondScreenTutorial[1];
-                        let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
-
-                        let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-                        backstoryText.setOrigin(0.5);
-                        backstoryText.setVisible(true);
-                        backstoryText.setDepth(4);
-
-                        let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-                        backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-                        backstoryBox.isStroked = true;
-                        backstoryBox.setOrigin(0.5);
-                        backstoryBox.setVisible(true);
-                        backstoryBox.setDepth(3);
-                        console.log(backstoryBox.x + backstoryBox.width/2);
-
-                        // Assuming scene.sharedData.helperTokens is an object
-                        let helperTokens = scene.sharedData.helperTokens;
-
-                        let iconKeys = Object.keys(scene.sharedData.icons);
-
-                        iconKeys.forEach((key, index) => {
-                            const iconData = scene.sharedData.icons[key].gaugeMaga;
-
-                            if (iconData) {
-                                const timerID = setTimeout(() => {
-                                    let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.container.x, helpfulToken.container.y); //backstoryBox.x, backstoryBox.y);
-                                    arrowGraphicsArray.push(arrow);
-                                }, (index + 1) * 80);
-
-                                arrowTimerIDs.push(timerID);
+                        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                        helpedIcon.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
+                        let hurtIcon = scene.sharedData.icons[character.hurts];
+                        hurtIcon.icon.shieldMaga.setAlpha(1).setTint(hurtColor);
+                        //console.log(hurtIcon);
+                    } else if (character.powerTokenType == 'type_3') { // TODO: It would be cool if an informational dialog popped up for HACKER explaining exactly how it works here
+                        // Light up all the nonprotected shields to provide hint that hacker can be used everywhere
+                        for (let key in scene.sharedData.icons) {
+                            let iconData = scene.sharedData.icons[key];
+    
+                            //console.log(helpedIcon);
+                            if (iconData.shieldStrength < .1) {
+                                if (character.faction == 'maga') {
+                                    helpedColor = 0xff4040;
+                                } else {
+                                    helpedColor = 0x8080ff;
+                                }
+                                // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                                iconData.icon.shieldWoke.setAlpha(1).setTint(helpedColor);
                             }
-                        });
-
-                        scene.tweens.add({
-                            targets: [backstoryText, backstoryBox],
-                            alpha: { from: 1, to: .5 },
-                            ease: 'Linear',
-                            duration: 1000,
-                            repeat: -1,
-                            yoyo: true
-                        });
-
-
-                        // Cleanup function to clear current tutorial item
-                        const clearCurrentTutorial = () => {
-                            clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                            backstoryText.setVisible(false);
-                            backstoryBox.setVisible(false);
-                            scene.tweens.killTweensOf([backstoryText, backstoryBox]);
-                            //backdrop.off('pointerdown');
-                            scene.input.keyboard.off('keydown-ENTER');
-
-                            // Clear all pending timers for drawing arrows
-                            arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
-                            arrowTimerIDs = []; // Clear the timer IDs array after cancellation
-
-                            // Destroy all arrow graphics
-                            arrowGraphicsArray.forEach(arrow => arrow.destroy());
-                            arrowGraphicsArray = []; // Clear the array after destruction
-
-                            //displayTutorial(); // Display next item
-                        };
-
-                        // Set up listeners for pointer down and ENTER key
-                        //backdrop.on('pointerdown', clearCurrentTutorial);
-                        scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-
-                        // Variables to track mouse position
-                        let lastPointerPosition = null;
-                        const movementThreshold = 100; // 100 pixels
-
-                        // Add event listener for mouse movement
-                        scene.input.on('pointermove', function(pointer) {
-                            if (lastPointerPosition) {
-                                const distance = Phaser.Math.Distance.Between(
-                                    lastPointerPosition.x, lastPointerPosition.y,
-                                    pointer.x, pointer.y
-                                );
-
-                                if (distance > movementThreshold) {
-                                    clearCurrentTutorial();
-                                    // Reset last pointer position after clearing the tutorial
+                        }
+                        if (!scene.firstHackerEver && scene.difficultyLevel().runTutorial) {
+                            scene.firstHackerEver = 1;
+                            let timeoutHandle;
+                            // Initialize an array to store arrow graphics
+                            let arrowGraphicsArray = [];
+                            let tutorial = secondScreenTutorial[1];
+                            let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
+    
+                            let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/5*3+helpfulTokenIndex*20, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                            backstoryText.setOrigin(0.5);
+                            backstoryText.setVisible(true);
+                            backstoryText.setDepth(4);
+    
+                            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                            backstoryBox.isStroked = true;
+                            backstoryBox.setOrigin(0.5);
+                            backstoryBox.setVisible(true);
+                            backstoryBox.setDepth(3);
+                            console.log(backstoryBox.x + backstoryBox.width/2);
+    
+                            // Assuming scene.sharedData.helperTokens is an object
+                            let helperTokens = scene.sharedData.helperTokens;
+    
+                            let iconKeys = Object.keys(scene.sharedData.icons);
+    
+                            iconKeys.forEach((key, index) => {
+                                const iconData = scene.sharedData.icons[key].gaugeMaga;
+    
+                                if (iconData) {
+                                    const timerID = setTimeout(() => {
+                                        let arrow = drawArrow(scene, iconData.x, iconData.y, helpfulToken.container.x, helpfulToken.container.y); //backstoryBox.x, backstoryBox.y);
+                                        arrowGraphicsArray.push(arrow);
+                                    }, (index + 1) * 80);
+    
+                                    arrowTimerIDs.push(timerID);
+                                }
+                            });
+    
+                            scene.tweens.add({
+                                targets: [backstoryText, backstoryBox],
+                                alpha: { from: 1, to: .5 },
+                                ease: 'Linear',
+                                duration: 1000,
+                                repeat: -1,
+                                yoyo: true
+                            });
+    
+    
+                            // Cleanup function to clear current tutorial item
+                            const clearCurrentTutorial = () => {
+                                clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                                backstoryText.setVisible(false);
+                                backstoryBox.setVisible(false);
+                                scene.tweens.killTweensOf([backstoryText, backstoryBox]);
+                                //backdrop.off('pointerdown');
+                                scene.input.keyboard.off('keydown-ENTER');
+    
+                                // Clear all pending timers for drawing arrows
+                                arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                                arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+    
+                                // Destroy all arrow graphics
+                                arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                                arrowGraphicsArray = []; // Clear the array after destruction
+    
+                                //displayTutorial(); // Display next item
+                            };
+    
+                            // Set up listeners for pointer down and ENTER key
+                            //backdrop.on('pointerdown', clearCurrentTutorial);
+                            scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+    
+                            // Variables to track mouse position
+                            let lastPointerPosition = null;
+                            const movementThreshold = 100; // 100 pixels
+    
+                            // Add event listener for mouse movement
+                            scene.input.on('pointermove', function(pointer) {
+                                if (lastPointerPosition) {
+                                    const distance = Phaser.Math.Distance.Between(
+                                        lastPointerPosition.x, lastPointerPosition.y,
+                                        pointer.x, pointer.y
+                                    );
+    
+                                    if (distance > movementThreshold) {
+                                        clearCurrentTutorial();
+                                        // Reset last pointer position after clearing the tutorial
+                                        lastPointerPosition = { x: pointer.x, y: pointer.y };
+                                    }
+                                } else {
+                                    // Initialize last pointer position if not set
                                     lastPointerPosition = { x: pointer.x, y: pointer.y };
                                 }
-                            } else {
-                                // Initialize last pointer position if not set
-                                lastPointerPosition = { x: pointer.x, y: pointer.y };
-                            }
-                        });
-
-                        // Set a timeout to automatically advance
-                        timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+                            });
+    
+                            // Set a timeout to automatically advance
+                            timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+                        }
+                        //console.log(hurtIcon);
                     }
-                    //console.log(hurtIcon);
-                }
-            });
-            helpfulToken.container.on('pointerup', function (pointer, dragX, dragY) {
-                //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
-                if (character.powerTokenType == 'type_5') {
-                    let helpedIcon = scene.sharedData.icons[character.helps];
-                    if (helpedIcon) {
-                        helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.6:0);
-                    }
-                    let hurtIcon = scene.sharedData.icons[character.hurts];
-                    if (hurtIcon) {
-                        hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength > 0 ? 0.6:0);
-                    }
-                } else if (character.powerTokenType == 'type_3') {
-                    for (let key in scene.sharedData.icons) {
-                        let iconData = scene.sharedData.icons[key];
-                        // Provide a hint by changing the tint of the shield of the helped and hurt Icons
-                        iconData.icon.shieldWoke.setAlpha(iconData.icon.shieldStrength > 0 ? 0.8:0);
-                    }
-                }
-            });
-            if (character.powerTokenType === 'type_2') {
-                scene.extraMisinformationTokens += 4;
-                helpfulToken.container.x = 720;
-                if (character.faction == 'maga') helpfulToken.container.x -= scene.cameras.main.width/4;
-                helpfulToken.container.y = 290;
-                helpfulToken.container.setAlpha(.25);
-
-                // First tween: Increase alpha to 0.5 over 2 seconds
-                scene.tweens.add({
-                    targets: helpfulToken.container,
-                    alpha: .5,
-                    ease: 'Sine.easeInOut',
-                    duration: 2000,
-                    onComplete: function () {
-                        // Second tween: Shrink to 1/10th size over 2 seconds
-                        scene.tweens.add({
-                            targets: helpfulToken.container,
-                            scaleX: 0.1, // Shrink to 1/10th of the width
-                            scaleY: 0.1, // Shrink to 1/10th of the height
-                            ease: 'Sine.easeInOut',
-                            duration: 2000,
-                            onComplete: function () {
-                                helpfulToken.container.destroy();
-                                delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
-                                //tooltip.text.setVisible(false);
-                                //tooltip.box.setVisible(false);
-                            },
-                            callbackScope: scene
-                        });
-                    },
-                    callbackScope: scene
                 });
-
-                if (!scene.firstType2Ever && scene.difficultyLevel().runTutorial) {
-                    scene.firstType2Ever = 1;
-                    let timeoutHandle;
-                    let timeoutHandle2;
-                    // Initialize an array to store arrow graphics
-                    let arrowGraphicsArray = [];
-                    let tutorial = secondScreenTutorial[2];
-                    let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
-                    timeoutHandle2 = setTimeout(() => {
-                        let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/2, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
-                        backstoryText.setOrigin(0.5);
-                        backstoryText.setVisible(true);
-                        backstoryText.setDepth(4);
-
-                        let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-                        backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
-                        backstoryBox.isStroked = true;
-                        backstoryBox.setOrigin(0.5);
-                        backstoryBox.setVisible(true);
-                        backstoryBox.setDepth(3);
-                        console.log(backstoryBox.x + backstoryBox.width/2);
-
-                        // Assuming scene.sharedData.helperTokens is an object
-                        let helperTokens = scene.sharedData.misinformation;
-                        Object.keys(helperTokens).forEach((element, index) => {
-                            const timerID = setTimeout(() => {
-                                let arrow = drawArrow(scene, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
-                                arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
-                            }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
-                            arrowTimerIDs.push(timerID); // Store the timer ID
-                        });
-
-                        scene.tweens.add({
-                            targets: [backstoryText, backstoryBox],
-                            alpha: { from: 1, to: .5 },
-                            ease: 'Linear',
-                            duration: 1000,
-                            repeat: -1,
-                            yoyo: true
-                        });
-                        // Cleanup function to clear current tutorial item
-                        const clearCurrentTutorial = () => {
-                            clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                            backstoryText.setVisible(false);
-                            backstoryBox.setVisible(false);
-                            scene.tweens.killTweensOf([backstoryText, backstoryBox]);
-                            scene.input.keyboard.off('keydown-ENTER');
-
-                            // Clear all pending timers for drawing arrows
-                            arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
-                            arrowTimerIDs = []; // Clear the timer IDs array after cancellation
-
-                            // Destroy all arrow graphics
-                            arrowGraphicsArray.forEach(arrow => arrow.destroy());
-                            arrowGraphicsArray = []; // Clear the array after destruction
-                        };
-
-                        // Set up listeners for pointer down and ENTER key
-                        scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
-
-                        // Set a timeout to automatically advance
-                        timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
-                    }, 5000);
-                }
-            } // end of token type 2
-        } // end of CreateHelpfulToken()
+                helpfulToken.container.on('pointerup', function (pointer, dragX, dragY) {
+                    //let helpedIcon = scene.sharedData.icons.find(asset => asset.iconName === character.helps);
+                    if (character.powerTokenType == 'type_5') {
+                        let helpedIcon = scene.sharedData.icons[character.helps];
+                        if (helpedIcon) {
+                            helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.6:0);
+                        }
+                        let hurtIcon = scene.sharedData.icons[character.hurts];
+                        if (hurtIcon) {
+                            hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength > 0 ? 0.6:0);
+                        }
+                    } else if (character.powerTokenType == 'type_3') {
+                        for (let key in scene.sharedData.icons) {
+                            let iconData = scene.sharedData.icons[key];
+                            // Provide a hint by changing the tint of the shield of the helped and hurt Icons
+                            iconData.icon.shieldWoke.setAlpha(iconData.icon.shieldStrength > 0 ? 0.8:0);
+                        }
+                    }
+                });
+                if (character.powerTokenType === 'type_2') {
+                    scene.extraMisinformationTokens += 4;
+                    helpfulToken.container.x = 720;
+                    if (character.faction == 'maga') helpfulToken.container.x -= scene.cameras.main.width/4;
+                    helpfulToken.container.y = 290;
+                    helpfulToken.container.setAlpha(.25);
+    
+                    // First tween: Increase alpha to 0.5 over 2 seconds
+                    scene.tweens.add({
+                        targets: helpfulToken.container,
+                        alpha: .5,
+                        ease: 'Sine.easeInOut',
+                        duration: 2000,
+                        onComplete: function () {
+                            // Second tween: Shrink to 1/10th size over 2 seconds
+                            scene.tweens.add({
+                                targets: helpfulToken.container,
+                                scaleX: 0.1, // Shrink to 1/10th of the width
+                                scaleY: 0.1, // Shrink to 1/10th of the height
+                                ease: 'Sine.easeInOut',
+                                duration: 2000,
+                                onComplete: function () {
+                                    helpfulToken.container.destroy();
+                                    delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
+                                    //tooltip.text.setVisible(false);
+                                    //tooltip.box.setVisible(false);
+                                },
+                                callbackScope: scene
+                            });
+                        },
+                        callbackScope: scene
+                    });
+    
+                    if (!scene.firstType2Ever && scene.difficultyLevel().runTutorial) {
+                        scene.firstType2Ever = 1;
+                        let timeoutHandle;
+                        let timeoutHandle2;
+                        // Initialize an array to store arrow graphics
+                        let arrowGraphicsArray = [];
+                        let tutorial = secondScreenTutorial[2];
+                        let formattedBackstory = insertLineBreaks(tutorial.story.join(' '), 55);
+                        timeoutHandle2 = setTimeout(() => {
+                            let backstoryText = scene.add.text(scene.cameras.main.width/2, scene.cameras.main.height/2, formattedBackstory, { fontSize: '18px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+                            backstoryText.setOrigin(0.5);
+                            backstoryText.setVisible(true);
+                            backstoryText.setDepth(4);
+    
+                            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+                            backstoryBox.setStrokeStyle(2, 0xffffff, 0.8);
+                            backstoryBox.isStroked = true;
+                            backstoryBox.setOrigin(0.5);
+                            backstoryBox.setVisible(true);
+                            backstoryBox.setDepth(3);
+                            console.log(backstoryBox.x + backstoryBox.width/2);
+    
+                            // Assuming scene.sharedData.helperTokens is an object
+                            let helperTokens = scene.sharedData.misinformation;
+                            Object.keys(helperTokens).forEach((element, index) => {
+                                const timerID = setTimeout(() => {
+                                    let arrow = drawArrow(scene, helperTokens[element].x, helperTokens[element].y, backstoryBox.x, backstoryBox.y);
+                                    arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
+                                }, (index+1) * 400); // Delay each arrow by index * 400 milliseconds
+                                arrowTimerIDs.push(timerID); // Store the timer ID
+                            });
+    
+                            scene.tweens.add({
+                                targets: [backstoryText, backstoryBox],
+                                alpha: { from: 1, to: .5 },
+                                ease: 'Linear',
+                                duration: 1000,
+                                repeat: -1,
+                                yoyo: true
+                            });
+                            // Cleanup function to clear current tutorial item
+                            const clearCurrentTutorial = () => {
+                                clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                                backstoryText.setVisible(false);
+                                backstoryBox.setVisible(false);
+                                scene.tweens.killTweensOf([backstoryText, backstoryBox]);
+                                scene.input.keyboard.off('keydown-ENTER');
+    
+                                // Clear all pending timers for drawing arrows
+                                arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                                arrowTimerIDs = []; // Clear the timer IDs array after cancellation
+    
+                                // Destroy all arrow graphics
+                                arrowGraphicsArray.forEach(arrow => arrow.destroy());
+                                arrowGraphicsArray = []; // Clear the array after destruction
+                            };
+    
+                            // Set up listeners for pointer down and ENTER key
+                            scene.input.keyboard.on('keydown-ENTER', clearCurrentTutorial);
+    
+                            // Set a timeout to automatically advance
+                            timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+                        }, 5000);
+                    }
+                } // end of token type 2
+            } // end of CreateHelpfulToken()
+        }
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
