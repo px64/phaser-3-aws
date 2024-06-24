@@ -1480,72 +1480,83 @@ export class Politics extends BaseScene {
         //
         //====================================================================================
 
-        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
+       function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
             let factionColor = faction === 'maga'
-                ? 0xff0000
+                ? '0xff0000'
                 : faction === 'woke'
-                    ? 0x0000ff
-                    : 0x800080;
+                    ? '0x0000ff'
+                    : '0x800080';
             let fillColor = faction === 'maga'
                 ? '#ffffff'
                 : faction === 'woke'
                     ? '#ffffff'
                     : '#ff00ff';
-        
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
-            if (size == 'large') {
-                text.setFontSize(36); // By making the font large, the rectangle and container automatically become large
-            }
-        
+            if (size == 'large' ) {text.setFontSize(36);}
+
             // Create a larger white rectangle for outline
-            let outline = scene.add.rectangle(0, 0, text.width + 4, text.height + 4, 0xffffff);
-            
+            let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
+            // Create a tween that scales the rectangle up and down
+            let outlineTween = scene.tweens.add({
+                targets: outline, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });
             // Create a smaller factionColor rectangle
             let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
-        
+            // Create a tween that scales the rectangle up and down
+            let rectangleTween = scene.tweens.add({
+                targets: rectangle, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });
+
+
             // Create a sprite for physics and bouncing
             let misinformationSprite = scene.physics.add.sprite(0, 0, 'track');
             misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
             misinformationSprite.setDepth(1);
-        
+
             let misinformation;
-        
+
             // Group the text, outline, and rectangle into a single container
-            if (tokenIcon) {
-                rectangle.setSize(text.width, text.height + tokenIcon.displayHeight);
-                outline.setSize(text.width + 4, text.height + 4 + tokenIcon.displayHeight);
-                text.y += tokenIcon.displayHeight / 2;
-                
-                // Make the 'discussion' icons look different from the other power tokens
-                if (faction == 'neutral' && size != 'large') {
+            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                let tokenIconTween = scene.tweens.add({
+                    targets: tokenIcon, // object that the tween affects
+                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
+                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
+                    duration: 1000, // duration of scaling to 120% will be 1 second
+                    ease: 'Linear', // type of easing
+                    yoyo: true, // after scaling to 120%, it will scale back to original size
+                    loop: -1, // -1 means it will loop forever
+                });
+                rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
+                outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
+                text.y += tokenIcon.displayHeight/2;
+                //rectangle.x adjustment??
+                if (faction == 'neutral' && size != 'large'){
                     outline.setVisible(false);
                     rectangle.setVisible(false);
-                    rectangle.setSize(text.width, text.height + tokenIcon.displayHeight / 2);
-                    outline.setSize(text.width + 4, text.height + 4 + tokenIcon.displayHeight / 2);
-                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);
-                } else {
-                    misinformation = scene.add.container(x, y - tokenIcon.displayHeight / 2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
+                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight/2);
+                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
+                else {
+                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
                 }
-                misinformation.setSize(outline.width, outline.height + tokenIcon.displayHeight);
+                misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
             } else {
                 misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
-                misinformation.setSize(outline.width * 0.1, outline.height * 0.1);
-                
-                // Add a tween to expand the container and its contents
-                scene.tweens.add({
-                    targets: misinformation,
-                    scaleX: 10, // expand to 10x the width
-                    scaleY: 10, // expand to 10x the height
-                    ease: 'Sine.easeInOut',
-                    duration: 2000,
-                    onComplete: function () {
-                        misinformation.setSize(outline.width, outline.height);
-                    },
-                    callbackScope: scene
-                });
+                misinformation.setSize(outline.width, outline.height);
             }
-
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
             misinformationSprite.setScale(.6);
@@ -1843,6 +1854,4 @@ export class Politics extends BaseScene {
         // the very end of create()
         this.hasBeenCreatedBefore = true;
     }
-
-}
 }
