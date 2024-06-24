@@ -1575,7 +1575,7 @@ export class Politics extends BaseScene {
                         },
                         callbackScope: scene
                     });
-               }, scene.helperIcons.length*400);
+               }, Object.keys(scene.sharedData.helperTokens).length *400);
             }
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
