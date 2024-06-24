@@ -1559,15 +1559,15 @@ export class Politics extends BaseScene {
                 misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
                 misinformation.setSize(outline.width, outline.height);
             }
-           if (size != 'large'){
-                misinformation.setSize(outline.width * 0.1, outline.height * 0.1);
+           if (size != 'large' || faction != 'neutral' ){
+                misinformation.container.setSize(outline.width * 0.1, outline.height * 0.1);
 
                const timerID = setTimeout(() => {
                     // Add a tween to expand the container and its contents
                     scene.tweens.add({
-                        targets: misinformation,
-                        scaleX: 10, // expand to 10x the width
-                        scaleY: 10, // expand to 10x the height
+                        targets: misinformation.container,
+                        scaleX: outline.width, // expand to the width
+                        scaleY: outline.height, // expand to the height
                         ease: 'Sine.easeInOut',
                         duration: 2000,
                         onComplete: function () {
