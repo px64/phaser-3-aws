@@ -1499,6 +1499,7 @@ export class Politics extends BaseScene {
 
             // Create a larger white rectangle for outline
             let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
+           /*
             // Create a tween that scales the rectangle up and down
             let outlineTween = scene.tweens.add({
                 targets: outline, // object that the tween affects
@@ -1509,8 +1510,10 @@ export class Politics extends BaseScene {
                 yoyo: true, // after scaling to 120%, it will scale back to original size
                 loop: -1, // -1 means it will loop forever
             });
+            */
             // Create a smaller factionColor rectangle
             let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
+           /*
             // Create a tween that scales the rectangle up and down
             let rectangleTween = scene.tweens.add({
                 targets: rectangle, // object that the tween affects
@@ -1521,6 +1524,7 @@ export class Politics extends BaseScene {
                 yoyo: true, // after scaling to 120%, it will scale back to original size
                 loop: -1, // -1 means it will loop forever
             });
+            */
 
 
             // Create a sprite for physics and bouncing
@@ -1532,6 +1536,7 @@ export class Politics extends BaseScene {
 
             // Group the text, outline, and rectangle into a single container
             if (tokenIcon) { // ... and group tokenIcon too if it exists
+                /*
                 let tokenIconTween = scene.tweens.add({
                     targets: tokenIcon, // object that the tween affects
                     scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
@@ -1541,6 +1546,7 @@ export class Politics extends BaseScene {
                     yoyo: true, // after scaling to 120%, it will scale back to original size
                     loop: -1, // -1 means it will loop forever
                 });
+                *
                 rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
                 outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
                 text.y += tokenIcon.displayHeight/2;
@@ -1572,6 +1578,38 @@ export class Politics extends BaseScene {
                         duration: 2000,
                         onComplete: function () {
                             misinformation.setSize(outline.width, outline.height);
+                            // Create a tween that scales the rectangle up and down
+                            let outlineTween = scene.tweens.add({
+                                targets: outline, // object that the tween affects
+                                scaleX: 1.2, // start scaling to 120% of the original size
+                                scaleY: 1.2, // start scaling to 120% of the original size
+                                duration: 1000, // duration of scaling to 120% will be 1 second
+                                ease: 'Linear', // type of easing
+                                yoyo: true, // after scaling to 120%, it will scale back to original size
+                                loop: -1, // -1 means it will loop forever
+                            });
+                            // Create a tween that scales the rectangle up and down
+                            let rectangleTween = scene.tweens.add({
+                                targets: rectangle, // object that the tween affects
+                                scaleX: 1.2, // start scaling to 120% of the original size
+                                scaleY: 1.2, // start scaling to 120% of the original size
+                                duration: 1000, // duration of scaling to 120% will be 1 second
+                                ease: 'Linear', // type of easing
+                                yoyo: true, // after scaling to 120%, it will scale back to original size
+                                loop: -1, // -1 means it will loop forever
+                            });
+                            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                                /*
+                                let tokenIconTween = scene.tweens.add({
+                                    targets: tokenIcon, // object that the tween affects
+                                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
+                                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
+                                    duration: 1000, // duration of scaling to 120% will be 1 second
+                                    ease: 'Linear', // type of easing
+                                    yoyo: true, // after scaling to 120%, it will scale back to original size
+                                    loop: -1, // -1 means it will loop forever
+                                });
+                            }
                         },
                         callbackScope: scene
                     });
