@@ -30,7 +30,7 @@ export class CharacterIntroductionScene extends Phaser.Scene {
                     scene.cameras.main.fadeOut(2400, 0, 0, 0);
                     scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                         this.callback(this.sharedData);
-                    }
+                    });
                 }
             });
         } else {
