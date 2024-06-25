@@ -1541,7 +1541,7 @@ export class Politics extends BaseScene {
                      // Add a tween to expand the container and its contents
                      scene.tweens.add({
                          targets: misinformation,
-                         from: { x: storedData.character.chartext.x, y: storedData.character.chartext.y },
+                         from: { x: storedData.character.charText.x, y: storedData.character.charText.y },
                          scaleX: 1, // expand to the width
                          scaleY: 1, // expand to the height
                          ease: 'Sine.easeInOut',
