@@ -387,12 +387,9 @@ export class Politics extends BaseScene {
 
                         scene.cameras.main.fadeOut(2400, 0, 0, 0);
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                            messageText.destroy();
                             // Hide all game objects in the current scene
-                            scene.children.each(child => {
-                                if (1){//child !== messageText) {
-                                    child.setVisible(false);
-                                }
-                            });
+                            scene.children.each(child => child.setVisible(false));
                             scene.cameras.main.fadeIn(400, 0, 0, 0);
                             // Launch CharacterIntroductionScene
                             scene.scene.launch('CharacterIntroductionScene', {
