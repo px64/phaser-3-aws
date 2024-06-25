@@ -455,7 +455,7 @@ export class Politics extends BaseScene {
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                     let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
             
-                    let characterText = scene.add.text(storedData.character.charText.x, storedData.character.charText.y character.name + '\nBacking: ' + healthText,
+                    let characterText = scene.add.text(storedData.character.charText.x, storedData.character.charText.y, character.name + '\nBacking: ' + healthText,
                                         { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
             
                     character.charText = characterText; // back reference to text so we can find the location later
