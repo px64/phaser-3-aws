@@ -424,9 +424,9 @@ export class Politics extends BaseScene {
 
         // Call the check function initially
         checkAndRenderCharacters.call(this);
-
+        
+        // Recreate all previously created helpful tokens that have not been used yet
         if (this.hasBeenCreatedBefore) {
-            // Recreate all previously created helpful tokens that have not been used yet
             for (let key in scene.sharedData.helperTokens) {
                 // Lookup stored data
                 let storedData = scene.sharedData.helperTokens[key];
@@ -452,7 +452,7 @@ export class Politics extends BaseScene {
                 character.value = 0;
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
-                    // Create new helpful token
+                    // If character has been fully endorsed, Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
                     if (character.powerTokenType == 'type_5') {enableTokenTutorial = true;}
@@ -556,6 +556,7 @@ export class Politics extends BaseScene {
                 timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
             }
         }
+        // after character is fully endorsed it generates a token that can be used to help society
         // type_2 character power type "calms down" insurrectionists and gets them to go home.
         // Should there be a Maga type and a Woke type?  Or should there just be a "calm downer" type?  maybe
         // just reduce whichever is largest
@@ -609,7 +610,9 @@ export class Politics extends BaseScene {
                 helperTokenIcon: helpfulTokenIcon
             };
 
-            // Store new helpful token data indexed by character.name
+            // Store new helpful token data indexed by character.name.  
+            // This is an associative array rather than "pushing" tokens into a stack.  
+            // Means only 1 helpful token can exist per character at one time.
             scene.sharedData.helperTokens[character.name] = storedData;
 
             // Create new helpful token
@@ -624,6 +627,7 @@ export class Politics extends BaseScene {
             } else {
                 containerColor = character.faction;
             }
+            // Generate the society improving token
             let helpfulToken = createPowerToken(scene, containerColor, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
 
             scene.helperIcons.add(helpfulToken.sprite);
@@ -1066,14 +1070,7 @@ export class Politics extends BaseScene {
                 numEntries = scene.extraMisinformationTokens;
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
                 scene.extraMisinformationTokens = 0;
-                // comment out for now because it's too confusing                if (Math.random < .2) numEntries += 1;
-                /*
-                    for (let tmpHelper in scene.helperIcons) {
-                        if (tmpHelper.powerTokenType == 'type_2') {
-                            tmpHelper.container.destroy();
-                        }
-                    };
-                */
+
                 // Restore all the old misinformation Tokens first
                 for (let key in scene.sharedData.misinformation) {
                     // Look up the stored data
@@ -1088,6 +1085,7 @@ export class Politics extends BaseScene {
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
                     helpfulTokenIcon.setAlpha(.9);
 
+                    // Recreate old 'discussion' tokens
                     // Use the stored data when creating the token
                     //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
                     let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
@@ -1124,6 +1122,7 @@ export class Politics extends BaseScene {
 
                 scene.sharedData.misinformation[index] = storedData;
 
+                // Create a new 'discussion' token
                 let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once', helpfulTokenIcon);
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
@@ -1535,10 +1534,14 @@ export class Politics extends BaseScene {
                  // Set the initial size to near zero
                  misinformation.setScale(0.01);
 
+                console.log('what is the size of helperTokens?  It is currently '+Object.keys(scene.sharedData.helperTokens).length);
+
                 const timerID = setTimeout(() => {
+                     if (storedData.character.chartext.x) {
                      // Add a tween to expand the container and its contents
                      scene.tweens.add({
                          targets: misinformation,
+                         from: { x: storedData.character.chartext.x, y: storedData.character.chartext.y },
                          scaleX: 1, // expand to the width
                          scaleY: 1, // expand to the height
                          ease: 'Sine.easeInOut',
@@ -1549,6 +1552,21 @@ export class Politics extends BaseScene {
                          },
                          callbackScope: scene
                      });
+                     } else {
+                        // Add a tween to expand the container and its contents
+                         scene.tweens.add({
+                             targets: misinformation,
+                             scaleX: 1, // expand to the width
+                             scaleY: 1, // expand to the height
+                             ease: 'Sine.easeInOut',
+                             duration: 1000,
+                             onComplete: function () {
+                                 misinformation.setSize(outline.width, outline.height);
+                                 pulseIt(outline, rectangle, tokenIcon);
+                             },
+                             callbackScope: scene
+                         });
+                     }
                 }, Object.keys(scene.sharedData.helperTokens).length *400);
             }
 
