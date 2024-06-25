@@ -278,7 +278,7 @@ export class Insurrection extends BaseScene {
                 this.switchScene = true;
                 console.log('go to Aliens Attack screen.  this.switchscene = true');
                 // Add persistent message text
-                let messageText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, 'Invasion Imminent!', {
+                let messageText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Invasion Imminent!', {
                     fontFamily: 'Arial',
                     fontSize: '48px',
                     color: '#ffffff'
@@ -287,8 +287,8 @@ export class Insurrection extends BaseScene {
                 // Optionally, make sure it appears on top of other layers
                 messageText.setDepth(100); // A high depth value ensures it is on top
                 // Create a new camera that only shows the messageText
-                let messageCamera = scene.cameras.add(0, 0, scene.sys.canvas.width, scene.sys.canvas.height);
-                scene.children.each(child => {
+                let messageCamera = this.cameras.add(0, 0, this.sys.canvas.width, scthisene.sys.canvas.height);
+                this.children.each(child => {
                     if (child !== messageText) {
                         messageCamera.ignore(child);  // Correctly ignore all children except the messageText
                     }
