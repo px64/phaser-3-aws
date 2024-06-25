@@ -1481,8 +1481,185 @@ export class Politics extends BaseScene {
         // dropOnce: true means that it can be dragged into one position and then can becomes static, no longer can be moved
         //
         //====================================================================================
+        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
+            let factionColor = faction === 'maga'
+                ? '0xff0000'
+                : faction === 'woke'
+                    ? '0x0000ff'
+                    : '0x800080';
+            let fillColor = faction === 'maga'
+                ? '#ffffff'
+                : faction === 'woke'
+                    ? '#ffffff'
+                    : '#ff00ff';
+            // Add text to the rectangle
+            let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
+            if (size == 'large' ) {text.setFontSize(36);}
 
-       function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
+            // Create a larger white rectangle for outline
+            let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
+            // Create a tween that scales the rectangle up and down
+            /*let outlineTween = scene.tweens.add({
+                targets: outline, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });*/
+            // Create a smaller factionColor rectangle
+            let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
+            // Create a tween that scales the rectangle up and down
+            /*let rectangleTween = scene.tweens.add({
+                targets: rectangle, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });*/
+
+
+            // Create a sprite for physics and bouncing
+            let misinformationSprite = scene.physics.add.sprite(0, 0, 'track');
+            misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
+            misinformationSprite.setDepth(1);
+
+            let misinformation;
+
+            // Group the text, outline, and rectangle into a single container
+            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                /*let tokenIconTween = scene.tweens.add({
+                    targets: tokenIcon, // object that the tween affects
+                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
+                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
+                    duration: 1000, // duration of scaling to 120% will be 1 second
+                    ease: 'Linear', // type of easing
+                    yoyo: true, // after scaling to 120%, it will scale back to original size
+                    loop: -1, // -1 means it will loop forever
+                });*/
+                rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
+                outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
+                text.y += tokenIcon.displayHeight/2;
+                //rectangle.x adjustment??
+                if (faction == 'neutral' && size != 'large'){
+                    outline.setVisible(false);
+                    rectangle.setVisible(false);
+                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
+                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight/2);
+                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
+                else {
+                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                }
+                misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
+            } else {
+                misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+                misinformation.setSize(outline.width, outline.height);
+            }
+
+            if (size != 'large'){
+                 misinformation.setSize(outline.width, outline.height);
+                 // Set the initial size to near zero
+                 misinformation.setScale(0.01);
+
+                const timerID = setTimeout(() => {
+                     // Add a tween to expand the container and its contents
+                     scene.tweens.add({
+                         targets: misinformation,
+                         scaleX: 1, // expand to the width
+                         scaleY: 1, // expand to the height
+                         ease: 'Sine.easeInOut',
+                         duration: 1000,
+                         onComplete: function () {
+                             misinformation.setSize(outline.width, outline.height);
+                             pulseIt(outline, rectangle, tokenIcon);
+                         },
+                         callbackScope: scene
+                     });
+                }, Object.keys(scene.sharedData.helperTokens).length *400);
+            }
+
+            // Set the size of the container to match the size of the outline rectangle
+            //misinformation.setSize(outline.width, outline.height);
+            misinformationSprite.setScale(.6);
+            //misinformationSprite.setSize(outline.width*.1, 1);
+
+            // Now that the container has a size, it can be made interactive and draggable
+            misinformation.setInteractive({ draggable: true });
+            // Attach the container to the sprite
+            misinformationSprite.container = misinformation;
+            if (size == 'large' ) {misinformation.setDepth(1);}
+            // Listen to the 'drag' event
+            misinformation.on('drag', function(pointer, dragX, dragY) {
+                this.x = dragX;
+                this.y = dragY;
+                storedData.x = dragX;
+                storedData.y = dragY;
+                misinformationSprite.setImmovable(true);
+            });
+            if (0) { // skip the dropOnce concept dropOnce == 'drop once') {
+                misinformation.on('dragend', function(pointer, dragX, dragY) {
+                    outlineTween.stop();
+                    rectangleTween.stop();
+                    this.disableInteractive();
+                    misinformationSprite.setImmovable(true);
+                    let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                    rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
+                });
+            }
+            if (0) {//hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
+                outlineTween.stop();
+                rectangleTween.stop();
+                misinformation.disableInteractive();
+                misinformationSprite.setImmovable(true);
+                //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                //rectangle.setFillStyle(0x228B22); // Now the rectangle is green
+                text.setColor(0x229B22);
+            }
+
+            return {
+                container: misinformation,
+                sprite: misinformationSprite
+            };
+        }
+
+        function pulseIt(outline, rectangle, tokenIcon) {
+            // Create a tween that scales the rectangle up and down
+            let outlineTween = scene.tweens.add({
+                targets: outline, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });
+            // Create a tween that scales the rectangle up and down
+            let rectangleTween = scene.tweens.add({
+                targets: rectangle, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });
+            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                let tokenIconTween = scene.tweens.add({
+                    targets: tokenIcon, // object that the tween affects
+                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
+                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
+                    duration: 1000, // duration of scaling to 120% will be 1 second
+                    ease: 'Linear', // type of easing
+                    yoyo: true, // after scaling to 120%, it will scale back to original size
+                    loop: -1, // -1 means it will loop forever
+                });
+            }
+        }
+
+       function zzzcreatePowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
             let factionColor = faction === 'maga'
                 ? '0xff0000'
                 : faction === 'woke'
@@ -1658,6 +1835,7 @@ export class Politics extends BaseScene {
                 sprite: misinformationSprite
             };
         }
+
 /*
 function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
     let factionColor = faction === 'maga'
