@@ -138,26 +138,9 @@ export class Politics extends BaseScene {
             this.shieldsWoke = this.physics.add.group();
 
             console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital + ' this.oldExperienceLevel = ' + this.oldExperienceLevel );
-
-            //this.totalPoliticalCapital += this.MAGAness + this.Wokeness;
-            if (0)// this.oldExperienceLevel != Math.floor(this.sharedData.totalPoliticalCapital/30)+1)
-            {
-                // Save the updated sharedData for characterintroduction
-                this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
-                // Launch CharacterIntroductionScene
-                this.scene.launch('CharacterIntroductionScene', {
-                    sharedData: this.sharedData,
-                    callback: (data) => {
-                        this.scene.stop('CharacterIntroductionScene');
-                        this.setup(data);
-                        this.recreateIcons();
-                    }
-                });
-            }
-            else {
-                this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
-                this.recreateIcons();
-            }
+            
+            this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
+            this.recreateIcons();
         }
     }
 
@@ -385,11 +368,28 @@ export class Politics extends BaseScene {
                     if (scene.oldExperienceLevel != Math.floor(scene.sharedData.totalPoliticalCapital / 30) + 1) {
                         // Save the updated sharedData for characterintroduction
                         scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
-    
+                        // Add persistent message text
+                        let messageText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, 'New Advocates Join your cause', {
+                            fontFamily: 'Arial',
+                            fontSize: '24px',
+                            color: '#ffffff'
+                        }).setOrigin(0.5, 0.5); // Center the text
+                        
+                        // Optionally, make sure it appears on top of other layers
+                        messageText.setDepth(100); // A high depth value ensures it is on top
+                        // Create a new camera that only shows the messageText
+                        let messageCamera = scene.cameras.add(0, 0, scene.sys.canvas.width, scene.sys.canvas.height);
+                        messageCamera.ignore(scene.children.list);  // Ignore all children except the message
+                        messageCamera.ignore(scene.children.list.filter(child => child !== messageText));
+
                         scene.cameras.main.fadeOut(2400, 0, 0, 0);
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                             // Hide all game objects in the current scene
-                            scene.children.each(child => child.setVisible(false));
+                            scene.children.each(child => {
+                                if (0) {//child !== messageText) {
+                                    child.setVisible(false);
+                                }
+                            });
                             scene.cameras.main.fadeIn(400, 0, 0, 0);
                             // Launch CharacterIntroductionScene
                             scene.scene.launch('CharacterIntroductionScene', {
