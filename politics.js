@@ -456,11 +456,43 @@ export class Politics extends BaseScene {
                     let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
                     let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
                     console.log('x = ' + character.charText.x);
+                    let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText, {
+                        fontSize: '16px',
+                        fontFamily: 'Roboto',
+                        color: textColor, // Original text color
+                        align: 'left'
+                    }).setInteractive();
+                    
+                    // Tween to change color to green
+                    scene.tweens.add({
+                        targets: characterText,
+                        ease: 'Linear',
+                        duration: 400, // .4 second duration to turn green
+                        onStart: () => {
+                            characterText.setColor('#00ff00'); // Setting color to green
+                        }
+                    });
+                    
+                    // Delay the start of the fade out tween
+                    setTimeout(() => {
+                        scene.tweens.add({
+                            targets: characterText,
+                            alpha: 0, // Fade to completely transparent
+                            ease: 'Sine.easeInOut',
+                            duration: 1000, // Duration of the fade in milliseconds
+                            onComplete: function () {
+                                characterText.destroy(); // Destroy the text object after the fade completes
+                            }
+                        });
+                    }, 1000+(helpfulTokenIndex+1) * 400);
+
+                    /*
                     let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText,
                                         { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
                     const timerID = setTimeout(() => {
                         characterText.destroy();
                     }, 1000+(helpfulTokenIndex+1) * 400);
+                    */
                     character.charText = characterText; // back reference to text so we can find the location later
                     // If character has been fully endorsed, Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
