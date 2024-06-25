@@ -364,7 +364,7 @@ export class Politics extends BaseScene {
 
         // Function to check and render characters
         function checkAndRenderCharacters() {
-            if (Object.keys(scene.sharedData.helperTokens).length === 0 &&
+            if (1 || Object.keys(scene.sharedData.helperTokens).length === 0 &&
                 !scene.charactersRendered &&
                 characters.every(character => character.endorsement + character.value <= 1 )) {
                 scene.charactersRendered = true;
