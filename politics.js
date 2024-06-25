@@ -399,7 +399,7 @@ export class Politics extends BaseScene {
     
                                     // Unhide all game objects in the current scene
                                     scene.children.each(child => child.setVisible(true));
-    
+                                    scene.cameras.main.fadeIn(800, 0, 0, 0);
                                     scene.setup(data);
                                     renderCharactersCallback(); // Continue to renderCharacters
                                 }
