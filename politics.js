@@ -1539,10 +1539,19 @@ export class Politics extends BaseScene {
                 const timerID = setTimeout(() => {
                      if (typeof storedData.character !== 'undefined') {
                          console.log('generate helpful token for '+storedData.character.charText.text);
-                         // Add a tween to expand the container and its contents
-                         scene.tweens.add({
-                             targets: misinformation,
-                             from: { x: storedData.character.charText.x, y: storedData.character.charText.y },
+
+                        // Current position as the target for the tween
+                        var targetX = misinformation.x;
+                        var targetY = misinformation.y;
+                         
+                        // Set initial position
+                        misinformation.x = storedData.character.charText.x;
+                        misinformation.y = storedData.character.charText.y;
+                        
+                        scene.tweens.add({
+                            targets: misinformation,
+                             x: targetX, // Move to this X position
+                             y: targetY, // Move to this Y position
                              scaleX: 1, // expand to the width
                              scaleY: 1, // expand to the height
                              ease: 'Sine.easeInOut',
