@@ -379,14 +379,17 @@ export class Politics extends BaseScene {
                         messageText.setDepth(100); // A high depth value ensures it is on top
                         // Create a new camera that only shows the messageText
                         let messageCamera = scene.cameras.add(0, 0, scene.sys.canvas.width, scene.sys.canvas.height);
-                        messageCamera.ignore(scene.children.list);  // Ignore all children except the message
-                        messageCamera.ignore(scene.children.list.filter(child => child !== messageText));
+                        scene.children.each(child => {
+                            if (child !== messageText) {
+                                messageCamera.ignore(child);  // Correctly ignore all children except the messageText
+                            }
+                        });
 
                         scene.cameras.main.fadeOut(2400, 0, 0, 0);
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                             // Hide all game objects in the current scene
                             scene.children.each(child => {
-                                if (0) {//child !== messageText) {
+                                if (child !== messageText) {
                                     child.setVisible(false);
                                 }
                             });
