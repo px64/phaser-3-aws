@@ -458,7 +458,9 @@ export class Politics extends BaseScene {
                     console.log('x = ' + character.charText.x);
                     let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText,
                                         { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
-            
+                    const timerID = setTimeout(() => {
+                        characterText.destroy();
+                    }, 1000+(helpfulTokenIndex+1) * 400);
                     character.charText = characterText; // back reference to text so we can find the location later
                     // If character has been fully endorsed, Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
