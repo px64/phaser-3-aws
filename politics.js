@@ -1538,20 +1538,21 @@ export class Politics extends BaseScene {
 
                 const timerID = setTimeout(() => {
                      if (typeof storedData.character !== 'undefined') {
-                     // Add a tween to expand the container and its contents
-                     scene.tweens.add({
-                         targets: misinformation,
-                         from: { x: storedData.character.charText.x, y: storedData.character.charText.y },
-                         scaleX: 1, // expand to the width
-                         scaleY: 1, // expand to the height
-                         ease: 'Sine.easeInOut',
-                         duration: 1000,
-                         onComplete: function () {
-                             misinformation.setSize(outline.width, outline.height);
-                             pulseIt(outline, rectangle, tokenIcon);
-                         },
-                         callbackScope: scene
-                     });
+                         console.log('generate helpful token for '+storedData.character.charText.text);
+                         // Add a tween to expand the container and its contents
+                         scene.tweens.add({
+                             targets: misinformation,
+                             from: { x: storedData.character.charText.x, y: storedData.character.charText.y },
+                             scaleX: 1, // expand to the width
+                             scaleY: 1, // expand to the height
+                             ease: 'Sine.easeInOut',
+                             duration: 1000,
+                             onComplete: function () {
+                                 misinformation.setSize(outline.width, outline.height);
+                                 pulseIt(outline, rectangle, tokenIcon);
+                             },
+                             callbackScope: scene
+                         });
                      } else {
                         // Add a tween to expand the container and its contents
                          scene.tweens.add({
