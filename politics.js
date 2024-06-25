@@ -1143,8 +1143,8 @@ export class Politics extends BaseScene {
 
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
-                    scene.yMagaOffset += misinformation.sprite.displayWidth2;
-                    console.log('container height = ' + helpfulTokenIcon.sprite.displayWidth);
+                    scene.yMagaOffset += misinformation.sprite.displayWidth/2;
+                    console.log('container height = ' + misinformation.sprite.displayWidth);
                     if (scene.yMagaOffset > scene.game.config.height * .9) {
                         scene.yMagaOffset -= scene.game.config.height * .7;
                     }
