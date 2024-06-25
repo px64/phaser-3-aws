@@ -1537,7 +1537,7 @@ export class Politics extends BaseScene {
                 console.log('what is the size of helperTokens?  It is currently '+Object.keys(scene.sharedData.helperTokens).length);
 
                 const timerID = setTimeout(() => {
-                     if (typeof storedData.character.chartext.x !== 'undefined') {
+                     if (typeof storedData.character !== 'undefined') {
                      // Add a tween to expand the container and its contents
                      scene.tweens.add({
                          targets: misinformation,
