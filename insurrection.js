@@ -283,17 +283,17 @@ export class Insurrection extends BaseScene {
                     fontSize: '48px',
                     color: '#ffffff'
                 }).setOrigin(0.5, 0.5); // Center the text
-                
+
                 // Optionally, make sure it appears on top of other layers
                 messageText.setDepth(100); // A high depth value ensures it is on top
                 // Create a new camera that only shows the messageText
-                let messageCamera = this.cameras.add(0, 0, this.sys.canvas.width, scthisene.sys.canvas.height);
+                let messageCamera = this.cameras.add(0, 0, this.sys.canvas.width, this.sys.canvas.height);
                 this.children.each(child => {
                     if (child !== messageText) {
                         messageCamera.ignore(child);  // Correctly ignore all children except the messageText
                     }
                 });
-                
+
                 this.cameras.main.fadeOut(7000, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('AliensAttack').setup(this.sharedData);
