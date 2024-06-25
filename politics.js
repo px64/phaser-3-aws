@@ -454,6 +454,7 @@ export class Politics extends BaseScene {
                 if (character.endorsement > 1) {
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                     let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
+                    let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
                     console.log('x = ' + character.charText.x);
                     let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText,
                                         { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
