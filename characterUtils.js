@@ -27,7 +27,10 @@ export class CharacterIntroductionScene extends Phaser.Scene {
 
             proceedButton.on('pointerdown', () => {
                 if (this.callback) {
-                    this.callback(this.sharedData);
+                    scene.cameras.main.fadeOut(2400, 0, 0, 0);
+                    scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                        this.callback(this.sharedData);
+                    }
                 }
             });
         } else {
