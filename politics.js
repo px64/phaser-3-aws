@@ -371,7 +371,7 @@ export class Politics extends BaseScene {
                         // Add persistent message text
                         let messageText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, 'New Advocates Join your cause', {
                             fontFamily: 'Arial',
-                            fontSize: '24px',
+                            fontSize: '48px',
                             color: '#ffffff'
                         }).setOrigin(0.5, 0.5); // Center the text
                         
@@ -389,7 +389,7 @@ export class Politics extends BaseScene {
                         scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                             // Hide all game objects in the current scene
                             scene.children.each(child => {
-                                if (child !== messageText) {
+                                if (1){//child !== messageText) {
                                     child.setVisible(false);
                                 }
                             });
