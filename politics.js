@@ -357,9 +357,9 @@ export class Politics extends BaseScene {
         // New Idea: It would be cool that the character associated with the helper token is we render the characters right away but make them invisible.  No, actually that won't work because the checkboxes will still be active.
         // Also the checkboxes might be in front of the discussion tokens, creating a problem.
         // how about some new funky graphic showing how the token eminates from the checkbox?
-        // 
+        //
         // Initialize a flag to track if characters have been rendered
-        
+
         scene.charactersRendered = false;
 
         // Function to check and render characters
@@ -460,7 +460,7 @@ export class Politics extends BaseScene {
 
                     let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
                     let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + character.value),0,2)];
-                    
+
                     // Recreate text here
                     /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
                     back to their regular color if they were green before and are no longer fully endorsed */
@@ -885,7 +885,7 @@ export class Politics extends BaseScene {
                 }
             } // end of token type 2
         } // end of CreateHelpfulToken()
-        
+
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
@@ -929,27 +929,27 @@ export class Politics extends BaseScene {
                 defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
             }
         }, null, this);
-        
+
         // Draw little hats
         function drawIcons(scene, x, y, texture, startIndex, littleHats) {
-        
+
             let count = startIndex + 1; // Increment the count by 1 for the new hat
-        
+
             for (let i = startIndex; i < count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
                 let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-        
+
                 // Adjust the size of the icons if necessary
                 icon.setScale(ICON_SCALE);
-        
+
                 const jumpHeight = 20; // Adjust the height of the jump
                 const durationUp = 150; // Duration for the upward movement
                 const durationDown = 300; // Duration for the downward movement with bounce
                 // Store the original position
                 const originalY = icon.y;
-        
+
                 // Create an infinite loop of jumping
                 const jump = () => {
                     // Add the upward movement tween
@@ -970,10 +970,10 @@ export class Politics extends BaseScene {
                         }
                     });
                 };
-        
+
                 // Start the jumping animation with a random delay
                 scene.time.delayedCall(Math.random() * 500, jump);
-        
+
                 littleHats.push(icon);
             }
             return littleHats;
@@ -1529,7 +1529,7 @@ export class Politics extends BaseScene {
 
             // Create a sprite for physics and bouncing
             let misinformationSprite = scene.physics.add.sprite(0, 0, 'track');
-            misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
+            misinformationSprite.setVisible(true); // Hide it, so we only see the graphics and text
             misinformationSprite.setDepth(1);
 
             let misinformation;
@@ -1546,7 +1546,7 @@ export class Politics extends BaseScene {
                     yoyo: true, // after scaling to 120%, it will scale back to original size
                     loop: -1, // -1 means it will loop forever
                 });
-                *
+                */
                 rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
                 outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
                 text.y += tokenIcon.displayHeight/2;
@@ -1566,16 +1566,16 @@ export class Politics extends BaseScene {
                 misinformation.setSize(outline.width, outline.height);
             }
            if (size != 'large' || faction != 'neutral' ){
-                misinformation.setSize(outline.width * 0.1, outline.height * 0.1);
+                misinformation.setSize(20, 20);
 
                const timerID = setTimeout(() => {
                     // Add a tween to expand the container and its contents
                     scene.tweens.add({
                         targets: misinformation.container,
-                        scaleX: outline.width, // expand to the width
-                        scaleY: outline.height, // expand to the height
+                        scaleX: 100, // expand to the width
+                        scaleY: 100, // expand to the height
                         ease: 'Sine.easeInOut',
-                        duration: 2000,
+                        duration: 5000,
                         onComplete: function () {
                             misinformation.setSize(outline.width, outline.height);
                             // Create a tween that scales the rectangle up and down
@@ -1599,7 +1599,6 @@ export class Politics extends BaseScene {
                                 loop: -1, // -1 means it will loop forever
                             });
                             if (tokenIcon) { // ... and group tokenIcon too if it exists
-                                /*
                                 let tokenIconTween = scene.tweens.add({
                                     targets: tokenIcon, // object that the tween affects
                                     scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
@@ -1610,10 +1609,11 @@ export class Politics extends BaseScene {
                                     loop: -1, // -1 means it will loop forever
                                 });
                             }
+
                         },
                         callbackScope: scene
                     });
-               }, Object.keys(scene.sharedData.helperTokens).length *400);
+               }, Object.keys(scene.sharedData.helperTokens).length *400+2000);
             }
             // Set the size of the container to match the size of the outline rectangle
             //misinformation.setSize(outline.width, outline.height);
@@ -1679,7 +1679,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
 
     // Create a larger white rectangle for outline
     let outline = scene.add.rectangle(0, 0, text.width + 4, text.height + 4, 0xffffff);
-    
+
     // Create a smaller factionColor rectangle
     let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
 
@@ -1695,7 +1695,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
         rectangle.setSize(text.width, text.height + tokenIcon.displayHeight);
         outline.setSize(text.width + 4, text.height + 4 + tokenIcon.displayHeight);
         text.y += tokenIcon.displayHeight / 2;
-        
+
         // Make the 'discussion' icons look different from the other power tokens
         if (faction === 'neutral' && size !== 'large') {
             outline.setVisible(false);
@@ -1710,7 +1710,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
     } else {
         misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
         misinformation.setSize(outline.width * 0.1, outline.height * 0.1);
-        
+
         // Add a tween to expand the container and its contents
         scene.tweens.add({
             targets: misinformation,
