@@ -1143,15 +1143,15 @@ export class Politics extends BaseScene {
 
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
-                    scene.yMagaOffset += misinformation.container.outline.displayHeight/2;
-                    console.log('container height = ' + misinformation.container.outline.displayHeight);
+                    scene.yMagaOffset += misinformation.container.outline.height/2;
+                    console.log('container height = ' + misinformation.container.outline.height);
                     if (scene.yMagaOffset > scene.game.config.height * .9) {
                         scene.yMagaOffset -= scene.game.config.height * .7;
                     }
                     console.log('new yMagaOffset = ' + scene.yMagaOffset + ' .8 height is ' + (scene.game.config.height * .8).toString());
                 } else {
-                    scene.yWokeOffset += misinformation.sprite.displayHeight/2;
-                    console.log('container height = ' + misinformation.sprite.displayHeight);
+                    scene.yWokeOffset += misinformation.container.outline.height/2;
+                    console.log('container height = ' + misinformation.container.outline.height);
                     if (scene.yWokeOffset > scene.game.config.height * .9) {
                         scene.yWokeOffset -= scene.game.config.height * .7;
                     }
