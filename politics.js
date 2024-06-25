@@ -409,7 +409,7 @@ export class Politics extends BaseScene {
                         scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
                         renderCharactersCallback(); // Continue to renderCharacters
                     }
-                }, 1000);
+                }, 2000);
             } else {
                 console.log('Waiting for helper tokens to be allocated.');
             }
@@ -468,7 +468,7 @@ export class Politics extends BaseScene {
                     scene.tweens.add({
                         targets: characterText,
                         ease: 'Linear',
-                        duration: 400, // .4 second duration to turn green
+                        duration: 2000, // 2 second duration to turn green
                         onStart: () => {
                             characterText.setColor('#00ff00'); // Setting color to green
                         }
