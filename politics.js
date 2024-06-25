@@ -364,7 +364,7 @@ export class Politics extends BaseScene {
 
         // Function to check and render characters
         function checkAndRenderCharacters() {
-            if (1 || Object.keys(scene.sharedData.helperTokens).length === 0 &&
+            if (Object.keys(scene.sharedData.helperTokens).length === 0 &&
                 !scene.charactersRendered &&
                 characters.every(character => character.endorsement + character.value <= 1 )) {
                 scene.charactersRendered = true;
@@ -452,6 +452,13 @@ export class Politics extends BaseScene {
                 character.value = 0;
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
+                    let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+                    let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
+            
+                    let characterText = scene.add.text(storedData.character.charText.x, storedData.character.charText.y character.name + '\nBacking: ' + healthText,
+                                        { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+            
+                    character.charText = characterText; // back reference to text so we can find the location later
                     // If character has been fully endorsed, Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
                     helpfulTokenIndex++;
