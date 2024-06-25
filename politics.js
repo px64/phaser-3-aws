@@ -465,14 +465,9 @@ export class Politics extends BaseScene {
                     }).setInteractive();
                     
                     // Tween to change color to green
-                    scene.tweens.add({
-                        targets: characterText,
-                        ease: 'Linear',
-                        duration: 2000, // 2 second duration to turn green
-                        onStart: () => {
+                    setTimeout(() => {
                             characterText.setColor('#00ff00'); // Setting color to green
-                        }
-                    });
+                        }, (helpfulTokenIndex+1) * 400);
                     
                     // Delay the start of the fade out tween
                     setTimeout(() => {
