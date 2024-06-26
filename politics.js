@@ -461,9 +461,11 @@ export class Politics extends BaseScene {
                         color: textColor, // Original text color
                         align: 'left'
                     }).setInteractive();
+                    characterText.setVisible(false);
 
                     // Tween to change color to green
                     setTimeout(() => {
+                            characterText.setVisible(true);
                             characterText.setColor('#00ff00'); // Setting color to green
                         }, (helpfulTokenIndex+1) * 400);
 
@@ -832,12 +834,12 @@ export class Politics extends BaseScene {
                 helpfulToken.container.y = 290;
                 helpfulToken.container.setAlpha(.25);
 
-                // First tween: Increase alpha to 0.5 over 2 seconds
+                // First tween: Increase alpha to 0.5 over 5 seconds
                 scene.tweens.add({
                     targets: helpfulToken.container,
                     alpha: .5,
                     ease: 'Sine.easeInOut',
-                    duration: 2000,
+                    duration: 5000,
                     onComplete: function () {
                         // Second tween: Shrink to 1/10th size over 2 seconds
                         scene.tweens.add({
@@ -845,7 +847,7 @@ export class Politics extends BaseScene {
                             scaleX: 0.1, // Shrink to 1/10th of the width
                             scaleY: 0.1, // Shrink to 1/10th of the height
                             ease: 'Sine.easeInOut',
-                            duration: 2000,
+                            duration: 5000,
                             onComplete: function () {
                                 helpfulToken.container.destroy();
                                 delete scene.sharedData.helperTokens[helpfulToken.container.character.name];
