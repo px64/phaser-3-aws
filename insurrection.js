@@ -548,7 +548,7 @@ export class Insurrection extends BaseScene {
                 let wokeHats = storedData.wokeHats;
                 misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', wokeHats, []);
                 let magaHats = storedData.magaHats;
-                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', magaHats, misinformation.littleHats);
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', magaHats, misinformation.littleHats);
                 misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
@@ -793,6 +793,7 @@ export class Insurrection extends BaseScene {
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
                     defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
+                    scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++;
                 }
             }, null, this);
 
@@ -832,6 +833,7 @@ export class Insurrection extends BaseScene {
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
                     defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
+                    scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++;
                 }
             }, null, this);
             
