@@ -635,19 +635,19 @@ export default class BaseScene extends Phaser.Scene {
             // Use the stored data when creating the token
             //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
             let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
-
-        /*
-        // Recreate previously generated misinformation tokens
-        for (let key in scene.sharedData.misinformation) {
-            // Look up the stored data
-            let storedData = scene.sharedData.misinformation[key];
-
-            // Use the stored data when creating the token
-            let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData);
-        */
-                            
+                         
             scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
             scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
+            // Initialize littleHats
+            misinformation.littleHats = [];
+            let wokeHats = storedData.wokeHats;
+            if (wokeHats) {
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
+            }
+            let magaHats = storedData.magaHats;
+            if (magaHats) {
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+            }
             misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
             misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
             misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
