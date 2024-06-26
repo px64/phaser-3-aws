@@ -1527,7 +1527,7 @@ export class Politics extends BaseScene {
                 ? '#ffffff'
                 : faction === 'woke'
                     ? '#ffffff'
-                    : '#ff00ff';
+                    : '#ffffff';
             // Add text to the rectangle
             let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
             if (size == 'large' ) {text.setFontSize(36);}
@@ -1626,7 +1626,7 @@ export class Politics extends BaseScene {
             misinformation.setInteractive({ draggable: true });
             // Attach the container to the sprite
             misinformationSprite.container = misinformation;
-            if (size == 'large' ) {misinformation.setDepth(1);}
+            if (size == 'large' ) {misinformation.setDepth(4);}
             // Listen to the 'drag' event
             misinformation.on('drag', function(pointer, dragX, dragY) {
                 this.x = dragX;
@@ -1946,7 +1946,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
     // Attach the container to the sprite
     misinformationSprite.container = misinformation;
     if (size === 'large') {
-        misinformation.setDepth(1);
+        misinformation.setDepth(4);
     }
 
     // Listen to the 'drag' event
