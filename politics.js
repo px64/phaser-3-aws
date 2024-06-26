@@ -621,7 +621,7 @@ export class Politics extends BaseScene {
                     helpedIcon.scaleFactor = 0.19;
                     //console.log('hacker');
                 } else {
-                    characterHelps = 'negotiation';
+                    characterHelps = '';//negotiation';
                     helpedIcon.scaleFactor = 0.13;
                     //console.log('negotiation');
                 }
