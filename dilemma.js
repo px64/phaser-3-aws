@@ -859,6 +859,7 @@ export class DilemmaScene extends BaseScene {
                     duration: 200,
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
+                        console.log(defense);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                         // Check if defense.littleHats exists before trying to iterate over it
                         if (defense.littleHats) {
@@ -892,6 +893,7 @@ export class DilemmaScene extends BaseScene {
                     duration: 200,
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
+                        console.log(defense);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                         // Check if defense.littleHats exists before trying to iterate over it
                         if (defense.littleHats) {
