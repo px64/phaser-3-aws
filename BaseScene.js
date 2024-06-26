@@ -362,8 +362,10 @@ export default class BaseScene extends Phaser.Scene {
         return littleHats;
 
         // Draw little hats
-        function drawIcons(scene, x, y, count, texture, littleHats) {
-            for (let i = 0; i < count; i++) {
+        function drawIcons(scene, x, y, texture, startIndex, littleHats) {
+            let count = startIndex + 1; // Increment the count by 1 for the new hat
+
+            for (let i = startIndex; i < count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
