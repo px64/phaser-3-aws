@@ -775,6 +775,13 @@ export class Insurrection extends BaseScene {
                         },
                         callbackScope: scene
                     });
+                } else {
+                    // Initialize defense.littleHats if it doesn't exist yet
+                    if (!defense.littleHats) {
+                        defense.littleHats = [];
+                    }
+                    let iconY = defense.container.y + ICON_MARGIN;
+                    defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
                 }
             }, null, this);
 
@@ -806,8 +813,63 @@ export class Insurrection extends BaseScene {
                         },
                         callbackScope: scene
                     });
+                } else {
+                    // Initialize defense.littleHats if it doesn't exist yet
+                    if (!defense.littleHats) {
+                        defense.littleHats = [];
+                    }
+                    let iconY = defense.container.y + ICON_MARGIN;
+                    defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
                 }
             }, null, this);
+            
+            // Draw little hats
+            function drawIcons(scene, x, y, texture, startIndex, littleHats) {
+                let count = startIndex + 1; // Increment the count by 1 for the new hat
+                for (let i = startIndex; i < count; i++) {
+                    let xOffset = (i % 5) * ICON_SPACING;
+                    let yOffset = Math.floor(i / 5) * ICON_SPACING;
+                    // Each icon will be positioned slightly to the right of the previous one
+                    let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+    
+                    // Adjust the size of the icons if necessary
+                    icon.setScale(ICON_SCALE);
+    
+                    const jumpHeight = 20; // Adjust the height of the jump
+                    const durationUp = 150; // Duration for the upward movement
+                    const durationDown = 300; // Duration for the downward movement with bounce
+                    // Store the original position
+                    const originalY = icon.y;
+    
+                    // Create an infinite loop of jumping
+                    const jump = () => {
+                        // Add the upward movement tween
+                        scene.tweens.add({
+                            targets: icon,
+                            y: originalY - jumpHeight,
+                            ease: 'Power1', // Fast upward movement
+                            duration: durationUp,
+                            onComplete: () => {
+                                // Add the downward movement tween with bounce effect
+                                scene.tweens.add({
+                                    targets: icon,
+                                    y: originalY,
+                                    ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                                    duration: durationDown,
+                                    onComplete: jump // Chain the jump to repeat
+                                });
+                            }
+                        });
+                    };
+    
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, jump);
+    
+                    littleHats.push(icon);
+                }
+                return littleHats;
+            }
+            
             //
             // Helper function to handle common overlap logic between insurrectionist and icon
             //
