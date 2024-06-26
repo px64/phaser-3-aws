@@ -787,7 +787,10 @@ export class Insurrection extends BaseScene {
                             console.log('delete index ' + defense.container.misinformationIndex);
                             console.log(defense);
                             delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                            defense.littleHats.forEach(hat => hat.destroy());
+                            // Check if defense.littleHats exists before trying to iterate over it
+                            if (defense.littleHats) {
+                                defense.littleHats.forEach(hat => hat.destroy());
+                            }
                             defense.container.destroy();
                         },
                         callbackScope: scene
@@ -827,7 +830,10 @@ export class Insurrection extends BaseScene {
                             console.log('delete index ' + defense.container.misinformationIndex);
                             console.log(defense);
                             delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                            defense.littleHats.forEach(hat => hat.destroy());
+                            // Check if defense.littleHats exists before trying to iterate over it
+                            if (defense.littleHats) {
+                                defense.littleHats.forEach(hat => hat.destroy());
+                            }
                             defense.container.destroy();
                         },
                         callbackScope: scene
