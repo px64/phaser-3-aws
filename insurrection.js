@@ -39,6 +39,11 @@ var justiceWoke = 20;
 var justiceStrength = 5;
 var charVal = {};
 
+const ICON_MARGIN = 10;
+const GAUGE_HEIGHT = 50;
+const ICON_SPACING = 10;
+const ICON_SCALE = 0.03;
+
 export class Insurrection extends BaseScene {
     constructor() {
         super({ key: 'insurrection' });
