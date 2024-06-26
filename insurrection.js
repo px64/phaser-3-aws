@@ -830,6 +830,7 @@ export class Insurrection extends BaseScene {
             
             // Draw little hats
             function drawIcons(scene, x, y, texture, startIndex, littleHats) {
+                console.log('debug: create a little hat');
                 let count = startIndex + 1; // Increment the count by 1 for the new hat
                 for (let i = startIndex; i < count; i++) {
                     let xOffset = (i % 5) * ICON_SPACING;
