@@ -860,7 +860,10 @@ export class DilemmaScene extends BaseScene {
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        defense.littleHats.forEach(hat => hat.destroy());
+                        // Check if defense.littleHats exists before trying to iterate over it
+                        if (defense.littleHats) {
+                            defense.littleHats.forEach(hat => hat.destroy());
+                        }
                         defense.container.destroy();
                     },
                     callbackScope: scene
@@ -890,7 +893,10 @@ export class DilemmaScene extends BaseScene {
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        defense.littleHats.forEach(hat => hat.destroy());
+                        // Check if defense.littleHats exists before trying to iterate over it
+                        if (defense.littleHats) {
+                            defense.littleHats.forEach(hat => hat.destroy());
+                        }
                         defense.container.destroy();
                     },
                     callbackScope: scene
