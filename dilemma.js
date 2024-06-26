@@ -859,6 +859,13 @@ export class DilemmaScene extends BaseScene {
                     },
                     callbackScope: scene
                 });
+            }  else {
+                // Initialize defense.littleHats if it doesn't exist yet
+                if (!defense.littleHats) {
+                    defense.littleHats = [];
+                }
+                let iconY = defense.container.y + ICON_MARGIN;
+                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
             }
         }, null, this);
 
@@ -880,6 +887,13 @@ export class DilemmaScene extends BaseScene {
                     },
                     callbackScope: scene
                 });
+            }   else {
+                // Initialize defense.littleHats if it doesn't exist yet
+                if (!defense.littleHats) {
+                    defense.littleHats = [];
+                }
+                let iconY = defense.container.y + ICON_MARGIN;
+                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
             }
         }, null, this);
 
