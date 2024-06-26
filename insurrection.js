@@ -544,6 +544,11 @@ export class Insurrection extends BaseScene {
                 let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData,'normal', true, false, helpfulTokenIcon);
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
+                // Initialize littleHats
+                let wokeHats = storedData.wokeHats;
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', wokeHats, []);
+                let magaHats = storedData.magaHats;
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', magaHats, misinformation.littleHats);
                 misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
