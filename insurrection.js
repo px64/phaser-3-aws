@@ -546,9 +546,9 @@ export class Insurrection extends BaseScene {
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                 // Initialize littleHats
                 let wokeHats = storedData.wokeHats;
-                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', wokeHats, []);
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase',0 , wokeHats, []);
                 let magaHats = storedData.magaHats;
-                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', magaHats, misinformation.littleHats);
+                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
                 misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
@@ -792,7 +792,7 @@ export class Insurrection extends BaseScene {
                         defense.littleHats = [];
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
+                    defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
                     scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++;
                 }
             }, null, this);
@@ -832,16 +832,15 @@ export class Insurrection extends BaseScene {
                         defense.littleHats = [];
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
+                    defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
                     scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++;
                 }
             }, null, this);
             
             // Draw little hats
-            function drawIcons(scene, x, y, texture, startIndex, littleHats) {
+            function drawIcons(scene, x, y, texture, startIndex, count, littleHats) {
                 console.log('debug: create a little hat');
-                let count = startIndex + 1; // Increment the count by 1 for the new hat
-                for (let i = startIndex; i < count; i++) {
+                for (let i = startIndex; i < startIndex + count; i++) {
                     let xOffset = (i % 5) * ICON_SPACING;
                     let yOffset = Math.floor(i / 5) * ICON_SPACING;
                     // Each icon will be positioned slightly to the right of the previous one
