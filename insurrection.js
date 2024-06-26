@@ -545,10 +545,15 @@ export class Insurrection extends BaseScene {
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                 // Initialize littleHats
+                misinformation.littleHats = [];
                 let wokeHats = storedData.wokeHats;
-                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase',0 , wokeHats, []);
+                if (wokeHats) {
+                    misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
+                }
                 let magaHats = storedData.magaHats;
-                misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+                if (magaHats) {
+                    misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+                }
                 misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
                 misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
@@ -839,7 +844,6 @@ export class Insurrection extends BaseScene {
             
             // Draw little hats
             function drawIcons(scene, x, y, texture, startIndex, count, littleHats) {
-                console.log('debug: create a little hat');
                 for (let i = startIndex; i < startIndex + count; i++) {
                     let xOffset = (i % 5) * ICON_SPACING;
                     let yOffset = Math.floor(i / 5) * ICON_SPACING;
