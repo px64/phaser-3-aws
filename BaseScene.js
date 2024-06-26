@@ -618,6 +618,25 @@ export default class BaseScene extends Phaser.Scene {
     //====================================================================================
 
     restoreMisinformationTokens(scene) {
+        for (let key in scene.sharedData.misinformation) {
+            // Look up the stored data
+            let storedData = scene.sharedData.misinformation[key];
+            //console.log(storedData);
+        
+            // Add an icon or graphic and scale it
+            let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
+            helpfulTokenIcon.setScale(.12);  // scale the icon
+            helpfulTokenIcon.setOrigin(0.5, .66);  // change origin to bottom center
+            helpfulTokenIcon.setVisible(true);
+            //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
+            helpfulTokenIcon.setAlpha(.9);
+        
+            // Recreate old 'discussion' tokens
+            // Use the stored data when creating the token
+            //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
+            let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
+
+        /*
         // Recreate previously generated misinformation tokens
         for (let key in scene.sharedData.misinformation) {
             // Look up the stored data
@@ -625,6 +644,8 @@ export default class BaseScene extends Phaser.Scene {
 
             // Use the stored data when creating the token
             let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData);
+        */
+                            
             scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
             scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
             misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
