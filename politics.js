@@ -831,7 +831,7 @@ export class Politics extends BaseScene {
                 scene.extraMisinformationTokens += 4;
                 helpfulToken.container.x = 720;
                 if (character.faction == 'maga') helpfulToken.container.x -= scene.cameras.main.width/4;
-                helpfulToken.container.y = 290;
+                helpfulToken.container.y = 380;
                 helpfulToken.container.setAlpha(.25);
 
                 // First tween: Increase alpha to 0.5 over 5 seconds
