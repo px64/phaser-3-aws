@@ -824,7 +824,7 @@ export class Insurrection extends BaseScene {
                         defense.littleHats = [];
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
+                    defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
                 }
             }, null, this);
             
