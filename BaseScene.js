@@ -355,14 +355,14 @@ export default class BaseScene extends Phaser.Scene {
 
             // Assuming the icons should appear below the health gauge
             let iconY = posY + GAUGE_HEIGHT + ICON_MARGIN;
-            littleHats = drawIcons(scene, posX-20 + ICON_SPACING*3, iconY, maga/5, 'magaBase', littleHats);
-            littleHats = drawIcons(scene, posX-20 - ICON_SPACING*3, iconY, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
+            littleHats = drawIcons(scene, posX-20 + ICON_SPACING*3, iconY, 0, maga/5, 'magaBase', littleHats);
+            littleHats = drawIcons(scene, posX-20 - ICON_SPACING*3, iconY, 0, woke/5, 'wokeBase', littleHats); // Offset the Y position for the second row of icons
 
         }
         return littleHats;
 
         // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, littleHats) {
+        function drawIcons(scene, x, y, startIndex, count, texture, littleHats) {
             let count = startIndex + 1; // Increment the count by 1 for the new hat
 
             for (let i = startIndex; i < count; i++) {
