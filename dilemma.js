@@ -871,7 +871,7 @@ export class DilemmaScene extends BaseScene {
                     defense.littleHats = [];
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
+                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
             }
         }, null, this);
 
@@ -900,15 +900,14 @@ export class DilemmaScene extends BaseScene {
                     defense.littleHats = [];
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
+                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
             }
         }, null, this);
 
         // Draw little hats
         // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, littleHats) {
-            let count = startIndex + 1; // Increment the count by 1 for the new hat
-            for (let i = startIndex; i < count; i++) {
+        function drawIcons(scene, x, y, texture, startIndex, count, littleHats) {
+            for (let i = startIndex; i < startIndex + count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
                 // Each icon will be positioned slightly to the right of the previous one
