@@ -1134,7 +1134,7 @@ export class Politics extends BaseScene {
                     let wokeHats = storedData.wokeHats;
                     misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', wokeHats, []);
                     let magaHats = storedData.magaHats;
-                    misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase', magaHats, misinformation.littleHats);
+                    misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', magaHats, misinformation.littleHats);
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
                     scene.misinformationTokens.push(helpfulTokenIcon); // Push token to stack
