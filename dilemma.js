@@ -904,6 +904,7 @@ export class DilemmaScene extends BaseScene {
 
         // Draw little hats
         function drawIcons(scene, x, y, count, texture, littleHats) {
+            console.log('debug: draw a little hat');
             for (let i = 0; i < count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
