@@ -138,7 +138,7 @@ export class Politics extends BaseScene {
             this.shieldsWoke = this.physics.add.group();
 
             console.log ('this capital = ' + this.totalPoliticalCapital + ' shared capital = '+ this.sharedData.totalPoliticalCapital + ' this.oldExperienceLevel = ' + this.oldExperienceLevel );
-            
+
             this.totalPoliticalCapital = this.sharedData.totalPoliticalCapital;
             this.recreateIcons();
         }
@@ -356,7 +356,7 @@ export class Politics extends BaseScene {
                 console.log('helpertokenlength = ' + Object.keys(scene.sharedData.helperTokens).length);
                 console.log('charactersRendered = ' + scene.charactersRendered);
                 console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
-            
+
                 const timerID = setTimeout(() => {
                     scene.misinformationTokens.forEach(token => {
                         token.setAlpha(0.5); // Set the alpha to lower the visibility
@@ -364,7 +364,7 @@ export class Politics extends BaseScene {
                     const renderCharactersCallback = () => {
                         renderCharacters(scene); // Render characters only when tokens are fully allocated
                     };
-    
+
                     if (scene.oldExperienceLevel != Math.floor(scene.sharedData.totalPoliticalCapital / 30) + 1) {
                         // Save the updated sharedData for characterintroduction
                         scene.totalPoliticalCapital = scene.sharedData.totalPoliticalCapital;
@@ -374,7 +374,7 @@ export class Politics extends BaseScene {
                             fontSize: '48px',
                             color: '#ffffff'
                         }).setOrigin(0.5, 0.5); // Center the text
-                        
+
                         // Optionally, make sure it appears on top of other layers
                         messageText.setDepth(100); // A high depth value ensures it is on top
                         // Create a new camera that only shows the messageText
@@ -396,7 +396,7 @@ export class Politics extends BaseScene {
                                 sharedData: scene.sharedData,
                                 callback: (data) => {
                                     scene.scene.stop('CharacterIntroductionScene');
-    
+
                                     // Unhide all game objects in the current scene
                                     scene.children.each(child => child.setVisible(true));
                                     scene.cameras.main.fadeIn(800, 0, 0, 0);
@@ -425,7 +425,7 @@ export class Politics extends BaseScene {
 
         // Call the check function initially
         checkAndRenderCharacters.call(this);
-        
+
         // Recreate all previously created helpful tokens that have not been used yet
         if (this.hasBeenCreatedBefore) {
             for (let key in scene.sharedData.helperTokens) {
@@ -453,34 +453,32 @@ export class Politics extends BaseScene {
                 character.value = 0;
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
-                    let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
-                    let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
                     let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
                     console.log('x = ' + character.charText.x);
-                    let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText, {
-                        fontSize: '16px',
+                    let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nGives Back!', {
+                        fontSize: '20px',
                         fontFamily: 'Roboto',
                         color: textColor, // Original text color
                         align: 'left'
                     }).setInteractive();
-                    
+
                     // Tween to change color to green
                     setTimeout(() => {
                             characterText.setColor('#00ff00'); // Setting color to green
                         }, (helpfulTokenIndex+1) * 400);
-                    
+
                     // Delay the start of the fade out tween
                     setTimeout(() => {
                         scene.tweens.add({
                             targets: characterText,
                             alpha: 0, // Fade to completely transparent
                             ease: 'Sine.easeInOut',
-                            duration: 1000, // Duration of the fade in milliseconds
+                            duration: 3500, // Duration of the fade in milliseconds
                             onComplete: function () {
                                 characterText.destroy(); // Destroy the text object after the fade completes
                             }
                         });
-                    }, 1000+(helpfulTokenIndex+1) * 400);
+                    }, 3000+(helpfulTokenIndex+1) * 400);
 
                     /*
                     let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText,
@@ -495,7 +493,7 @@ export class Politics extends BaseScene {
                     helpfulTokenIndex++;
                     if (character.powerTokenType == 'type_5') {enableTokenTutorial = true;}
                     character.endorsement -= 2;
-                    
+
                     // Recreate text here
                     /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
                     back to their regular color if they were green before and are no longer fully endorsed */
@@ -647,8 +645,8 @@ export class Politics extends BaseScene {
                 helperTokenIcon: helpfulTokenIcon
             };
 
-            // Store new helpful token data indexed by character.name.  
-            // This is an associative array rather than "pushing" tokens into a stack.  
+            // Store new helpful token data indexed by character.name.
+            // This is an associative array rather than "pushing" tokens into a stack.
             // Means only 1 helpful token can exist per character at one time.
             scene.sharedData.helperTokens[character.name] = storedData;
 
@@ -1566,7 +1564,7 @@ export class Politics extends BaseScene {
                 misinformation.setSize(outline.width, outline.height);
             }
 
-            if (size != 'large'){
+            if (1){//size != 'large'){
                  misinformation.setSize(outline.width, outline.height);
                  // Set the initial size to near zero
                  misinformation.setScale(0.01);
@@ -1580,11 +1578,11 @@ export class Politics extends BaseScene {
                         // Current position as the target for the tween
                         var targetX = misinformation.x;
                         var targetY = misinformation.y;
-                         
+
                         // Set initial position
                         misinformation.x = storedData.character.charText.x;
                         misinformation.y = storedData.character.charText.y;
-                        
+
                         scene.tweens.add({
                             targets: misinformation,
                              x: targetX, // Move to this X position

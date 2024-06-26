@@ -27,7 +27,7 @@ export class CharacterIntroductionScene extends Phaser.Scene {
 
             proceedButton.on('pointerdown', () => {
                 if (this.callback) {
-                    this.cameras.main.fadeOut(2400, 0, 0, 0);
+                    this.cameras.main.fadeOut(400, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                         this.callback(this.sharedData);
                     });
@@ -73,7 +73,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         }
         return true; // Default case
   });
-    
+
   if (allCharactersBelowNewExperience) {
       return false;
   }
@@ -121,7 +121,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         // Only introduce new characters that were not introduced before
         if (character.magaLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'maga') { return };
         if (character.wokeLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'woke') { return };
-        if (character.fogLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'none') { return }; 
+        if (character.fogLevel <= oldExperienceLevelUponEntry && scene.sharedData.ideology.faction == 'none') { return };
 
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
@@ -184,9 +184,9 @@ export function introduceCharacters(scene, characters, sharedData) {
         characterText.on('pointerover', () => enterButtonHoverState(characterText));
         characterText.on('pointerout', () => enterButtonRestState(characterText, textColor));
     });
-    
+
     return true; // Indicate that characters were introduced
-    
+
     //====================================================================================
     //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
     //====================================================================================
