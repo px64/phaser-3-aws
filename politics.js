@@ -968,7 +968,8 @@ export class Politics extends BaseScene {
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
-                defense.storedData.wokeHats++;
+                defense.storedData.wokeHats++; // not sure if this line is necessary or is doing anything
+                scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
             }
         }, null, this);
 
@@ -1048,7 +1049,8 @@ export class Politics extends BaseScene {
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
-                defense.storedData.magaHats++;
+                defense.storedData.magaHats++; // Not sure if this line is doing anything at all
+                scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
             }
         }, null, this);
 
@@ -1161,6 +1163,7 @@ export class Politics extends BaseScene {
                 //helpfulTokenIcon.setDepth(1);  // set depth below the text and above the bounding box
                 helpfulTokenIcon.setAlpha(.9);
 
+                // Save misinformation token's storedData into sharedData so other scenes can use it.
                 scene.sharedData.misinformation[index] = storedData;
 
                 // Create a new 'discussion' token
