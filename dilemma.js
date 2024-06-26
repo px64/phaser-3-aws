@@ -860,6 +860,7 @@ export class DilemmaScene extends BaseScene {
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                        defense.littlehats.destroy()
                         defense.container.destroy();
                     },
                     callbackScope: scene
@@ -888,6 +889,7 @@ export class DilemmaScene extends BaseScene {
                     onComplete: function () {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                        defense.littlehats.destroy();
                         defense.container.destroy();
                     },
                     callbackScope: scene
