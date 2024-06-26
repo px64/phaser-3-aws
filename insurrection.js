@@ -785,6 +785,7 @@ export class Insurrection extends BaseScene {
                         duration: 500,
                         onComplete: function () {
                             console.log('delete index ' + defense.container.misinformationIndex);
+                            console.log(defense);
                             delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                             defense.littleHats.forEach(hat => hat.destroy());
                             defense.container.destroy();
@@ -816,7 +817,6 @@ export class Insurrection extends BaseScene {
                     scene.victoryText.destroy();
                     //scene.scene.get('politics').setup(scene.sharedData);scene.scene.start('politics');
                 }
-                //console.log(defense.container);
 
                 if (Math.random() < .1) {
                     scene.tweens.add({
@@ -825,6 +825,7 @@ export class Insurrection extends BaseScene {
                         duration: 500,
                         onComplete: function () {
                             console.log('delete index ' + defense.container.misinformationIndex);
+                            console.log(defense);
                             delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                             defense.littleHats.forEach(hat => hat.destroy());
                             defense.container.destroy();
