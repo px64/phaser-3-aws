@@ -968,6 +968,7 @@ export class Politics extends BaseScene {
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, defense.littleHats);
+                defense.storedData.wokeHats++;
             }
         }, null, this);
 
@@ -1047,6 +1048,7 @@ export class Politics extends BaseScene {
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, defense.littleHats);
+                defense.storedData.magaHats++;
             }
         }, null, this);
 
@@ -1147,7 +1149,9 @@ export class Politics extends BaseScene {
                     y: yOffset,
                     type: data.type,
                     text: data.text,
-                    misinformationIndex: index
+                    misinformationIndex: index,
+                    magaHats: 0,
+                    wokeHats: 0
                 };
                 // Add an icon or graphic and scale it
                 let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
