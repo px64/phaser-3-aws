@@ -1083,7 +1083,7 @@ export class Insurrection extends BaseScene {
                              duration: 1000,
                              onComplete: function () {
                                  misinformation.setSize(outline.width, outline.height);
-                                 pulseIt(outline, rectangle, tokenIcon);
+                                 pulseIt(scene, outline, rectangle, tokenIcon);
                              },
                              callbackScope: scene
                          });
@@ -1097,7 +1097,7 @@ export class Insurrection extends BaseScene {
                              duration: 1000,
                              onComplete: function () {
                                  misinformation.setSize(outline.width, outline.height);
-                                 pulseIt(outline, rectangle, tokenIcon);
+                                 pulseIt(scene, outline, rectangle, tokenIcon);
                              },
                              callbackScope: scene
                          });
@@ -1148,7 +1148,7 @@ export class Insurrection extends BaseScene {
                 sprite: misinformationSprite
             };
         }
-        function pulseIt(outline, rectangle, tokenIcon) {
+        function pulseIt(scene, outline, rectangle, tokenIcon) {
             // Create a tween that scales the rectangle up and down
             let outlineTween = scene.tweens.add({
                 targets: outline, // object that the tween affects
