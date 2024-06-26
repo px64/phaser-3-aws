@@ -1148,6 +1148,39 @@ export class Insurrection extends BaseScene {
                 sprite: misinformationSprite
             };
         }
+        function pulseIt(outline, rectangle, tokenIcon) {
+            // Create a tween that scales the rectangle up and down
+            let outlineTween = scene.tweens.add({
+                targets: outline, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });
+            // Create a tween that scales the rectangle up and down
+            let rectangleTween = scene.tweens.add({
+                targets: rectangle, // object that the tween affects
+                scaleX: 1.2, // start scaling to 120% of the original size
+                scaleY: 1.2, // start scaling to 120% of the original size
+                duration: 1000, // duration of scaling to 120% will be 1 second
+                ease: 'Linear', // type of easing
+                yoyo: true, // after scaling to 120%, it will scale back to original size
+                loop: -1, // -1 means it will loop forever
+            });
+            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                let tokenIconTween = scene.tweens.add({
+                    targets: tokenIcon, // object that the tween affects
+                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
+                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
+                    duration: 1000, // duration of scaling to 120% will be 1 second
+                    ease: 'Linear', // type of easing
+                    yoyo: true, // after scaling to 120%, it will scale back to original size
+                    loop: -1, // -1 means it will loop forever
+                });
+            }
+        }
         /*
         function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, helpfulTokenIcon) {
             let factionColor = faction === 'maga'
