@@ -361,51 +361,7 @@ export default class BaseScene extends Phaser.Scene {
         }
         return littleHats;
     }
-    // Draw little hats
-    function drawIcons(scene, x, y, texture, startIndex, count,  littleHats) {
-        for (let i = startIndex; i < startIndex + count; i++) {
-            let xOffset = (i % 5) * ICON_SPACING;
-            let yOffset = Math.floor(i / 5) * ICON_SPACING;
-            // Each icon will be positioned slightly to the right of the previous one
-            let icon = scene.add.image(x + xOffset, y + yOffset, texture);
 
-            // Adjust the size of the icons if necessary
-            icon.setScale(ICON_SCALE);
-
-            const jumpHeight = 20; // Adjust the height of the jump
-            const durationUp = 150; // Duration for the upward movement
-            const durationDown = 300; // Duration for the downward movement with bounce
-            // Store the original position
-            const originalY = icon.y;
-
-            // Create an infinite loop of jumping
-            const jump = () => {
-                // Add the upward movement tween
-                scene.tweens.add({
-                    targets: icon,
-                    y: originalY - jumpHeight,
-                    ease: 'Power1', // Fast upward movement
-                    duration: durationUp,
-                    onComplete: () => {
-                        // Add the downward movement tween with bounce effect
-                        scene.tweens.add({
-                            targets: icon,
-                            y: originalY,
-                            ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                            duration: durationDown,
-                            onComplete: jump // Chain the jump to repeat
-                        });
-                    }
-                });
-            };
-
-            // Start the jumping animation with a random delay
-            scene.time.delayedCall(Math.random() * 500, jump);
-
-            littleHats.push(icon);
-        }
-        return littleHats;
-    }
     createThreat(territory, faction, icon, numThreats) {
         let attackerTerritory = territory;
         let territoryWidth = this.sys.game.config.width / territories.length;
@@ -896,6 +852,51 @@ export default class BaseScene extends Phaser.Scene {
         return config;
     }
 }
+    // Draw little hats
+    function drawIcons(scene, x, y, texture, startIndex, count,  littleHats) {
+        for (let i = startIndex; i < startIndex + count; i++) {
+            let xOffset = (i % 5) * ICON_SPACING;
+            let yOffset = Math.floor(i / 5) * ICON_SPACING;
+            // Each icon will be positioned slightly to the right of the previous one
+            let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+
+            // Adjust the size of the icons if necessary
+            icon.setScale(ICON_SCALE);
+
+            const jumpHeight = 20; // Adjust the height of the jump
+            const durationUp = 150; // Duration for the upward movement
+            const durationDown = 300; // Duration for the downward movement with bounce
+            // Store the original position
+            const originalY = icon.y;
+
+            // Create an infinite loop of jumping
+            const jump = () => {
+                // Add the upward movement tween
+                scene.tweens.add({
+                    targets: icon,
+                    y: originalY - jumpHeight,
+                    ease: 'Power1', // Fast upward movement
+                    duration: durationUp,
+                    onComplete: () => {
+                        // Add the downward movement tween with bounce effect
+                        scene.tweens.add({
+                            targets: icon,
+                            y: originalY,
+                            ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                            duration: durationDown,
+                            onComplete: jump // Chain the jump to repeat
+                        });
+                    }
+                });
+            };
+
+            // Start the jumping animation with a random delay
+            scene.time.delayedCall(Math.random() * 500, jump);
+
+            littleHats.push(icon);
+        }
+        return littleHats;
+    }
 //    1. Character creates a barricade
 //    2. Character "creates" a new power token (called powerToken).
 //       --These tokens can also be used to boost the strength of an icon, but increases maga or wokeness of another icon when it's done.
