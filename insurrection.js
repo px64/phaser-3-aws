@@ -988,7 +988,162 @@ export class Insurrection extends BaseScene {
         // function that createPowerToken text, rectangle, and dragability
         //
         //====================================================================================
+        //====================================================================================
+        // function createPowerToken(scene)
+        // function that createPowerToken text, rectangle, and dragability
+        //
+        // This function can be called to either create a 'misinformation token' or a 'helpful token'
+        // When creating a helpful token, dropOnce is false because it can be moved around as much as you want
+        //
+        // size: 'normal' or 'large'.  Large creates a big box that tweens away slowly
+        // hasBeenCreatedBefore: true means that it is static and cannot be dragged around
+        // dropOnce: true means that it can be dragged into one position and then can becomes static, no longer can be moved
+        //
+        //====================================================================================
+        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
+            let factionColor = faction === 'maga'
+                ? '0xff0000'
+                : faction === 'woke'
+                    ? '0x0000ff'
+                    : '0x800080';
+            let fillColor = faction === 'maga'
+                ? '#ffffff'
+                : faction === 'woke'
+                    ? '#ffffff'
+                    : '#ffffff';
+            // Add text to the rectangle
+            let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
+            if (size == 'large' ) {text.setFontSize(36);}
 
+            // Create a larger white rectangle for outline
+            let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
+
+            // Create a smaller factionColor rectangle
+            let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
+
+            // Create a sprite for physics and bouncing
+            let misinformationSprite = scene.physics.add.sprite(0, 0, 'track');
+            misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
+            misinformationSprite.setDepth(1);
+
+            let misinformation;
+
+            // Group the text, outline, and rectangle into a single container
+            if (tokenIcon) { // ... and group tokenIcon too if it exists
+                rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
+                outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
+                text.y += tokenIcon.displayHeight/2;
+                //rectangle.x adjustment??
+                if (faction == 'neutral' && size != 'large'){
+                    outline.setVisible(false);
+                    rectangle.setVisible(false);
+                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
+                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight/2);
+                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
+                else {
+                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                }
+                misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
+            } else {
+                misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+                misinformation.setSize(outline.width, outline.height);
+            }
+
+            if (1){//size != 'large'){
+                 misinformation.setSize(outline.width, outline.height);
+                 // Set the initial size to near zero
+                 misinformation.setScale(0.01);
+
+                console.log('what is the size of helperTokens?  It is currently '+Object.keys(scene.sharedData.helperTokens).length);
+
+                const timerID = setTimeout(() => {
+                     if (typeof storedData.character !== 'undefined') {
+                         console.log('generate helpful token for '+storedData.character.charText.text);
+
+                        // Current position as the target for the tween
+                        var targetX = misinformation.x;
+                        var targetY = misinformation.y;
+
+                        // Set initial position
+                        misinformation.x = storedData.character.charText.x;
+                        misinformation.y = storedData.character.charText.y;
+
+                        scene.tweens.add({
+                            targets: misinformation,
+                             x: targetX, // Move to this X position
+                             y: targetY, // Move to this Y position
+                             scaleX: 1, // expand to the width
+                             scaleY: 1, // expand to the height
+                             ease: 'Sine.easeInOut',
+                             duration: 1000,
+                             onComplete: function () {
+                                 misinformation.setSize(outline.width, outline.height);
+                                 pulseIt(outline, rectangle, tokenIcon);
+                             },
+                             callbackScope: scene
+                         });
+                     } else {
+                        // Add a tween to expand the container and its contents
+                         scene.tweens.add({
+                             targets: misinformation,
+                             scaleX: 1, // expand to the width
+                             scaleY: 1, // expand to the height
+                             ease: 'Sine.easeInOut',
+                             duration: 1000,
+                             onComplete: function () {
+                                 misinformation.setSize(outline.width, outline.height);
+                                 pulseIt(outline, rectangle, tokenIcon);
+                             },
+                             callbackScope: scene
+                         });
+                     }
+                }, Object.keys(scene.sharedData.helperTokens).length *400);
+            }
+
+            // Set the size of the container to match the size of the outline rectangle
+            //misinformation.setSize(outline.width, outline.height);
+            misinformationSprite.setScale(.6);
+            //misinformationSprite.setSize(outline.width*.1, 1);
+
+            // Now that the container has a size, it can be made interactive and draggable
+            misinformation.setInteractive({ draggable: true });
+            // Attach the container to the sprite
+            misinformationSprite.container = misinformation;
+            if (size == 'large' ) {misinformation.setDepth(4);}
+            // Listen to the 'drag' event
+            misinformation.on('drag', function(pointer, dragX, dragY) {
+                this.x = dragX;
+                this.y = dragY;
+                storedData.x = dragX;
+                storedData.y = dragY;
+                misinformationSprite.setImmovable(true);
+            });
+            if (0) { // skip the dropOnce concept dropOnce == 'drop once') {
+                misinformation.on('dragend', function(pointer, dragX, dragY) {
+                    outlineTween.stop();
+                    rectangleTween.stop();
+                    this.disableInteractive();
+                    misinformationSprite.setImmovable(true);
+                    let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                    rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
+                });
+            }
+            if (0) {//hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
+                outlineTween.stop();
+                rectangleTween.stop();
+                misinformation.disableInteractive();
+                misinformationSprite.setImmovable(true);
+                //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                //rectangle.setFillStyle(0x228B22); // Now the rectangle is green
+                text.setColor(0x229B22);
+            }
+
+            return {
+                container: misinformation,
+                sprite: misinformationSprite
+            };
+        }
+        /*
         function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, helpfulTokenIcon) {
             let factionColor = faction === 'maga'
                 ? '0xff0000'
@@ -1026,15 +1181,15 @@ export class Insurrection extends BaseScene {
             // Set the size of the container to match the size of the outline rectangle
             misinformation.setSize(outline.width, outline.height);
 
-    /* Don't allow dragging of power tokens during insurrection scene: you need to position them wisely
-    */
+            // Don't allow dragging of power tokens during insurrection scene: you need to position them wisely
+    
 
             return {
                 container: misinformation,
                 sprite: misinformationSprite
             };
         }
-
+*/
         //====================================================================================
         // Function:
         //      hitIcon()
