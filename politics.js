@@ -359,7 +359,7 @@ export class Politics extends BaseScene {
 
                 const timerID = setTimeout(() => {
                     scene.misinformationTokens.forEach(token => {
-                        token.setAlpha(0.5); // Set the alpha to lower the visibility
+                        token.container.setAlpha(0.5); // Set the alpha to lower the visibility
                         if (token.littleHats) {
                             token.littleHats.forEach(hat => {
                                 scene.tweens.killTweensOf(hat); // Stop any active tweens on the hat
@@ -1151,7 +1151,7 @@ export class Politics extends BaseScene {
                     }
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
-                    scene.misinformationTokens.push(helpfulTokenIcon); // Push token to stack
+                    scene.misinformationTokens.push(misinformation); // Push token to stack
 
                 }
             }
@@ -1193,7 +1193,7 @@ export class Politics extends BaseScene {
 
                 misinformation.container.misinformationIndex = index;
 
-                scene.misinformationTokens.push(helpfulTokenIcon); // Push token to stack
+                scene.misinformationTokens.push(misinformation); // Push token to stack
 
                 // Increment the corresponding offset for next time
                 if (data.type === 'maga') {
