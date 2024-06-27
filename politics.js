@@ -360,6 +360,8 @@ export class Politics extends BaseScene {
                 const timerID = setTimeout(() => {
                     scene.misinformationTokens.forEach(token => {
                         token.container.setAlpha(0.5); // Set the alpha to lower the visibility
+                        console.log('misinformation data:');
+                        console.log(token);
                         if (token.littleHats) {
                             token.littleHats.forEach(hat => {
                                 scene.tweens.killTweensOf(hat); // Stop any active tweens on the hat
