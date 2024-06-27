@@ -362,8 +362,8 @@ export class Politics extends BaseScene {
                         token.container.setAlpha(0.5); // Set the alpha to lower the visibility
                     });
                     for (let key in scene.sharedData.misinformation) {
-                    // Look up the stored data
-                    let misinformation = scene.sharedData.misinformation[key];
+                        // Look up the stored data
+                        let misinformation = scene.sharedData.misinformation[key];
                         console.log(misinformation);
                         if (misinformation.littleHats) {
                             misinformation.littleHats.forEach(hat => {
@@ -371,7 +371,7 @@ export class Politics extends BaseScene {
                                 hat.setAlpha(0.5); // Set the alpha after stopping the tween
                             });
                         }
-                    });
+                    }
                     const renderCharactersCallback = () => {
                         renderCharacters(scene); // Render characters only when tokens are fully allocated
                     };
