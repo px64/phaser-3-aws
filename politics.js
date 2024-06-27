@@ -980,6 +980,7 @@ export class Politics extends BaseScene {
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
+                scene.misinformationTokens[defense.container.misinformationIndex].littleHats = defense.littleHats; // prob won't work because we pushed the data and now are accessing it by index
             }
         }, null, this);
 
@@ -1060,6 +1061,7 @@ export class Politics extends BaseScene {
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
+                scene.misinformationTokens[defense.container.misinformationIndex].littleHats = defense.littleHats; // prob won't work because we pushed the data and now are accessing it by index
             }
         }, null, this);
 
