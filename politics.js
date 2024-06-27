@@ -367,7 +367,7 @@ export class Politics extends BaseScene {
                         console.log(misinformation);
                         if (misinformation.littleHats) {
                             misinformation.littleHats.forEach(hat => {
-                                scene.tweens.killTweensOf(hat); // Stop any active tweens on the hat
+                                //scene.tweens.killTweensOf(hat); // Stop any active tweens on the hat
                                 hat.setAlpha(0.5); // Set the alpha after stopping the tween
                             });
                         }
