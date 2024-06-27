@@ -361,8 +361,9 @@ export class Politics extends BaseScene {
                     scene.misinformationTokens.forEach(token => {
                         token.container.setAlpha(0.5); // Set the alpha to lower the visibility
                     });
-                    Object.keys(scene.sharedData.misinformation).forEach(index => {
-                        misinformation = scene.sharedData.misinformation[index];
+                    for (let key in scene.sharedData.misinformation) {
+                    // Look up the stored data
+                    let misinformation = scene.sharedData.misinformation[key];
                         console.log(misinformation);
                         if (misinformation.littleHats) {
                             misinformation.littleHats.forEach(hat => {
