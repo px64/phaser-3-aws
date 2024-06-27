@@ -1139,11 +1139,14 @@ export class Politics extends BaseScene {
                     helpfulTokenIcon.setVisible(true);
                     //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
                     helpfulTokenIcon.setAlpha(.9);
-
+                    let dropOnce;
+                    if ((storedData.wokeHats + storedData.magaHats) > 0) {
+                        dropOnce = 'drop once';
+                    }
                     // Recreate old 'discussion' tokens
                     // Use the stored data when creating the token
                     //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
-                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
+                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, dropOnce, helpfulTokenIcon);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                     // Initialize littleHats
@@ -1675,7 +1678,7 @@ export class Politics extends BaseScene {
                 storedData.y = dragY;
                 misinformationSprite.setImmovable(true);
             });
-            if (0){//dropOnce == 'drop once') {
+            if (dropOnce == 'drop once') {
                 misinformation.on('dragend', function(pointer, dragX, dragY) {
                     outlineTween.stop();
                     rectangleTween.stop();
