@@ -366,7 +366,7 @@ export class Politics extends BaseScene {
                                     hat.setAlpha(0.5); // Set the alpha after stopping the tween
                                 });
                             }
-                        }
+                        });
                     });
                     const renderCharactersCallback = () => {
                         renderCharacters(scene); // Render characters only when tokens are fully allocated
