@@ -358,7 +358,8 @@ export class Politics extends BaseScene {
                 console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
 
                 const timerID = setTimeout(() => {
-                    scene.misinformationTokens.forEach(token => {
+                    scene.sharedData.misinformation.forEach(token => {
+                    //scene.misinformationTokens.forEach(token => {
                         token.container.setAlpha(0.5); // Set the alpha to lower the visibility
                         console.log('misinformation data:');
                         console.log(token);
@@ -980,7 +981,7 @@ export class Politics extends BaseScene {
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
-                scene.misinformationTokens[defense.container.misinformationIndex].littleHats = defense.littleHats; // prob won't work because we pushed the data and now are accessing it by index
+                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
             }
         }, null, this);
 
@@ -1061,7 +1062,7 @@ export class Politics extends BaseScene {
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
-                scene.misinformationTokens[defense.container.misinformationIndex].littleHats = defense.littleHats; // prob won't work because we pushed the data and now are accessing it by index
+                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
             }
         }, null, this);
 
@@ -1156,6 +1157,7 @@ export class Politics extends BaseScene {
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
                     scene.misinformationTokens.push(misinformation); // Push token to stack
+                    storedData.littleHats = misinformation.littleHats;
                 }
                 console.log('on startup, misinformation tokens map:');
                 console.log(scene.misinformationTokens);
