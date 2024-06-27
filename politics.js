@@ -1151,7 +1151,7 @@ export class Politics extends BaseScene {
                     let wokeHats = storedData.wokeHats;
                     if (wokeHats) {
                         misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
-                        misinformation.setInteractive({ draggable: false });
+                        misinformation.container.setInteractive({ draggable: false });
                     }
                     let magaHats = storedData.magaHats;
                     if (magaHats) {
