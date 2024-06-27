@@ -1635,6 +1635,7 @@ export class Politics extends BaseScene {
                              callbackScope: scene
                          });
                      } else if (hasBeenCreatedBefore != true) {
+                         console.log('create new misinformation token');
                         // Add a tween to expand the container and its contents
                          scene.tweens.add({
                              targets: misinformation,
@@ -1648,6 +1649,9 @@ export class Politics extends BaseScene {
                              },
                              callbackScope: scene
                          });
+                     } else {
+                         console.log('recreate old misinformation token');
+                        pulseIt(outline, rectangle, tokenIcon); 
                      }
                 }, Object.keys(scene.sharedData.helperTokens).length *400);
             }
