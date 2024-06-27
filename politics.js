@@ -358,10 +358,10 @@ export class Politics extends BaseScene {
                 console.log('endorsements are all 1 or less: ' + characters.every(character => character.endorsement <= 1));
 
                 const timerID = setTimeout(() => {
-                    Object.keys(scene.sharedData.misinformation).forEach(token => {
-                    //scene.misinformationTokens.forEach(token => {
+                    scene.misinformationTokens.forEach(token => {
                         token.container.setAlpha(0.5); // Set the alpha to lower the visibility
-                        console.log('misinformation data:');
+                    }
+                    Object.keys(scene.sharedData.misinformation).forEach(token => {
                         console.log(token);
                         if (token.littleHats) {
                             token.littleHats.forEach(hat => {
