@@ -360,7 +360,7 @@ export class Politics extends BaseScene {
                 const timerID = setTimeout(() => {
                     scene.misinformationTokens.forEach(token => {
                         token.container.setAlpha(0.5); // Set the alpha to lower the visibility
-                    }
+                    });
                     Object.keys(scene.sharedData.misinformation).forEach(token => {
                         console.log(token);
                         if (token.littleHats) {
