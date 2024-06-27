@@ -1143,7 +1143,7 @@ export class Politics extends BaseScene {
                     // Recreate old 'discussion' tokens
                     // Use the stored data when creating the token
                     //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
-                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', false, 0, helpfulTokenIcon);
+                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                     // Initialize littleHats
@@ -1151,10 +1151,12 @@ export class Politics extends BaseScene {
                     let wokeHats = storedData.wokeHats;
                     if (wokeHats) {
                         misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
+                        misinformation.setInteractive({ draggable: false });
                     }
                     let magaHats = storedData.magaHats;
                     if (magaHats) {
                         misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+                        misinformation.setInteractive({ draggable: false });
                     }
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
@@ -1632,7 +1634,7 @@ export class Politics extends BaseScene {
                              },
                              callbackScope: scene
                          });
-                     } else {
+                     } else if (hasBeenCreatedBefore != true) {
                         // Add a tween to expand the container and its contents
                          scene.tweens.add({
                              targets: misinformation,
