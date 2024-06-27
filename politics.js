@@ -1156,8 +1156,9 @@ export class Politics extends BaseScene {
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
                     scene.misinformationTokens.push(misinformation); // Push token to stack
-
                 }
+                console.log('on startup, misinformation tokens map:');
+                console.log(scene.misinformation);
             }
 
             // This block should run regardless of whether the scene has been created before
