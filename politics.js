@@ -1604,6 +1604,8 @@ export class Politics extends BaseScene {
                 misinformation.setSize(outline.width, outline.height);
             }
 
+            let tweens;
+            
             if (1){//size != 'large'){
                  misinformation.setSize(outline.width, outline.height);
                  // Set the initial size to near zero
@@ -1655,7 +1657,7 @@ export class Politics extends BaseScene {
                      } else {
                         console.log('recreate old misinformation token');
                         misinformation.setScale(1); // It was there, just very tiny!
-                        pulseIt(outline, rectangle, tokenIcon); 
+                        tweens = pulseIt(outline, rectangle, tokenIcon); 
                      }
                 }, Object.keys(scene.sharedData.helperTokens).length *400);
             }
@@ -1680,17 +1682,17 @@ export class Politics extends BaseScene {
             });
             if (dropOnce == 'drop once') {
                 misinformation.on('dragend', function(pointer, dragX, dragY) {
-                    outlineTween.stop();
-                    rectangleTween.stop();
+                    tweens.outlineTween.stop();
+                    tweens.rectangleTween.stop();
                     this.disableInteractive();
                     misinformationSprite.setImmovable(true);
-                    let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
-                    rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
+                    //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                    //rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
                 });
             }
             if (0) {//hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
-                outlineTween.stop();
-                rectangleTween.stop();
+                tweens.outlineTween.stop();
+                tweens.rectangleTween.stop();
                 misinformation.disableInteractive();
                 misinformationSprite.setImmovable(true);
                 //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
@@ -1736,6 +1738,7 @@ export class Politics extends BaseScene {
                     loop: -1, // -1 means it will loop forever
                 });
             }
+            return [outlineTween, rectangleTween];
         }
 
        function zzzcreatePowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
