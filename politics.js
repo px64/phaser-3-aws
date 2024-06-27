@@ -951,7 +951,7 @@ export class Politics extends BaseScene {
             this.roundThreats--;
             //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
 
-            if (Math.random() < .1) {
+            if (defense.littleHats.length > 10) {
                 this.tweens.add({
                     targets: defense,
                     alpha: 0,
@@ -1031,7 +1031,7 @@ export class Politics extends BaseScene {
             }
             threat.destroy();
             this.roundThreats--;
-            if (Math.random() < .1) {
+            if (defense.littleHats.length > 10) {
                 this.tweens.add({
                     targets: defense,
                     alpha: 0,
