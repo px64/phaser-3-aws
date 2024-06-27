@@ -432,7 +432,7 @@ export class Politics extends BaseScene {
                 // Lookup stored data
                 let storedData = scene.sharedData.helperTokens[key];
                 console.log('helperToken ' + storedData.text + ' has been recreated and the saved index is ' + storedData.helperTokenIndex);
-                let helpfulToken = createPowerToken(scene, storedData.type, storedData.text, storedData.x, storedData.y, storedData, storedData.helperTokenIcon);
+                let helpfulToken = createPowerToken(scene, storedData.type, storedData.text, storedData.x, storedData.y, storedData, size, 'normal', false, storedData.helperTokenIcon);
                 // debug helpfulToken.sprite.setVisible(true);
                 scene.helperIcons.add(helpfulToken.sprite); // This line is supposed to make interactions possible
                 helpfulToken.container.setInteractive({ draggable: true }); // make each defense item draggable
@@ -1130,18 +1130,18 @@ export class Politics extends BaseScene {
                     // Recreate old 'discussion' tokens
                     // Use the stored data when creating the token
                     //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
-                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', true, 0, helpfulTokenIcon);
+                    let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData, 'normal', false, 0, helpfulTokenIcon);
                     scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                     scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
                     // Initialize littleHats
                     misinformation.littleHats = [];
                     let wokeHats = storedData.wokeHats;
                     if (wokeHats) {
-                        misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
+                        misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
                     }
                     let magaHats = storedData.magaHats;
                     if (magaHats) {
-                        misinformation.littleHats = drawIcons(scene, misinformation.sprite.x, misinformation.sprite.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+                        misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
                     }
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
@@ -1178,7 +1178,7 @@ export class Politics extends BaseScene {
                 scene.sharedData.misinformation[index] = storedData;
 
                 // Create a new 'discussion' token
-                let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, 'drop once', helpfulTokenIcon);
+                let misinformation = createPowerToken(scene, 'neutral', data.text, xOffset, yOffset, storedData, 'normal', false, '', helpfulTokenIcon);
                 scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
                 scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
 
@@ -1653,7 +1653,7 @@ export class Politics extends BaseScene {
                 storedData.y = dragY;
                 misinformationSprite.setImmovable(true);
             });
-            if (0) { // skip the dropOnce concept dropOnce == 'drop once') {
+            if (0){//dropOnce == 'drop once') {
                 misinformation.on('dragend', function(pointer, dragX, dragY) {
                     outlineTween.stop();
                     rectangleTween.stop();
