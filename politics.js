@@ -361,7 +361,7 @@ export class Politics extends BaseScene {
                     scene.misinformationTokens.forEach(token => {
                         token.setAlpha(0.5); // Set the alpha to lower the visibility
                             if (token.littleHats) {
-                                token.littleHats.forEach(hat => hat.setAlpha(0.5));
+                                token.littleHats.forEach(hat => hat.setAlpha(0.1));  // hard to tell if it's working.  Make it VERY dim
                             }
                     });
                     const renderCharactersCallback = () => {
