@@ -1158,7 +1158,7 @@ export class Politics extends BaseScene {
                     scene.misinformationTokens.push(misinformation); // Push token to stack
                 }
                 console.log('on startup, misinformation tokens map:');
-                console.log(scene.misinformation);
+                console.log(scene.misinformationTokens);
             }
 
             // This block should run regardless of whether the scene has been created before
