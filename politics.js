@@ -1156,7 +1156,7 @@ export class Politics extends BaseScene {
                     let magaHats = storedData.magaHats;
                     if (magaHats) {
                         misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
-                        misinformation.setInteractive({ draggable: false });
+                        misinformation.container.setInteractive({ draggable: false });
                     }
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                     misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
