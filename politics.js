@@ -360,6 +360,9 @@ export class Politics extends BaseScene {
                 const timerID = setTimeout(() => {
                     scene.misinformationTokens.forEach(token => {
                         token.setAlpha(0.5); // Set the alpha to lower the visibility
+                            if (token.littleHats) {
+                                token.littleHats.forEach(hat => hat.setAlpha(0.5));
+                            }
                     });
                     const renderCharactersCallback = () => {
                         renderCharacters(scene); // Render characters only when tokens are fully allocated
