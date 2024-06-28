@@ -978,7 +978,7 @@ export class Politics extends BaseScene {
                 scene.returnThreat(territory, 'woke', null, totalHats, defense.container);
                 // discussion forum should slowly fade away
                 scene.tweens.add({
-                    targets: defense,
+                    targets: defense.container,
                     alpha: 0,
                     scaleX: 0,
                     scaleY: 0,
@@ -1091,7 +1091,7 @@ export class Politics extends BaseScene {
                 scene.returnThreat(territory, 'maga', null, totalHats, defense.container);
                 // discussion forum should slowly fade away
                 scene.tweens.add({
-                    targets: defense,
+                    targets: defense.container,
                     alpha: 0,
                     scaleX: 0,
                     scaleY: 0,
