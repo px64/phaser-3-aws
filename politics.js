@@ -579,8 +579,10 @@ export class Politics extends BaseScene {
                 // Cleanup function to clear current tutorial item
                 const clearCurrentTutorial = () => {
                     clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                    backstoryText.setVisible(false);
-                    backstoryBox.setVisible(false);
+                    //backstoryText.setVisible(false);
+                    //backstoryBox.setVisible(false);
+                    backstoryText.destroy();
+                    backstoryBox.destroy();
                     this.tweens.killTweensOf([backstoryText, backstoryBox]);
                     //backdrop.off('pointerdown');
                     this.input.keyboard.off('keydown-ENTER');
@@ -770,8 +772,10 @@ export class Politics extends BaseScene {
                         // Cleanup function to clear current tutorial item
                         const clearCurrentTutorial = () => {
                             clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                            backstoryText.setVisible(false);
-                            backstoryBox.setVisible(false);
+                            backstoryText.destroy();
+                            backstoryBox.destroy();
+                            //backstoryText.setVisible(false);
+                            //backstoryBox.setVisible(false);
                             scene.tweens.killTweensOf([backstoryText, backstoryBox]);
                             //backdrop.off('pointerdown');
                             scene.input.keyboard.off('keydown-ENTER');
@@ -915,8 +919,10 @@ export class Politics extends BaseScene {
                         // Cleanup function to clear current tutorial item
                         const clearCurrentTutorial = () => {
                             clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-                            backstoryText.setVisible(false);
-                            backstoryBox.setVisible(false);
+                            backstoryText.destroy();
+                            backstoryBox.destroy();
+                            //backstoryText.setVisible(false);
+                            //backstoryBox.setVisible(false);
                             scene.tweens.killTweensOf([backstoryText, backstoryBox]);
                             scene.input.keyboard.off('keydown-ENTER');
 
