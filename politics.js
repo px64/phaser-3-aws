@@ -965,17 +965,19 @@ export class Politics extends BaseScene {
             threat.destroy();
             this.roundThreats--;
             //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-
-            let totalHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats +
-                    scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+            let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+            let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
+            let totalHats = magaHats + wokeHats;
             if (totalHats >  5) {
                 console.log('delete index ' + defense.container.misinformationIndex);
                 // Check if defense.littleHats exists before trying to iterate over it
                 if (defense.littleHats) {
                     defense.littleHats.forEach(hat => hat.destroy());
                 }
+                let territory = territories[2]; // arbitrarily picked this territory to return to
+                scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
                 let territory = territories[4]; // arbitrarily picked this territory to return to
-                scene.returnThreat(territory, 'woke', null, totalHats, defense.container);
+                scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
                 // discussion forum should slowly fade away
                 scene.tweens.add({
                     targets: defense.container,
@@ -1077,8 +1079,9 @@ export class Politics extends BaseScene {
             }
             threat.destroy();
             this.roundThreats--;
-            let totalHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats +
-                    scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+            let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+            let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
+            let totalHats = magaHats + wokeHats;
             if (totalHats >  5) {
                 console.log('delete index ' + defense.container.misinformationIndex);
 
@@ -1087,8 +1090,10 @@ export class Politics extends BaseScene {
                     defense.littleHats.forEach(hat => hat.destroy());
                 }
             
+                let territory = territories[2]; // arbitrarily picked this territory to return to
+                scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
                 let territory = territories[4]; // arbitrarily picked this territory to return to
-                scene.returnThreat(territory, 'maga', null, totalHats, defense.container);
+                scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
                 // discussion forum should slowly fade away
                 scene.tweens.add({
                     targets: defense.container,
