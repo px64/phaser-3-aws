@@ -976,7 +976,7 @@ export class Politics extends BaseScene {
                 }
                 let territory = territories[2]; // arbitrarily picked this territory to return to
                 scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
-                let territory = territories[4]; // arbitrarily picked this territory to return to
+                territory = territories[4]; // arbitrarily picked this territory to return to
                 scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
                 // discussion forum should slowly fade away
                 scene.tweens.add({
@@ -1092,7 +1092,7 @@ export class Politics extends BaseScene {
             
                 let territory = territories[2]; // arbitrarily picked this territory to return to
                 scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
-                let territory = territories[4]; // arbitrarily picked this territory to return to
+                territory = territories[4]; // arbitrarily picked this territory to return to
                 scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
                 // discussion forum should slowly fade away
                 scene.tweens.add({
