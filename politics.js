@@ -472,7 +472,7 @@ export class Politics extends BaseScene {
                         color: textColor, // Original text color
                         align: 'left'
                     }).setInteractive();
-                    characterText.setVisible(false);
+                    characterText.setVisible(false).setDepth(6);
 
                     // Tween to change color to green
                     setTimeout(() => {
