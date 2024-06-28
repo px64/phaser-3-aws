@@ -1592,8 +1592,8 @@ export class Politics extends BaseScene {
                 if (faction == 'neutral' && size != 'large'){
                     outline.setVisible(false);
                     rectangle.setVisible(false);
-                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
-                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight/2);
+                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight-8);
+                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
                     misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
                 else {
                     misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
@@ -1605,7 +1605,7 @@ export class Politics extends BaseScene {
             }
 
             let tweens;
-            
+
             if (1){//size != 'large'){
                  misinformation.setSize(outline.width, outline.height);
                  // Set the initial size to near zero
@@ -1635,7 +1635,7 @@ export class Politics extends BaseScene {
                              duration: 1000,
                              onComplete: function () {
                                  misinformation.setSize(outline.width, outline.height);
-                                 pulseIt(outline, rectangle, tokenIcon);
+                                 tweens = pulseIt(outline, rectangle, tokenIcon);
                              },
                              callbackScope: scene
                          });
@@ -1650,14 +1650,17 @@ export class Politics extends BaseScene {
                              duration: 1000,
                              onComplete: function () {
                                  misinformation.setSize(outline.width, outline.height);
-                                 pulseIt(outline, rectangle, tokenIcon);
+                                 tweens = pulseIt(outline, rectangle, tokenIcon);
                              },
                              callbackScope: scene
                          });
                      } else {
                         console.log('recreate old misinformation token');
                         misinformation.setScale(1); // It was there, just very tiny!
-                        tweens = pulseIt(outline, rectangle, tokenIcon); 
+                        if (dropOnce != 'drop once')
+                        {
+                            tweens = pulseIt(outline, rectangle, tokenIcon);
+                        }
                      }
                 }, Object.keys(scene.sharedData.helperTokens).length *400);
             }
@@ -1667,32 +1670,36 @@ export class Politics extends BaseScene {
             misinformationSprite.setScale(.6);
             //misinformationSprite.setSize(outline.width*.1, 1);
 
-            // Now that the container has a size, it can be made interactive and draggable
-            misinformation.setInteractive({ draggable: true });
             // Attach the container to the sprite
             misinformationSprite.container = misinformation;
             if (size == 'large' ) {misinformation.setDepth(4);}
-            // Listen to the 'drag' event
-            misinformation.on('drag', function(pointer, dragX, dragY) {
-                this.x = dragX;
-                this.y = dragY;
-                storedData.x = dragX;
-                storedData.y = dragY;
-                misinformationSprite.setImmovable(true);
-            });
+
             if (dropOnce == 'drop once') {
-                misinformation.on('dragend', function(pointer, dragX, dragY) {
-                    tweens.outlineTween.stop();
-                    tweens.rectangleTween.stop();
-                    this.disableInteractive();
+                //tweens.outlineTween.stop();
+                //tweens.rectangleTween.stop();
+                //tweens.tokenIconTween.stop();
+                rectangle.setVisible(true);
+                misinformation.disableInteractive();
+                misinformationSprite.setImmovable(true);
+                misinformation.setInteractive({ draggable: false });
+                //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
+            } else {
+                // Now that the container has a size, it can be made interactive and draggable
+                misinformation.setInteractive({ draggable: true });
+                // Listen to the 'drag' event
+                misinformation.on('drag', function(pointer, dragX, dragY) {
+                    this.x = dragX;
+                    this.y = dragY;
+                    storedData.x = dragX;
+                    storedData.y = dragY;
                     misinformationSprite.setImmovable(true);
-                    //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
-                    //rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
                 });
             }
             if (0) {//hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
                 tweens.outlineTween.stop();
                 tweens.rectangleTween.stop();
+                tweens.tokenIconTween.stop();
                 misinformation.disableInteractive();
                 misinformationSprite.setImmovable(true);
                 //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
@@ -1727,8 +1734,9 @@ export class Politics extends BaseScene {
                 yoyo: true, // after scaling to 120%, it will scale back to original size
                 loop: -1, // -1 means it will loop forever
             });
+            let tokenIconTween;
             if (tokenIcon) { // ... and group tokenIcon too if it exists
-                let tokenIconTween = scene.tweens.add({
+                tokenIconTween = scene.tweens.add({
                     targets: tokenIcon, // object that the tween affects
                     scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
                     scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
@@ -1738,7 +1746,7 @@ export class Politics extends BaseScene {
                     loop: -1, // -1 means it will loop forever
                 });
             }
-            return [outlineTween, rectangleTween];
+            return [outlineTween, rectangleTween, tokenIconTween];
         }
 
        function zzzcreatePowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
