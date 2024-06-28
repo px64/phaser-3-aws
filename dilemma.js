@@ -909,14 +909,14 @@ export class DilemmaScene extends BaseScene {
                     defense.littleHats = [];
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
+                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
             }
         }, null, this);
 
         // Draw little hats
         // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, count, littleHats) {
+        function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
             for (let i = startIndex; i < startIndex + count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
@@ -952,9 +952,29 @@ export class DilemmaScene extends BaseScene {
                         }
                     });
                 };
+                const murmur = () => {
+                    // Define the horizontal movement range and duration
+                    const murmurWidth = 20; // Move 10 pixels to each side
+                    const durationSide = 500; // Half a second to each side
 
-                // Start the jumping animation with a random delay
-                scene.time.delayedCall(Math.random() * 500, jump);
+                    // Start the movement to the right
+                    scene.tweens.add({
+                        targets: icon,
+                        x: icon.x + murmurWidth, // Move to the right
+                        ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                        duration: durationSide,
+                        yoyo: true, // Automatically reverse the tween
+                        repeat: -1, // Loop the tween indefinitely
+                    });
+                };
+
+                if (angerLevel == 1) {
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, murmur);
+                } else {
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, jump);
+                }
 
                 littleHats.push(icon);
             }

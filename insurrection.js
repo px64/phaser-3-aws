@@ -550,12 +550,12 @@ export class Insurrection extends BaseScene {
                 let wokeHats = storedData.wokeHats;
                 if (wokeHats) {
                     console.log('wokeHats to be generated = ' + wokeHats);
-                    misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
+                    misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats,1);
                 }
                 let magaHats = storedData.magaHats;
                 if (magaHats) {
                     console.log('magaHats to be generated = ' + magaHats);
-                    misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+                    misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats,1);
                 }
                 misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
                 misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
@@ -804,7 +804,7 @@ export class Insurrection extends BaseScene {
                         defense.littleHats = [];
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
+                    defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
                     scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++;
                 }
             }, null, this);
@@ -847,13 +847,13 @@ export class Insurrection extends BaseScene {
                         defense.littleHats = [];
                     }
                     let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
+                    defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
                     scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++;
                 }
             }, null, this);
 
             // Draw little hats
-            function drawIcons(scene, x, y, texture, startIndex, count, littleHats) {
+            function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
                 for (let i = startIndex; i < startIndex + count; i++) {
                     console.log('generate a hat');
                     let xOffset = (i % 5) * ICON_SPACING;
@@ -890,9 +890,29 @@ export class Insurrection extends BaseScene {
                             }
                         });
                     };
+                    const murmur = () => {
+                        // Define the horizontal movement range and duration
+                        const murmurWidth = 20; // Move 10 pixels to each side
+                        const durationSide = 500; // Half a second to each side
 
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, jump);
+                        // Start the movement to the right
+                        scene.tweens.add({
+                            targets: icon,
+                            x: icon.x + murmurWidth, // Move to the right
+                            ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                            duration: durationSide,
+                            yoyo: true, // Automatically reverse the tween
+                            repeat: -1, // Loop the tween indefinitely
+                        });
+                    };
+
+                    if (angerLevel == 1) {
+                        // Start the jumping animation with a random delay
+                        scene.time.delayedCall(Math.random() * 500, murmur);
+                    } else {
+                        // Start the jumping animation with a random delay
+                        scene.time.delayedCall(Math.random() * 500, jump);
+                    }
 
                     littleHats.push(icon);
                 }

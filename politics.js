@@ -959,7 +959,9 @@ export class Politics extends BaseScene {
             this.roundThreats--;
             //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
 
-            if (defense.littleHats && defense.littleHats.length > 10) {
+            let totalHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats +
+                    scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+            if (totalHats >  5) {
                 this.tweens.add({
                     targets: defense,
                     alpha: 0,
@@ -978,17 +980,20 @@ export class Politics extends BaseScene {
             } else {
                 // Initialize defense.littleHats if it doesn't exist yet
                 if (!defense.littleHats) {
-                    defense.littleHats = [];
+                    if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
+                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
+                    }
+                    defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
+                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
                 scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
             }
         }, null, this);
 
         // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, count, littleHats) {
+        function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
             for (let i = startIndex; i < startIndex + count; i++) {
                 let xOffset = (i % 5) * ICON_SPACING;
                 let yOffset = Math.floor(i / 5) * ICON_SPACING;
@@ -1024,9 +1029,29 @@ export class Politics extends BaseScene {
                         }
                     });
                 };
+                const murmur = () => {
+                    // Define the horizontal movement range and duration
+                    const murmurWidth = 20; // Move 10 pixels to each side
+                    const durationSide = 500; // Half a second to each side
 
-                // Start the jumping animation with a random delay
-                scene.time.delayedCall(Math.random() * 500, jump);
+                    // Start the movement to the right
+                    scene.tweens.add({
+                        targets: icon,
+                        x: icon.x + murmurWidth, // Move to the right
+                        ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                        duration: durationSide,
+                        yoyo: true, // Automatically reverse the tween
+                        repeat: -1, // Loop the tween indefinitely
+                    });
+                };
+
+                if (angerLevel == 1) {
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, murmur);
+                } else {
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, jump);
+                }
 
                 littleHats.push(icon);
             }
@@ -1040,7 +1065,9 @@ export class Politics extends BaseScene {
             }
             threat.destroy();
             this.roundThreats--;
-            if (defense.littleHats && defense.littleHats.length > 10) {
+            let totalHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats +
+                    scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+            if (totalHats >  5) {
                 this.tweens.add({
                     targets: defense,
                     alpha: 0,
@@ -1059,10 +1086,13 @@ export class Politics extends BaseScene {
             } else {
                 // Initialize defense.littleHats if it doesn't exist yet
                 if (!defense.littleHats) {
-                    defense.littleHats = [];
+                    if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
+                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
+                    }
+                    defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats);
+                defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
                 scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
             }
@@ -1153,12 +1183,12 @@ export class Politics extends BaseScene {
                     misinformation.littleHats = [];
                     let wokeHats = storedData.wokeHats;
                     if (wokeHats) {
-                        misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats);
+                        misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats,1);
                         misinformation.container.setInteractive({ draggable: false });
                     }
                     let magaHats = storedData.magaHats;
                     if (magaHats) {
-                        misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats);
+                        misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats,1);
                         misinformation.container.setInteractive({ draggable: false });
                     }
                     misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
@@ -1684,6 +1714,7 @@ export class Politics extends BaseScene {
                 misinformation.setInteractive({ draggable: false });
                 //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
                 rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
+                rectangle.setAlpha(.5);
             } else {
                 // Now that the container has a size, it can be made interactive and draggable
                 misinformation.setInteractive({ draggable: true });
