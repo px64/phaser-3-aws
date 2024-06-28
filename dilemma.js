@@ -608,10 +608,20 @@ export class DilemmaScene extends BaseScene {
             this.backstoryBox.setDepth(1);
             this.backstoryBox.setAlpha(1);
 
-            setTimeout(() => {
-                this.backstoryText.setVisible(false);
-                this.backstoryBox.setVisible(false);
-            }, 20000);
+            let initialMousePosition = { x: this.input.activePointer.x, y: this.input.activePointer.y };
+    
+            const hideElements = () => {
+                backstoryText.setVisible(false);
+                backstoryBox.setVisible(false);
+                this.input.off('pointermove', onPointerMove); // Remove the event listener once the elements are hidden
+            };
+    
+            const onPointerMove = (pointer) => {
+                let distance = Phaser.Math.Distance.Between(initialMousePosition.x, initialMousePosition.y, pointer.x, pointer.y);
+                if (distance > 100) {
+                    hideElements();
+                }
+            };
            this.hasBeenCreatedBefore = true;
         }
 
