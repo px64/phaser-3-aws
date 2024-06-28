@@ -969,31 +969,23 @@ export class Politics extends BaseScene {
             let totalHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats +
                     scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
             if (totalHats >  5) {
-                this.tweens.add({
+                console.log('delete index ' + defense.container.misinformationIndex);
+                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                // Check if defense.littleHats exists before trying to iterate over it
+                if (defense.littleHats) {
+                    defense.littleHats.forEach(hat => hat.destroy());
+                }
+                let territory = territories[4]; // arbitrarily picked this territory to return to
+                scene.returnThreat(territory, 'woke', null, totalHats, defense.container);
+                // discussion forum should slowly fade away
+                scene.tweens.add({
                     targets: defense,
                     alpha: 0,
-                    duration: 500,
+                    scaleX: 0,
+                    scaleY: 0,
+                    duration: 2000,
                     onComplete: function () {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
-                        }
-                        let territory = territories[4]; // arbitrarily picked this territory to return to
-                        scene.returnThreat(territory, 'woke', null, totalHats, defense.container);
-                        // discussion forum should slowly fade away
-                        scene.tweens.add({
-                            targets: threat,
-                            alpha: 0,
-                            scaleX: 0,
-                            scaleY: 0,
-                            duration: 2000,
-                            onComplete: function () {
-                                defense.container.destroy();
-                            },
-                            callbackScope: scene
-                        });
+                        defense.container.destroy();
                     },
                     callbackScope: scene
                 });
@@ -1088,32 +1080,24 @@ export class Politics extends BaseScene {
             let totalHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats +
                     scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
             if (totalHats >  5) {
-                this.tweens.add({
+                console.log('delete index ' + defense.container.misinformationIndex);
+                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                // Check if defense.littleHats exists before trying to iterate over it
+                if (defense.littleHats) {
+                    defense.littleHats.forEach(hat => hat.destroy());
+                }
+            
+                let territory = territories[4]; // arbitrarily picked this territory to return to
+                scene.returnThreat(territory, 'maga', null, totalHats, defense.container);
+                // discussion forum should slowly fade away
+                scene.tweens.add({
                     targets: defense,
                     alpha: 0,
-                    duration: 500,
+                    scaleX: 0,
+                    scaleY: 0,
+                    duration: 2000,
                     onComplete: function () {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
-                        }
-                        
-                        let territory = territories[4]; // arbitrarily picked this territory to return to
-                        scene.returnThreat(territory, 'maga', null, totalHats, defense.container);
-                        // discussion forum should slowly fade away
-                        scene.tweens.add({
-                            targets: threat,
-                            alpha: 0,
-                            scaleX: 0,
-                            scaleY: 0,
-                            duration: 2000,
-                            onComplete: function () {
-                                defense.container.destroy();
-                            },
-                            callbackScope: scene
-                        });
+                        defense.container.destroy();
                     },
                     callbackScope: scene
                 });
