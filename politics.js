@@ -980,10 +980,20 @@ export class Politics extends BaseScene {
                         if (defense.littleHats) {
                             defense.littleHats.forEach(hat => hat.destroy());
                         }
-
                         let territory = territories[4]; // arbitrarily picked this territory to return to
                         scene.returnThreat(territory, 'woke', null, totalHats, defense.container);
-                        defense.container.destroy();
+                        // discussion forum should slowly fade away
+                        scene.tweens.add({
+                            targets: threat,
+                            alpha: 0,
+                            scaleX: 0,
+                            scaleY: 0,
+                            duration: 2000,
+                            onComplete: function () {
+                                defense.container.destroy();
+                            },
+                            callbackScope: scene
+                        });
                     },
                     callbackScope: scene
                 });
@@ -1092,7 +1102,18 @@ export class Politics extends BaseScene {
                         
                         let territory = territories[4]; // arbitrarily picked this territory to return to
                         scene.returnThreat(territory, 'maga', null, totalHats, defense.container);
-                        defense.container.destroy();
+                        // discussion forum should slowly fade away
+                        scene.tweens.add({
+                            targets: threat,
+                            alpha: 0,
+                            scaleX: 0,
+                            scaleY: 0,
+                            duration: 2000,
+                            onComplete: function () {
+                                defense.container.destroy();
+                            },
+                            callbackScope: scene
+                        });
                     },
                     callbackScope: scene
                 });
