@@ -678,7 +678,7 @@ export class Politics extends BaseScene {
             // Generate the society improving token
             let helpfulToken = createPowerToken(scene, containerColor, text, xOffset, yOffset, storedData, size, 'normal', false, helpfulTokenIcon);
 
-            helpfulToken.setDepth(5); // needs to be in front of misinformation tokens
+            helpfulToken.container.setDepth(5); // needs to be in front of misinformation tokens
             scene.helperIcons.add(helpfulToken.sprite);
             helpfulToken.container.setInteractive({ draggable: true }); // make defense item draggable
             // link the helpfultoken sprite to with the character
