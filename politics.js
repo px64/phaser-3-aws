@@ -970,7 +970,6 @@ export class Politics extends BaseScene {
                     scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
             if (totalHats >  5) {
                 console.log('delete index ' + defense.container.misinformationIndex);
-                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                 // Check if defense.littleHats exists before trying to iterate over it
                 if (defense.littleHats) {
                     defense.littleHats.forEach(hat => hat.destroy());
@@ -985,6 +984,7 @@ export class Politics extends BaseScene {
                     scaleY: 0,
                     duration: 2000,
                     onComplete: function () {
+                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                         defense.container.destroy();
                     },
                     callbackScope: scene
@@ -1081,7 +1081,7 @@ export class Politics extends BaseScene {
                     scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
             if (totalHats >  5) {
                 console.log('delete index ' + defense.container.misinformationIndex);
-                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+
                 // Check if defense.littleHats exists before trying to iterate over it
                 if (defense.littleHats) {
                     defense.littleHats.forEach(hat => hat.destroy());
@@ -1097,6 +1097,7 @@ export class Politics extends BaseScene {
                     scaleY: 0,
                     duration: 2000,
                     onComplete: function () {
+                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                         defense.container.destroy();
                     },
                     callbackScope: scene
