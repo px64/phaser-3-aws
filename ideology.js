@@ -608,11 +608,24 @@ export class ChooseYourIdeologyScene extends BaseScene {
             backstoryBox.setVisible(true);
             backstoryBox.setDepth(1);
 
-            setTimeout(() => {
+            let initialMousePosition = { x: this.input.activePointer.x, y: this.input.activePointer.y };
+    
+            const hideElements = () => {
                 backstoryText.setVisible(false);
                 backstoryBox.setVisible(false);
-            }, 20000);
-
+                this.input.off('pointermove', onPointerMove); // Remove the event listener once the elements are hidden
+            };
+    
+            const onPointerMove = (pointer) => {
+                let distance = Phaser.Math.Distance.Between(initialMousePosition.x, initialMousePosition.y, pointer.x, pointer.y);
+                if (distance > 100) {
+                    hideElements();
+                }
+            };
+    
+            this.input.on('pointermove', onPointerMove);
+    
+            setTimeout(hideElements, 20000); // Hide elements after 20 seconds if not already hidden
         }
         //====================================================================================
         //    function insertLineBreaks(str, charsPerLine) {
