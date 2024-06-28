@@ -980,6 +980,9 @@ export class Politics extends BaseScene {
                         if (defense.littleHats) {
                             defense.littleHats.forEach(hat => hat.destroy());
                         }
+
+                        let territory = territories[4]; // arbitrarily picked this territory to return to
+                        scene.returnThreat(territory, 'woke', null, totalHats, defense.container);
                         defense.container.destroy();
                     },
                     callbackScope: scene
@@ -1086,6 +1089,9 @@ export class Politics extends BaseScene {
                         if (defense.littleHats) {
                             defense.littleHats.forEach(hat => hat.destroy());
                         }
+                        
+                        let territory = territories[4]; // arbitrarily picked this territory to return to
+                        scene.returnThreat(territory, 'maga', null, totalHats, defense.container);
                         defense.container.destroy();
                     },
                     callbackScope: scene

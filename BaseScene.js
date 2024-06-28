@@ -455,10 +455,9 @@ export default class BaseScene extends Phaser.Scene {
         }
     }
 
-    returnThreat(territory, faction, icon, numThreats) {
-        //let message = 'Your advocate persuades protestors to go home from ';
-        let message = 'Protestors recognize advocate and\n return home from ';
-        message += icon.iconTitle + '...';
+    returnThreat(territory, faction, icon, numThreats, returnedIcon) {
+        let message = 'Protestors recognize advocate and\n return home';
+        if (icon) {message += ' from ' + icon.iconTitle + '...';}
         let offsetY = 10;
         let fillColor;
         if (faction == 'maga') {
@@ -466,31 +465,35 @@ export default class BaseScene extends Phaser.Scene {
         } else {
             fillColor = '#0000ff';
         }
-        // Create a text object to display an attack message
-        this.attackText = this.add.text(Math.max(50,icon.icon.x-10), this.sys.game.config.height*.24 + offsetY, message, {
-            font: '28px Arial',
-            fill: fillColor,
-            align: 'center'
-        });
-        this.attackText.setOrigin(0.5);  // Center align the text
-        this.attackText.setAlpha(1);
-        this.tweens.add({
-            targets: this.attackText,
-            alpha: 0,
-            ease: 'Linear',
-            duration: 3000,
-            onComplete: function () {
-                this.attackText.setAlpha(0);
-                this.attackText.destroy();
-                //tooltip.text.setVisible(false);
-                //tooltip.box.setVisible(false);
-            },
-            callbackScope: this
-        });
+        if (icon) {
+            // Create a text object to display an attack message
+            this.attackText = this.add.text(Math.max(50,icon.icon.x-10), this.sys.game.config.height*.24 + offsetY, message, {
+                font: '28px Arial',
+                fill: fillColor,
+                align: 'center'
+            });
+            this.attackText.setOrigin(0.5);  // Center align the text
+            this.attackText.setAlpha(1);
+            this.tweens.add({
+                targets: this.attackText,
+                alpha: 0,
+                ease: 'Linear',
+                duration: 3000,
+                onComplete: function () {
+                    this.attackText.setAlpha(0);
+                    this.attackText.destroy();
+                    //tooltip.text.setVisible(false);
+                    //tooltip.box.setVisible(false);
+                },
+                callbackScope: this
+            });
+        }
         for (let i = 0; i < numThreats; i++) {
             let attackerTerritory = territory;
             let territoryWidth = this.sys.game.config.width / territories.length;
-            let returnedIcon = icon.icon;
+            if (icon){
+                returnedIcon = icon.icon;
+            }
 
             if (faction == '') {
                 faction = attackerTerritory.faction;
@@ -517,19 +520,13 @@ export default class BaseScene extends Phaser.Scene {
                 //threat.setBounce(1);
                 threat.setCollideWorldBounds(true);
 
-                // // It's good that the littlehat is now associated with this icon, but you can't just pop
-                // // a random hat since it could be maga or it could be woke.
-                // let lastIcon = icon.littleHats.pop();
-                // if (lastIcon) { // Check to ensure the icon exists before calling destroy on it
-                //     lastIcon.destroy();
-                // }
-
                 // Enable world bounds event for this body
                 threat.body.onWorldBounds = true;
-                icon[faction] -= 5;
-                // Note that drawGauges is an arrow function so it keeps 'this' from this context
-                icon.littleHats = this.drawGauges(this, icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite, icon.littleHats);
-
+                if (icon) {
+                    icon[faction] -= numThreats;
+                    // Note that drawGauges is an arrow function so it keeps 'this' from this context
+                    icon.littleHats = this.drawGauges(this, icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite, icon.littleHats);
+                }     
                 // Listen for the event
                 this.physics.world.on('worldbounds', (body) => {
                     // Check if the body's game object is the one we're interested in
