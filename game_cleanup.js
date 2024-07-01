@@ -267,16 +267,17 @@ class TitleScene extends Phaser.Scene {
         if (this.sys.game.config.width < 704) {
             this.sharedData.fontSize = '24px';
             this.sharedData.medFont = '18px';
-
         } else {
           this.sharedData.fontSize = '48px';
           this.sharedData.medFont = '32px';
         }
-        if (this.sys.game.config.width < 1200) {
+        if (this.sys.game.config.width < 704) {
             this.sharedData.charFont = '18px';
         } else {
             this.sharedData.charFont = '28px';
         }
+                
+        console.log('screen dimensions: '+this.sys.game.config.width+' x '+this.sys.game.config.height+ ' fontsize is '+this.sharedData.fontSize+' charfont is '+this.sharedData.charFont);
 
 //        let textObjects = [];  // Array to store all text objects
 //        let timerEvents = [];  // Array to store all timer events
