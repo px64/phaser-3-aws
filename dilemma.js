@@ -841,6 +841,7 @@ export class DilemmaScene extends BaseScene {
                     tempText.destroy(); // Destroy temporary text object
                     fontSize -= 1; // Decrease font size
                 } else {
+                    console.log('final fontsize is '+ fontSize);
                     return { text: tempText.text, fontSize: fontSize + 'px' }; // Return adjusted text and font size
                 }
         
