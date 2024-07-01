@@ -526,50 +526,7 @@ export class Insurrection extends BaseScene {
         //     loop: true
         // });
 
-        //====================================================================================
-        // function restoreMisinformationTokens(scene)
-        // function that recreates the information/misinformation blockers
-        //
-        //====================================================================================
-/*
-        function restoreMisinformationTokens(scene) {
-            // Recreate previously generated misinformation tokens
-            for (let key in scene.sharedData.misinformation) {
-                // Look up the stored data
-                let storedData = scene.sharedData.misinformation[key];
-                // Add an icon or graphic and scale it
-                let helpfulTokenIcon = scene.add.image(0, 0, 'negotiation');  // Position the icon at the original y position
-                helpfulTokenIcon.setScale(.08);  // scale the icon
-                helpfulTokenIcon.setOrigin(0.5, .82);  // change origin to bottom center
-                helpfulTokenIcon.setVisible(true);
-                //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
-                helpfulTokenIcon.setAlpha(1);
-                // Use the stored data when creating the token
-                //                                    (scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon)
-                let misinformation = createPowerToken(scene, 'neutral', storedData.text, storedData.x, storedData.y, storedData,'normal', true, false, helpfulTokenIcon);
-                scene.magaDefenses.add(misinformation.sprite); // add the defense to the Maga group
-                scene.wokeDefenses.add(misinformation.sprite); // add the defense to the Woke group
-                // Initialize littleHats
-                misinformation.littleHats = [];
-                let wokeHats = storedData.wokeHats;
-                if (wokeHats) {
-                    console.log('wokeHats to be generated = ' + wokeHats);
-                    misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats,1);
-                }
-                let magaHats = storedData.magaHats;
-                if (magaHats) {
-                    console.log('magaHats to be generated = ' + magaHats);
-                    misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'magaBase', misinformation.littleHats.length, magaHats, misinformation.littleHats,1);
-                }
-                misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
-                misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
-                misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
 
-                //data.x = xOffset;
-                //data.y = yOffset;
-            }
-        }
-        */
         //====================================================================================
         // Add overlaps for bouncing or slowdowns between threats and shields
         // magaThreatWokeShield(), wokeThreatMagaShield()
@@ -770,159 +727,220 @@ export class Insurrection extends BaseScene {
         // Maybe that's a good thing so time still passes?  Need to test.  I actually don't like it!
         //
         //====================================================================================
-        scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
-            //console.log('icon maganess = ' + threat.icon.maga);
-            if (threat.icon.maga > threat.icon.woke) {
-                console.log("don't destroy threat: it's going to help!");
-                return;
-            }
-            threat.destroy();
-            scene.roundThreats--;
-            //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
-            if (scene.roundThreats == 1) {
-                console.log('all threats destroyed but stay here til time ends anyway');
-                scene.victoryText.destroy();
-                //scene.scene.get('politics').setup(this.sharedData);
-                //scene.scene.start('politics');
-            }
-            //console.log(defense.container);
-            if (Math.random() < .1) {
-                scene.tweens.add({
-                    targets: defense,
-                    alpha: 0,
-                    duration: 500,
-                    onComplete: function () {
+        this.physics.add.overlap(this.magaDefenses, this.wokeThreats, function(defense, threat) {
+                    if (threat.icon.maga > threat.icon.woke) {
+                        console.log("don't destroy threat: it's going to help!");
+                        return;
+                    }
+                    threat.destroy();
+                    this.roundThreats--;
+                    //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
+                    let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+                    let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
+                    let totalHats = magaHats + wokeHats;
+                    if (totalHats >  5) {
                         console.log('delete index ' + defense.container.misinformationIndex);
-                        console.log(defense);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
                         // Check if defense.littleHats exists before trying to iterate over it
                         if (defense.littleHats) {
                             defense.littleHats.forEach(hat => hat.destroy());
                         }
-                        defense.container.destroy();
-                    },
-                    callbackScope: scene
-                });
-            } else {
-                // Initialize defense.littleHats if it doesn't exist yet
-                if (!defense.littleHats) {
-                    defense.littleHats = [];
-                }
-                let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
-                scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++;
-            }
-        }, null, this);
-
-        scene.physics.add.overlap(scene.wokeDefenses, scene.magaThreats, function(defense, threat) {
-            //console.log('icon wokeness = ' +threat.icon.woke);
-            if (threat.icon.woke > threat.icon.maga) {
-                console.log("don't destroy threat: it's going to help!");
-                return;
-            }
-            threat.destroy();
-            scene.roundThreats--;
-            //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
-            if (scene.roundThreats == 1) {
-                console.log('all threats destroyed but stay here til time ends anyway');
-                scene.victoryText.destroy();
-                //scene.scene.get('politics').setup(scene.sharedData);scene.scene.start('politics');
-            }
-
-            if (Math.random() < .1) {
-                scene.tweens.add({
-                    targets: defense,
-                    alpha: 0,
-                    duration: 500,
-                    onComplete: function () {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-                        console.log(defense);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
+                        let territory = territories[2]; // arbitrarily picked this territory to return to
+                        scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
+                        territory = territories[4]; // arbitrarily picked this territory to return to
+                        scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
+                        // discussion forum should slowly fade away
+                        scene.tweens.add({
+                            targets: defense.container,
+                            alpha: 0,
+                            scaleX: 0,
+                            scaleY: 0,
+                            duration: 2000,
+                            onComplete: function () {
+                                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                                defense.container.destroy();
+                            },
+                            callbackScope: scene
+                        });
+                    } else {
+                        // Initialize defense.littleHats if it doesn't exist yet
+                        if (!defense.littleHats) {
+                            if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
+                                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
+                            }
+                            defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
+                            console.log(defense.container.list);
+                            replaceTokenIcon(scene, defense.container, 'peace');
+                            defense.container.disableInteractive();
+                            //defense.sprite.setImmovable(true);
                         }
-                        defense.container.destroy();
-                    },
-                    callbackScope: scene
-                });
-            } else {
-                // Initialize defense.littleHats if it doesn't exist yet
-                if (!defense.littleHats) {
-                    defense.littleHats = [];
+                        //console.log(scene.sharedData.misinformation[defense.container.misinformationIndex].
+                        let iconY = defense.container.y + ICON_MARGIN;
+                        defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
+                        scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
+                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
+                    }
+                }, null, this);
+
+                // Function to replace the tokenIcon in the container
+                function replaceTokenIcon(scene, container, newIcon) {
+                    // Find the existing tokenIcon
+                    let oldTokenIconIndex = -1;
+                    for (let i = 0; i < container.list.length; i++) {
+                        let item = container.list[i];
+                        scene.tweens.killTweensOf(item);
+                        if (item && item.texture && item.texture.key === 'negotiation') {  // Assuming 'negotiation' is the key for the old icon
+                            console.log('found Old at '+i);
+                            oldTokenIconIndex = i;
+                            break;
+                        }
+                    }
+                    let newTokenIconIndex = -1;
+                    for (let i = 0; i < container.list.length; i++) {
+                        let item = container.list[i];
+                        if (item && item.texture && item.texture.key === newIcon) {
+                            console.log('found New at '+i);
+                            newTokenIconIndex = i;
+                            break;
+                        }
+                    }
+
+                    // If the old tokenIcon is found, replace it with the new one
+                    if (oldTokenIconIndex !== -1) {
+                        let oldTokenIcon = container.list[oldTokenIconIndex];
+                        //oldTokenIcon.destroy(); // This calls destroy directly on the object
+                        console.log('turn off old');
+                        oldTokenIcon.setVisible(false);
+                    }
+
+                    // If the old tokenIcon is found, replace it with the new one
+                    if (newTokenIconIndex !== -1) {
+                        let newTokenIcon = container.list[newTokenIconIndex];
+                        //newTokenIcon.destroy(); // This calls destroy directly on the object
+                        console.log('turn on new');
+                        newTokenIcon.setVisible(true);
+                    }
+
                 }
-                let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
-                scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++;
-            }
-        }, null, this);
 
-        // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-            for (let i = startIndex; i < startIndex + count; i++) {
-                console.log('generate a hat');
-                let xOffset = (i % 5) * ICON_SPACING;
-                let yOffset = Math.floor(i / 5) * ICON_SPACING;
-                // Each icon will be positioned slightly to the right of the previous one
-                let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+                // Draw little hats
+                function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
+                    for (let i = startIndex; i < startIndex + count; i++) {
+                        let xOffset = (i % 5) * ICON_SPACING;
+                        let yOffset = Math.floor(i / 5) * ICON_SPACING;
+                        // Each icon will be positioned slightly to the right of the previous one
+                        let icon = scene.add.image(x + xOffset, y + yOffset, texture);
 
-                // Adjust the size of the icons if necessary
-                icon.setScale(ICON_SCALE);
+                        // Adjust the size of the icons if necessary
+                        icon.setScale(ICON_SCALE);
 
-                const jumpHeight = 20; // Adjust the height of the jump
-                const durationUp = 150; // Duration for the upward movement
-                const durationDown = 300; // Duration for the downward movement with bounce
-                // Store the original position
-                const originalY = icon.y;
+                        const jumpHeight = 20; // Adjust the height of the jump
+                        const durationUp = 150; // Duration for the upward movement
+                        const durationDown = 300; // Duration for the downward movement with bounce
+                        // Store the original position
+                        const originalY = icon.y;
 
-                // Create an infinite loop of jumping
-                const jump = () => {
-                    // Add the upward movement tween
-                    scene.tweens.add({
-                        targets: icon,
-                        y: originalY - jumpHeight,
-                        ease: 'Power1', // Fast upward movement
-                        duration: durationUp,
-                        onComplete: () => {
-                            // Add the downward movement tween with bounce effect
+                        // Create an infinite loop of jumping
+                        const jump = () => {
+                            // Add the upward movement tween
                             scene.tweens.add({
                                 targets: icon,
-                                y: originalY,
-                                ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                                duration: durationDown,
-                                onComplete: jump // Chain the jump to repeat
+                                y: originalY - jumpHeight,
+                                ease: 'Power1', // Fast upward movement
+                                duration: durationUp,
+                                onComplete: () => {
+                                    // Add the downward movement tween with bounce effect
+                                    scene.tweens.add({
+                                        targets: icon,
+                                        y: originalY,
+                                        ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                                        duration: durationDown,
+                                        onComplete: jump // Chain the jump to repeat
+                                    });
+                                }
                             });
+                        };
+                        const murmur = () => {
+                            // Define the horizontal movement range and duration
+                            const murmurWidth = 20; // Move 10 pixels to each side
+                            const durationSide = 500; // Half a second to each side
+
+                            // Start the movement to the right
+                            scene.tweens.add({
+                                targets: icon,
+                                x: icon.x + murmurWidth, // Move to the right
+                                ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                                duration: durationSide,
+                                yoyo: true, // Automatically reverse the tween
+                                repeat: -1, // Loop the tween indefinitely
+                            });
+                        };
+
+                        if (angerLevel == 1) {
+                            // Start the jumping animation with a random delay
+                            scene.time.delayedCall(Math.random() * 500, murmur);
+                        } else {
+                            // Start the jumping animation with a random delay
+                            scene.time.delayedCall(Math.random() * 500, jump);
                         }
-                    });
-                };
-                const murmur = () => {
-                    // Define the horizontal movement range and duration
-                    const murmurWidth = 20; // Move 10 pixels to each side
-                    const durationSide = 500; // Half a second to each side
 
-                    // Start the movement to the right
-                    scene.tweens.add({
-                        targets: icon,
-                        x: icon.x + murmurWidth, // Move to the right
-                        ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                        duration: durationSide,
-                        yoyo: true, // Automatically reverse the tween
-                        repeat: -1, // Loop the tween indefinitely
-                    });
-                };
-
-                if (angerLevel == 1) {
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, murmur);
-                } else {
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, jump);
+                        littleHats.push(icon);
+                    }
+                    return littleHats;
                 }
 
-                littleHats.push(icon);
-            }
-            return littleHats;
-        }
+                this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
+                    if (threat.icon.woke > threat.icon.maga) {
+                        console.log("don't destroy threat: it's going to help!");
+                        return;
+                    }
+                    threat.destroy();
+                    this.roundThreats--;
+                    let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
+                    let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
+                    let totalHats = magaHats + wokeHats;
+                    if (totalHats >  5) {
+                        console.log('delete index ' + defense.container.misinformationIndex);
+
+                        // Check if defense.littleHats exists before trying to iterate over it
+                        if (defense.littleHats) {
+                            defense.littleHats.forEach(hat => hat.destroy());
+                        }
+
+                        let territory = territories[2]; // arbitrarily picked this territory to return to
+                        scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
+                        territory = territories[4]; // arbitrarily picked this territory to return to
+                        scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
+                        // discussion forum should slowly fade away
+                        scene.tweens.add({
+                            targets: defense.container,
+                            alpha: 0,
+                            scaleX: 0,
+                            scaleY: 0,
+                            duration: 2000,
+                            onComplete: function () {
+                                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                                defense.container.destroy();
+                            },
+                            callbackScope: scene
+                        });
+                    } else {
+                        // Initialize defense.littleHats if it doesn't exist yet
+                        if (!defense.littleHats) {
+                            if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
+                                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
+                            }
+                            defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
+                            console.log(defense.container.list);
+                            replaceTokenIcon(scene, defense.container, 'peace');
+                            defense.container.disableInteractive();
+                            //defense.sprite.setImmovable(true);
+                        }
+                        let iconY = defense.container.y + ICON_MARGIN;
+                        defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
+                        scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
+                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
+                    }
+                }, null, this);
 
         //
         // Helper function to handle common overlap logic between insurrectionist and icon
@@ -1016,270 +1034,10 @@ export class Insurrection extends BaseScene {
                 // Increment amount was 2, as in putie doesn't cause as much instability, but That
                 // seems much too confusing.  Better to have all attacks create 1 hat.
                 handleOverlap(icon, defense, threat, 3, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
-/*
-                if (!threat.isPutieDestroyed) {
-                    let message;
-                    let iconColor;
-                    threat.isPutieDestroyed = true;
-                    icon['woke'] += 5;
-                    if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
-                        else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
-                        else if (icon.maga == icon.woke) {
-                            icon.health += 1 * icon.healthScale;
-                            iconColor = 'purple';
-                        }
-                    scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke);
-                    icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
-                    hitIcon(icon.iconText, iconColor);
-                }
-*/
+
             });
         }
 
-        //====================================================================================
-        // function createPowerToken(scene)
-        // function that createPowerToken text, rectangle, and dragability
-        //
-        //====================================================================================
-        //====================================================================================
-        // function createPowerToken(scene)
-        // function that createPowerToken text, rectangle, and dragability
-        //
-        // This function can be called to either create a 'misinformation token' or a 'helpful token'
-        // When creating a helpful token, dropOnce is false because it can be moved around as much as you want
-        //
-        // size: 'normal' or 'large'.  Large creates a big box that tweens away slowly
-        // hasBeenCreatedBefore: true means that it is static and cannot be dragged around
-        // dropOnce: true means that it can be dragged into one position and then can becomes static, no longer can be moved
-        //
-        //====================================================================================
-        /*
-        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
-            let factionColor = faction === 'maga'
-                ? '0xff0000'
-                : faction === 'woke'
-                    ? '0x0000ff'
-                    : '0x800080';
-            let fillColor = faction === 'maga'
-                ? '#ffffff'
-                : faction === 'woke'
-                    ? '#ffffff'
-                    : '#ffffff';
-            // Add text to the rectangle
-            let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
-            if (size == 'large' ) {text.setFontSize(36);}
-
-            // Create a larger white rectangle for outline
-            let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
-
-            // Create a smaller factionColor rectangle
-            let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
-
-            // Create a sprite for physics and bouncing
-            let misinformationSprite = scene.physics.add.sprite(0, 0, 'track');
-            misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
-            misinformationSprite.setDepth(1);
-
-            let misinformation;
-
-            // Group the text, outline, and rectangle into a single container
-            if (tokenIcon) { // ... and group tokenIcon too if it exists
-                rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
-                outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
-                text.y += tokenIcon.displayHeight/2;
-                //rectangle.x adjustment??
-                if (faction == 'neutral' && size != 'large'){
-                    outline.setVisible(false);
-                    rectangle.setVisible(false);
-                    rectangle.setSize(text.width, text.height+tokenIcon.displayHeight/2);
-                    outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight/2);
-                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
-                else {
-                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
-                }
-                misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
-            } else {
-                misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
-                misinformation.setSize(outline.width, outline.height);
-            }
-
-            if (1){//size != 'large'){
-                 misinformation.setSize(outline.width, outline.height);
-                 // Set the initial size to near zero
-                 misinformation.setScale(0.01);
-
-                console.log('what is the size of helperTokens?  It is currently '+Object.keys(scene.sharedData.helperTokens).length);
-
-                const timerID = setTimeout(() => {
-                     if (typeof storedData.character !== 'undefined') {
-                         console.log('generate helpful token for '+storedData.character.charText.text);
-
-                        // Current position as the target for the tween
-                        var targetX = misinformation.x;
-                        var targetY = misinformation.y;
-
-                        // Set initial position
-                        misinformation.x = storedData.character.charText.x;
-                        misinformation.y = storedData.character.charText.y;
-
-                        scene.tweens.add({
-                            targets: misinformation,
-                             x: targetX, // Move to this X position
-                             y: targetY, // Move to this Y position
-                             scaleX: 1, // expand to the width
-                             scaleY: 1, // expand to the height
-                             ease: 'Sine.easeInOut',
-                             duration: 1000,
-                             onComplete: function () {
-                                 misinformation.setSize(outline.width, outline.height);
-                                 pulseIt(scene, outline, rectangle, tokenIcon);
-                             },
-                             callbackScope: scene
-                         });
-                     } else {
-                        // Add a tween to expand the container and its contents
-                         scene.tweens.add({
-                             targets: misinformation,
-                             scaleX: 1, // expand to the width
-                             scaleY: 1, // expand to the height
-                             ease: 'Sine.easeInOut',
-                             duration: 1000,
-                             onComplete: function () {
-                                 misinformation.setSize(outline.width, outline.height);
-                                 pulseIt(scene, outline, rectangle, tokenIcon);
-                             },
-                             callbackScope: scene
-                         });
-                     }
-                }, Object.keys(scene.sharedData.helperTokens).length *400);
-            }
-
-            // Set the size of the container to match the size of the outline rectangle
-            //misinformation.setSize(outline.width, outline.height);
-            misinformationSprite.setScale(.6);
-            //misinformationSprite.setSize(outline.width*.1, 1);
-
-            // Now that the container has a size, it can be made interactive and draggable
-            misinformation.setInteractive({ draggable: true });
-            // Attach the container to the sprite
-            misinformationSprite.container = misinformation;
-            if (size == 'large' ) {misinformation.setDepth(4);}
-            // Listen to the 'drag' event
-            misinformation.on('drag', function(pointer, dragX, dragY) {
-                this.x = dragX;
-                this.y = dragY;
-                storedData.x = dragX;
-                storedData.y = dragY;
-                misinformationSprite.setImmovable(true);
-            });
-            if (0) { // skip the dropOnce concept dropOnce == 'drop once') {
-                misinformation.on('dragend', function(pointer, dragX, dragY) {
-                    outlineTween.stop();
-                    rectangleTween.stop();
-                    this.disableInteractive();
-                    misinformationSprite.setImmovable(true);
-                    let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
-                    rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
-                });
-            }
-            if (0) {//hasBeenCreatedBefore == true && scene.difficultyLevel().multiplier != 1) {
-                outlineTween.stop();
-                rectangleTween.stop();
-                misinformation.disableInteractive();
-                misinformationSprite.setImmovable(true);
-                //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
-                //rectangle.setFillStyle(0x228B22); // Now the rectangle is green
-                text.setColor(0x229B22);
-            }
-
-            return {
-                container: misinformation,
-                sprite: misinformationSprite
-            };
-        }
-        */
-        /*
-        function pulseIt(scene, outline, rectangle, tokenIcon) {
-            // Create a tween that scales the rectangle up and down
-            let outlineTween = scene.tweens.add({
-                targets: outline, // object that the tween affects
-                scaleX: 1.2, // start scaling to 120% of the original size
-                scaleY: 1.2, // start scaling to 120% of the original size
-                duration: 1000, // duration of scaling to 120% will be 1 second
-                ease: 'Linear', // type of easing
-                yoyo: true, // after scaling to 120%, it will scale back to original size
-                loop: -1, // -1 means it will loop forever
-            });
-            // Create a tween that scales the rectangle up and down
-            let rectangleTween = scene.tweens.add({
-                targets: rectangle, // object that the tween affects
-                scaleX: 1.2, // start scaling to 120% of the original size
-                scaleY: 1.2, // start scaling to 120% of the original size
-                duration: 1000, // duration of scaling to 120% will be 1 second
-                ease: 'Linear', // type of easing
-                yoyo: true, // after scaling to 120%, it will scale back to original size
-                loop: -1, // -1 means it will loop forever
-            });
-            if (tokenIcon) { // ... and group tokenIcon too if it exists
-                let tokenIconTween = scene.tweens.add({
-                    targets: tokenIcon, // object that the tween affects
-                    scaleX: tokenIcon._scaleX * 1.2, // start scaling to 120% of the original size
-                    scaleY: tokenIcon._scaleY * 1.2, // start scaling to 120% of the original size
-                    duration: 1000, // duration of scaling to 120% will be 1 second
-                    ease: 'Linear', // type of easing
-                    yoyo: true, // after scaling to 120%, it will scale back to original size
-                    loop: -1, // -1 means it will loop forever
-                });
-            }
-        }
-        */
-        /*
-        function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, helpfulTokenIcon) {
-            let factionColor = faction === 'maga'
-                ? '0xff0000'
-                : faction === 'woke'
-                    ? '0x0000ff'
-                    : '0x228B22'; // forest green
-
-            let fillColor = faction === 'maga'
-                ? '#ffffff'
-                : faction === 'woke'
-                    ? '#ffffff'
-                    : '#80ff80';
-
-            // Add text to the rectangle
-            let text = scene.add.text(0, 0, message, { align: 'center', fill: fillColor }).setOrigin(0.5, 0.5);
-
-            // Create a larger white rectangle for outline
-            let outline = scene.add.rectangle(0, 0, text.width+4, text.height+4, 0xffffff);
-
-            // Create a smaller factionColor rectangle
-            let rectangle = scene.add.rectangle(0, 0, text.width, text.height, factionColor);
-
-            // Create a sprite for physics and bouncing
-            let misinformationSprite = scene.physics.add.sprite(0, 0, 'track').setImmovable(true);
-            misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
-            misinformationSprite.setDepth(1);
-            misinformationSprite.setScale(.6);
-
-            // Group the text, outline, and rectangle into a single container
-            let misinformation = scene.add.container(x, y, [outline, rectangle, text, helpfulTokenIcon, misinformationSprite]);
-
-            // Attach the container to the sprite
-            misinformationSprite.container = misinformation;
-
-            // Set the size of the container to match the size of the outline rectangle
-            misinformation.setSize(outline.width, outline.height);
-
-            // Don't allow dragging of power tokens during insurrection scene: you need to position them wisely
-
-
-            return {
-                container: misinformation,
-                sprite: misinformationSprite
-            };
-        }
-*/
         //====================================================================================
         // Function:
         //      hitIcon()
