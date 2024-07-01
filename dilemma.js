@@ -574,6 +574,8 @@ export class DilemmaScene extends BaseScene {
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
         let adjustedFontSize = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
 
+        console.log('fontsize determined to be '+ adjustedFontSize);
+
         let nextScreenTutorial = [
             {
                 story: [
