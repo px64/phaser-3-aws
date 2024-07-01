@@ -631,13 +631,13 @@ export class DilemmaScene extends BaseScene {
         let scenarioText = this.add.text(0, 0, formattedScenario, { font: '20px Arial', fill: '#ffffff' });
         scenarioText.setPosition(this.sys.game.config.width/2 - scenarioText.width/2, 290);
 
-        let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, this.sys.config.height/3*2, 'Please Make A Choice:', { color: '#0ff', fontSize: '20px',fontFamily: 'Roboto' });
+        let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2, 'Please Make A Choice:', { color: '#0ff', fontSize: '20px',fontFamily: 'Roboto' });
 
         this.decisionGroup.push(makeAChoiceText); // Add decision Title to the group
 
         this.isTweening = false;
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, this.sys.config.height/3*2 + 20 + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2 + 20 + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
