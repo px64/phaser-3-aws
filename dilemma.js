@@ -634,10 +634,10 @@ export class DilemmaScene extends BaseScene {
         // Create text with adjusted settings
         let scenarioText = this.add.text(0, 0, formattedScenario, {
             font: adjustedFontSize,
-            fontFamily: 'Arial',
             fill: '#ffffff',
             align: 'center'
         });
+        scenarioText.setFont(`${adjustedFontSize}px Arial`); // Update the font size of the temporary text
         scenarioText.setPosition(this.sys.game.config.width/2 - scenarioText.width/2, 290);
 
         let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.medFont,fontFamily: 'Roboto' });
