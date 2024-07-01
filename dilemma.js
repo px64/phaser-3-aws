@@ -573,6 +573,7 @@ export class DilemmaScene extends BaseScene {
         console.log('this scenario number is ' + this.scenarioNumber);
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 80);
         let adjustedText = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
+        adjustedText.text.destroy();
 
         let nextScreenTutorial = [
             {
