@@ -94,7 +94,7 @@ function renderCharacters(scene) {
         
         character.charText = characterText; // back reference to text so we can find the location later
 
-        character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * (textHeight+10), character, characterText, function (character, backing) {
+        character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * (textHeight+10)), character, characterText, function (character, backing) {
             character.backing = backing;
         }, character.backing);
 
