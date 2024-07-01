@@ -572,8 +572,7 @@ export class DilemmaScene extends BaseScene {
         // Spell out exactly how many and what kind of insurrectionist will attack which icon
         console.log('this scenario number is ' + this.scenarioNumber);
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
-        let adjustedText = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
-        adjustedText.text.destroy();
+        let adjustedFontSize = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
 
         let nextScreenTutorial = [
             {
@@ -631,8 +630,8 @@ export class DilemmaScene extends BaseScene {
         titleText.setPosition(this.sys.game.config.width/2 - titleText.width/2, 230);
         
         // Create text with adjusted settings
-        let scenarioText = this.add.text(0, 0, adjustedText.text, {
-            font: adjustedText.fontSize,
+        let scenarioText = this.add.text(0, 0, formattedScenario, {
+            font: adjustedFontSize,
             fontFamily: 'Arial',
             fill: '#ffffff',
             align: 'center'
@@ -824,35 +823,30 @@ export class DilemmaScene extends BaseScene {
 
             return lines.join('\n');
         }
+        
         function fitTextToWidth(scene, text, maxWidth) {
-            let fontSize = parseInt(scene.sharedData.medFont, 10); // Extract the numeric value from a font string like '16px'
-            let safetyCounter = 0; // Safety counter to avoid infinite loops in edge cases
+            let fontSize = parseInt(scene.sharedData.medFont.replace('px', ''), 10); // Start with the medium font size specified in sharedData
+            let textStyle = {
+                font: `${fontSize}px Arial`,
+                fill: '#ffffff', // Assuming white text color
+                align: 'center' // Center-align the text
+            };
         
-            do {
-                // Create text with initial or updated settings
-                let tempText = scene.add.text(0, 0, text, {
-                    font: `${fontSize}px`,
-                    fontFamily: 'Arial',
-                    fill: '#ffffff',
-                    wordWrap: { width: maxWidth }
-                });
+            let tempText = scene.add.text(0, 0, text, textStyle);
+            tempText.setOrigin(0.5, 0); // Center horizontally
         
-                // Check text width against the maxWidth
-                if (tempText.width > maxWidth) {
-                    tempText.destroy(); // Destroy temporary text object
-                    fontSize -= 1; // Decrease font size
-                } else {
-                    console.log('final fontsize is '+ fontSize);
-                    return { text: tempText.text, fontSize: fontSize + 'px' }; // Return adjusted text and font size
-                }
+            // Reduce font size until the text width is within the maxWidth
+            while (tempText.width > maxWidth && fontSize > 8) { // Stop at minimum size to prevent too small text
+                fontSize--; // Decrease font size by 1px
+                tempText.setFont(`${fontSize}px Arial`); // Update the font size of the temporary text
+                tempText.updateText(); // Force update the text to recalculate width
+            }
         
-                safetyCounter++;
-            } while (safetyCounter < 100); // Prevent infinite loops
+            let finalFontSize = `${fontSize}px`; // Store the final font size
+            tempText.destroy(); // Clean up the temporary text object
         
-            return { text: text, fontSize: scene.sharedData.medFont }; // Return original if not adjusted in 100 tries
+            return finalFontSize; // Return the adjusted font size
         }
-
-
 
         function chooseOptionOld(faction) {
             if (faction === 'maga') {
