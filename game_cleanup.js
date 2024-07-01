@@ -281,7 +281,7 @@ class TitleScene extends Phaser.Scene {
                 this.sharedData.charFont = '12px';
             }
         } else {
-            this.sharedData.charFont = '28px';
+            this.sharedData.charFont = '22px';
         }
                 
         console.log('screen dimensions: '+this.sys.game.config.width+' x '+this.sys.game.config.height+ ' fontsize is '+this.sharedData.fontSize+' charfont is '+this.sharedData.charFont);
