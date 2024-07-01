@@ -137,6 +137,9 @@ class TitleScene extends Phaser.Scene {
           this.sharedData.fontSize = '48px';
           this.sharedData.medFont = '32px';
         }
+        
+        console.log('screen dimensions: '+this.sys.game.config.width+' x '+this.sys.game.config.height+ ' fontsize is '+this.sharedData.fontSize);
+        
         // For each line of text...
         for (let i = 0; i < storyLines.length; i++) {
             // ...create a timed event that waits i*1000 milliseconds, then...
