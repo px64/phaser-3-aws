@@ -60,6 +60,8 @@ function renderCharacters(scene) {
         underline.strokePath();
     }
 
+    console.log('sanity test.  charFont is '+scene.sharedData.charFont);
+    
     characters.forEach((character, index) => {
         if (character.dne) { return; }
         // Keep separate track of the MAGA and Woke character placement row offsets
@@ -87,7 +89,7 @@ function renderCharacters(scene) {
         let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
         
         let characterText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
-                            { fontSize: scene.sharedData.charfont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+                            { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
   
         // Measure the height of the text, including any line breaks
         let textHeight = characterText.displayHeight;
