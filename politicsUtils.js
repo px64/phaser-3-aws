@@ -87,11 +87,14 @@ function renderCharacters(scene) {
         let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
 
         let characterText = scene.add.text(50 + xOffset, 250 + (rowIndex * 60), character.name + '\nBacking: ' + healthText,
-                            { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+                            { fontSize: scene.sharedData.charfont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
+        // Measure the height of the text
+        let textHeight = characterText.displayHeight
+        
         character.charText = characterText; // back reference to text so we can find the location later
 
-        character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * 60), character, characterText, function (character, backing) {
+        character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * (textHeight+10), character, characterText, function (character, backing) {
             character.backing = backing;
         }, character.backing);
 
