@@ -571,7 +571,7 @@ export class DilemmaScene extends BaseScene {
 
         // Spell out exactly how many and what kind of insurrectionist will attack which icon
         console.log('this scenario number is ' + this.scenarioNumber);
-        let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 80);
+        let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
         let adjustedText = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
         adjustedText.text.destroy();
 
