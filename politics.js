@@ -998,13 +998,59 @@ export class Politics extends BaseScene {
                         scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
                     }
                     defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
+                    console.log(defense.container.list);
+                    replaceTokenIcon(scene, defense.container, 'peace');
+                    defense.container.disableInteractive();
+                    //defense.sprite.setImmovable(true);
                 }
+                //console.log(scene.sharedData.misinformation[defense.container.misinformationIndex].
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
                 scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
                 scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
             }
         }, null, this);
+
+        // Function to replace the tokenIcon in the container
+        function replaceTokenIcon(scene, container, newIcon) {
+            // Find the existing tokenIcon
+            let oldTokenIconIndex = -1;
+            for (let i = 0; i < container.list.length; i++) {
+                let item = container.list[i];
+                scene.tweens.killTweensOf(item);
+                if (item && item.texture && item.texture.key === 'negotiation') {  // Assuming 'negotiation' is the key for the old icon
+                    console.log('found Old at '+i);
+                    oldTokenIconIndex = i;
+                    break;
+                }
+            }
+            let newTokenIconIndex = -1;
+            for (let i = 0; i < container.list.length; i++) {
+                let item = container.list[i];
+                if (item && item.texture && item.texture.key === newIcon) {
+                    console.log('found New at '+i);
+                    newTokenIconIndex = i;
+                    break;
+                }
+            }
+
+            // If the old tokenIcon is found, replace it with the new one
+            if (oldTokenIconIndex !== -1) {
+                let oldTokenIcon = container.list[oldTokenIconIndex];
+                //oldTokenIcon.destroy(); // This calls destroy directly on the object
+                console.log('turn off old');
+                oldTokenIcon.setVisible(false);
+            }
+
+            // If the old tokenIcon is found, replace it with the new one
+            if (newTokenIconIndex !== -1) {
+                let newTokenIcon = container.list[newTokenIconIndex];
+                //newTokenIcon.destroy(); // This calls destroy directly on the object
+                console.log('turn on new');
+                newTokenIcon.setVisible(true);
+            }
+
+        }
 
         // Draw little hats
         function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
@@ -1089,7 +1135,7 @@ export class Politics extends BaseScene {
                 if (defense.littleHats) {
                     defense.littleHats.forEach(hat => hat.destroy());
                 }
-            
+
                 let territory = territories[2]; // arbitrarily picked this territory to return to
                 scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
                 territory = territories[4]; // arbitrarily picked this territory to return to
@@ -1114,6 +1160,10 @@ export class Politics extends BaseScene {
                         scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
                     }
                     defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
+                    console.log(defense.container.list);
+                    replaceTokenIcon(scene, defense.container, 'peace');
+                    defense.container.disableInteractive();
+                    //defense.sprite.setImmovable(true);
                 }
                 let iconY = defense.container.y + ICON_MARGIN;
                 defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
@@ -1635,52 +1685,60 @@ export class Politics extends BaseScene {
             misinformationSprite.setVisible(false); // Hide it, so we only see the graphics and text
             misinformationSprite.setDepth(1);
 
-            let misinformation;
+            let misinformationContainer;
+            let newTokenIcon;
 
             // Group the text, outline, and rectangle into a single container
             if (tokenIcon) { // ... and group tokenIcon too if it exists
+                console.log('token icon exists');
                 rectangle.setSize(text.width, text.height+tokenIcon.displayHeight);
                 outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
                 text.y += tokenIcon.displayHeight/2;
                 //rectangle.x adjustment??
                 if (faction == 'neutral' && size != 'large'){
+                    // Add an icon or graphic and scale it
+                    newTokenIcon = scene.add.image(0, 0, 'peace');  // Position the icon at the original y position
+                    newTokenIcon.setScale(.12);  // scale the icon
+                    newTokenIcon.setOrigin(0.5, .66);  // change origin to bottom center
+                    newTokenIcon.setVisible(false);
+                    newTokenIcon.setAlpha(.9);
+
                     outline.setVisible(false);
                     rectangle.setVisible(false);
                     rectangle.setSize(text.width, text.height+tokenIcon.displayHeight-8);
                     outline.setSize(text.width+4, text.height+4+tokenIcon.displayHeight);
-                    misinformation = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, misinformationSprite]);}
+                    misinformationContainer = scene.add.container(x, y, [outline, rectangle, text, tokenIcon, newTokenIcon, misinformationSprite]);}
                 else {
-                    misinformation = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
+                    misinformationContainer = scene.add.container(x, y-tokenIcon.displayHeight/2, [outline, rectangle, text, tokenIcon, misinformationSprite]);
                 }
-                misinformation.setSize(outline.width, outline.height+tokenIcon.displayHeight);
+                misinformationContainer.setSize(outline.width, outline.height+tokenIcon.displayHeight);
             } else {
-                misinformation = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
-                misinformation.setSize(outline.width, outline.height);
+                console.log('token Icon does not exist');
+                misinformationContainer = scene.add.container(x, y, [outline, rectangle, text, misinformationSprite]);
+                misinformationContainer.setSize(outline.width, outline.height);
             }
 
             let tweens;
 
             if (1){//size != 'large'){
-                 misinformation.setSize(outline.width, outline.height);
+                 misinformationContainer.setSize(outline.width, outline.height);
                  // Set the initial size to near zero
-                 misinformation.setScale(0.01);
-
-                console.log('what is the size of helperTokens?  It is currently '+Object.keys(scene.sharedData.helperTokens).length);
+                 misinformationContainer.setScale(0.01);
 
                 const timerID = setTimeout(() => {
                      if (typeof storedData.character !== 'undefined') {
                          console.log('generate helpful token for '+storedData.character.charText.text);
 
                         // Current position as the target for the tween
-                        var targetX = misinformation.x;
-                        var targetY = misinformation.y;
+                        var targetX = misinformationContainer.x;
+                        var targetY = misinformationContainer.y;
 
                         // Set initial position
-                        misinformation.x = storedData.character.charText.x;
-                        misinformation.y = storedData.character.charText.y;
+                        misinformationContainer.x = storedData.character.charText.x;
+                        misinformationContainer.y = storedData.character.charText.y;
 
                         scene.tweens.add({
-                            targets: misinformation,
+                            targets: misinformationContainer,
                              x: targetX, // Move to this X position
                              y: targetY, // Move to this Y position
                              scaleX: 1, // expand to the width
@@ -1688,32 +1746,57 @@ export class Politics extends BaseScene {
                              ease: 'Sine.easeInOut',
                              duration: 1000,
                              onComplete: function () {
-                                 misinformation.setSize(outline.width, outline.height);
+                                 misinformationContainer.setSize(outline.width, outline.height);
                                  tweens = pulseIt(outline, rectangle, tokenIcon);
                              },
                              callbackScope: scene
                          });
                      } else if (hasBeenCreatedBefore != true) {
-                        console.log('create new misinformation token');
+                        console.log('create new misinformationContainer token');
                         // Add a tween to expand the container and its contents
                          scene.tweens.add({
-                             targets: misinformation,
+                             targets: misinformationContainer,
                              scaleX: 1, // expand to the width
                              scaleY: 1, // expand to the height
                              ease: 'Sine.easeInOut',
                              duration: 1000,
                              onComplete: function () {
-                                 misinformation.setSize(outline.width, outline.height);
+                                 misinformationContainer.setSize(outline.width, outline.height);
                                  tweens = pulseIt(outline, rectangle, tokenIcon);
                              },
                              callbackScope: scene
                          });
                      } else {
-                        console.log('recreate old misinformation token');
-                        misinformation.setScale(1); // It was there, just very tiny!
+                        console.log('recreate old misinformationContainer token');
+                        misinformationContainer.setScale(1); // It was there, just very tiny!
                         if (dropOnce != 'drop once')
                         {
+                            console.log('drop once is false');
                             tweens = pulseIt(outline, rectangle, tokenIcon);
+                        } else {
+                            console.log('drop once is true.  container = ');
+                            let container = misinformationContainer;
+                            console.log(container);
+                            let oldTokenIconIndex = -1;
+                            for (let i = 0; i < container.list.length; i++) {
+                                let item = container.list[i];
+                                if (item && item.texture && item.texture.key === 'negotiation') {  // Assuming 'negotiation' is the key for the old icon
+                                    console.log('found Old at '+i);
+                                    oldTokenIconIndex = i;
+                                    misinformationContainer.list[oldTokenIconIndex].setVisible(false);
+                                    break;
+                                }
+                            }
+                            let newTokenIconIndex = -1;
+                            for (let i = 0; i < container.list.length; i++) {
+                                let item = container.list[i];
+                                if (item && item.texture && item.texture.key === 'peace') {  // Assuming 'peace' is the key for the new icon
+                                    console.log('found New at '+i);
+                                    newTokenIconIndex = i;
+                                    misinformationContainer.list[newTokenIconIndex].setVisible(true);
+                                    break;
+                                }
+                            }
                         }
                      }
                 }, Object.keys(scene.sharedData.helperTokens).length *400);
@@ -1725,25 +1808,25 @@ export class Politics extends BaseScene {
             //misinformationSprite.setSize(outline.width*.1, 1);
 
             // Attach the container to the sprite
-            misinformationSprite.container = misinformation;
-            if (size == 'large' ) {misinformation.setDepth(4);}
+            misinformationSprite.container = misinformationContainer;
+            if (size == 'large' ) {misinformationContainer.setDepth(4);}
 
             if (dropOnce == 'drop once') {
                 //tweens.outlineTween.stop();
                 //tweens.rectangleTween.stop();
                 //tweens.tokenIconTween.stop();
                 rectangle.setVisible(true);
-                misinformation.disableInteractive();
+                misinformationContainer.disableInteractive();
                 misinformationSprite.setImmovable(true);
-                misinformation.setInteractive({ draggable: false });
-                //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
+                misinformationContainer.setInteractive({ draggable: false });
+                //let rectangle = misinformationContainer.list[1]; // Assuming the rectangle is the second item added to the container
                 rectangle.setFillStyle(0x228B22); // Now the rectangle is forest green
                 rectangle.setAlpha(.5);
             } else {
                 // Now that the container has a size, it can be made interactive and draggable
-                misinformation.setInteractive({ draggable: true });
+                misinformationContainer.setInteractive({ draggable: true });
                 // Listen to the 'drag' event
-                misinformation.on('drag', function(pointer, dragX, dragY) {
+                misinformationContainer.on('drag', function(pointer, dragX, dragY) {
                     this.x = dragX;
                     this.y = dragY;
                     storedData.x = dragX;
@@ -1755,7 +1838,7 @@ export class Politics extends BaseScene {
                 tweens.outlineTween.stop();
                 tweens.rectangleTween.stop();
                 tweens.tokenIconTween.stop();
-                misinformation.disableInteractive();
+                misinformationContainer.disableInteractive();
                 misinformationSprite.setImmovable(true);
                 //let rectangle = misinformation.list[1]; // Assuming the rectangle is the second item added to the container
                 //rectangle.setFillStyle(0x228B22); // Now the rectangle is green
@@ -1763,7 +1846,7 @@ export class Politics extends BaseScene {
             }
 
             return {
-                container: misinformation,
+                container: misinformationContainer,
                 sprite: misinformationSprite
             };
         }

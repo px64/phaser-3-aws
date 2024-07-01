@@ -497,7 +497,7 @@ export class Insurrection extends BaseScene {
         // annoying that restoreMisinformationTokens is here AND in BaseScene.  Need to simplify
         //
         //====================================================================================
-        restoreMisinformationTokens(this);
+        this.restoreMisinformationTokens(this);
 
         // Timer event to increment the year every second
         this.yearTime = this.time.addEvent({
@@ -528,6 +528,7 @@ export class Insurrection extends BaseScene {
         // function that recreates the information/misinformation blockers
         //
         //====================================================================================
+
         function restoreMisinformationTokens(scene) {
             // Recreate previously generated misinformation tokens
             for (let key in scene.sharedData.misinformation) {
