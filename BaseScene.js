@@ -563,7 +563,7 @@ export default class BaseScene extends Phaser.Scene {
             helpfulTokenIcon.setVisible(true);
             //helpfulTokenIcon.setDepth(2);  // set depth below the text and above the bounding box
             helpfulTokenIcon.setAlpha(.9);
-            
+
             let dropOnce;
             if ((storedData.wokeHats + storedData.magaHats) > 0) {
                 dropOnce = 'drop once';
@@ -579,7 +579,7 @@ export default class BaseScene extends Phaser.Scene {
             misinformation.littleHats = [];
             let wokeHats = storedData.wokeHats;
             if (wokeHats) {
-                misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats),1;
+                misinformation.littleHats = drawIcons(scene, misinformation.container.x, misinformation.container.y, 'wokeBase',0 , wokeHats, misinformation.littleHats,1);
             }
             let magaHats = storedData.magaHats;
             if (magaHats) {

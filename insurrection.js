@@ -514,6 +514,9 @@ export class Insurrection extends BaseScene {
             callbackScope: this,
             loop: true
         });
+
+        let scene = this;
+
         // Timer event to adjust Government Size every 7 seconds
         // I think government health should not improve if there are more wokes than magas
         // this.govTime = this.time.addEvent({
@@ -528,7 +531,7 @@ export class Insurrection extends BaseScene {
         // function that recreates the information/misinformation blockers
         //
         //====================================================================================
-
+/*
         function restoreMisinformationTokens(scene) {
             // Recreate previously generated misinformation tokens
             for (let key in scene.sharedData.misinformation) {
@@ -565,472 +568,472 @@ export class Insurrection extends BaseScene {
                 //data.x = xOffset;
                 //data.y = yOffset;
             }
-
+        }
+        */
         //====================================================================================
         // Add overlaps for bouncing or slowdowns between threats and shields
         // magaThreatWokeShield(), wokeThreatMagaShield()
         //
         //====================================================================================
-            function magaThreatWokeShield(object,threat, shieldStrength)
-            {
-                // If the object does not have an id, give it one.
-                if (!object.hasOwnProperty('id')) {
-                    object.id = Phaser.Utils.String.UUID();
-                }
-
-                // Initialize the set if it doesn't exist yet
-                if (!threat.collidedWith) {
-                    threat.collidedWith = new Set();
-                }
-                //console.log('collider Magaland');
-
-                // If we haven't collided with this object yet...
-                if (!threat.collidedWith.has(object.id)) {
-                    threat.collidedWith.add(object.id);
-                    // Handle collision...
-                    let territory = territories[1]; // maga always returns to territory 1
-                    let territoryWidth = scene.sys.game.config.width / territories.length;
-                    if (Math.random() < shieldStrength) {
-                        //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
-                        let helpedIcon = scene.sharedData.icons['environment'];
-                        let shortstory = ["MAGA Activists peacefully return home  ",
-                            "because it is immune to political attacks"];
-                        let faction = 'maga';
-                        //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
-                        let tooltip = createTooltip(scene, shortstory, faction, threat.x, threat.y);
-                        if (scene.alreadyCreated[object.id] === undefined) {
-                            scene.alreadyCreated[object.id] = true;
-                            tooltip.text.setVisible(true);
-                            tooltip.box.setVisible(true);
-                        }
-
-                        helpedIcon.icon.shieldWoke.setAlpha(0.5);
-                        scene.time.delayedCall(5000, () => {
-                            tooltip.text.setVisible(false);
-                            tooltip.box.setVisible(false);
-                            scene.alreadyCreated[object.id] = false;
-                        });
-
-                        // "bounce" and move the threat to territory 1
-                        scene.physics.moveTo(threat, territory.x + territoryWidth/2, scene.game.config.height, 200);
-                        object.setTint(0x8080ff).setAlpha(0.9);
-                        scene.tweens.add({
-                            targets: object,
-                            alpha: 0.1,
-                            duration: 500,
-                            onComplete: function () {
-                                object.setAlpha(0.1);
-                            },
-                            callbackScope: scene
-                        });
-                    } else { if (shieldStrength > 0) {
-                    console.log('threat body velocity reduced due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
-                        threat.body.velocity.x *= 0.3;
-                        threat.body.velocity.y *= 0.3;
-                    }
-                    }
-                }
+        function magaThreatWokeShield(object,threat, shieldStrength)
+        {
+            // If the object does not have an id, give it one.
+            if (!object.hasOwnProperty('id')) {
+                object.id = Phaser.Utils.String.UUID();
             }
-            //====================================================================================
-            //    function createTooltip(scene, character, x, y,)
-            //====================================================================================
-            function createTooltip(scene, shortstory, faction, x, y ) {
-                // Set text color based on affiliation
-                let textColor = faction === 'maga' ? '#ff8080' : '#8080ff';
-                let xOffset = 0;//character.faction === 'maga' ? 320 : -320;
 
-                // Format the text to be centered and with the color based on the affiliation
-                let formattedBackstory = insertLineBreaks(shortstory.join(' '), 37);
-                let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
-                backstoryText.setOrigin(0.5);
-                backstoryText.setVisible(false);
-                backstoryText.setDepth(2);
-
-                // Add a bounding box for the text, with rounded corners and a semi-transparent background
-                let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
-                backstoryBox.setStrokeStyle(2, faction === 'maga' ? 0xff8080 : 0x8080ff, 0.3);
-                backstoryBox.isStroked = true;
-                backstoryBox.setOrigin(0.5);
-                backstoryBox.setVisible(false);
-                //backstoryBox.setDepth(1);
-
-                return {
-                    text: backstoryText,
-                    box: backstoryBox
-                };
+            // Initialize the set if it doesn't exist yet
+            if (!threat.collidedWith) {
+                threat.collidedWith = new Set();
             }
-            //====================================================================================
-            //    function insertLineBreaks(str, charsPerLine) {
-            //====================================================================================
-            function insertLineBreaks(str, charsPerLine) {
-                let words = str.split(' ');
-                let lines = [];
-                let currentLine = words[0];
+            //console.log('collider Magaland');
 
-                for (let i = 1; i < words.length; i++) {
-                    if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                        lines.push(currentLine);
-                        currentLine = words[i];
-                    } else {
-                        currentLine += ' ' + words[i];
+            // If we haven't collided with this object yet...
+            if (!threat.collidedWith.has(object.id)) {
+                threat.collidedWith.add(object.id);
+                // Handle collision...
+                let territory = territories[1]; // maga always returns to territory 1
+                let territoryWidth = scene.sys.game.config.width / territories.length;
+                if (Math.random() < shieldStrength) {
+                    //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
+                    let helpedIcon = scene.sharedData.icons['environment'];
+                    let shortstory = ["MAGA Activists peacefully return home  ",
+                        "because it is immune to political attacks"];
+                    let faction = 'maga';
+                    //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
+                    let tooltip = createTooltip(scene, shortstory, faction, threat.x, threat.y);
+                    if (scene.alreadyCreated[object.id] === undefined) {
+                        scene.alreadyCreated[object.id] = true;
+                        tooltip.text.setVisible(true);
+                        tooltip.box.setVisible(true);
                     }
-                }
-                lines.push(currentLine);
 
-                return lines.join('\n');
-            }
-            function wokeThreatMagaShield(object,threat, shieldStrength, isItPutie)
-            {
-                // If the object does not have an id, give it one.
-                if (!object.hasOwnProperty('id')) {
-                    object.id = Phaser.Utils.String.UUID();
-                }
-                // Initialize the set if it doesn't exist yet
-                if (!threat.collidedWith) {
-                    threat.collidedWith = new Set();
-                }
-                //console.log('collider wokeland');
-                // If we haven't collided with this object yet...
-                if (!threat.collidedWith.has(object.id)) {
-                    threat.collidedWith.add(object.id);
-                    // Handle collision...
-                    let territory = territories[4]; // for now woke always returns to territory 4
-                    let territoryWidth = scene.sys.game.config.width / territories.length;
+                    helpedIcon.icon.shieldWoke.setAlpha(0.5);
+                    scene.time.delayedCall(5000, () => {
+                        tooltip.text.setVisible(false);
+                        tooltip.box.setVisible(false);
+                        scene.alreadyCreated[object.id] = false;
+                    });
 
-                    if ((Math.random() < shieldStrength) || (isItPutie && shieldStrength > .1)) { // Putie is always reflected if there is any shield
-                        //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
-                        let helpedIcon = scene.sharedData.icons['environment'];
-                        let shortstory;
-                        if (isItPutie) {
-                            shortstory = ["Russian Troll Farms are deterred ",
-                                "because of immunity to internet troll farm attacks"];
-                        } else {
-                            shortstory = ["Woke Activists peacefully return home  ",
-                                "because of temporary immunity to political attacks"];
-                        }
-                        let faction = 'woke';
-                        //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
-                        let tooltip = createTooltip(scene, shortstory, faction, threat.x, threat.y+100);
-                        if (scene.alreadyCreated[object.id] === undefined) {
-                            scene.alreadyCreated[object.id] = true;
-                            tooltip.text.setVisible(true);
-                            tooltip.box.setVisible(true);
-                        }
-
-                        helpedIcon.icon.shieldWoke.setAlpha(0.5);
-                        scene.time.delayedCall(5000, () => {
-                            tooltip.text.setVisible(false);
-                            tooltip.box.setVisible(false);
-                            scene.alreadyCreated[object.id] = false;
-                        });
-
-                        scene.physics.moveTo(threat, territory.x+ territoryWidth/2, scene.sys.game.config.height, 200);
-                        object.setTint(0xff8080).setAlpha(0.9);
-                        scene.tweens.add({
-                            targets: object,
-                            alpha: 0,
-                            duration: 500,
-                            onComplete: function () {
-                                object.setAlpha(0.1);
-                            },
-                            callbackScope: scene
-                        });
-                    } else { if (shieldStrength > 0) {
-                    console.log('threat body velocity reduced due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
-                        threat.body.velocity.x *= 0.3;
-                        threat.body.velocity.y *= 0.3;
-                    }
-                    }
-                }
-            }
-            scene.physics.add.overlap(scene.magaThreats, scene.shieldsWoke, function (threat, object) {
-                    let shieldStrength = object.shieldStrength;
-                    //console.log('object shieldstrength = '+ shieldStrength);
-                    magaThreatWokeShield(object,threat, shieldStrength);
-                }, null, this);
-            scene.physics.add.overlap(scene.wokeThreats, scene.shieldsMaga, function (threat, object) {
-                    let shieldStrength = object.shieldStrength;
-                    //console.log('object shieldstrength = '+ shieldStrength);
-                    wokeThreatMagaShield(object,threat, shieldStrength);
-                }, null, this);
-            scene.physics.add.overlap(scene.putieThreats, scene.shieldsMaga, function (threat, object) {
-                    let shieldStrength = object.shieldStrength;
-                    //console.log('object shieldstrength = '+ shieldStrength);
-                    wokeThreatMagaShield(object,threat, shieldStrength, true);
-                }, null, this);
-
-            //====================================================================================
-            //
-            // Add overlaps for bouncing or slowdowns between threats and defences
-            // fixed a bug where roundThreats was undefined so it didn't exit early when all threats were destroyed.
-            // Maybe that's a good thing so time still passes?  Need to test.  I actually don't like it!
-            //
-            //====================================================================================
-            scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
-                //console.log('icon maganess = ' + threat.icon.maga);
-                if (threat.icon.maga > threat.icon.woke) {
-                    console.log("don't destroy threat: it's going to help!");
-                    return;
-                }
-                threat.destroy();
-                scene.roundThreats--;
-                //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
-                if (scene.roundThreats == 1) {
-                    console.log('all threats destroyed but stay here til time ends anyway');
-                    scene.victoryText.destroy();
-                    //scene.scene.get('politics').setup(this.sharedData);
-                    //scene.scene.start('politics');
-                }
-                //console.log(defense.container);
-                if (Math.random() < .1) {
+                    // "bounce" and move the threat to territory 1
+                    scene.physics.moveTo(threat, territory.x + territoryWidth/2, scene.game.config.height, 200);
+                    object.setTint(0x8080ff).setAlpha(0.9);
                     scene.tweens.add({
-                        targets: defense,
-                        alpha: 0,
+                        targets: object,
+                        alpha: 0.1,
                         duration: 500,
                         onComplete: function () {
-                            console.log('delete index ' + defense.container.misinformationIndex);
-                            console.log(defense);
-                            delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                            // Check if defense.littleHats exists before trying to iterate over it
-                            if (defense.littleHats) {
-                                defense.littleHats.forEach(hat => hat.destroy());
-                            }
-                            defense.container.destroy();
+                            object.setAlpha(0.1);
                         },
                         callbackScope: scene
                     });
+                } else { if (shieldStrength > 0) {
+                console.log('threat body velocity reduced due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
+                    threat.body.velocity.x *= 0.3;
+                    threat.body.velocity.y *= 0.3;
+                }
+                }
+            }
+        }
+        //====================================================================================
+        //    function createTooltip(scene, character, x, y,)
+        //====================================================================================
+        function createTooltip(scene, shortstory, faction, x, y ) {
+            // Set text color based on affiliation
+            let textColor = faction === 'maga' ? '#ff8080' : '#8080ff';
+            let xOffset = 0;//character.faction === 'maga' ? 320 : -320;
+
+            // Format the text to be centered and with the color based on the affiliation
+            let formattedBackstory = insertLineBreaks(shortstory.join(' '), 37);
+            let backstoryText = scene.add.text(x+xOffset, y, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: textColor, align: 'center' });
+            backstoryText.setOrigin(0.5);
+            backstoryText.setVisible(false);
+            backstoryText.setDepth(2);
+
+            // Add a bounding box for the text, with rounded corners and a semi-transparent background
+            let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width, backstoryText.height, 0x000000, 1);
+            backstoryBox.setStrokeStyle(2, faction === 'maga' ? 0xff8080 : 0x8080ff, 0.3);
+            backstoryBox.isStroked = true;
+            backstoryBox.setOrigin(0.5);
+            backstoryBox.setVisible(false);
+            //backstoryBox.setDepth(1);
+
+            return {
+                text: backstoryText,
+                box: backstoryBox
+            };
+        }
+        //====================================================================================
+        //    function insertLineBreaks(str, charsPerLine) {
+        //====================================================================================
+        function insertLineBreaks(str, charsPerLine) {
+            let words = str.split(' ');
+            let lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 > charsPerLine) {
+                    lines.push(currentLine);
+                    currentLine = words[i];
                 } else {
-                    // Initialize defense.littleHats if it doesn't exist yet
-                    if (!defense.littleHats) {
-                        defense.littleHats = [];
+                    currentLine += ' ' + words[i];
+                }
+            }
+            lines.push(currentLine);
+
+            return lines.join('\n');
+        }
+        function wokeThreatMagaShield(object,threat, shieldStrength, isItPutie)
+        {
+            // If the object does not have an id, give it one.
+            if (!object.hasOwnProperty('id')) {
+                object.id = Phaser.Utils.String.UUID();
+            }
+            // Initialize the set if it doesn't exist yet
+            if (!threat.collidedWith) {
+                threat.collidedWith = new Set();
+            }
+            //console.log('collider wokeland');
+            // If we haven't collided with this object yet...
+            if (!threat.collidedWith.has(object.id)) {
+                threat.collidedWith.add(object.id);
+                // Handle collision...
+                let territory = territories[4]; // for now woke always returns to territory 4
+                let territoryWidth = scene.sys.game.config.width / territories.length;
+
+                if ((Math.random() < shieldStrength) || (isItPutie && shieldStrength > .1)) { // Putie is always reflected if there is any shield
+                    //console.log('threat bounces due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
+                    let helpedIcon = scene.sharedData.icons['environment'];
+                    let shortstory;
+                    if (isItPutie) {
+                        shortstory = ["Russian Troll Farms are deterred ",
+                            "because of immunity to internet troll farm attacks"];
+                    } else {
+                        shortstory = ["Woke Activists peacefully return home  ",
+                            "because of temporary immunity to political attacks"];
                     }
-                    let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
-                    scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++;
-                }
-            }, null, this);
+                    let faction = 'woke';
+                    //tmpChar.shortstory = helpedIcon.iconText + ','+helpedIcon.iconTitle+ ' is immune to all attacks!';
+                    let tooltip = createTooltip(scene, shortstory, faction, threat.x, threat.y+100);
+                    if (scene.alreadyCreated[object.id] === undefined) {
+                        scene.alreadyCreated[object.id] = true;
+                        tooltip.text.setVisible(true);
+                        tooltip.box.setVisible(true);
+                    }
 
-            scene.physics.add.overlap(scene.wokeDefenses, scene.magaThreats, function(defense, threat) {
-                //console.log('icon wokeness = ' +threat.icon.woke);
-                if (threat.icon.woke > threat.icon.maga) {
-                    console.log("don't destroy threat: it's going to help!");
-                    return;
-                }
-                threat.destroy();
-                scene.roundThreats--;
-                //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
-                if (scene.roundThreats == 1) {
-                    console.log('all threats destroyed but stay here til time ends anyway');
-                    scene.victoryText.destroy();
-                    //scene.scene.get('politics').setup(scene.sharedData);scene.scene.start('politics');
-                }
+                    helpedIcon.icon.shieldWoke.setAlpha(0.5);
+                    scene.time.delayedCall(5000, () => {
+                        tooltip.text.setVisible(false);
+                        tooltip.box.setVisible(false);
+                        scene.alreadyCreated[object.id] = false;
+                    });
 
-                if (Math.random() < .1) {
+                    scene.physics.moveTo(threat, territory.x+ territoryWidth/2, scene.sys.game.config.height, 200);
+                    object.setTint(0xff8080).setAlpha(0.9);
                     scene.tweens.add({
-                        targets: defense,
+                        targets: object,
                         alpha: 0,
                         duration: 500,
                         onComplete: function () {
-                            console.log('delete index ' + defense.container.misinformationIndex);
-                            console.log(defense);
-                            delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                            // Check if defense.littleHats exists before trying to iterate over it
-                            if (defense.littleHats) {
-                                defense.littleHats.forEach(hat => hat.destroy());
-                            }
-                            defense.container.destroy();
+                            object.setAlpha(0.1);
                         },
                         callbackScope: scene
                     });
-                } else {
-                    // Initialize defense.littleHats if it doesn't exist yet
-                    if (!defense.littleHats) {
-                        defense.littleHats = [];
-                    }
-                    let iconY = defense.container.y + ICON_MARGIN;
-                    defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
-                    scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++;
+                } else { if (shieldStrength > 0) {
+                console.log('threat body velocity reduced due to impact with shield! object at ' + object.x + ','+ object.y + 'threat: ' + threat.x + ',' + threat.y);
+                    threat.body.velocity.x *= 0.3;
+                    threat.body.velocity.y *= 0.3;
                 }
+                }
+            }
+        }
+        scene.physics.add.overlap(scene.magaThreats, scene.shieldsWoke, function (threat, object) {
+                let shieldStrength = object.shieldStrength;
+                //console.log('object shieldstrength = '+ shieldStrength);
+                magaThreatWokeShield(object,threat, shieldStrength);
+            }, null, this);
+        scene.physics.add.overlap(scene.wokeThreats, scene.shieldsMaga, function (threat, object) {
+                let shieldStrength = object.shieldStrength;
+                //console.log('object shieldstrength = '+ shieldStrength);
+                wokeThreatMagaShield(object,threat, shieldStrength);
+            }, null, this);
+        scene.physics.add.overlap(scene.putieThreats, scene.shieldsMaga, function (threat, object) {
+                let shieldStrength = object.shieldStrength;
+                //console.log('object shieldstrength = '+ shieldStrength);
+                wokeThreatMagaShield(object,threat, shieldStrength, true);
             }, null, this);
 
-            // Draw little hats
-            function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-                for (let i = startIndex; i < startIndex + count; i++) {
-                    console.log('generate a hat');
-                    let xOffset = (i % 5) * ICON_SPACING;
-                    let yOffset = Math.floor(i / 5) * ICON_SPACING;
-                    // Each icon will be positioned slightly to the right of the previous one
-                    let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-
-                    // Adjust the size of the icons if necessary
-                    icon.setScale(ICON_SCALE);
-
-                    const jumpHeight = 20; // Adjust the height of the jump
-                    const durationUp = 150; // Duration for the upward movement
-                    const durationDown = 300; // Duration for the downward movement with bounce
-                    // Store the original position
-                    const originalY = icon.y;
-
-                    // Create an infinite loop of jumping
-                    const jump = () => {
-                        // Add the upward movement tween
-                        scene.tweens.add({
-                            targets: icon,
-                            y: originalY - jumpHeight,
-                            ease: 'Power1', // Fast upward movement
-                            duration: durationUp,
-                            onComplete: () => {
-                                // Add the downward movement tween with bounce effect
-                                scene.tweens.add({
-                                    targets: icon,
-                                    y: originalY,
-                                    ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                                    duration: durationDown,
-                                    onComplete: jump // Chain the jump to repeat
-                                });
-                            }
-                        });
-                    };
-                    const murmur = () => {
-                        // Define the horizontal movement range and duration
-                        const murmurWidth = 20; // Move 10 pixels to each side
-                        const durationSide = 500; // Half a second to each side
-
-                        // Start the movement to the right
-                        scene.tweens.add({
-                            targets: icon,
-                            x: icon.x + murmurWidth, // Move to the right
-                            ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                            duration: durationSide,
-                            yoyo: true, // Automatically reverse the tween
-                            repeat: -1, // Loop the tween indefinitely
-                        });
-                    };
-
-                    if (angerLevel == 1) {
-                        // Start the jumping animation with a random delay
-                        scene.time.delayedCall(Math.random() * 500, murmur);
-                    } else {
-                        // Start the jumping animation with a random delay
-                        scene.time.delayedCall(Math.random() * 500, jump);
-                    }
-
-                    littleHats.push(icon);
-                }
-                return littleHats;
+        //====================================================================================
+        //
+        // Add overlaps for bouncing or slowdowns between threats and defences
+        // fixed a bug where roundThreats was undefined so it didn't exit early when all threats were destroyed.
+        // Maybe that's a good thing so time still passes?  Need to test.  I actually don't like it!
+        //
+        //====================================================================================
+        scene.physics.add.overlap(scene.magaDefenses, scene.wokeThreats, function(defense, threat) {
+            //console.log('icon maganess = ' + threat.icon.maga);
+            if (threat.icon.maga > threat.icon.woke) {
+                console.log("don't destroy threat: it's going to help!");
+                return;
             }
-
-            //
-            // Helper function to handle common overlap logic between insurrectionist and icon
-            //
-            function handleOverlap(icon, defense, threat, incrementAmount, type, gauge, message) {
-                let iconColor = type === 'maga' ? 'red' : 'blue';
-
+            threat.destroy();
+            scene.roundThreats--;
+            //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
+            if (scene.roundThreats == 1) {
+                console.log('all threats destroyed but stay here til time ends anyway');
+                scene.victoryText.destroy();
+                //scene.scene.get('politics').setup(this.sharedData);
+                //scene.scene.start('politics');
+            }
+            //console.log(defense.container);
+            if (Math.random() < .1) {
                 scene.tweens.add({
-                    targets: threat,
+                    targets: defense,
                     alpha: 0,
-                    scaleX: 0,
-                    scaleY: 0,
-                    duration: 200,
+                    duration: 500,
                     onComplete: function () {
-                        threat.destroy();
+                        console.log('delete index ' + defense.container.misinformationIndex);
+                        console.log(defense);
+                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                        // Check if defense.littleHats exists before trying to iterate over it
+                        if (defense.littleHats) {
+                            defense.littleHats.forEach(hat => hat.destroy());
+                        }
+                        defense.container.destroy();
                     },
                     callbackScope: scene
                 });
-
-                if (!threat.isDestroyed) {
-                    // if putie, take whichever is larger and make it worse
-                    if (type == 'putie') {
-                        if (icon.woke > icon.maga) {type = 'woke';}
-                        else {type = 'maga';}
-                    }
-                    icon[type] += incrementAmount;
-                    if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
-                    else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
-                    else if (icon.maga == icon.woke) {
-                        icon.health += 1 * icon.healthScale;
-                        iconColor = 'purple';
-                    }
-                    //console.log(icon.littleHats);
-                    icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
-                    //console.log(icon.littleHats);
-
-                    let stability = icon.health/icon.healthScale;
-                    let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
-                    let balance;
-                    let maga = Math.min(100, icon.maga); // don't let these go beyond 100
-                    let woke = Math.min(100, icon.woke);
-                    if (totalValue == 0) {
-                        balance = 0
-                    } else {
-                        balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
-                    }
-                    stability = stability * (1-balance);
-
-                    scene.drawHealthGauge(scene, stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
-                    icon.iconText.setText(icon.textBody + message);
-                    hitIcon(icon.iconText, iconColor);
-                    threat.isDestroyed = true;
-                    scene.roundThreats--;
-                    if (scene.roundThreats < 2) {
-                        environmentalImpact();
-                        scene.time.delayedCall(2000, function() {
-                            scene.victoryText.destroy();
-                        });
-                    }
-                    console.log('stay here until 10 seconds elapse so more capital can be rewarded');
-                    // if (scene.roundThreats == 1 && scene.switchScene == false) {
-                    //     // fix problem with double scene fades!
-                    //     // maybe the problem is scene vs. this?
-                    //     scene.switchScene = true;
-                    //     console.log('no more threats.  switchScene = '+scene.switchScene);
-                    //     scene.cameras.main.fadeOut(2000, 0, 0, 0);
-                    //     scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                    //         scene.scene.get('politics').setup(scene.sharedData);
-                    //         scene.scene.start('politics');
-                    //     });
-                    // }
+            } else {
+                // Initialize defense.littleHats if it doesn't exist yet
+                if (!defense.littleHats) {
+                    defense.littleHats = [];
                 }
+                let iconY = defense.container.y + ICON_MARGIN;
+                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
+                scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++;
+            }
+        }, null, this);
+
+        scene.physics.add.overlap(scene.wokeDefenses, scene.magaThreats, function(defense, threat) {
+            //console.log('icon wokeness = ' +threat.icon.woke);
+            if (threat.icon.woke > threat.icon.maga) {
+                console.log("don't destroy threat: it's going to help!");
+                return;
+            }
+            threat.destroy();
+            scene.roundThreats--;
+            //console.log('defense destroyed threat.  Down to ' + scene.roundThreats);
+            if (scene.roundThreats == 1) {
+                console.log('all threats destroyed but stay here til time ends anyway');
+                scene.victoryText.destroy();
+                //scene.scene.get('politics').setup(scene.sharedData);scene.scene.start('politics');
             }
 
-            for (let key in scene.sharedData.icons) {
-                let icon = scene.sharedData.icons[key];
-                //console.log(key);
-                // Woke overlap
-                scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
-                    //console.log('wokethreat overlap');
-                    handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
+            if (Math.random() < .1) {
+                scene.tweens.add({
+                    targets: defense,
+                    alpha: 0,
+                    duration: 500,
+                    onComplete: function () {
+                        console.log('delete index ' + defense.container.misinformationIndex);
+                        console.log(defense);
+                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
+                        // Check if defense.littleHats exists before trying to iterate over it
+                        if (defense.littleHats) {
+                            defense.littleHats.forEach(hat => hat.destroy());
+                        }
+                        defense.container.destroy();
+                    },
+                    callbackScope: scene
                 });
-                // Maga overlap
-                scene.physics.add.overlap(icon.icon, scene.magaThreats, function(defense, threat) {
-                    //console.log('magathreat overlap');
-                    handleOverlap(icon, defense, threat, 5, 'maga', icon.gaugeMaga, '\nMake America Great Again!');
-                });
-                // Putin overlap
-                scene.physics.add.overlap(icon.icon, scene.putieThreats, function(defense, threat) {
-                    // handle the Putin overlap with maga and then increment woke afterward
-                    // Increment amount was 2, as in putie doesn't cause as much instability, but That
-                    // seems much too confusing.  Better to have all attacks create 1 hat.
-                    handleOverlap(icon, defense, threat, 3, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
-/*
-                    if (!threat.isPutieDestroyed) {
-                        let message;
-                        let iconColor;
-                        threat.isPutieDestroyed = true;
-                        icon['woke'] += 5;
-                        if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
-                            else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
-                            else if (icon.maga == icon.woke) {
-                                icon.health += 1 * icon.healthScale;
-                                iconColor = 'purple';
-                            }
-                        scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke);
-                        icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
-                        hitIcon(icon.iconText, iconColor);
-                    }
- */
-                });
+            } else {
+                // Initialize defense.littleHats if it doesn't exist yet
+                if (!defense.littleHats) {
+                    defense.littleHats = [];
+                }
+                let iconY = defense.container.y + ICON_MARGIN;
+                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
+                scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++;
             }
+        }, null, this);
+
+        // Draw little hats
+        function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
+            for (let i = startIndex; i < startIndex + count; i++) {
+                console.log('generate a hat');
+                let xOffset = (i % 5) * ICON_SPACING;
+                let yOffset = Math.floor(i / 5) * ICON_SPACING;
+                // Each icon will be positioned slightly to the right of the previous one
+                let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+
+                // Adjust the size of the icons if necessary
+                icon.setScale(ICON_SCALE);
+
+                const jumpHeight = 20; // Adjust the height of the jump
+                const durationUp = 150; // Duration for the upward movement
+                const durationDown = 300; // Duration for the downward movement with bounce
+                // Store the original position
+                const originalY = icon.y;
+
+                // Create an infinite loop of jumping
+                const jump = () => {
+                    // Add the upward movement tween
+                    scene.tweens.add({
+                        targets: icon,
+                        y: originalY - jumpHeight,
+                        ease: 'Power1', // Fast upward movement
+                        duration: durationUp,
+                        onComplete: () => {
+                            // Add the downward movement tween with bounce effect
+                            scene.tweens.add({
+                                targets: icon,
+                                y: originalY,
+                                ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                                duration: durationDown,
+                                onComplete: jump // Chain the jump to repeat
+                            });
+                        }
+                    });
+                };
+                const murmur = () => {
+                    // Define the horizontal movement range and duration
+                    const murmurWidth = 20; // Move 10 pixels to each side
+                    const durationSide = 500; // Half a second to each side
+
+                    // Start the movement to the right
+                    scene.tweens.add({
+                        targets: icon,
+                        x: icon.x + murmurWidth, // Move to the right
+                        ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                        duration: durationSide,
+                        yoyo: true, // Automatically reverse the tween
+                        repeat: -1, // Loop the tween indefinitely
+                    });
+                };
+
+                if (angerLevel == 1) {
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, murmur);
+                } else {
+                    // Start the jumping animation with a random delay
+                    scene.time.delayedCall(Math.random() * 500, jump);
+                }
+
+                littleHats.push(icon);
+            }
+            return littleHats;
+        }
+
+        //
+        // Helper function to handle common overlap logic between insurrectionist and icon
+        //
+        function handleOverlap(icon, defense, threat, incrementAmount, type, gauge, message) {
+            let iconColor = type === 'maga' ? 'red' : 'blue';
+
+            scene.tweens.add({
+                targets: threat,
+                alpha: 0,
+                scaleX: 0,
+                scaleY: 0,
+                duration: 200,
+                onComplete: function () {
+                    threat.destroy();
+                },
+                callbackScope: scene
+            });
+
+            if (!threat.isDestroyed) {
+                // if putie, take whichever is larger and make it worse
+                if (type == 'putie') {
+                    if (icon.woke > icon.maga) {type = 'woke';}
+                    else {type = 'maga';}
+                }
+                icon[type] += incrementAmount;
+                if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
+                else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
+                else if (icon.maga == icon.woke) {
+                    icon.health += 1 * icon.healthScale;
+                    iconColor = 'purple';
+                }
+                //console.log(icon.littleHats);
+                icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
+                //console.log(icon.littleHats);
+
+                let stability = icon.health/icon.healthScale;
+                let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
+                let balance;
+                let maga = Math.min(100, icon.maga); // don't let these go beyond 100
+                let woke = Math.min(100, icon.woke);
+                if (totalValue == 0) {
+                    balance = 0
+                } else {
+                    balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
+                }
+                stability = stability * (1-balance);
+
+                scene.drawHealthGauge(scene, stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+                icon.iconText.setText(icon.textBody + message);
+                hitIcon(icon.iconText, iconColor);
+                threat.isDestroyed = true;
+                scene.roundThreats--;
+                if (scene.roundThreats < 2) {
+                    environmentalImpact();
+                    scene.time.delayedCall(2000, function() {
+                        scene.victoryText.destroy();
+                    });
+                }
+                console.log('stay here until 10 seconds elapse so more capital can be rewarded');
+                // if (scene.roundThreats == 1 && scene.switchScene == false) {
+                //     // fix problem with double scene fades!
+                //     // maybe the problem is scene vs. this?
+                //     scene.switchScene = true;
+                //     console.log('no more threats.  switchScene = '+scene.switchScene);
+                //     scene.cameras.main.fadeOut(2000, 0, 0, 0);
+                //     scene.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+                //         scene.scene.get('politics').setup(scene.sharedData);
+                //         scene.scene.start('politics');
+                //     });
+                // }
+            }
+        }
+
+        for (let key in scene.sharedData.icons) {
+            let icon = scene.sharedData.icons[key];
+            //console.log(key);
+            // Woke overlap
+            scene.physics.add.overlap(icon.icon, scene.wokeThreats, function(defense, threat) {
+                //console.log('wokethreat overlap');
+                handleOverlap(icon, defense, threat, 5, 'woke', icon.gaugeWoke, '\nToo much Wokeness!');
+            });
+            // Maga overlap
+            scene.physics.add.overlap(icon.icon, scene.magaThreats, function(defense, threat) {
+                //console.log('magathreat overlap');
+                handleOverlap(icon, defense, threat, 5, 'maga', icon.gaugeMaga, '\nMake America Great Again!');
+            });
+            // Putin overlap
+            scene.physics.add.overlap(icon.icon, scene.putieThreats, function(defense, threat) {
+                // handle the Putin overlap with maga and then increment woke afterward
+                // Increment amount was 2, as in putie doesn't cause as much instability, but That
+                // seems much too confusing.  Better to have all attacks create 1 hat.
+                handleOverlap(icon, defense, threat, 3, 'putie', icon.gaugeMaga, '\nToo Much Putin!');
+/*
+                if (!threat.isPutieDestroyed) {
+                    let message;
+                    let iconColor;
+                    threat.isPutieDestroyed = true;
+                    icon['woke'] += 5;
+                    if (icon.maga > icon.woke) {iconColor = 'red'; message = '\nToo much MAGA!';}
+                        else if (icon.maga < icon.woke) {iconColor = 'blue'; message = '\nToo much Wokeness!';}
+                        else if (icon.maga == icon.woke) {
+                            icon.health += 1 * icon.healthScale;
+                            iconColor = 'purple';
+                        }
+                    scene.drawHealthGauge(icon['woke']/ 100,defense.x,defense.y, 'woke', icon.gaugeWoke);
+                    icon.iconText.setText(icon.textBody + Math.floor(icon.health) + message);
+                    hitIcon(icon.iconText, iconColor);
+                }
+*/
+            });
         }
 
         //====================================================================================
@@ -1050,6 +1053,7 @@ export class Insurrection extends BaseScene {
         // dropOnce: true means that it can be dragged into one position and then can becomes static, no longer can be moved
         //
         //====================================================================================
+        /*
         function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, tokenIcon) {
             let factionColor = faction === 'maga'
                 ? '0xff0000'
@@ -1193,6 +1197,8 @@ export class Insurrection extends BaseScene {
                 sprite: misinformationSprite
             };
         }
+        */
+        /*
         function pulseIt(scene, outline, rectangle, tokenIcon) {
             // Create a tween that scales the rectangle up and down
             let outlineTween = scene.tweens.add({
@@ -1226,6 +1232,7 @@ export class Insurrection extends BaseScene {
                 });
             }
         }
+        */
         /*
         function createPowerToken(scene, faction, message, x, y, storedData, size, hasBeenCreatedBefore, dropOnce, helpfulTokenIcon) {
             let factionColor = faction === 'maga'
