@@ -104,6 +104,8 @@ function renderCharacters(scene) {
             character.backing = backing;
         }, character.backing);
 
+        character.charText = charText; // Try this?
+
         scene.characterTexts.push(charText); // Push characterTexts just so we can reference location w pointers later
     });
 }
