@@ -88,23 +88,23 @@ function renderCharacters(scene) {
         let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
         let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
         
-        let characterText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
+        let charText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
                             { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
   
         // Measure the height of the text, including any line breaks
-        let textHeight = characterText.displayHeight;
+        let textHeight = charText.displayHeight;
         
         // Calculate the new y position for this row based on the total height of the previous rows
         let newY = 250 + rowIndex * (textHeight + 10);
         
         // Set the new Y position for the text object
-        characterText.setY(newY);
+        charText.setY(newY);
 
         character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * (textHeight+10)), character, characterText, function (character, backing) {
             character.backing = backing;
         }, character.backing);
 
-        scene.characterTexts.push(characterText); // Push characterTexts just so we can reference location w pointers later
+        scene.characterTexts.push(charText); // Push characterTexts just so we can reference location w pointers later
     });
 }
 
