@@ -100,7 +100,7 @@ function renderCharacters(scene) {
         // Set the new Y position for the text object
         charText.setY(newY);
 
-        character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * (textHeight+10)), character, characterText, function (character, backing) {
+        character.checkbox = createCheckbox(scene, 20 + xOffset, 270 + (rowIndex * (textHeight+10)), character, charText, function (character, backing) {
             character.backing = backing;
         }, character.backing);
 
