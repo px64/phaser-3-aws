@@ -628,7 +628,7 @@ export class DilemmaScene extends BaseScene {
         let titleText = this.add.text(0, 0, 'Legislative Reform', { font: '48px Arial', fill: '#0ff' });
         titleText.setPosition(this.sys.game.config.width/2 - titleText.width/2, 230);
 
-        let scenarioText = this.add.text(0, 0, formattedScenario, { font: this.sharedData.charFont, fontFamily: 'Arial', fill: '#ffffff' });
+        let scenarioText = this.add.text(0, 0, formattedScenario, { font: '12px', fontFamily: 'Arial', fill: '#ffffff' });
         scenarioText.setPosition(this.sys.game.config.width/2 - scenarioText.width/2, 290);
 
         let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.medFont,fontFamily: 'Roboto' });
