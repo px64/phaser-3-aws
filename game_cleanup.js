@@ -266,7 +266,7 @@ class TitleScene extends Phaser.Scene {
 
         if (this.sys.game.config.width < 1200) {
             this.sharedData.fontSize = '24px';
-            this.sharedData.medFont = '18px';
+            this.sharedData.medFont = '16px';
             if (this.sys.game.config.height < 670) {
                 this.sharedData.fontSize = '12px';
                 this.sharedData.medFont = '9px';
@@ -276,7 +276,7 @@ class TitleScene extends Phaser.Scene {
           this.sharedData.medFont = '32px';
         }
         if (this.sys.game.config.width < 1200) {
-            this.sharedData.charFont = '18px';
+            this.sharedData.charFont = '16px';
             if (this.sys.game.config.height < 670) {
                 this.sharedData.charFont = '12px';
             }
