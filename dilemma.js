@@ -572,6 +572,7 @@ export class DilemmaScene extends BaseScene {
         // Spell out exactly how many and what kind of insurrectionist will attack which icon
         console.log('this scenario number is ' + this.scenarioNumber);
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 80);
+        let adjustedText = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
 
         let nextScreenTutorial = [
             {
@@ -627,8 +628,14 @@ export class DilemmaScene extends BaseScene {
 
         let titleText = this.add.text(0, 0, 'Legislative Reform', { font: '48px Arial', fill: '#0ff' });
         titleText.setPosition(this.sys.game.config.width/2 - titleText.width/2, 230);
-
-        let scenarioText = this.add.text(0, 0, formattedScenario, { font: this.sharedData.medFont, fontFamily: 'Arial', fill: '#ffffff' });
+        
+        // Create text with adjusted settings
+        let scenarioText = this.add.text(0, 0, adjustedText.text, {
+            font: adjustedText.fontSize,
+            fontFamily: 'Arial',
+            fill: '#ffffff',
+            align: 'center'
+        });
         scenarioText.setPosition(this.sys.game.config.width/2 - scenarioText.width/2, 290);
 
         let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.medFont,fontFamily: 'Roboto' });
@@ -815,6 +822,32 @@ export class DilemmaScene extends BaseScene {
             }
 
             return lines.join('\n');
+        }
+        function fitTextToWidth(scene, text, maxWidth) {
+            let fontSize = parseInt(scene.sharedData.medFont, 10); // Extract the numeric value from a font string like '16px'
+            let safetyCounter = 0; // Safety counter to avoid infinite loops in edge cases
+        
+            do {
+                // Create text with initial or updated settings
+                let tempText = scene.add.text(0, 0, text, {
+                    font: `${fontSize}px`,
+                    fontFamily: 'Arial',
+                    fill: '#ffffff',
+                    wordWrap: { width: maxWidth }
+                });
+        
+                // Check text width against the maxWidth
+                if (tempText.width > maxWidth) {
+                    tempText.destroy(); // Destroy temporary text object
+                    fontSize -= 1; // Decrease font size
+                } else {
+                    return { text: tempText.text, fontSize: fontSize + 'px' }; // Return adjusted text and font size
+                }
+        
+                safetyCounter++;
+            } while (safetyCounter < 100); // Prevent infinite loops
+        
+            return { text: text, fontSize: scene.sharedData.medFont }; // Return original if not adjusted in 100 tries
         }
 
 
