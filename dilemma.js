@@ -843,7 +843,10 @@ export class DilemmaScene extends BaseScene {
                 tempText.setFont(`${fontSize}px Arial`); // Update the font size of the temporary text
                 tempText.updateText(); // Force update the text to recalculate width
             }
-        
+
+            // hack
+            fontSize -= 4;
+            
             let finalFontSize = `${fontSize}px`; // Store the final font size
             tempText.destroy(); // Clean up the temporary text object
         
