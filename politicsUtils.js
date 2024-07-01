@@ -85,9 +85,6 @@ function renderCharacters(scene) {
         }
         let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
         let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
-
-        // Measure the height of the text
-        let textHeight = characterText.displayHeight
         
         let characterText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
                             { fontSize: scene.sharedData.charfont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
