@@ -638,7 +638,7 @@ let config = {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: Math.min(window.innerHeight*1.5, window.innerWidth),
+        width: Math.min(window.innerHeight*2, window.innerWidth),
         height: Math.min(window.innerWidth,window.innerHeight)
     },
     physics: {
