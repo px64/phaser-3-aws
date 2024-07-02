@@ -63,7 +63,7 @@ export class Insurrection extends BaseScene {
             WokenessVelocity: 0,
             totalPoliticalCapital: 0
         };
-        
+
         this.misinformationTokens = []; // Initialize the stack to store misinformation tokens for this scene
     }
     // insurrection: we had to switch everything to sharedData
@@ -500,7 +500,7 @@ export class Insurrection extends BaseScene {
         //
         //====================================================================================
         this.misinformationTokens = []; // Initialize the stack to store misinformation tokens for this scene
-        
+
         this.restoreMisinformationTokens(this);
 
         // Timer event to increment the year every second
@@ -1247,24 +1247,26 @@ function incrementYear() {
     polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
     // Every year we send a few threats back home
     console.log('list of all misinformationtokens for this year:');
-    this.misinformationTokens.forEach(token => {             
+    this.misinformationTokens.forEach(token => {
         console.log(token);
         let magaHats = 0;
         // Check if misinformation and the specific index are defined before accessing magaHats
-        if (this.sharedData && this.sharedData.misinformation && 
+        if (this.sharedData && this.sharedData.misinformation &&
             this.sharedData.misinformation[token.container.misinformationIndex] &&
             this.sharedData.misinformation[token.container.misinformationIndex].magaHats !== undefined) {
             magaHats = this.sharedData.misinformation[token.container.misinformationIndex].magaHats;
         }
         let wokeHats = 0;
         // Check if misinformation and the specific index are defined before accessing magaHats
-        if (this.sharedData && this.sharedData.misinformation && 
+        if (this.sharedData && this.sharedData.misinformation &&
             this.sharedData.misinformation[token.container.misinformationIndex] &&
             this.sharedData.misinformation[token.container.misinformationIndex].wokeHats !== undefined) {
             wokeHats = this.sharedData.misinformation[token.container.misinformationIndex].wokeHats;
         }
+        let thereWereHats = false;
         // first we need to clear out all the previous hats
         if (magaHats || wokeHats) {
+            thereWereHats = true;
             if (token.littleHats) {
                     token.littleHats.forEach(hat => hat.destroy());
             }
@@ -1285,6 +1287,10 @@ function incrementYear() {
             this.sharedData.misinformation[token.container.misinformationIndex].wokeHats = wokeHats;
             let iconY = token.container.y + ICON_MARGIN;
             token.littleHats = drawIcons(this, token.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', 0, wokeHats, token.littleHats,1);
+        }
+        if (thereWereHats && magaHats == 0 && wokeHats == 0 ) {
+            // destroy token
+            token.destroy();
         }
     });
 }
