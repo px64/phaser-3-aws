@@ -491,6 +491,7 @@ export class Insurrection extends BaseScene {
         this.wokeReturns = this.physics.add.group();
         this.magaReturns = this.physics.add.group();
 
+        let scene = this;
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
@@ -503,7 +504,7 @@ export class Insurrection extends BaseScene {
         this.yearTime = this.time.addEvent({
             delay: 1000,
             callback: incrementYear,
-            callbackScope: this,
+            callbackScope: scene,
             loop: true
         });
 
@@ -514,8 +515,6 @@ export class Insurrection extends BaseScene {
             callbackScope: this,
             loop: true
         });
-
-        let scene = this;
 
         // Timer event to adjust Government Size every 7 seconds
         // I think government health should not improve if there are more wokes than magas
