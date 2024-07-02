@@ -1255,7 +1255,7 @@ function incrementYear() {
         }
         let wokeHats = this.sharedData.misinformation[token.container.misinformationIndex].wokeHats;
         if (wokeHats) {
-            territory = territories[4]; // arbitrarily picked this territory to return to
+            let territory = territories[4]; // arbitrarily picked this territory to return to
             this.returnThreat(territory, 'woke', null, 1, token.container);
             wokeHats--;
             let iconY = token.container.y + ICON_MARGIN;
