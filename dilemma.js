@@ -572,8 +572,10 @@ export class DilemmaScene extends BaseScene {
         // Spell out exactly how many and what kind of insurrectionist will attack which icon
         console.log('this scenario number is ' + this.scenarioNumber);
         let formattedScenario = insertLinezBreaks(scenarios[this.scenarioNumber].description.join(' '), 110);
-        let adjustedFontSize = fitTextToWidth(this, formattedScenario, this.sys.game.config.width);
-
+        let data = fitTextToWidth(this, formattedScenario, this.sys.game.config.width, this.sys.game.config.height/3, 110);
+        let adjustedFontSize = data.fontSize;
+        formattedScenario = data.scenario;
+        console.log(formattedScenario);
         console.log('fontsize determined to be '+ adjustedFontSize);
 
         let nextScreenTutorial = [
@@ -630,7 +632,7 @@ export class DilemmaScene extends BaseScene {
 
         let titleText = this.add.text(0, 0, 'Legislative Reform', { font: '48px Arial', fill: '#0ff' });
         titleText.setPosition(this.sys.game.config.width/2 - titleText.width/2, 230);
-        
+
         // Create text with adjusted settings
         let scenarioText = this.add.text(0, 0, formattedScenario, {
             font: adjustedFontSize,
@@ -640,13 +642,14 @@ export class DilemmaScene extends BaseScene {
         scenarioText.setFont(`${adjustedFontSize} Arial`); // Update the font size of the temporary text
         scenarioText.setPosition(this.sys.game.config.width/2 - scenarioText.width/2, 290);
 
-        let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.medFont,fontFamily: 'Roboto' });
+        let startingHeight = Math.min(scenarioText.y + scenarioText.displayHeight-20, this.sys.game.config.height - 180);
+        let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, startingHeight, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.fontSize,fontFamily: 'Roboto' });
 
         this.decisionGroup.push(makeAChoiceText); // Add decision Title to the group
 
         this.isTweening = false;
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, this.sys.game.config.height/3*2 + 20 + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + 38 + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
@@ -760,7 +763,7 @@ export class DilemmaScene extends BaseScene {
                 fruit += '\n\nBad news!  Political Capital will suffer by '+choice.helpBenefit/40+'/year for many years to come!';
             }
 
-            let resultsText = this.add.text(80, 300, fruit, { font: '24px Arial', fill: '#ffffff' });
+            let resultsText = this.add.text(this.sys.game.config.width /4, this.sys.game.config.height/5*2 , fruit, { font: '24px Arial', fill: '#ffffff' });
 
             this.time.delayedCall(1000, () => {
                 // Implement the results of the chosen option.  Shortcut: just give velocity to Wokeness to make game design easier for now.
@@ -825,18 +828,20 @@ export class DilemmaScene extends BaseScene {
 
             return lines.join('\n');
         }
-        
-        function fitTextToWidth(scene, text, maxWidth) {
-            let fontSize = parseInt(scene.sharedData.medFont.replace('px', ''), 10); // Start with the medium font size specified in sharedData
+
+        function fitTextToWidth(scene, text, maxWidth, maxHeight, numChars) {
+            let fontSize = 26;//parseInt(scene.sharedData.medFont.replace('px', ''), 10); // Start with the medium font size specified in sharedData
+            console.log('starting fontsize = '+fontSize);
+            let origFontSize = fontSize;
             let textStyle = {
                 font: `${fontSize}px Arial`,
                 fill: '#ffffff', // Assuming white text color
                 align: 'center' // Center-align the text
             };
-        
+
             let tempText = scene.add.text(0, 0, text, textStyle);
             tempText.setOrigin(0.5, 0); // Center horizontally
-        
+
             // Reduce font size until the text width is within the maxWidth
             while (tempText.width > maxWidth && fontSize > 8) { // Stop at minimum size to prevent too small text
                 fontSize--; // Decrease font size by 1px
@@ -844,13 +849,29 @@ export class DilemmaScene extends BaseScene {
                 tempText.updateText(); // Force update the text to recalculate width
             }
 
-            // hack
-            fontSize -= 4;
-            
+            let formattedScenario = text;
+            while (tempText.height > maxHeight && fontSize > 8) { // Stop at minimum size to prevent too small text
+                numChars += 8;
+                formattedScenario = insertLinezBreaks(scenarios[scene.scenarioNumber].description.join(' '), numChars);
+                tempText.setText(formattedScenario);
+                console.log('numChars  = '+numChars);
+                fontSize--; // Decrease font size by 1px
+                tempText.setFont(`${fontSize}px Arial`); // Update the font size of the temporary text
+                tempText.updateText(); // Force update the text to recalculate width
+            }
+
+            if (0){//fontSize < origFontSize) {
+                console.log('fontsize reduction');
+                fontSize -= 4;
+            }
+
             let finalFontSize = `${fontSize}px`; // Store the final font size
             tempText.destroy(); // Clean up the temporary text object
-        
-            return finalFontSize; // Return the adjusted font size
+            console.log(finalFontSize);
+            return {
+                fontSize: finalFontSize,
+                scenario: formattedScenario
+            }; // Return the adjusted font size
         }
 
         function chooseOptionOld(faction) {

@@ -283,7 +283,7 @@ class TitleScene extends Phaser.Scene {
         } else {
             this.sharedData.charFont = '22px';
         }
-                
+
         console.log('screen dimensions: '+this.sys.game.config.width+' x '+this.sys.game.config.height+ ' fontsize is '+this.sharedData.fontSize+' charfont is '+this.sharedData.charFont);
 
 //        let textObjects = [];  // Array to store all text objects
@@ -638,7 +638,7 @@ let config = {
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: Math.min(window.innerHeight*2, window.innerWidth),
+        width: Math.min(window.innerHeight*1.66, window.innerWidth),
         height: Math.min(window.innerWidth,window.innerHeight)
     },
     physics: {
