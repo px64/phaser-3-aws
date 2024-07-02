@@ -93,7 +93,7 @@ export class DilemmaScene extends BaseScene {
             militaryAllocation: 0,
             totalPoliticalCapital: 0
         };
-
+        this.misinformationTokens = []; // Initialize the stack to store tokens temporarily for this scene
         this.picker = new ScenarioPicker([0, 1, 2, 3]);
         this.scenarioNumber = this.picker.getRandomScenario();
     }
