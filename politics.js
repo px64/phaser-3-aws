@@ -1033,23 +1033,38 @@ export class Politics extends BaseScene {
                     break;
                 }
             }
-
+            let oldTokenIcon;
             // If the old tokenIcon is found, replace it with the new one
             if (oldTokenIconIndex !== -1) {
-                let oldTokenIcon = container.list[oldTokenIconIndex];
+                oldTokenIcon = container.list[oldTokenIconIndex];
                 //oldTokenIcon.destroy(); // This calls destroy directly on the object
                 console.log('turn off old');
-                oldTokenIcon.setVisible(false);
+                //oldTokenIcon.setVisible(false);
             }
-
+            let newTokenIcon;
             // If the old tokenIcon is found, replace it with the new one
             if (newTokenIconIndex !== -1) {
-                let newTokenIcon = container.list[newTokenIconIndex];
+                newTokenIcon = container.list[newTokenIconIndex];
                 //newTokenIcon.destroy(); // This calls destroy directly on the object
                 console.log('turn on new');
                 newTokenIcon.setVisible(true);
             }
-
+            // Ensure the new token icon starts invisible
+            newTokenIcon.setAlpha(0);
+            // Start fading in the new token icon
+            container.scene.tweens.add({
+                targets: newTokenIcon,
+                alpha: 1,
+                duration: 500,
+                ease: 'Sine.easeInOut'
+            });
+            // Create a tween to fade out the old token icon
+            container.scene.tweens.add({
+              targets: oldTokenIcon,
+              alpha: 0,
+              duration: 500,
+              ease: 'Sine.easeInOut'
+            });
         }
 
         // Draw little hats
@@ -1272,7 +1287,7 @@ export class Politics extends BaseScene {
                     scene.misinformationTokens.push(misinformation); // Push token to stack
                     storedData.littleHats = misinformation.littleHats;
                 }
-                
+
                 console.log('on startup, misinformation tokens map:');
                 console.log(scene.misinformationTokens);
             }
