@@ -1255,7 +1255,7 @@ function incrementYear() {
                     token.littleHats.forEach(hat => hat.destroy());
             }
         }
-        if (magaHats) {
+        if (magaHats > 0) {
             let territory = territories[2]; // arbitrarily picked this territory to return to
             this.returnThreat(territory, 'maga', null, 1, token.container);
             magaHats--;
@@ -1264,7 +1264,7 @@ function incrementYear() {
             token.littleHats = drawIcons(this, token.container.x-20 + ICON_SPACING*3, iconY, 'magaBase', 0, magaHats, token.littleHats,1);
         }
 
-        if (wokeHats) {
+        if (wokeHats > 0) {
             let territory = territories[4]; // arbitrarily picked this territory to return to
             this.returnThreat(territory, 'woke', null, 1, token.container);
             wokeHats--;
