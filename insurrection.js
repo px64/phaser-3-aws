@@ -499,6 +499,8 @@ export class Insurrection extends BaseScene {
         // annoying that restoreMisinformationTokens is here AND in BaseScene.  Need to simplify
         //
         //====================================================================================
+        this.misinformationTokens = []; // Initialize the stack to store misinformation tokens for this scene
+        
         this.restoreMisinformationTokens(this);
 
         // Timer event to increment the year every second
