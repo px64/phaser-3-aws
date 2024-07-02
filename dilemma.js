@@ -1057,6 +1057,7 @@ export class DilemmaScene extends BaseScene {
                     break;
                 }
             }
+
             let oldTokenIcon;
             // If the old tokenIcon is found, replace it with the new one
             if (oldTokenIconIndex !== -1) {
@@ -1065,6 +1066,7 @@ export class DilemmaScene extends BaseScene {
                 console.log('turn off old');
                 //oldTokenIcon.setVisible(false);
             }
+
             let newTokenIcon;
             // If the old tokenIcon is found, replace it with the new one
             if (newTokenIconIndex !== -1) {
@@ -1073,6 +1075,7 @@ export class DilemmaScene extends BaseScene {
                 console.log('turn on new');
                 newTokenIcon.setVisible(true);
             }
+
             // Ensure the new token icon starts invisible
             newTokenIcon.setAlpha(0);
             // Start fading in the new token icon

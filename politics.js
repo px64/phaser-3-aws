@@ -1055,14 +1055,14 @@ export class Politics extends BaseScene {
             container.scene.tweens.add({
                 targets: newTokenIcon,
                 alpha: 1,
-                duration: 500,
+                duration: 1000,
                 ease: 'Sine.easeInOut'
             });
             // Create a tween to fade out the old token icon
             container.scene.tweens.add({
               targets: oldTokenIcon,
               alpha: 0,
-              duration: 500,
+              duration: 1000,
               ease: 'Sine.easeInOut'
             });
         }
