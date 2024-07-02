@@ -63,7 +63,8 @@ export class Insurrection extends BaseScene {
             WokenessVelocity: 0,
             totalPoliticalCapital: 0
         };
-
+        
+        this.misinformationTokens = []; // Initialize the stack to store misinformation tokens for this scene
     }
     // insurrection: we had to switch everything to sharedData
         setup(data) {
