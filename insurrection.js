@@ -1247,8 +1247,20 @@ function incrementYear() {
     console.log('list of all misinformationtokens for this year:');
     this.misinformationTokens.forEach(token => {             
         console.log(token);
-        let magaHats = this.sharedData.misinformation[token.container.misinformationIndex].magaHats;
-        let wokeHats = this.sharedData.misinformation[token.container.misinformationIndex].wokeHats;
+        let magaHats = 0;
+        // Check if misinformation and the specific index are defined before accessing magaHats
+        if (this.sharedData && this.sharedData.misinformation && 
+            this.sharedData.misinformation[token.container.misinformationIndex] &&
+            this.sharedData.misinformation[token.container.misinformationIndex].magaHats !== undefined) {
+            magaHats = this.sharedData.misinformation[token.container.misinformationIndex].magaHats;
+        }
+        let wokeHats = 0;
+        // Check if misinformation and the specific index are defined before accessing magaHats
+        if (this.sharedData && this.sharedData.misinformation && 
+            this.sharedData.misinformation[token.container.misinformationIndex] &&
+            this.sharedData.misinformation[token.container.misinformationIndex].wokeHats !== undefined) {
+            wokeHats = this.sharedData.misinformation[token.container.misinformationIndex].wokeHats;
+        }
         // first we need to clear out all the previous hats
         if (magaHats || wokeHats) {
             if (token.littleHats) {
