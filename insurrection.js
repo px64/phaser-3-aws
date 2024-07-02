@@ -1290,17 +1290,17 @@ function incrementYear() {
         }
         if (thereWereHats && magaHats == 0 && wokeHats == 0 ) {
             // destroy token
-            scene.tweens.add({
+            this.tweens.add({
                 targets: token.container,
                 alpha: 0,
                 scaleX: 0,
                 scaleY: 0,
                 duration: 2000,
                 onComplete: function () {
-                    delete scene.sharedData.misinformation[token.container.misinformationIndex];
+                    delete this.sharedData.misinformation[token.container.misinformationIndex];
                     token.container.destroy();
                 },
-                callbackScope: scene
+                callbackScope: this
             });
         }
     });
