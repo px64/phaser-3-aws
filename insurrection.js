@@ -63,7 +63,8 @@ export class Insurrection extends BaseScene {
             WokenessVelocity: 0,
             totalPoliticalCapital: 0
         };
-
+        
+        this.misinformationTokens = []; // Initialize the stack to store misinformation tokens for this scene
     }
     // insurrection: we had to switch everything to sharedData
         setup(data) {
@@ -491,19 +492,22 @@ export class Insurrection extends BaseScene {
         this.wokeReturns = this.physics.add.group();
         this.magaReturns = this.physics.add.group();
 
+        let scene = this;
         //====================================================================================
         //
         // The following function creates the information/misinformation blockers
         // annoying that restoreMisinformationTokens is here AND in BaseScene.  Need to simplify
         //
         //====================================================================================
+        this.misinformationTokens = []; // Initialize the stack to store misinformation tokens for this scene
+        
         this.restoreMisinformationTokens(this);
 
         // Timer event to increment the year every second
         this.yearTime = this.time.addEvent({
             delay: 1000,
             callback: incrementYear,
-            callbackScope: this,
+            callbackScope: scene,
             loop: true
         });
 
@@ -514,8 +518,6 @@ export class Insurrection extends BaseScene {
             callbackScope: this,
             loop: true
         });
-
-        let scene = this;
 
         // Timer event to adjust Government Size every 7 seconds
         // I think government health should not improve if there are more wokes than magas
@@ -836,72 +838,6 @@ export class Insurrection extends BaseScene {
                       ease: 'Sine.easeInOut'
                     });
 
-                }
-
-                // Draw little hats
-                function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-                    for (let i = startIndex; i < startIndex + count; i++) {
-                        let xOffset = (i % 5) * ICON_SPACING;
-                        let yOffset = Math.floor(i / 5) * ICON_SPACING;
-                        // Each icon will be positioned slightly to the right of the previous one
-                        let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-
-                        // Adjust the size of the icons if necessary
-                        icon.setScale(ICON_SCALE);
-
-                        const jumpHeight = 20; // Adjust the height of the jump
-                        const durationUp = 150; // Duration for the upward movement
-                        const durationDown = 300; // Duration for the downward movement with bounce
-                        // Store the original position
-                        const originalY = icon.y;
-
-                        // Create an infinite loop of jumping
-                        const jump = () => {
-                            // Add the upward movement tween
-                            scene.tweens.add({
-                                targets: icon,
-                                y: originalY - jumpHeight,
-                                ease: 'Power1', // Fast upward movement
-                                duration: durationUp,
-                                onComplete: () => {
-                                    // Add the downward movement tween with bounce effect
-                                    scene.tweens.add({
-                                        targets: icon,
-                                        y: originalY,
-                                        ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                                        duration: durationDown,
-                                        onComplete: jump // Chain the jump to repeat
-                                    });
-                                }
-                            });
-                        };
-                        const murmur = () => {
-                            // Define the horizontal movement range and duration
-                            const murmurWidth = 20; // Move 10 pixels to each side
-                            const durationSide = 500; // Half a second to each side
-
-                            // Start the movement to the right
-                            scene.tweens.add({
-                                targets: icon,
-                                x: icon.x + murmurWidth, // Move to the right
-                                ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                                duration: durationSide,
-                                yoyo: true, // Automatically reverse the tween
-                                repeat: -1, // Loop the tween indefinitely
-                            });
-                        };
-
-                        if (angerLevel == 1) {
-                            // Start the jumping animation with a random delay
-                            scene.time.delayedCall(Math.random() * 500, murmur);
-                        } else {
-                            // Start the jumping animation with a random delay
-                            scene.time.delayedCall(Math.random() * 500, jump);
-                        }
-
-                        littleHats.push(icon);
-                    }
-                    return littleHats;
                 }
 
                 this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
@@ -1234,6 +1170,72 @@ export class Insurrection extends BaseScene {
 
 }
 
+// Draw little hats
+function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
+    for (let i = startIndex; i < startIndex + count; i++) {
+        let xOffset = (i % 5) * ICON_SPACING;
+        let yOffset = Math.floor(i / 5) * ICON_SPACING;
+        // Each icon will be positioned slightly to the right of the previous one
+        let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+
+        // Adjust the size of the icons if necessary
+        icon.setScale(ICON_SCALE);
+
+        const jumpHeight = 20; // Adjust the height of the jump
+        const durationUp = 150; // Duration for the upward movement
+        const durationDown = 300; // Duration for the downward movement with bounce
+        // Store the original position
+        const originalY = icon.y;
+
+        // Create an infinite loop of jumping
+        const jump = () => {
+            // Add the upward movement tween
+            scene.tweens.add({
+                targets: icon,
+                y: originalY - jumpHeight,
+                ease: 'Power1', // Fast upward movement
+                duration: durationUp,
+                onComplete: () => {
+                    // Add the downward movement tween with bounce effect
+                    scene.tweens.add({
+                        targets: icon,
+                        y: originalY,
+                        ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                        duration: durationDown,
+                        onComplete: jump // Chain the jump to repeat
+                    });
+                }
+            });
+        };
+        const murmur = () => {
+            // Define the horizontal movement range and duration
+            const murmurWidth = 20; // Move 10 pixels to each side
+            const durationSide = 500; // Half a second to each side
+
+            // Start the movement to the right
+            scene.tweens.add({
+                targets: icon,
+                x: icon.x + murmurWidth, // Move to the right
+                ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                duration: durationSide,
+                yoyo: true, // Automatically reverse the tween
+                repeat: -1, // Loop the tween indefinitely
+            });
+        };
+
+        if (angerLevel == 1) {
+            // Start the jumping animation with a random delay
+            scene.time.delayedCall(Math.random() * 500, murmur);
+        } else {
+            // Start the jumping animation with a random delay
+            scene.time.delayedCall(Math.random() * 500, jump);
+        }
+
+        littleHats.push(icon);
+    }
+    return littleHats;
+}
+
 function incrementYear() {
     this.sharedData.year++;
     yearText.setText('Year: ' + this.sharedData.year);
@@ -1243,4 +1245,46 @@ function incrementYear() {
     console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
     this.sharedData.totalPoliticalCapital += this.sharedData.MAGAnessVelocity + this.sharedData.WokenessVelocity;
     polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
+    // Every year we send a few threats back home
+    console.log('list of all misinformationtokens for this year:');
+    this.misinformationTokens.forEach(token => {             
+        console.log(token);
+        let magaHats = 0;
+        // Check if misinformation and the specific index are defined before accessing magaHats
+        if (this.sharedData && this.sharedData.misinformation && 
+            this.sharedData.misinformation[token.container.misinformationIndex] &&
+            this.sharedData.misinformation[token.container.misinformationIndex].magaHats !== undefined) {
+            magaHats = this.sharedData.misinformation[token.container.misinformationIndex].magaHats;
+        }
+        let wokeHats = 0;
+        // Check if misinformation and the specific index are defined before accessing magaHats
+        if (this.sharedData && this.sharedData.misinformation && 
+            this.sharedData.misinformation[token.container.misinformationIndex] &&
+            this.sharedData.misinformation[token.container.misinformationIndex].wokeHats !== undefined) {
+            wokeHats = this.sharedData.misinformation[token.container.misinformationIndex].wokeHats;
+        }
+        // first we need to clear out all the previous hats
+        if (magaHats || wokeHats) {
+            if (token.littleHats) {
+                    token.littleHats.forEach(hat => hat.destroy());
+            }
+        }
+        if (magaHats > 0) {
+            let territory = territories[2]; // arbitrarily picked this territory to return to
+            this.returnThreat(territory, 'maga', null, 1, token.container);
+            magaHats--;
+            this.sharedData.misinformation[token.container.misinformationIndex].magaHats = magaHats;
+            let iconY = token.container.y + ICON_MARGIN;
+            token.littleHats = drawIcons(this, token.container.x-20 + ICON_SPACING*3, iconY, 'magaBase', 0, magaHats, token.littleHats,1);
+        }
+
+        if (wokeHats > 0) {
+            let territory = territories[4]; // arbitrarily picked this territory to return to
+            this.returnThreat(territory, 'woke', null, 1, token.container);
+            wokeHats--;
+            this.sharedData.misinformation[token.container.misinformationIndex].wokeHats = wokeHats;
+            let iconY = token.container.y + ICON_MARGIN;
+            token.littleHats = drawIcons(this, token.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', 0, wokeHats, token.littleHats,1);
+        }
+    });
 }

@@ -588,7 +588,9 @@ export default class BaseScene extends Phaser.Scene {
             misinformation.container.misinformationIndex = storedData.misinformationIndex; // restore index too!
             misinformation.container.setInteractive({ draggable: true }); // setInteractive for each defense item
             misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
-
+            scene.misinformationTokens.push(misinformation); // Push token to stack
+            storedData.littleHats = misinformation.littleHats;
+            
             //data.x = xOffset;
             //data.y = yOffset;
         }
