@@ -838,72 +838,6 @@ export class Insurrection extends BaseScene {
 
                 }
 
-                // Draw little hats
-                function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-                    for (let i = startIndex; i < startIndex + count; i++) {
-                        let xOffset = (i % 5) * ICON_SPACING;
-                        let yOffset = Math.floor(i / 5) * ICON_SPACING;
-                        // Each icon will be positioned slightly to the right of the previous one
-                        let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-
-                        // Adjust the size of the icons if necessary
-                        icon.setScale(ICON_SCALE);
-
-                        const jumpHeight = 20; // Adjust the height of the jump
-                        const durationUp = 150; // Duration for the upward movement
-                        const durationDown = 300; // Duration for the downward movement with bounce
-                        // Store the original position
-                        const originalY = icon.y;
-
-                        // Create an infinite loop of jumping
-                        const jump = () => {
-                            // Add the upward movement tween
-                            scene.tweens.add({
-                                targets: icon,
-                                y: originalY - jumpHeight,
-                                ease: 'Power1', // Fast upward movement
-                                duration: durationUp,
-                                onComplete: () => {
-                                    // Add the downward movement tween with bounce effect
-                                    scene.tweens.add({
-                                        targets: icon,
-                                        y: originalY,
-                                        ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                                        duration: durationDown,
-                                        onComplete: jump // Chain the jump to repeat
-                                    });
-                                }
-                            });
-                        };
-                        const murmur = () => {
-                            // Define the horizontal movement range and duration
-                            const murmurWidth = 20; // Move 10 pixels to each side
-                            const durationSide = 500; // Half a second to each side
-
-                            // Start the movement to the right
-                            scene.tweens.add({
-                                targets: icon,
-                                x: icon.x + murmurWidth, // Move to the right
-                                ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                                duration: durationSide,
-                                yoyo: true, // Automatically reverse the tween
-                                repeat: -1, // Loop the tween indefinitely
-                            });
-                        };
-
-                        if (angerLevel == 1) {
-                            // Start the jumping animation with a random delay
-                            scene.time.delayedCall(Math.random() * 500, murmur);
-                        } else {
-                            // Start the jumping animation with a random delay
-                            scene.time.delayedCall(Math.random() * 500, jump);
-                        }
-
-                        littleHats.push(icon);
-                    }
-                    return littleHats;
-                }
-
                 this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
                     if (threat.icon.woke > threat.icon.maga) {
                         console.log("don't destroy threat: it's going to help!");
@@ -1232,6 +1166,72 @@ export class Insurrection extends BaseScene {
         } // this.roundThreats != 0
     } // end of update()
 
+}
+
+// Draw little hats
+function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
+    for (let i = startIndex; i < startIndex + count; i++) {
+        let xOffset = (i % 5) * ICON_SPACING;
+        let yOffset = Math.floor(i / 5) * ICON_SPACING;
+        // Each icon will be positioned slightly to the right of the previous one
+        let icon = scene.add.image(x + xOffset, y + yOffset, texture);
+
+        // Adjust the size of the icons if necessary
+        icon.setScale(ICON_SCALE);
+
+        const jumpHeight = 20; // Adjust the height of the jump
+        const durationUp = 150; // Duration for the upward movement
+        const durationDown = 300; // Duration for the downward movement with bounce
+        // Store the original position
+        const originalY = icon.y;
+
+        // Create an infinite loop of jumping
+        const jump = () => {
+            // Add the upward movement tween
+            scene.tweens.add({
+                targets: icon,
+                y: originalY - jumpHeight,
+                ease: 'Power1', // Fast upward movement
+                duration: durationUp,
+                onComplete: () => {
+                    // Add the downward movement tween with bounce effect
+                    scene.tweens.add({
+                        targets: icon,
+                        y: originalY,
+                        ease: 'Bounce.easeOut', // Bounce effect on downward movement
+                        duration: durationDown,
+                        onComplete: jump // Chain the jump to repeat
+                    });
+                }
+            });
+        };
+        const murmur = () => {
+            // Define the horizontal movement range and duration
+            const murmurWidth = 20; // Move 10 pixels to each side
+            const durationSide = 500; // Half a second to each side
+
+            // Start the movement to the right
+            scene.tweens.add({
+                targets: icon,
+                x: icon.x + murmurWidth, // Move to the right
+                ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
+                duration: durationSide,
+                yoyo: true, // Automatically reverse the tween
+                repeat: -1, // Loop the tween indefinitely
+            });
+        };
+
+        if (angerLevel == 1) {
+            // Start the jumping animation with a random delay
+            scene.time.delayedCall(Math.random() * 500, murmur);
+        } else {
+            // Start the jumping animation with a random delay
+            scene.time.delayedCall(Math.random() * 500, jump);
+        }
+
+        littleHats.push(icon);
+    }
+    return littleHats;
 }
 
 function incrementYear() {
