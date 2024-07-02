@@ -1230,8 +1230,8 @@ export class Politics extends BaseScene {
                 console.log('extraTokens = ' + scene.extraMisinformationTokens);
                 scene.extraMisinformationTokens = 0;
 
-                this.restoreMisinformationTokens(this);
-        /*
+                //this.restoreMisinformationTokens(this);
+
                 // Restore all the old misinformation Tokens first
                 for (let key in scene.sharedData.misinformation) {
                     // Look up the stored data
@@ -1272,7 +1272,7 @@ export class Politics extends BaseScene {
                     scene.misinformationTokens.push(misinformation); // Push token to stack
                     storedData.littleHats = misinformation.littleHats;
                 }
-                */
+                
                 console.log('on startup, misinformation tokens map:');
                 console.log(scene.misinformationTokens);
             }
