@@ -1243,4 +1243,17 @@ function incrementYear() {
     console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
     this.sharedData.totalPoliticalCapital += this.sharedData.MAGAnessVelocity + this.sharedData.WokenessVelocity;
     polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
+    // Every year we send a few threats back home
+    scene.misinformationTokens.forEach(token => {             
+        let magaHats = scene.sharedData.misinformation[token.container.misinformationIndex].magaHats;
+        if (magaHats) {
+            let territory = territories[2]; // arbitrarily picked this territory to return to
+            scene.returnThreat(territory, 'maga', null, 1, token.container);
+        }
+        let wokeHats = scene.sharedData.misinformation[token.container.misinformationIndex].wokeHats;
+        if (wokeHats) {
+            territory = territories[4]; // arbitrarily picked this territory to return to
+            scene.returnThreat(territory, 'woke', null, 1, token.container);
+        }
+    });
 }
