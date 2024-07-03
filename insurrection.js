@@ -1258,7 +1258,6 @@ function incrementYear() {
     // Every year we send a few threats back home
     console.log('list of all misinformationtokens for this year:');
     this.misinformationTokens.forEach(token => {
-        console.log(token);
         let magaHats = 0;
         // Check if misinformation and the specific index are defined before accessing magaHats
         if (this.sharedData && this.sharedData.misinformation &&
