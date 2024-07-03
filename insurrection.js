@@ -135,9 +135,11 @@ export class Insurrection extends BaseScene {
         this.roundThreats = 0;
         this.haventLaunchedYet = true;
         this.switchScene = false;
+        this.aliensInvade = false;
         console.log('reset switchScene to false');
         this.alreadyCreated = {};
         this.changedBackgroundOnce = false;
+        this.startingYear = this.sharedData.year;
 
         //====================================================================================
         //
@@ -280,10 +282,14 @@ export class Insurrection extends BaseScene {
             // if (this.sharedData.MAGAness == 0 && this.sharedData.Wokeness == 0 && this.sharedData.putieTerritories < territories.length/2) {
             //                 sanity_check = 0;
             //             }
+            // 1. we detect that aliens are going to attack
+            // 2. but we want to give a few more years to go by before the invasion
+            // 3. so we don't want to set switchscene to true yet because if we do, then collapse can no longer happen
+            // -- we could have an aliens are invading flag or a keep checking for collapse flag
             //console.log('check for alien invasion '+ sanity_check + ' switchScene = '+ this.switchScene);
-            if ((this.sharedData.year > 2030) && (sanity_check < this.difficultyLevel().oddsOfAlienAttack)  && this.switchScene == false) {
-                this.switchScene = true;
-                console.log('go to Aliens Attack screen.  this.switchscene = true');
+            if ((this.sharedData.year > 2030) && (sanity_check < this.difficultyLevel().oddsOfAlienAttack)  && this.aliensInvade == false) {
+                this.aliensInvade = true;
+                console.log('go to Aliens Attack screen.  this.aliensInvade = true');
                 // Add persistent message text
                 let messageText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, 'Invasion Imminent!', {
                     fontFamily: 'Arial',
@@ -301,7 +307,7 @@ export class Insurrection extends BaseScene {
                     }
                 });
 
-                this.cameras.main.fadeOut(7000, 0, 0, 0);
+                this.cameras.main.fadeOut((7 - (this.sharedData.year - this.startingYear)) * 1000, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                     this.scene.get('AliensAttack').setup(this.sharedData);
                     this.scene.start('AliensAttack');
