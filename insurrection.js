@@ -1033,8 +1033,11 @@ export class Insurrection extends BaseScene {
                     console.log('End of 10 seconds.  switchScene = ' + this.switchScene);
                     this.cameras.main.fadeOut(2000, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                        this.scene.get('politics').setup(this.sharedData);
-                        this.scene.start('politics');
+                        if (this.aliensInvade == false) // pretty ugly, but need to make sure aliens didn't suddenly invade at the last second
+                        {
+                            this.scene.get('politics').setup(this.sharedData);
+                            this.scene.start('politics');
+                        }
                     });
                 }
             });
