@@ -243,7 +243,7 @@ export class Insurrection extends BaseScene {
 
                 const checkAndProceed = () => {
                     if (tweenCompleted && scene.putieCompleted && scene.aliensInvade == false) {
-                        this.switchScene = true;
+                        scene.switchScene = true;
                         setTimeout(() => {
                             // Show the collapse screen
                             scene.collapseScreenShown = true;
