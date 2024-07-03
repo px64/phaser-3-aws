@@ -524,7 +524,7 @@ export default class BaseScene extends Phaser.Scene {
                 // Enable world bounds event for this body
                 threat.body.onWorldBounds = true;
                 if (icon) {
-                    icon[faction] -= numThreats;
+                    icon[faction] -= 5; // don't forget that faction is a multiple of 5
                     // Note that drawGauges is an arrow function so it keeps 'this' from this context
                     icon.littleHats = this.drawGauges(this, icon.icon.x, icon.icon.y, icon.maga, icon.woke, icon.health, icon.healthScale, icon.gaugeMaga, icon.gaugeWoke, icon.gaugeHealth, icon.scaleSprite, icon.littleHats);
                 }
