@@ -644,12 +644,17 @@ export class DilemmaScene extends BaseScene {
 
         let startingHeight = Math.min(scenarioText.y + scenarioText.displayHeight-20, this.sys.game.config.height - 180);
         let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, startingHeight, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.fontSize,fontFamily: 'Roboto' });
-
+        // Measure the height of the text, including any line breaks
+        let textHeight = makeAChoiceText.displayHeight;
+        
+        // Calculate the new y position for this row based on the total heigh
+        startingHeight += textHeight+10;
+        
         this.decisionGroup.push(makeAChoiceText); // Add decision Title to the group
 
         this.isTweening = false;
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + 38 + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
