@@ -1028,7 +1028,7 @@ export class Insurrection extends BaseScene {
             this.haventLaunchedYet = false;
             // After 10 seconds we go to politics
             this.time.delayedCall(10000, () => {
-                if (this.switchScene == false) {
+                if (this.switchScene == false && this.aliensInvade == false) {
                     this.switchScene = true;
                     console.log('End of 10 seconds.  switchScene = ' + this.switchScene);
                     this.cameras.main.fadeOut(2000, 0, 0, 0);
