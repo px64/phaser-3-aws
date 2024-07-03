@@ -319,6 +319,7 @@ export class Insurrection extends BaseScene {
                 let iconData = this.sharedData.icons[key];
                 // A second collapse condition as long as we haven't had a collapse yet in this scene
                 if (this.switchScene == false) {
+                    console.log('total number of maga at '+iconData.textBody+' = '+iconData.maga+ ' and woke = '+iconData.woke);
                     if (iconData.health < 1 || Math.abs(iconData.maga - iconData.woke) > 100 || iconData.maga + iconData.woke > 145) {
                         handleCollapse(this, iconData, key, territories, createPutieThreat);
                         this.switchScene = true;
