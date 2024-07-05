@@ -54,6 +54,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
         this.load.image('checkboxUnchecked', 'assets/checkboxUnchecked.png');
         this.load.image('checkboxChecked', 'assets/checkboxChecked.png');
+        this.load.image('capitalIcon', 'assets/capitalIcon.png');
 
     }
 
@@ -143,8 +144,8 @@ export default class BaseScene extends Phaser.Scene {
         let icon = this.physics.add.sprite(xPos, yPos, iconName).setAlpha(.8).setScale(scaleFactor);
         //let gaugeMaga; = this.add.graphics();
         //let gaugeWoke; = this.add.graphics();
-        let scaleSprite = this.physics.add.sprite(xPos, yPos+60, 'scale_body').setScale(0.06).setDepth(1).setAlpha(1);
-        let gaugeMaga = this.physics.add.sprite(xPos, yPos+60, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(1);
+        let scaleSprite = this.physics.add.sprite(xPos, yPos+60, 'scale_body').setScale(0.06).setDepth(1).setAlpha(0); // make invisible
+        let gaugeMaga = this.physics.add.sprite(xPos, yPos+60, 'scale_arms').setScale(0.06).setDepth(1).setAlpha(0); // make invisible
         let gaugeWoke = gaugeMaga;
 
         let gaugeHealth = this.add.graphics();
@@ -544,6 +545,28 @@ export default class BaseScene extends Phaser.Scene {
         }
     }
 
+    updatePoliticalCapitalIcons(totalCapital) {
+        // Clear existing icons
+        this.politicalCapitalIcons.forEach(icon => icon.destroy());
+        this.politicalCapitalIcons = [];
+
+        // Calculate number of icons needed
+        let numIcons = Math.ceil(totalCapital / 4);
+
+        for (let i = 0; i < numIcons; i++) {
+            let x = 50 + i * 40; // Horizontal placement, adjust spacing to your needs
+            let y = 25; // Vertical position of icons
+            let icon = this.add.image(x, y, 'capitalIcon').setScale(0.05); // Scale as needed
+            this.politicalCapitalIcons.push(icon);
+        }
+    }
+
+    // Example function to change political capital and update the display
+    changePoliticalCapital(amount) {
+        this.politicalCapital += amount;
+        this.updatePoliticalCapitalIcons();
+    }
+
     //====================================================================================
     // function restoreMisinformationTokens(scene)
     // function that recreates the information/misinformation blockers
@@ -590,7 +613,7 @@ export default class BaseScene extends Phaser.Scene {
             misinformation.sprite.setImmovable(true); // after setting container you need to set immovable again
             scene.misinformationTokens.push(misinformation); // Push token to stack
             storedData.littleHats = misinformation.littleHats;
-            
+
             //data.x = xOffset;
             //data.y = yOffset;
         }
@@ -969,6 +992,7 @@ export default class BaseScene extends Phaser.Scene {
         }
         return littleHats;
     }
+
 //    1. Character creates a barricade
 //    2. Character "creates" a new power token (called powerToken).
 //       --These tokens can also be used to boost the strength of an icon, but increases maga or wokeness of another icon when it's done.

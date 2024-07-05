@@ -61,7 +61,7 @@ function renderCharacters(scene) {
     }
 
     console.log('sanity test.  charFont is '+scene.sharedData.charFont);
-    
+
     characters.forEach((character, index) => {
         if (character.dne) { return; }
         // Keep separate track of the MAGA and Woke character placement row offsets
@@ -87,16 +87,16 @@ function renderCharacters(scene) {
         }
         let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
         let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
-        
+
         let charText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
                             { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
-  
+
         // Measure the height of the text, including any line breaks
         let textHeight = charText.displayHeight;
-        
+
         // Calculate the new y position for this row based on the total height of the previous rows
         let newY = 250 + rowIndex * (textHeight + 10);
-        
+
         // Set the new Y position for the text object
         charText.setY(newY);
 
@@ -232,6 +232,7 @@ function updateCharVal(scene, character, value, characterText) {
     scene.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
     scene.polCapText.setColor('#00ff00'); // Change text color back to green
     scene.polCapText.setBackgroundColor('#000000'); // Change background color back to black
+    scene.updatePoliticalCapitalIcons(tmpMAG+tmpWok);
 
     // Save the previous value for next calculation
     character.prevValue = value;

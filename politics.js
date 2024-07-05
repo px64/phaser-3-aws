@@ -86,6 +86,8 @@ export class Politics extends BaseScene {
             character.endorsement = 0;
         });
         this.misinformationTokens = []; // Initialize the stack to store tokens
+        this.politicalCapitalIcons = []; // Array to keep track of icons
+
     }
     // politics
     setup(data) {
@@ -273,7 +275,9 @@ export class Politics extends BaseScene {
 
         let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
-        this.polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
+        this.polCapText = this.add.text(20, 400, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
+
+        this.updatePoliticalCapitalIcons(totalCapital); // Initial draw of icons
 
         // Create Year text
         this.yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
@@ -2378,6 +2382,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
                 this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
                 this.polCapText.setColor('#00ff00'); // Change text color back to green
                 this.polCapText.setBackgroundColor('#000000'); // Change background color back to black
+                this.updatePoliticalCapitalIcons(tmpMAG+tmpWok);
 
                 // Save the previous value for next calculation
                 character.prevValue = value;
