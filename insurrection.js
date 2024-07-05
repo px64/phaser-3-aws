@@ -1256,6 +1256,8 @@ function incrementYear() {
     console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
     this.sharedData.totalPoliticalCapital += this.sharedData.MAGAnessVelocity + this.sharedData.WokenessVelocity;
     polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
+    this.updatePoliticalCapitalIcons(this.sharedData.MAGAness + this.sharedData.Wokeness);
+
     // Every year we send a few threats back home
     console.log('list of all misinformationtokens for this year:');
     this.misinformationTokens.forEach(token => {
