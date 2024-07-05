@@ -361,7 +361,7 @@ export class Insurrection extends BaseScene {
 
             console.log('total political capital is now '+ this.sharedData.totalPoliticalCapital);
             polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
-
+            this.updatePoliticalCapitalIcons(this.sharedData.MAGAness + this.sharedData.Wokeness);
 /*
             MAGAnessText.setText('MAGA political\ncapital: ' + this.sharedData.MAGAness);
 
@@ -476,7 +476,7 @@ export class Insurrection extends BaseScene {
 
         let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
-        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
+        polCapText = this.add.text(20, 200, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
 
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
