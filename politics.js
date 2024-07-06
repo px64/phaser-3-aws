@@ -60,7 +60,7 @@ var justiceStrength = 5;
 var charVal = {};
 
 const ICON_MARGIN = 10;
-const GAUGE_HEIGHT = 50;
+const GAUGE_HEIGHT = 30;
 const ICON_SPACING = 10;
 const ICON_SCALE = 0.03;
 
