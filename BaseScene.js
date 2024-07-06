@@ -551,7 +551,7 @@ export default class BaseScene extends Phaser.Scene {
         this.politicalCapitalIcons = [];
 
         // Calculate number of icons needed
-        let numIcons = Math.ceil(totalCapital / 4);
+        let numIcons = Math.floor(totalCapital / 4);
 
         for (let i = 0; i < numIcons; i++) {
             let x = 50 + i * 40; // Horizontal placement, adjust spacing to your needs

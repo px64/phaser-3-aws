@@ -94,6 +94,7 @@ export class DilemmaScene extends BaseScene {
             totalPoliticalCapital: 0
         };
         this.misinformationTokens = []; // Initialize the stack to store tokens temporarily for this scene
+        this.politicalCapitalIcons = [];
         this.picker = new ScenarioPicker([0, 1, 2, 3]);
         this.scenarioNumber = this.picker.getRandomScenario();
     }
@@ -209,8 +210,8 @@ export class DilemmaScene extends BaseScene {
 
         let totalCapital = Math.floor(this.sharedData.MAGAness + this.sharedData.Wokeness);
 
-        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
-
+        polCapText = this.add.text(20, 200, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
+        this.updatePoliticalCapitalIcons(totalCapital);
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
 
@@ -645,10 +646,10 @@ export class DilemmaScene extends BaseScene {
         let makeAChoiceText = this.add.text(this.sys.game.config.width/2 - 240, startingHeight, 'Please Make A Choice:', { color: '#0ff', fontSize: this.sharedData.fontSize,fontFamily: 'Roboto' });
         // Measure the height of the text, including any line breaks
         let textHeight = makeAChoiceText.displayHeight;
-        
+
         // Calculate the new y position for this row based on the total heigh
         startingHeight += textHeight+10;
-        
+
         this.decisionGroup.push(makeAChoiceText); // Add decision Title to the group
 
         this.isTweening = false;
