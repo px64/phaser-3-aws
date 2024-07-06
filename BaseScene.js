@@ -227,10 +227,10 @@ export default class BaseScene extends Phaser.Scene {
     // you're icon may be strong, but not very stable
 
     drawNewHealthGauge(icon) {
-        const ICON_MARGIN = 10;
-        const GAUGE_HEIGHT = 50;
-        const ICON_SPACING = 10;
-        const ICON_SCALE = 0.03;
+        //const ICON_MARGIN = 10;
+        //const GAUGE_HEIGHT = 50;
+        //const ICON_SPACING = 10;
+        //const ICON_SCALE = 0.03;
         let posX = icon.icon.x;
         let posY = icon.icon.y;
         let healthGauge = icon.gaugeHealth;
