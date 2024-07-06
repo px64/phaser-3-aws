@@ -749,7 +749,7 @@ export class Insurrection extends BaseScene {
                     let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
                     let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
                     let totalHats = magaHats + wokeHats;
-                    if (totalHats >  5) {
+                    if (totalHats >  15) {
                         console.log('delete index ' + defense.container.misinformationIndex);
                         // Check if defense.littleHats exists before trying to iterate over it
                         if (defense.littleHats) {
@@ -859,7 +859,7 @@ export class Insurrection extends BaseScene {
                     let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
                     let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
                     let totalHats = magaHats + wokeHats;
-                    if (totalHats >  5) {
+                    if (totalHats >  15) {
                         console.log('delete index ' + defense.container.misinformationIndex);
 
                         // Check if defense.littleHats exists before trying to iterate over it
@@ -1033,14 +1033,12 @@ export class Insurrection extends BaseScene {
             this.time.delayedCall(10000, () => {
                 if (this.switchScene == false && this.aliensInvade == false) {
                     this.switchScene = true;
+                    this.aliensInvade = true; // don't allow aliens to invade during transition
                     console.log('End of 10 seconds.  switchScene = ' + this.switchScene);
                     this.cameras.main.fadeOut(2000, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
-                        if (this.aliensInvade == false) // pretty ugly, but need to make sure aliens didn't suddenly invade at the last second
-                        {
-                            this.scene.get('politics').setup(this.sharedData);
-                            this.scene.start('politics');
-                        }
+                        this.scene.get('politics').setup(this.sharedData);
+                        this.scene.start('politics');
                     });
                 }
             });

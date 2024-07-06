@@ -217,7 +217,7 @@ export class Scene2 extends BaseScene {
             ideology: 'maga',
             totalPoliticalCapital: 0
         };
-
+        this.politicalCapitalIcons = [];
     }
     // Alien Invasion
     setup(data) {
@@ -344,7 +344,8 @@ export class Scene2 extends BaseScene {
 
         let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
-        polCapText = this.add.text(20, 0, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
+        polCapText = this.add.text(20, 200, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
+        this.updatePoliticalCapitalIcons(totalCapital);
 
         // Create Year text
         yearText = this.add.text(this.sys.game.config.width * .8, 0, 'Year: ' + this.sharedData.year, { fontSize: this.sharedData.medFont, fill: '#fff' });
@@ -478,6 +479,7 @@ export class Scene2 extends BaseScene {
             if (threat.hitpoints <= 0) {
                 this.MAGAness += threat.score;
                 polCapText.setText('Political Capital ' + Math.floor((this.MAGAness + this.Wokeness)).toString());
+                this.updatePoliticalCapitalIcons(this.MAGAness + this.Wokeness);
                 this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
             }
@@ -489,6 +491,7 @@ export class Scene2 extends BaseScene {
             if (threat.hitpoints <= 0) {
                 this.Wokeness += threat.score;
                 polCapText.setText('Political Capital: ' + Math.floor((this.MAGAness + this.Wokeness)).toString());
+                this.updatePoliticalCapitalIcons(this.MAGAness + this.Wokeness);
                 this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
             }
