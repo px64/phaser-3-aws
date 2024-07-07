@@ -249,6 +249,8 @@ function updateCharVal(scene, character, value, characterText) {
         scene.transitionToNewScene = 1;
         scene.currentTutorialIndex = 99;
         let message = 'Political Capital has been Allocated!';
+        // debug: is military allocation set?
+        console.log('Military Allocation = '+scene.militaryAllocation);
 
         // Create a text object to display a victory message
         let nextSceneText = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, message, {
