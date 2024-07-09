@@ -997,7 +997,7 @@ export class DilemmaScene extends BaseScene {
             let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
             let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
             let totalHats = magaHats + wokeHats;
-            if (totalHats >  5) {
+            if (totalHats >  15) {
                 console.log('delete index ' + defense.container.misinformationIndex);
                 // Check if defense.littleHats exists before trying to iterate over it
                 if (defense.littleHats) {
@@ -1175,7 +1175,7 @@ export class DilemmaScene extends BaseScene {
             let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
             let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
             let totalHats = magaHats + wokeHats;
-            if (totalHats >  5) {
+            if (totalHats >  15) {
                 console.log('delete index ' + defense.container.misinformationIndex);
 
                 // Check if defense.littleHats exists before trying to iterate over it
