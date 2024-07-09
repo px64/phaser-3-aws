@@ -240,7 +240,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         color: textColor,
         align: 'right'
     });
-    backstoryText.setOrigin(1, 0);
+    backstoryText.setOrigin(0, 0);
     backstoryText.setVisible(false);
     backstoryText.setDepth(3);
 
