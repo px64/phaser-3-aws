@@ -191,7 +191,7 @@ export function introduceCharacters(scene, characters, sharedData) {
     //====================================================================================
     //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
     //====================================================================================
-    function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
+    function createCharacterTooltipNew(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
     // Set text color based on affiliation
     let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
     let xOffset = character.faction === 'maga' ? 80 + scene.game.config.width * 0.4 : scene.game.config.width * -0.24;
@@ -309,7 +309,7 @@ export function introduceCharacters(scene, characters, sharedData) {
     characterText.on('pointerout', mouseOff);
 }
 
-    function createCharacterTooltipOld(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
+    function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
         // Set text color based on affiliation
         let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
         let xOffset = character.faction === 'maga' ? 80 + scene.game.config.width * .4 : scene.game.config.width * -.24;
