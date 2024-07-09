@@ -245,17 +245,17 @@ export function introduceCharacters(scene, characters, sharedData) {
     backstoryText.setDepth(3);
 
     // Add a character icon next to the text on the left side within the bounding box
-    let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 40, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
+    let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 60, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
     characterIcon.setScale(.18);
     characterIcon.setOrigin(0.5, 0.5);
     characterIcon.setVisible(false);
     characterIcon.setDepth(2);
 
     // Adjust the bounding box to accommodate the character icon
-    let boundingBoxWidth = backstoryText.width + characterIcon.displayWidth + 40; // Add space for the character icon and some padding
+    let boundingBoxWidth = backstoryText.width + characterIcon.displayWidth + 10; // Add space for the character icon and some padding
     let boundingBoxHeight = backstoryText.height + backstoryIcon.displayHeight;
 
-    let backstoryBox = scene.add.rectangle(backstoryText.x-40, backstoryText.y - backstoryIcon.displayHeight / 2, boundingBoxWidth, boundingBoxHeight, 0x000000, 1);
+    let backstoryBox = scene.add.rectangle(characterIcon.x, characterIcon.y - backstoryIcon.displayHeight / 2, boundingBoxWidth, boundingBoxHeight, 0x000000, 1);
     backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
     backstoryBox.isStroked = true;
     backstoryBox.setOrigin(0.5, 0);
