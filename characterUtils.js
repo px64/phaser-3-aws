@@ -247,7 +247,7 @@ export function introduceCharacters(scene, characters, sharedData) {
     // Add a character icon next to the text on the left side within the bounding box
     let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 60, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
     characterIcon.setScale(.18);
-    characterIcon.setOrigin(0.5, 0.5);
+    characterIcon.setOrigin(1, 0.5);
     characterIcon.setVisible(false);
     characterIcon.setDepth(2);
 
