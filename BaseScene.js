@@ -55,7 +55,17 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('checkboxUnchecked', 'assets/checkboxUnchecked.png');
         this.load.image('checkboxChecked', 'assets/checkboxChecked.png');
         this.load.image('capitalIcon', 'assets/capitalIcon.png');
-
+        this.load.image('Caldwell', 'assets/Caldwell.png');
+        this.load.image('Chen', 'assets/Chen.png');
+        this.load.image('EagleEye', 'assets/EagleEye.png');
+        this.load.image('Franklin', 'assets/Franklin.png');
+        this.load.image('Greenfield', 'assets/Greenfield.png');
+        this.load.image('Harmon', 'assets/Harmon.png');
+        this.load.image('Hartwell', 'assets/Hartwell.png');
+        this.load.image('Jackson', 'assets/Jackson.png');
+        this.load.image('Martinez', 'assets/Martinez.png');
+        this.load.image('Maya', 'assets/Maya.png');
+        this.load.image('Sasha', 'assets/Sasha.png');
     }
 
 
