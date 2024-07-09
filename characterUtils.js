@@ -176,7 +176,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         }
         let icon = scene.add.sprite(50+xOffset, 260 + (rowIndex * 60), tmpHelp).setScale(scaleFactor.helps/2);
         //let hatType = scene.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), factionIcon).setScale(.1);
-        let charIcon = scene.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), character.characterIcon).setScale(.1);
+        let charIcon = scene.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), character.characterIcon).setScale(.03);
 
         //character.charText = characterText; // back reference to text so we can find the location later
 
