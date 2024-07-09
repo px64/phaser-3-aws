@@ -252,8 +252,8 @@ export function introduceCharacters(scene, characters, sharedData) {
     characterIcon.setDepth(2);
 
     // Calculate the top left corner of the characterIcon
-    let characterIconTopLeftX = characterIcon.x - (characterIcon.width * characterIcon.scaleX * 0.5);
-    let characterIconTopLeftY = characterIcon.y - (characterIcon.height * characterIcon.scaleY * 0.5);
+    let characterIconTopLeftX = characterIcon.x - (characterIcon.width * 0.18 * 0.5);
+    let characterIconTopLeftY = characterIcon.y - (characterIcon.height * 0.18 * 0.5);
 
     // Adjust the bounding box to accommodate the character icon
     let boundingBoxWidth = backstoryText.displayWidth + characterIcon.displayWidth + 10; // Add space for the character icon and some padding
