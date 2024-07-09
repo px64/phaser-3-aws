@@ -1036,7 +1036,8 @@ export const characters = [
         dne: false,
         magaLevel: 1,
         wokeLevel: 3,
-        fogLevel: 2
+        fogLevel: 2,
+        characterIcon: 'Welch'
     },
     {
         name: 'Commander Jackson',
@@ -1064,7 +1065,8 @@ export const characters = [
         dne: false,
         fogLevel: 2,
         magaLevel: 1,
-        wokeLevel: 3
+        wokeLevel: 3,
+        characterIcon: 'Jackson'
     },
     {
         name: 'Dr. Emily Hartwell',
@@ -1092,7 +1094,8 @@ export const characters = [
         dne: false,
         fogLevel: 2,
         magaLevel: 2,
-        wokeLevel: 4
+        wokeLevel: 4,
+        characterIcon: 'Hartwell'
     },
     {
         name: 'Andrew "Drew" Barnes',
@@ -1118,7 +1121,8 @@ export const characters = [
         dne: false,
         magaLevel: 1,
         wokeLevel: 3,
-        fogLevel: 2
+        fogLevel: 2,
+        characterIcon: 'Barnes'
     },
     {
         name: "Ethan 'EagleEye' Thompson",
@@ -1140,7 +1144,8 @@ export const characters = [
         dne: false,
         magaLevel: 1,
         wokeLevel: 2,
-        fogLevel: 1
+        fogLevel: 1,
+        characterIcon: 'EagleEye'
     },
     {
         name:  'Ambassador Aria Chen',
@@ -1167,7 +1172,8 @@ export const characters = [
         dne: false,
         magaLevel: 3,
         wokeLevel: 1,
-        fogLevel: 2
+        fogLevel: 2,
+        characterIcon: 'Chen'
     },
     {
         name:  'Dr. James Baldwin',
@@ -1194,7 +1200,8 @@ export const characters = [
         dne: false,
         magaLevel: 3,
         wokeLevel: 1,
-        fogLevel: 2
+        fogLevel: 2,
+        characterIcon: 'Baldwin'
     },
     {
         name:  'Maya Rodriguez',
@@ -1218,7 +1225,8 @@ export const characters = [
         dne: false,
         magaLevel: 2,
         wokeLevel: 1,
-        fogLevel: 1
+        fogLevel: 1,
+        characterIcon: 'Maya'
     },
     {
         name: 'Sasha Goldman',
@@ -1243,7 +1251,8 @@ export const characters = [
         dne: false,
         magaLevel: 3,
         wokeLevel: 1,
-        fogLevel: 1
+        fogLevel: 1,
+        characterIcon: 'Sasha'
     },
     {
         name: 'Senator Patricia Greenfield',
@@ -1270,7 +1279,8 @@ export const characters = [
         dne: false,
         magaLevel: 1,
         wokeLevel: 3,
-        fogLevel: 1
+        fogLevel: 1,
+        characterIcon: 'Greenfield'
 },
 {
         name: "Rene Stellar",
@@ -1296,7 +1306,8 @@ export const characters = [
         dne: false,
         magaLevel: 3,
         wokeLevel: 1,
-        fogLevel: 2
+        fogLevel: 2,
+        characterIcon: 'Stellar'
 },
 {
     name: "Justice Benjamin Harmon",
@@ -1323,7 +1334,8 @@ export const characters = [
     dne: false,
     magaLevel: 1,
     wokeLevel: 3,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Harmon'
 },
 {
     name: "Professor Isabelle Martinez",
@@ -1350,7 +1362,8 @@ export const characters = [
     dne: false,
     magaLevel: 3,
     wokeLevel: 1,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Martinez'
 },
 {
     name: "Dr. Max Greenfield",
@@ -1374,7 +1387,8 @@ export const characters = [
     dne: false,
     magaLevel: 3,
     wokeLevel: 1,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Max'
 },
 {
     name: "Dr. Laura Franklin",
@@ -1397,7 +1411,8 @@ export const characters = [
     dne: false,
     magaLevel: 4,
     wokeLevel: 3,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Franklin'
 },
 {
     name: "Senator John Caldwell",
@@ -1420,7 +1435,8 @@ export const characters = [
     dne: false,
     magaLevel: 2,
     wokeLevel: 4,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Caldwell'
 },
 {
     name: 'Senator Linda Sterling',
@@ -1446,10 +1462,9 @@ export const characters = [
     dne: false,
     magaLevel: 1,
     wokeLevel: 2,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Sterling'
 },
-
-
 {
     name: "Ambassador Charlotte Grant",
     faction: "maga",
@@ -1471,11 +1486,9 @@ export const characters = [
     dne: false,
     magaLevel: 2,
     wokeLevel: 4,
-    fogLevel: 2
+    fogLevel: 2,
+    characterIcon: 'Grant'
 }
-
-
-
 ];
 //        - limited missiles to fire: more missiles
 //        - faster missiles
