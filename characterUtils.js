@@ -245,7 +245,7 @@ export function introduceCharacters(scene, characters, sharedData) {
     backstoryText.setDepth(3);
 
     // Add a character icon next to the text on the left side within the bounding box
-    let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 60, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
+    let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 20, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
     characterIcon.setScale(.18);
     characterIcon.setOrigin(1, 0.5);
     characterIcon.setVisible(false);
@@ -256,7 +256,7 @@ export function introduceCharacters(scene, characters, sharedData) {
     let characterIconTopLeftY = characterIcon.y - (characterIcon.height * 0.18 * 0.5);
 
     // Adjust the bounding box to accommodate the character icon
-    let boundingBoxWidth = backstoryText.displayWidth + characterIcon.displayWidth + 10; // Add space for the character icon and some padding
+    let boundingBoxWidth = backstoryText.displayWidth + characterIcon.displayWidth + 60; // Add space for the character icon and some padding
     let boundingBoxHeight = backstoryText.displayHeight + backstoryIcon.displayHeight;
 
     let backstoryBox = scene.add.rectangle(characterIconTopLeftX, characterIconTopLeftY, boundingBoxWidth, boundingBoxHeight, 0x000000, 1);
