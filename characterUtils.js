@@ -273,7 +273,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         hurtsLabel.setOrigin(0, 1);
         hurtsLabel.setVisible(false);
         hurtsLabel.setDepth(2);
-
+        
+        // Add a character icon next to the text on the left side within the bounding box
+        let characterIcon = scene.add.image(backstoryBox.x - backstoryBox.width / 2 - 20, backstoryBox.y + backstoryBox.height / 2, character.characterIcon);
+        characterIcon.setScale(.25); // Adjust scale as needed
+        characterIcon.setOrigin(0.5, 0.5);
+        characterIcon.setVisible(false);
+        characterIcon.setDepth(2);
+        
         const mouseOver = () => {
             backstoryText.setVisible(true);
             backstoryBox.setVisible(true);
@@ -281,6 +288,7 @@ export function introduceCharacters(scene, characters, sharedData) {
             backstoryHurtIcon.setVisible(true);
             helpsLabel.setVisible(true);
             hurtsLabel.setVisible(true);
+            characterIcon.setVisible(true); // Show the character icon on mouse over
         };
 
         const mouseOff = () => {
@@ -290,6 +298,8 @@ export function introduceCharacters(scene, characters, sharedData) {
             backstoryHurtIcon.setVisible(false);
             helpsLabel.setVisible(false);
             hurtsLabel.setVisible(false);
+            characterIcon.setVisible(false); // Show the character icon on mouse over
+
         };
 
         slider.on('pointerover', mouseOver);
