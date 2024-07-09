@@ -247,12 +247,12 @@ export function introduceCharacters(scene, characters, sharedData) {
     // Add a character icon next to the text on the left side within the bounding box
     let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 20, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
     characterIcon.setScale(.18);
-    characterIcon.setOrigin(1, 0.5);
+    characterIcon.setOrigin(1, 0);//0.5); // try shifting to the right by ".5" whatever that means
     characterIcon.setVisible(false);
     characterIcon.setDepth(2);
 
     // Calculate the top left corner of the characterIcon
-    let characterIconTopLeftX = characterIcon.x + (characterIcon.displayWidth * 0.5);
+    let characterIconTopLeftX = characterIcon.x -30; //+ (characterIcon.displayWidth * 0.5);
     let characterIconTopLeftY = characterIcon.y - (characterIcon.height * 0.18 * 0.5);
 
     // Adjust the bounding box to accommodate the character icon
