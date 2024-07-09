@@ -238,7 +238,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         fontSize: '24px',
         fontFamily: 'Roboto',
         color: textColor,
-        align: 'center'
+        align: 'right'
     });
     backstoryText.setOrigin(0.5, 0);
     backstoryText.setVisible(false);
@@ -246,7 +246,7 @@ export function introduceCharacters(scene, characters, sharedData) {
 
     // Add a character icon next to the text on the left side within the bounding box
     let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 20, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
-    characterIcon.setScale(.2);
+    characterIcon.setScale(.18);
     characterIcon.setOrigin(0.5, 0.5);
     characterIcon.setVisible(false);
     characterIcon.setDepth(2);
