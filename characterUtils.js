@@ -366,7 +366,8 @@ export function introduceCharacters(scene, characters, sharedData) {
         characterIcon.setVisible(false);
         characterIcon.setDepth(2);
 
-        let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+        //let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+        let formattedBackstory = character.backstory.join(' '); // let wordwrap deal with it
         let backstoryText = scene.add.text(textX, scene.game.config.height / 2, formattedBackstory, {
             fontSize: '24px',
             fontFamily: 'Roboto',
@@ -402,7 +403,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsIcon.setOrigin(0.5, 1);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
-        helpsIcon.setPosition(textX, helpsLabel.y - helpsIcon.displayHeight - 10);
+        helpsIcon.setPosition(textX, helpsLabel.y - helpsIcon.displayHeight/2);
 
         let backstoryHurtIcon = scene.add.image(textX, backstoryBox.y + backstoryBox.displayHeight / 2 + 30, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
