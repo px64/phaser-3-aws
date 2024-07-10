@@ -469,6 +469,7 @@ export class Politics extends BaseScene {
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
                     let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+
                     console.log('x = ' + character.charText.x);
                     let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nGives Back!', {
                         fontSize: '20px',
@@ -476,34 +477,33 @@ export class Politics extends BaseScene {
                         color: textColor, // Original text color
                         align: 'left'
                     }).setInteractive();
-                    characterText.setVisible(false).setDepth(6);
+                    characterText.setVisible(false).setDepth(7);
 
+                    let iconOffset = character.faction === 'maga' ? characterText.width+60: -60;
+                    let characterIcon = scene.add.sprite(character.charText.x + iconOffset, character.charText.y, character.characterIcon).setScale(.09);
+                    characterIcon.setVisible(false).setDepth(6);
+                    
                     // Tween to change color to green
                     setTimeout(() => {
                             characterText.setVisible(true);
                             characterText.setColor('#00ff00'); // Setting color to green
+                            characterIcon.setVisible(true);
                         }, (helpfulTokenIndex+1) * 400);
 
                     // Delay the start of the fade out tween
                     setTimeout(() => {
                         scene.tweens.add({
-                            targets: characterText,
+                            targets: [characterText, characterIcon],
                             alpha: 0, // Fade to completely transparent
                             ease: 'Sine.easeInOut',
                             duration: 3500, // Duration of the fade in milliseconds
                             onComplete: function () {
                                 characterText.destroy(); // Destroy the text object after the fade completes
+                                characterIcon.destroy(); 
                             }
                         });
                     }, 3000+(helpfulTokenIndex+1) * 400);
 
-                    /*
-                    let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText,
-                                        { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
-                    const timerID = setTimeout(() => {
-                        characterText.destroy();
-                    }, 1000+(helpfulTokenIndex+1) * 400);
-                    */
                     character.charText = characterText; // back reference to text so we can find the location later
                     // If character has been fully endorsed, Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);

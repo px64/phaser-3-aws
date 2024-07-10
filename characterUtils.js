@@ -334,14 +334,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         let lineLength;
         let yOffset;
         if (roughSize > 800 && scene.sys.game.config.width > 1000) {
-            lineLength = 108;
+            lineLength = 54;
             yOffset = 140;
         } else {
             if (roughSize > 440) {
-                lineLength = 100;
+                lineLength = 48;
                 yOffset = 0;
             } else {
-                lineLength = 50;
+                lineLength = 25;
                 yOffset = 0;
             }
         }
@@ -366,13 +366,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         characterIcon.setVisible(false);
         characterIcon.setDepth(2);
 
-        let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
-        let backstoryText = scene.add.text(textX, scene.game.config.height / 2 - yOffset, formattedBackstory, {
+        //let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+        let formattedBackstory = character.backstory.join(' '); // let wordwrap deal with it
+        let backstoryText = scene.add.text(textX, scene.game.config.height / 2, formattedBackstory, {
             fontSize: '24px',
             fontFamily: 'Roboto',
             color: textColor,
             align: 'center',
-            wordWrap: { width: scene.game.config.width * 0.4 }
+            wordWrap: { width: scene.game.config.width * 0.5 }
         });
         backstoryText.setOrigin(0.5, 0.5);
         backstoryText.setVisible(false);
@@ -386,7 +387,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         backstoryBox.setDepth(1);
 
         // Add a label for "helps"
-        let helpsLabel = scene.add.text(textX, backstoryBox.y - backstoryBox.displayHeight / 2 - 50, 'Helps: ' + tmpHelp, {
+        let helpsLabel = scene.add.text(textX, backstoryBox.y - backstoryBox.displayHeight / 2 - 40, 'Helps: ' + tmpHelp, {
             fontSize: '28px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -397,18 +398,19 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsLabel.setDepth(2);
 
         // Add the "helps" icon next to the "helps" text
-        let helpsIcon = scene.add.image(textX, helpsLabel.y - helpsLabel.displayHeight - 10, graphicObject);
+        let helpsIcon = scene.add.image(textX, helpsLabel.y, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, 1);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
+        helpsIcon.setPosition(textX, helpsLabel.y - 30);
 
-        let backstoryHurtIcon = scene.add.image(textX, backstoryBox.y + backstoryBox.displayHeight / 2 + 50, character.hurts);
+        let backstoryHurtIcon = scene.add.image(textX, backstoryBox.y + backstoryBox.displayHeight / 2 + 30, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
-
+        
         let hurtsLabel = scene.add.text(backstoryHurtIcon.x, backstoryHurtIcon.y + backstoryHurtIcon.displayHeight / 2 + 10, 'Causes Activists To Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
