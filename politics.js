@@ -469,7 +469,7 @@ export class Politics extends BaseScene {
                 // Recreate slider and track here
                 if (character.endorsement > 1) {
                     let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
-                    let iconOffset = character.faction === 'maga' ? 50: -50;
+
                     console.log('x = ' + character.charText.x);
                     let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nGives Back!', {
                         fontSize: '20px',
@@ -478,6 +478,8 @@ export class Politics extends BaseScene {
                         align: 'left'
                     }).setInteractive();
                     characterText.setVisible(false).setDepth(6);
+
+                    let iconOffset = character.faction === 'maga' ? characterText.width+70: -60;
                     let characterIcon = scene.add.sprite(character.charText.x + iconOffset, character.charText.y, character.characterIcon).setScale(.03);
                     characterIcon.setVisible(false).setDepth(6);
                     
