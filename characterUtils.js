@@ -403,7 +403,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsIcon.setOrigin(0.5, 1);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
-        helpsIcon.setPosition(textX, helpsLabel.y - helpsIcon.displayHeight/2);
+        helpsIcon.setPosition(textX, helpsLabel.y - 30);
 
         let backstoryHurtIcon = scene.add.image(textX, backstoryBox.y + backstoryBox.displayHeight / 2 + 30, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
