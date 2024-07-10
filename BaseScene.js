@@ -1298,15 +1298,18 @@ export const characters = [
         name: "Rene Stellar",
         faction: "woke",
         backstory: [
-            "Growing up in the heartland, Rene Stellar was captivated by the cosmos. A scholarship to a prestigious engineering institution allowed Rene to explore their passion for astrophysics and rocketry. Their expertise was unparalleled, their innovations, groundbreaking.",
-            "College was also a time of personal revelation. Rene came out as transgender, facing and overcoming the hurdles of discrimination in the traditional STEM field. Their resilience only sharpened their determination and solidified their sense of identity.",
-            "After graduation, Rene was recruited by the military. Their advanced propulsion systems and rocketry enhancements have become crucial in national defense, particularly against extraterrestrial threats.",
-            "However, Rene was far more than a scientist dedicated to their work. They were a leader with a cause. Passionate about promoting inclusivity and representation within the traditionally conservative STEM and military fields, Rene worked tirelessly to establish mentoring programs, advocacy groups, and inclusive policies. They were an unwavering advocate for LGBTQ+ rights, consistently fighting for acceptance and equality both inside and outside of their field. Rene Stellar is now a symbol of both scientific genius and the push for a more inclusive future."
+            "Growing up in the heartland, Rene Stellar was captivated by the cosmos. A scholarship to a prestigious engineering institution allowed Rene to explore her",
+            "passion for astrophysics and rocketry. Her expertise was unparalleled, and her innovations were groundbreaking. College was also a time of",
+            "personal revelation. Rene came out as transgender, overcoming discrimination in the traditional STEM field. Her resilience sharpened her determination",
+            "and solidified her identity. After graduation, Rene was recruited by the military. Her advanced propulsion systems and rocketry enhancements became crucial in",
+            "national defense against extraterrestrial threats. Beyond her scientific work, Rene is a leader with a cause. Passionate about promoting inclusivity in STEM",
+            "and the military, she tirelessly established mentoring programs, advocacy groups, and inclusive policies. Rene Stellar is now a symbol of scientific genius",
+            "and the push for a more inclusive future."
         ],
         shortstory: [
-            "Rene's advanced knowledge in rocketry significantly bolsters our Alien Defense. However, their ambitious projects require substantial funding,",
+            "Rene's advanced knowledge in rocketry significantly bolsters our Alien Defense. However, her ambitious projects require substantial funding,",
             "increasing the pressure on the Economy. ",
-            "They help the military but puts Woke pressure on the economy."
+            "She helps alien defense but puts Woke pressure on the economy."
         ],
         power: 'Propulsion Systems\nand Rocketry',
         helps: 'military',
