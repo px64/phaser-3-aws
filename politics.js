@@ -477,33 +477,30 @@ export class Politics extends BaseScene {
                         align: 'left'
                     }).setInteractive();
                     characterText.setVisible(false).setDepth(6);
-
+                    let characterIcon = scene.add.sprite(50+xSpriteOffset, 260 + (rowIndex * 60), character.characterIcon).setScale(.03);
+                    characterIcon.setVisible(false).setDepth(6);
+                    
                     // Tween to change color to green
                     setTimeout(() => {
                             characterText.setVisible(true);
                             characterText.setColor('#00ff00'); // Setting color to green
+                            characterIcon.setVisible(true);
                         }, (helpfulTokenIndex+1) * 400);
 
                     // Delay the start of the fade out tween
                     setTimeout(() => {
                         scene.tweens.add({
-                            targets: characterText,
+                            targets: [characterText, characterIcon],
                             alpha: 0, // Fade to completely transparent
                             ease: 'Sine.easeInOut',
                             duration: 3500, // Duration of the fade in milliseconds
                             onComplete: function () {
                                 characterText.destroy(); // Destroy the text object after the fade completes
+                                characterIcon.destroy(); 
                             }
                         });
                     }, 3000+(helpfulTokenIndex+1) * 400);
 
-                    /*
-                    let characterText = scene.add.text(character.charText.x, character.charText.y, character.name + '\nBacking: ' + healthText,
-                                        { fontSize: '16px', fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
-                    const timerID = setTimeout(() => {
-                        characterText.destroy();
-                    }, 1000+(helpfulTokenIndex+1) * 400);
-                    */
                     character.charText = characterText; // back reference to text so we can find the location later
                     // If character has been fully endorsed, Create new helpful token
                     createHelpfulToken(this, character, helpfulTokenIndex);
