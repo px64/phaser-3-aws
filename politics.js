@@ -479,8 +479,8 @@ export class Politics extends BaseScene {
                     }).setInteractive();
                     characterText.setVisible(false).setDepth(6);
 
-                    let iconOffset = character.faction === 'maga' ? characterText.width+70: -60;
-                    let characterIcon = scene.add.sprite(character.charText.x + iconOffset, character.charText.y, character.characterIcon).setScale(.03);
+                    let iconOffset = character.faction === 'maga' ? characterText.width+30: -30;
+                    let characterIcon = scene.add.sprite(character.charText.x + iconOffset, character.charText.y, character.characterIcon).setScale(.09);
                     characterIcon.setVisible(false).setDepth(6);
                     
                     // Tween to change color to green
