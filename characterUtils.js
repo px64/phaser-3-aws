@@ -372,7 +372,7 @@ export function introduceCharacters(scene, characters, sharedData) {
             fontFamily: 'Roboto',
             color: textColor,
             align: 'center',
-            wordWrap: { width: scene.game.config.width * 0.4 }
+            wordWrap: { width: scene.game.config.width * 0.5 }
         });
         backstoryText.setOrigin(0.5, 0.5);
         backstoryText.setVisible(false);
