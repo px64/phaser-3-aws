@@ -334,14 +334,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         let lineLength;
         let yOffset;
         if (roughSize > 800 && scene.sys.game.config.width > 1000) {
-            lineLength = 108;
+            lineLength = 54;
             yOffset = 140;
         } else {
             if (roughSize > 440) {
-                lineLength = 100;
+                lineLength = 48;
                 yOffset = 0;
             } else {
-                lineLength = 50;
+                lineLength = 25;
                 yOffset = 0;
             }
         }
