@@ -64,6 +64,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('Hartwell', 'assets/Hartwell.png');
         this.load.image('Jackson', 'assets/Jackson.png');
         this.load.image('Martinez', 'assets/Martinez.png');
+        this.load.image('Max', 'assets/Max.png');
         this.load.image('Maya', 'assets/Maya.png');
         this.load.image('Sasha', 'assets/Sasha.png');
     }
