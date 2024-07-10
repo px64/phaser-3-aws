@@ -191,6 +191,135 @@ export function introduceCharacters(scene, characters, sharedData) {
     //====================================================================================
     //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
     //====================================================================================
+    function createCharacterTooltip2(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
+        // Set text color based on affiliation
+        let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+
+        // Determine the positions based on the faction
+        let iconX = character.faction === 'maga' ? scene.game.config.width * 0.75 : scene.game.config.width * 0.25;
+        let textX = character.faction === 'maga' ? scene.game.config.width * 0.25 : scene.game.config.width * 0.75;
+
+        // Format the text to be centered and with the color based on the affiliation
+        let roughSize = character.backstory.length * character.backstory[0].length;
+        let lineLength;
+        let yOffset;
+        if (roughSize > 800 && scene.sys.game.config.width > 1000) {
+            lineLength = 108;
+            yOffset = 140;
+        } else {
+            if (roughSize > 440) {
+                lineLength = 100;
+                yOffset = 0;
+            } else {
+                lineLength = 50;
+                yOffset = 0;
+            }
+        }
+
+        if (y + roughSize / 3 > scene.sys.game.config.height) {
+            yOffset = roughSize / 4;
+        }
+        // Add an icon or graphic and scale it
+        let backstoryIcon = scene.add.image(iconX, scene.game.config.height / 2, tmpHelp);
+        backstoryIcon.setScale(scaleFactor.helps);
+        backstoryIcon.setOrigin(0.5, 0.5);
+        backstoryIcon.setVisible(false);
+        backstoryIcon.setDepth(2);
+
+        // Add a character icon separately based on the faction
+        let characterIcon = scene.add.image(iconX, scene.game.config.height / 2 + 100, character.characterIcon);
+        characterIcon.setScale(0.5);
+        characterIcon.setOrigin(0.5, 0.5);
+        characterIcon.setVisible(false);
+        characterIcon.setDepth(2);
+
+        let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+        let backstoryText = scene.add.text(textX, scene.game.config.height / 2 - yOffset, formattedBackstory, {
+            fontSize: '24px',
+            fontFamily: 'Roboto',
+            color: textColor,
+            align: 'center',
+            wordWrap: { width: scene.game.config.width * 0.4 }
+        });
+        backstoryText.setOrigin(0.5, 0.5);
+        backstoryText.setVisible(false);
+        backstoryText.setDepth(3);
+
+        // Create a table format on the side opposite the character icon
+        let tableX = character.faction === 'maga' ? scene.game.config.width * 0.25 : scene.game.config.width * 0.75;
+        let tableBackground = scene.add.rectangle(tableX, scene.game.config.height / 2, scene.game.config.width * 0.5, scene.game.config.height, 0x000000, 1);
+        tableBackground.setOrigin(0.5, 0.5);
+        tableBackground.setVisible(false);
+        tableBackground.setDepth(0);
+
+        // Define items to be displayed in the table
+        const items = [
+            { label: 'Helps: ' + tmpHelp, icon: tmpHelp },
+            { label: 'Backstory: ' + formattedBackstory, icon: tmpHelp },
+            { label: 'Hurts: ' + character.hurts, icon: character.hurts }
+        ];
+
+        let startY = 50;
+
+        // Iterate over the items to create the table rows
+        items.forEach((item, index) => {
+            const yPos = startY + index * 100; // Adjust the spacing as needed
+
+            // Create a background for each row
+            const rowBackground = scene.add.rectangle(tableX, yPos, scene.game.config.width * 0.4, 100, 0x000000, 1);
+            rowBackground.setStrokeStyle(2, 0xffffff, 0.8);
+            rowBackground.setOrigin(0.5, 0.5);
+            rowBackground.setVisible(false);
+            rowBackground.setDepth(1);
+
+            // Create a label for each row
+            const rowLabel = scene.add.text(tableX, yPos, item.label, {
+                fontSize: '24px',
+                fontFamily: 'Roboto',
+                color: textColor,
+                align: 'center',
+                wordWrap: { width: scene.game.config.width * 0.35 }
+            });
+            rowLabel.setOrigin(0.5, 0.5);
+            rowLabel.setVisible(false);
+            rowLabel.setDepth(2);
+
+            // Create an icon for each row
+            const rowIcon = scene.add.image(tableX, yPos + 40, item.icon);
+            rowIcon.setScale(scaleFactor.helps);
+            rowIcon.setOrigin(0.5, 0.5);
+            rowIcon.setVisible(false);
+            rowIcon.setDepth(2);
+
+            // Store the elements in an array for easier access
+            item.rowElements = [rowBackground, rowLabel, rowIcon];
+        });
+
+        const mouseOver = () => {
+            tableBackground.setVisible(true);
+            items.forEach(item => {
+                item.rowElements.forEach(element => element.setVisible(true));
+            });
+            characterIcon.setVisible(true);
+            scene.cameras.main.setAlpha(0.5);  // Set background opacity to 50%
+        };
+
+        const mouseOff = () => {
+            tableBackground.setVisible(false);
+            items.forEach(item => {
+                item.rowElements.forEach(element => element.setVisible(false));
+            });
+            characterIcon.setVisible(false);
+            scene.cameras.main.setAlpha(1);  // Reset background opacity
+        };
+
+        slider.on('pointerover', mouseOver);
+        characterText.on('pointerover', mouseOver);
+
+        slider.on('pointerout', mouseOff);
+        characterText.on('pointerout', mouseOff);
+    }
+
 
     function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
         // Set text color based on affiliation
@@ -224,15 +353,15 @@ export function introduceCharacters(scene, characters, sharedData) {
         let graphicObject = tmpHelp;
 
         // Add an icon or graphic and scale it
-        let backstoryIcon = scene.add.image(iconX, scene.game.config.height / 2, graphicObject);
-        backstoryIcon.setScale(scaleFactor.helps);
-        backstoryIcon.setOrigin(0.5, 0.5);
-        backstoryIcon.setVisible(false);
-        backstoryIcon.setDepth(2);
+        //let backstoryIcon = scene.add.image(iconX, scene.game.config.height / 2, graphicObject);
+        //backstoryIcon.setScale(scaleFactor.helps);
+        //backstoryIcon.setOrigin(0.5, 0.5);
+        //backstoryIcon.setVisible(false);
+        //backstoryIcon.setDepth(2);
 
         // Add a character icon separately based on the faction
-        let characterIcon = scene.add.image(iconX, scene.game.config.height / 2 + 100, character.characterIcon);
-        characterIcon.setScale(0.5);
+        let characterIcon = scene.add.image(iconX, scene.game.config.height / 2, character.characterIcon);
+        characterIcon.setScale(0.4);
         characterIcon.setOrigin(0.5, 0.5);
         characterIcon.setVisible(false);
         characterIcon.setDepth(2);
@@ -293,18 +422,19 @@ export function introduceCharacters(scene, characters, sharedData) {
         const mouseOver = () => {
             backstoryText.setVisible(true);
             backstoryBox.setVisible(true);
-            backstoryIcon.setVisible(true);
+            //backstoryIcon.setVisible(true);
             backstoryHurtIcon.setVisible(true);
             helpsLabel.setVisible(true);
             helpsIcon.setVisible(true);
             hurtsLabel.setVisible(true);
             characterIcon.setVisible(true);
+            scene.characterTitleText.setVisible(false);
         };
 
         const mouseOff = () => {
             backstoryText.setVisible(false);
             backstoryBox.setVisible(false);
-            backstoryIcon.setVisible(false);
+            //backstoryIcon.setVisible(false);
             backstoryHurtIcon.setVisible(false);
             helpsLabel.setVisible(false);
             helpsIcon.setVisible(false);
