@@ -191,125 +191,137 @@ export function introduceCharacters(scene, characters, sharedData) {
     //====================================================================================
     //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
     //====================================================================================
-    function createCharacterTooltipNew(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
-    // Set text color based on affiliation
-    let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
-    let xOffset = character.faction === 'maga' ? 80 + scene.game.config.width * 0.4 : scene.game.config.width * -0.24;
-
-    // Format the text to be centered and with the color based on the affiliation
-    let roughSize = character.backstory.length * character.backstory[0].length;
-    let lineLength;
-    let yOffset;
-    if (roughSize > 800 && scene.sys.game.config.width > 1000) {
-        lineLength = 88;
-        yOffset = 140;
-    } else if (roughSize > 440) {
-        lineLength = 80;
-        yOffset = 0;
-    } else {
-        lineLength = 40;
-        yOffset = 0;
-    }
-    if (y + roughSize / 3 > scene.sys.game.config.height) {
-        yOffset = roughSize / 4;
-    }
-
-    let graphicObject = tmpHelp;
-
-    // Add an icon or graphic and scale it
-    let backstoryIcon = scene.add.image(x + xOffset, y - yOffset, graphicObject);
-    backstoryIcon.setScale(scaleFactor.helps);
-    backstoryIcon.setOrigin(0.5, 1);
-    backstoryIcon.setVisible(false);
-    backstoryIcon.setDepth(2);
-
-    let helpsLabel = scene.add.text(backstoryIcon.x - backstoryIcon.displayWidth / 2, backstoryIcon.y - backstoryIcon.displayHeight / 2, 'Helps: ' + tmpHelp, {
-        fontSize: '28px',
-        fontFamily: 'Roboto',
-        color: textColor,
-        align: 'center'
-    });
-    helpsLabel.setOrigin(0.9, 1);
-    helpsLabel.setVisible(false);
-    helpsLabel.setDepth(2);
-
-    let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
-    let backstoryText = scene.add.text(x + xOffset, backstoryIcon.y, formattedBackstory, {
-        fontSize: '24px',
-        fontFamily: 'Roboto',
-        color: textColor,
-        align: 'right'
-    });
-    backstoryText.setOrigin(.5, 0);
-    backstoryText.setVisible(false);
-    backstoryText.setDepth(3);
-
-    // Add a character icon next to the text on the left side within the bounding box
-    let characterIcon = scene.add.image(backstoryText.x - backstoryText.displayWidth / 2 - 20, backstoryText.y + backstoryText.displayHeight / 2, character.characterIcon);
-    characterIcon.setScale(.18);
-    characterIcon.setOrigin(1, .5);
-    characterIcon.setVisible(false);
-    characterIcon.setDepth(2);
-
-    // Calculate the top left corner of the characterIcon
-    let characterIconTopLeftX = characterIcon.x + 30; //+ (characterIcon.displayWidth * 0.5);
-    let characterIconTopLeftY = characterIcon.y - (characterIcon.height * 0.18 * 0.5);
-
-    // Adjust the bounding box to accommodate the character icon
-    let boundingBoxWidth = backstoryText.displayWidth + characterIcon.displayWidth + 60; // Add space for the character icon and some padding
-    let boundingBoxHeight = backstoryText.displayHeight + backstoryIcon.displayHeight;
-
-    let backstoryBox = scene.add.rectangle(characterIconTopLeftX, characterIconTopLeftY, boundingBoxWidth, boundingBoxHeight, 0x000000, 1);
-    backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
-    backstoryBox.isStroked = true;
-    backstoryBox.setOrigin(0.5, 0);
-    backstoryBox.setVisible(false);
-    backstoryBox.setDepth(1);
-
-    let backstoryHurtIcon = scene.add.image(x + xOffset, backstoryBox.y + backstoryBox.displayHeight, character.hurts);
-    backstoryHurtIcon.setScale(scaleFactor.hurts);
-    backstoryHurtIcon.setOrigin(0.5, 1);
-    backstoryHurtIcon.setVisible(false);
-    backstoryHurtIcon.setDepth(2);
-
-    let hurtsLabel = scene.add.text(backstoryHurtIcon.x - backstoryHurtIcon.displayWidth - 10, backstoryHurtIcon.y, 'Causes Activists To Protest: ' + character.hurts, {
-        fontSize: '20px',
-        fontFamily: 'Roboto',
-        color: textColor,
-        align: 'center'
-    });
-    hurtsLabel.setOrigin(0, 1);
-    hurtsLabel.setVisible(false);
-    hurtsLabel.setDepth(2);
-
-    const mouseOver = () => {
-        backstoryText.setVisible(true);
-        backstoryBox.setVisible(true);
-        backstoryIcon.setVisible(true);
-        backstoryHurtIcon.setVisible(true);
-        helpsLabel.setVisible(true);
-        hurtsLabel.setVisible(true);
-        characterIcon.setVisible(true);
-    };
-
-    const mouseOff = () => {
-        backstoryText.setVisible(false);
-        backstoryBox.setVisible(false);
-        backstoryIcon.setVisible(false);
-        backstoryHurtIcon.setVisible(false);
-        helpsLabel.setVisible(false);
-        hurtsLabel.setVisible(false);
-        characterIcon.setVisible(false);
-    };
-
-    slider.on('pointerover', mouseOver);
-    characterText.on('pointerover', mouseOver);
-
-    slider.on('pointerout', mouseOff);
-    characterText.on('pointerout', mouseOff);
-}
 
     function createCharacterTooltip(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
+        // Set text color based on affiliation
+        let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
+
+        // Determine the positions based on the faction
+        let iconX = character.faction === 'maga' ? scene.game.config.width * 0.75 : scene.game.config.width * 0.25;
+        let textX = character.faction === 'maga' ? scene.game.config.width * 0.25 : scene.game.config.width * 0.75;
+
+        // Format the text to be centered and with the color based on the affiliation
+        let roughSize = character.backstory.length * character.backstory[0].length;
+        let lineLength;
+        let yOffset;
+        if (roughSize > 800 && scene.sys.game.config.width > 1000) {
+            lineLength = 108;
+            yOffset = 140;
+        } else {
+            if (roughSize > 440) {
+                lineLength = 100;
+                yOffset = 0;
+            } else {
+                lineLength = 50;
+                yOffset = 0;
+            }
+        }
+
+        if (y + roughSize / 3 > scene.sys.game.config.height) {
+            yOffset = roughSize / 4;
+        }
+
+        let graphicObject = tmpHelp;
+
+        // Add an icon or graphic and scale it
+        let backstoryIcon = scene.add.image(iconX, scene.game.config.height / 2, graphicObject);
+        backstoryIcon.setScale(scaleFactor.helps);
+        backstoryIcon.setOrigin(0.5, 0.5);
+        backstoryIcon.setVisible(false);
+        backstoryIcon.setDepth(2);
+
+        // Add a character icon separately based on the faction
+        let characterIcon = scene.add.image(iconX, scene.game.config.height / 2 + 100, character.characterIcon);
+        characterIcon.setScale(0.5);
+        characterIcon.setOrigin(0.5, 0.5);
+        characterIcon.setVisible(false);
+        characterIcon.setDepth(2);
+
+        let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
+        let backstoryText = scene.add.text(textX, scene.game.config.height / 2 - yOffset, formattedBackstory, {
+            fontSize: '24px',
+            fontFamily: 'Roboto',
+            color: textColor,
+            align: 'center',
+            wordWrap: { width: scene.game.config.width * 0.4 }
+        });
+        backstoryText.setOrigin(0.5, 0.5);
+        backstoryText.setVisible(false);
+        backstoryText.setDepth(3);
+
+        let backstoryBox = scene.add.rectangle(backstoryText.x, backstoryText.y, backstoryText.width + 40, backstoryText.height + 20, 0x000000, 1);
+        backstoryBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
+        backstoryBox.isStroked = true;
+        backstoryBox.setOrigin(0.5, 0.5);
+        backstoryBox.setVisible(false);
+        backstoryBox.setDepth(1);
+
+        // Add a label for "helps"
+        let helpsLabel = scene.add.text(textX, backstoryBox.y - backstoryBox.displayHeight / 2 - 50, 'Helps: ' + tmpHelp, {
+            fontSize: '28px',
+            fontFamily: 'Roboto',
+            color: textColor,
+            align: 'center'
+        });
+        helpsLabel.setOrigin(0.5, 0);
+        helpsLabel.setVisible(false);
+        helpsLabel.setDepth(2);
+
+        // Add the "helps" icon next to the "helps" text
+        let helpsIcon = scene.add.image(textX, helpsLabel.y - helpsLabel.displayHeight - 10, graphicObject);
+        helpsIcon.setScale(scaleFactor.helps);
+        helpsIcon.setOrigin(0.5, 1);
+        helpsIcon.setVisible(false);
+        helpsIcon.setDepth(2);
+
+        let backstoryHurtIcon = scene.add.image(textX, backstoryBox.y + backstoryBox.displayHeight / 2 + 50, character.hurts);
+        backstoryHurtIcon.setScale(scaleFactor.hurts);
+        backstoryHurtIcon.setOrigin(0.5, 0.5);
+        backstoryHurtIcon.setVisible(false);
+        backstoryHurtIcon.setDepth(2);
+
+        let hurtsLabel = scene.add.text(backstoryHurtIcon.x, backstoryHurtIcon.y + backstoryHurtIcon.displayHeight / 2 + 10, 'Causes Activists To Protest: ' + character.hurts, {
+            fontSize: '20px',
+            fontFamily: 'Roboto',
+            color: textColor,
+            align: 'center'
+        });
+        hurtsLabel.setOrigin(0.5, 0);
+        hurtsLabel.setVisible(false);
+        hurtsLabel.setDepth(2);
+
+        const mouseOver = () => {
+            backstoryText.setVisible(true);
+            backstoryBox.setVisible(true);
+            backstoryIcon.setVisible(true);
+            backstoryHurtIcon.setVisible(true);
+            helpsLabel.setVisible(true);
+            helpsIcon.setVisible(true);
+            hurtsLabel.setVisible(true);
+            characterIcon.setVisible(true);
+        };
+
+        const mouseOff = () => {
+            backstoryText.setVisible(false);
+            backstoryBox.setVisible(false);
+            backstoryIcon.setVisible(false);
+            backstoryHurtIcon.setVisible(false);
+            helpsLabel.setVisible(false);
+            helpsIcon.setVisible(false);
+            hurtsLabel.setVisible(false);
+            characterIcon.setVisible(false);
+        };
+
+        slider.on('pointerover', mouseOver);
+        characterText.on('pointerover', mouseOver);
+
+        slider.on('pointerout', mouseOff);
+        characterText.on('pointerout', mouseOff);
+    }
+
+
+
+    function createCharacterTooltipGood(scene, character, x, y, slider, characterText, scaleFactor, tmpHelp) {
         // Set text color based on affiliation
         let textColor = character.faction === 'maga' ? '#ff4040' : '#8080ff';
         let xOffset = character.faction === 'maga' ? 80 + scene.game.config.width * .4 : scene.game.config.width * -.24;
@@ -391,14 +403,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         hurtsLabel.setOrigin(0, 1);
         hurtsLabel.setVisible(false);
         hurtsLabel.setDepth(2);
-        
+
         // Add a character icon next to the text on the left side within the bounding box
         let characterIcon = scene.add.image(backstoryBox.x - backstoryBox.width / 2 - 20, backstoryBox.y + backstoryBox.height / 2, character.characterIcon);
         characterIcon.setScale(.2); // Adjust scale as needed
         characterIcon.setOrigin(0.5, 0.5);
         characterIcon.setVisible(false);
         characterIcon.setDepth(2);
-        
+
         const mouseOver = () => {
             backstoryText.setVisible(true);
             backstoryBox.setVisible(true);
