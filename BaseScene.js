@@ -66,6 +66,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('Martinez', 'assets/Martinez.png');
         this.load.image('Max', 'assets/Max.png');
         this.load.image('Maya', 'assets/Maya.png');
+        this.load.image('Rene', 'assets/Rene.png');
         this.load.image('Sasha', 'assets/Sasha.png');
     }
 
@@ -1318,7 +1319,7 @@ export const characters = [
         magaLevel: 3,
         wokeLevel: 1,
         fogLevel: 2,
-        characterIcon: 'Stellar'
+        characterIcon: 'Rene'
 },
 {
     name: "Justice Benjamin Harmon",
