@@ -367,7 +367,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         characterIcon.setDepth(2);
 
         let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
-        let backstoryText = scene.add.text(textX, scene.game.config.height / 2 - yOffset, formattedBackstory, {
+        let backstoryText = scene.add.text(textX, scene.game.config.height / 2, formattedBackstory, {
             fontSize: '24px',
             fontFamily: 'Roboto',
             color: textColor,
