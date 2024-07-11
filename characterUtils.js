@@ -258,7 +258,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         backstoryBox.setDepth(1);
 
         // Add a label for "helps"
-        let helpsLabel = scene.add.text(helpsX, helpshurtsY - 60, 'Helps: ' + tmpHelp, {
+        let helpsLabel = scene.add.text(helpsX, helpshurtsY - 50, 'Helps: ' + tmpHelp, {
             fontSize: '28px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -269,13 +269,13 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsLabel.setDepth(3);
 
         // Add the "helps" icon slightly above the "helps" text
-        let helpsIcon = scene.add.image(helpsX, helpshurtsY-130, graphicObject);
+        let helpsIcon = scene.add.image(helpsX, helpshurtsY-110, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, 0.5);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
 
-        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 130, 'Activists Protest: ' + character.hurts, {
+        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 110, 'Activists Protest:\n' + character.hurts, {
             fontSize: '28px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -285,18 +285,18 @@ export function introduceCharacters(scene, characters, sharedData) {
         hurtsLabel.setVisible(false);
         hurtsLabel.setDepth(3);
         
-        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 60, character.hurts);
+        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 50, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
                 
-        let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY, hurtsLabel.width + 40, 130 + 130 + 110, 0x000000, 1);
+        let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY, hurtsLabel.width + 40, 110 + 110 + 120, 0x000000, 1);
         helpsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
         helpsBox.isStroked = true;
         helpsBox.setOrigin(.5,.5); // X axis centered.  Y axis centered around the helpshurtsY center
         helpsBox.setVisible(false);
-        helpsBox.setDepth(1);
+        helpsBox.setDepth(2);
 
         const mouseOver = () => {
             backstoryText.setVisible(true).setAlpha(.85);
