@@ -370,9 +370,12 @@ export function introduceCharacters(scene, characters, sharedData) {
         //let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
         let formattedBackstory = character.backstory.join(' '); // let wordwrap deal with it
         let startY = scene.game.config.height*3/4;
+        let helpshurtsY = scene.game.config.height*1/4;
         if (y > scene.game.config.height/2) {
             startY = scene.game.config.height/4;
+            helpshurtsY = scene.game.config.height*3/4;
         }
+
         let backstoryText = scene.add.text(textX, startY, formattedBackstory, {
             fontSize: '24px',
             fontFamily: 'Roboto',
@@ -392,7 +395,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         backstoryBox.setDepth(1);
 
         // Add a label for "helps"
-        let helpsLabel = scene.add.text(helpsX, scene.sys.game.config.height/2 - 40, 'Helps: ' + tmpHelp, {
+        let helpsLabel = scene.add.text(helpsX, helpshurtsY - 60, 'Helps: ' + tmpHelp, {
             fontSize: '28px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -403,19 +406,19 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsLabel.setDepth(2);
 
         // Add the "helps" icon next to the "helps" text
-        let helpsIcon = scene.add.image(helpsX, scene.sys.game.config.height/2, graphicObject);
+        let helpsIcon = scene.add.image(helpsX, helpshurtsY, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, 0.5);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
 
-        let backstoryHurtIcon = scene.add.image(helpsX, scene.sys.game.config.height/2 + 40, character.hurts);
+        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 60, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
 
-        let hurtsLabel = scene.add.text(backstoryHurtIcon.x, scene.sys.game.config.height/2 + 80, 'Causes Activists To Protest: ' + character.hurts, {
+        let hurtsLabel = scene.add.text(backstoryHurtIcon.x, helpshurtsY + 120, 'Causes Activists To Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
             color: textColor,
