@@ -573,7 +573,7 @@ export default class BaseScene extends Phaser.Scene {
         let numIcons = Math.floor(totalCapital / 4);
 
         for (let i = 0; i < numIcons; i++) {
-            let x = 400 + i * 40; // Horizontal placement
+            let x = 370 + i * 35; // Horizontal placement
             let y = 25; // Vertical position of icons
             let icon = this.add.image(x, y, 'capitalIcon').setScale(0.05); // Scale as needed
             this.politicalCapitalIcons.push(icon);
