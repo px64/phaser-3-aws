@@ -223,13 +223,6 @@ export function introduceCharacters(scene, characters, sharedData) {
 
         let graphicObject = tmpHelp;
 
-        // Add an icon or graphic and scale it
-        //let backstoryIcon = scene.add.image(iconX, scene.game.config.height / 2, graphicObject);
-        //backstoryIcon.setScale(scaleFactor.helps);
-        //backstoryIcon.setOrigin(0.5, 0.5);
-        //backstoryIcon.setVisible(false);
-        //backstoryIcon.setDepth(2);
-
         // Add a character icon separately based on the faction
         let characterIcon = scene.add.image(iconX, scene.game.config.height / 2, character.characterIcon);
         characterIcon.setScale(0.4);
@@ -276,13 +269,20 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsLabel.setDepth(3);
 
         // Add the "helps" icon slightly above the "helps" text
-        let helpsIcon = scene.add.image(helpsX, helpshurtsY-80, graphicObject);
+        let helpsIcon = scene.add.image(helpsX, helpshurtsY-95, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, 0.5);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
+        
+        let helpsBox = scene.add.rectangle(helpsIcon.x, helpsIcon.y, helpsLabel.width + 40, helpsIcon.height + 20, 0x000000, 1);
+        helpsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
+        helpsBox.isStroked = true;
+        helpsBox.setOrigin(0.5, 0.5);
+        helpsBox.setVisible(false);
+        helpsBox.setDepth(1);
 
-        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 70, 'Causes Activists To Protest: ' + character.hurts, {
+        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 85, 'Causes Activists To Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -297,7 +297,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
-
+        
+        let hurtsBox = scene.add.rectangle(backstoryHurtIcon.x, backstoryHurtIcon.y, hurtsLabel.width + 40, backstoryHurtIcon.height + 20, 0x000000, 1);
+        hurtsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
+        hurtsBox.isStroked = true;
+        hurtsBox.setOrigin(0.5, 0.5);
+        hurtsBox.setVisible(false);
+        hurtsBox.setDepth(1);
+        
         const mouseOver = () => {
             backstoryText.setVisible(true).setAlpha(.85);
             backstoryBox.setVisible(true).setAlpha(.85);
@@ -306,6 +313,8 @@ export function introduceCharacters(scene, characters, sharedData) {
             helpsLabel.setVisible(true);
             helpsIcon.setVisible(true);
             hurtsLabel.setVisible(true);
+            helpsBox.setVisible(true);
+            hurtsBox.setVisible(true);
             characterIcon.setVisible(true);
             scene.characterTitleText.setVisible(false);
         };
@@ -318,6 +327,8 @@ export function introduceCharacters(scene, characters, sharedData) {
             helpsLabel.setVisible(false);
             helpsIcon.setVisible(false);
             hurtsLabel.setVisible(false);
+            helpsBox.setVisible(false);
+            hurtsBox.setVisible(false);
             characterIcon.setVisible(false);
         };
 
