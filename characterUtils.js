@@ -273,22 +273,16 @@ export function introduceCharacters(scene, characters, sharedData) {
         });
         helpsLabel.setOrigin(0.5, 0.5);
         helpsLabel.setVisible(false);
-        helpsLabel.setDepth(2);
+        helpsLabel.setDepth(3);
 
-        // Add the "helps" icon next to the "helps" text
-        let helpsIcon = scene.add.image(helpsX, helpshurtsY-70, graphicObject);
+        // Add the "helps" icon slightly above the "helps" text
+        let helpsIcon = scene.add.image(helpsX, helpshurtsY-80, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, 0.5);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
 
-        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 60, character.hurts);
-        backstoryHurtIcon.setScale(scaleFactor.hurts);
-        backstoryHurtIcon.setOrigin(0.5, 0.5);
-        backstoryHurtIcon.setVisible(false);
-        backstoryHurtIcon.setDepth(2);
-
-        let hurtsLabel = scene.add.text(backstoryHurtIcon.x, helpshurtsY + 70, 'Causes Activists To Protest: ' + character.hurts, {
+        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 70, 'Causes Activists To Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -296,7 +290,13 @@ export function introduceCharacters(scene, characters, sharedData) {
         });
         hurtsLabel.setOrigin(0.5, 0.5);
         hurtsLabel.setVisible(false);
-        hurtsLabel.setDepth(2);
+        hurtsLabel.setDepth(3);
+        
+        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 50, character.hurts);
+        backstoryHurtIcon.setScale(scaleFactor.hurts);
+        backstoryHurtIcon.setOrigin(0.5, 0.5);
+        backstoryHurtIcon.setVisible(false);
+        backstoryHurtIcon.setDepth(2);
 
         const mouseOver = () => {
             backstoryText.setVisible(true).setAlpha(.85);
