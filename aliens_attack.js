@@ -345,7 +345,7 @@ export class Scene2 extends BaseScene {
         let totalCapital = Math.floor(this.MAGAness + this.Wokeness);
 
         //polCapText = this.add.text(20, 200, 'Political Capital ' + totalCapital, { fontSize: this.sharedData.medFont, fill: '#0f0' });
-        polCapText = this.add.text(20, 0, 'Political Capital:', { fontSize: this.sharedData.medFont, fill: '#0f0' });
+        polCapText = this.add.text(20, 5, 'Political Capital', { fontSize: this.sharedData.medFont, fill: '#0f0' });
         this.updatePoliticalCapitalIcons(totalCapital);
 
         // Create Year text
