@@ -398,14 +398,14 @@ export function introduceCharacters(scene, characters, sharedData) {
             color: textColor,
             align: 'center'
         });
-        helpsLabel.setOrigin(0.5, 0);
+        helpsLabel.setOrigin(0.5, 0.5);
         helpsLabel.setVisible(false);
         helpsLabel.setDepth(2);
 
         // Add the "helps" icon next to the "helps" text
         let helpsIcon = scene.add.image(helpsX, scene.sys.game.config.height/2, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
-        helpsIcon.setOrigin(0.5, .25);
+        helpsIcon.setOrigin(0.5, 0.5);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
 
@@ -421,7 +421,7 @@ export function introduceCharacters(scene, characters, sharedData) {
             color: textColor,
             align: 'center'
         });
-        hurtsLabel.setOrigin(0.5, 0);
+        hurtsLabel.setOrigin(0.5, 0.5);
         hurtsLabel.setVisible(false);
         hurtsLabel.setDepth(2);
 
