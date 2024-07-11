@@ -328,7 +328,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         // Determine the positions based on the faction
         let iconX = character.faction === 'maga' ? scene.game.config.width * 0.75 : scene.game.config.width * 0.25;
         let textX = character.faction === 'maga' ? scene.game.config.width * 0.25 : scene.game.config.width * 0.75;
-        let helpsX = iconX * .6 + textX * .4;
+        let helpsX = iconX * .4 + textX * .6;
         
         // Format the text to be centered and with the color based on the affiliation
         let roughSize = character.backstory.length * character.backstory[0].length;
@@ -403,19 +403,19 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsLabel.setDepth(2);
 
         // Add the "helps" icon next to the "helps" text
-        let helpsIcon = scene.add.image(helpsX, scene.sys.game.config.height, graphicObject);
+        let helpsIcon = scene.add.image(helpsX, scene.sys.game.config.height/2, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, .25);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
 
-        let backstoryHurtIcon = scene.add.image(helpsX, scene.sys.game.config.height + 40, character.hurts);
+        let backstoryHurtIcon = scene.add.image(helpsX, scene.sys.game.config.height/2 + 40, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
 
-        let hurtsLabel = scene.add.text(backstoryHurtIcon.x, scene.sys.game.config.height + 80, 'Causes Activists To Protest: ' + character.hurts, {
+        let hurtsLabel = scene.add.text(backstoryHurtIcon.x, scene.sys.game.config.height/2 + 80, 'Causes Activists To Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
             color: textColor,
