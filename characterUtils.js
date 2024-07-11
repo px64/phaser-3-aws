@@ -275,14 +275,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
         
-        let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY, helpsLabel.width + 40, 130 + 85 + 85, 0x000000, 1);
+        let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY, helpsLabel.width + 40, 60 + 60 + 110, 0x000000, 1);
         helpsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
         helpsBox.isStroked = true;
         helpsBox.setOrigin(.5,.5); // X axis centered.  Y axis centered around the helpshurtsY center
         helpsBox.setVisible(false);
         helpsBox.setDepth(1);
 
-        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 85, 'Causes Activists To Protest: ' + character.hurts, {
+        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 60, 'Activists Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -292,29 +292,20 @@ export function introduceCharacters(scene, characters, sharedData) {
         hurtsLabel.setVisible(false);
         hurtsLabel.setDepth(3);
         
-        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 50, character.hurts);
+        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 40, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
         
-        //let hurtsBox = scene.add.rectangle(backstoryHurtIcon.x, backstoryHurtIcon.y, hurtsLabel.width + 40, backstoryHurtIcon.height + 20, 0x000000, 1);
-        //hurtsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
-        //hurtsBox.isStroked = true;
-        //hurtsBox.setOrigin(0.5, 0.5);
-        //hurtsBox.setVisible(false);
-        //hurtsBox.setDepth(1);
-        
         const mouseOver = () => {
             backstoryText.setVisible(true).setAlpha(.85);
             backstoryBox.setVisible(true).setAlpha(.85);
-            //backstoryIcon.setVisible(true);
             backstoryHurtIcon.setVisible(true);
             helpsLabel.setVisible(true);
             helpsIcon.setVisible(true);
             hurtsLabel.setVisible(true);
             helpsBox.setVisible(true);
-            //hurtsBox.setVisible(true);
             characterIcon.setVisible(true);
             scene.characterTitleText.setVisible(false);
         };
@@ -322,13 +313,11 @@ export function introduceCharacters(scene, characters, sharedData) {
         const mouseOff = () => {
             backstoryText.setVisible(false);
             backstoryBox.setVisible(false);
-            //backstoryIcon.setVisible(false);
             backstoryHurtIcon.setVisible(false);
             helpsLabel.setVisible(false);
             helpsIcon.setVisible(false);
             hurtsLabel.setVisible(false);
             helpsBox.setVisible(false);
-            //hurtsBox.setVisible(false);
             characterIcon.setVisible(false);
         };
 
