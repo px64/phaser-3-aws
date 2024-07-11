@@ -275,10 +275,10 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
         
-        let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY-130, helpsLabel.width + 40, 130 + 85 + 150, 0x000000, 1);
+        let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY-130, helpsLabel.width + 40, 130 + 85 + 85, 0x000000, 1);
         helpsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
         helpsBox.isStroked = true;
-        helpsBox.setOrigin(0.5, 0.5);
+        helpsBox.setOrigin(1,1); // position in the upper left corner
         helpsBox.setVisible(false);
         helpsBox.setDepth(1);
 
