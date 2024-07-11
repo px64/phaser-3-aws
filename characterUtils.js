@@ -266,14 +266,14 @@ export function introduceCharacters(scene, characters, sharedData) {
         });
         helpsLabel.setOrigin(0.5, 0.5);
         helpsLabel.setVisible(false);
-        helpsLabel.setDepth(3);
+        helpsLabel.setDepth(4);
 
         // Add the "helps" icon slightly above the "helps" text
         let helpsIcon = scene.add.image(helpsX, helpshurtsY-110, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
         helpsIcon.setOrigin(0.5, 0.5);
         helpsIcon.setVisible(false);
-        helpsIcon.setDepth(2);
+        helpsIcon.setDepth(3);
 
         let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 110, 'Activists Protest:\n' + character.hurts, {
             fontSize: '28px',
@@ -283,13 +283,13 @@ export function introduceCharacters(scene, characters, sharedData) {
         });
         hurtsLabel.setOrigin(0.5, 0.5);
         hurtsLabel.setVisible(false);
-        hurtsLabel.setDepth(3);
+        hurtsLabel.setDepth(4);
         
         let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 50, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
-        backstoryHurtIcon.setDepth(2);
+        backstoryHurtIcon.setDepth(3);
                 
         let helpsBox = scene.add.rectangle(helpsIcon.x, helpshurtsY, hurtsLabel.width + 40, 110 + 110 + 120, 0x000000, 1);
         helpsBox.setStrokeStyle(2, character.faction === 'maga' ? 0xff4040 : 0x8080ff, 0.8);
