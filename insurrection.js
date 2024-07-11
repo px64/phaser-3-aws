@@ -361,7 +361,7 @@ export class Insurrection extends BaseScene {
             this.sharedData.totalPoliticalCapital = Phaser.Math.Clamp(this.sharedData.totalPoliticalCapital  + thisRoundHealthChange, 0, 100);
 
             console.log('total political capital is now '+ this.sharedData.totalPoliticalCapital);
-            polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
+            polCapText.setText('Political Capital');
             this.updatePoliticalCapitalIcons(this.sharedData.MAGAness + this.sharedData.Wokeness);
 /*
             MAGAnessText.setText('MAGA political\ncapital: ' + this.sharedData.MAGAness);
@@ -1256,7 +1256,7 @@ function incrementYear() {
     this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + this.sharedData.WokenessVelocity, 0, 100);
     console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
     this.sharedData.totalPoliticalCapital += this.sharedData.MAGAnessVelocity + this.sharedData.WokenessVelocity;
-    polCapText.setText('Political Capital ' + Math.floor((this.sharedData.MAGAness + this.sharedData.Wokeness)).toString());
+    polCapText.setText('Political Capital');
     this.updatePoliticalCapitalIcons(this.sharedData.MAGAness + this.sharedData.Wokeness);
 
     // Every year we send a few threats back home

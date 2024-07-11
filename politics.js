@@ -2296,7 +2296,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
                 // Update MAGAnessText and WokenessText here
                 let tmpMAG = scene.MAGAness - MAGAupdate;
                 let tmpWok = scene.Wokeness - WokeUpdate;
-                this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+                this.polCapText.setText('Political Capital');
                 this.polCapText.setColor('#ff0000'); // Change text color to red
                 this.polCapText.setBackgroundColor('#ffff00'); // Change background color to yellow
             });
@@ -2380,7 +2380,7 @@ function createPowerToken(scene, faction, message, x, y, storedData, size, hasBe
                     this.track.setTint(0xffffff);
                 }
 
-                this.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+                this.polCapText.setText('Political Capital');
                 this.polCapText.setColor('#00ff00'); // Change text color back to green
                 this.polCapText.setBackgroundColor('#000000'); // Change background color back to black
                 this.updatePoliticalCapitalIcons(tmpMAG+tmpWok);

@@ -479,7 +479,7 @@ export class Scene2 extends BaseScene {
             threat.hitpoints -= missile.power;
             if (threat.hitpoints <= 0) {
                 this.MAGAness += threat.score;
-                polCapText.setText('Political Capital ' + Math.floor((this.MAGAness + this.Wokeness)).toString());
+                polCapText.setText('Political Capital');
                 this.updatePoliticalCapitalIcons(this.MAGAness + this.Wokeness);
                 this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();
@@ -491,7 +491,7 @@ export class Scene2 extends BaseScene {
             threat.hitpoints -= missile.power;
             if (threat.hitpoints <= 0) {
                 this.Wokeness += threat.score;
-                polCapText.setText('Political Capital: ' + Math.floor((this.MAGAness + this.Wokeness)).toString());
+                polCapText.setText('Political Capital');
                 this.updatePoliticalCapitalIcons(this.MAGAness + this.Wokeness);
                 this.explode(threat, threat.score == 1 ? 4: 10);
                 threat.destroy();

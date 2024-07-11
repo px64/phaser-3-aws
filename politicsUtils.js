@@ -229,7 +229,7 @@ function updateCharVal(scene, character, value, characterText) {
         //checkboxBackground.setColor(0xffffff); // figure this out later
     }
 
-    scene.polCapText.setText('Political Capital ' + Math.floor((tmpMAG+tmpWok)).toString());
+    scene.polCapText.setText('Political Capital');
     scene.polCapText.setColor('#00ff00'); // Change text color back to green
     scene.polCapText.setBackgroundColor('#000000'); // Change background color back to black
     scene.updatePoliticalCapitalIcons(tmpMAG+tmpWok);
