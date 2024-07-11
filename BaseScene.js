@@ -72,6 +72,7 @@ export default class BaseScene extends Phaser.Scene {
         this.load.image('Rene', 'assets/Rene.png');
         this.load.image('Sasha', 'assets/Sasha.png');
         this.load.image('Sterling', 'assets/Sterling.png');
+        this.load.image('Rivera', 'assets/Rivera2.png');
         this.load.image('Welch', 'assets/Welch.png');
 
     }
@@ -1423,7 +1424,7 @@ export const characters = [
         "but her efforts can be expensive and put a significant strain on the economy."
     ],
     power: 'Climatology\nand Environmental Activism',
-    helps: 'government',
+    helps: 'environment',
     hurts: 'economy',
     powerTokenType: "type_5",
     value: 0,
@@ -1509,7 +1510,34 @@ export const characters = [
     wokeLevel: 4,
     fogLevel: 2,
     characterIcon: 'Grant'
+},
+{
+    name: "Professor Theo Rivera",
+    faction: "woke",
+    backstory: [
+        "Professor Theo Rivera, a dedicated urban planner and community organizer, has spent decades transforming urban decay into thriving, sustainable", "communities. His innovative approaches to housing and public spaces have rejuvenated neighborhoods and encouraged inclusive urban development.",
+        "His projects often serve as models for cities worldwide, demonstrating how urban environments can enhance quality of life while promoting social", "justice and economic equality. His advocacy for policy changes often leads to increased governmental oversight and regulation, which, while",
+        "beneficial for urban development, can sometimes slow down private sector initiatives."
+    ],
+    shortstory: [
+        "Through his work, Professor Rivera collaborates closely with government agencies to design urban policies that prioritize affordable housing and", "public transport, making cities more accessible and equitable for all residents.",
+        "His advocacy for policy changes often leads to increased governmental oversight and regulation, which, while beneficial for urban development,",
+        "can sometimes slow down private sector initiatives."
+    ],
+    power: "Urban Planning and Community Development",
+    helps: "government",
+    hurts: "economy",
+    powerTokenType: "type_5",
+    value: 0,
+    prevValue: 0,
+    endorsement: 5,
+    dne: false,
+    magaLevel: 4,
+    wokeLevel: 3,
+    fogLevel: 3,
+    characterIcon: 'Rivera'
 }
+
 ];
 //        - limited missiles to fire: more missiles
 //        - faster missiles

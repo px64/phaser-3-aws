@@ -180,7 +180,7 @@ export function introduceCharacters(scene, characters, sharedData) {
 
         //character.charText = characterText; // back reference to text so we can find the location later
 
-        createCharacterTooltip(scene, character, 50+xOffset, Math.min(scene.sys.game.config.height*.7, 250 + (rowIndex * 60)), icon, characterText, scaleFactor, tmpHelp);
+        createCharacterTooltip(scene, character, 50+xOffset,  250 + (rowIndex * 60), icon, characterText, scaleFactor, tmpHelp);
 
         characterText.on('pointerover', () => enterButtonHoverState(characterText));
         characterText.on('pointerout', () => enterButtonRestState(characterText, textColor));
@@ -368,7 +368,11 @@ export function introduceCharacters(scene, characters, sharedData) {
 
         //let formattedBackstory = insertLinezBreaks(character.backstory.join(' '), lineLength);
         let formattedBackstory = character.backstory.join(' '); // let wordwrap deal with it
-        let backstoryText = scene.add.text(textX, scene.game.config.height / 2, formattedBackstory, {
+        let startY = scene.game.config.height*3/4;
+        if (y > scene.game.config.height/2) {
+            startY = scene.game.config.height/4;
+        }
+        let backstoryText = scene.add.text(textX, startY, formattedBackstory, {
             fontSize: '24px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -398,19 +402,18 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsLabel.setDepth(2);
 
         // Add the "helps" icon next to the "helps" text
-        let helpsIcon = scene.add.image(textX, helpsLabel.y, graphicObject);
+        let helpsIcon = scene.add.image(textX-250, backstoryBox.y - backstoryBox.displayHeight / 2 - 40, graphicObject);
         helpsIcon.setScale(scaleFactor.helps);
-        helpsIcon.setOrigin(0.5, 1);
+        helpsIcon.setOrigin(0.5, .25);
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(2);
-        helpsIcon.setPosition(textX, helpsLabel.y - 30);
 
         let backstoryHurtIcon = scene.add.image(textX, backstoryBox.y + backstoryBox.displayHeight / 2 + 30, character.hurts);
         backstoryHurtIcon.setScale(scaleFactor.hurts);
         backstoryHurtIcon.setOrigin(0.5, 0.5);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(2);
-        
+
         let hurtsLabel = scene.add.text(backstoryHurtIcon.x, backstoryHurtIcon.y + backstoryHurtIcon.displayHeight / 2 + 10, 'Causes Activists To Protest: ' + character.hurts, {
             fontSize: '20px',
             fontFamily: 'Roboto',
@@ -422,8 +425,8 @@ export function introduceCharacters(scene, characters, sharedData) {
         hurtsLabel.setDepth(2);
 
         const mouseOver = () => {
-            backstoryText.setVisible(true);
-            backstoryBox.setVisible(true);
+            backstoryText.setVisible(true).setAlpha(.85);
+            backstoryBox.setVisible(true).setAlpha(.85);
             //backstoryIcon.setVisible(true);
             backstoryHurtIcon.setVisible(true);
             helpsLabel.setVisible(true);
