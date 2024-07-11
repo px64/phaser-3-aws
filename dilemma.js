@@ -211,7 +211,7 @@ export class DilemmaScene extends BaseScene {
         let totalCapital = Math.floor(this.sharedData.MAGAness + this.sharedData.Wokeness);
 
         //polCapText = this.add.text(20, 200, 'Political Capital ' + totalCapital, { fontSize: '32px', fill: '#0f0' });
-        polCapText = this.add.text(20, 20, 'Political Capital ', { fontSize: '32px', fill: '#0f0' });
+        polCapText = this.add.text(20, 10, 'Political Capital ', { fontSize: '32px', fill: '#0f0' });
         this.updatePoliticalCapitalIcons(totalCapital);
         // Create MAGAness text
         //MAGAnessText = this.add.text(20, 0, 'MAGA Political\n Capital ' + this.MAGAness, { fontSize: '16px', fill: '#fff' });
