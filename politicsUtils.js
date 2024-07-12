@@ -85,7 +85,7 @@ function renderCharacters(scene) {
             //character.backing = character.value;
             //character.value = 0;
         }
-        let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+        let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
         let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
 
         let charText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
@@ -168,8 +168,8 @@ function updateCharVal(scene, character, value, characterText) {
         MAGAupdate = 0;
     }
     //characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
-    let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
-    let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
+    let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
+    let healthText = healthTextRange[Phaser.Math.Clamp((character.value),0,2)];
     characterText.setText(character.name + ',\nBacking: ' + healthText);
 
     // Update MAGAnessText and WokenessText here
@@ -192,7 +192,7 @@ function updateCharVal(scene, character, value, characterText) {
                 value = character.prevValue;
             }
             console.log('MAGAupdate = ' + MAGAupdate + ' character value = ' + value);
-            let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+            let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
             let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
             characterText.setText(character.name + ',\nBacking: ' + healthText);
             //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
@@ -214,13 +214,13 @@ function updateCharVal(scene, character, value, characterText) {
             } else {
                 value = character.prevValue;
             }
-            let healthTextRange = ['None', 'Endorsed', 'Fully Endorsed'];
+            let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
             let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
             characterText.setText(character.name + '\nBacking: ' + healthText);
             //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
         }
     }
-    if (character.endorsement + value > 1) {
+    if (character.value === 2) {
         characterText.setColor('#00ff00');
         //checkboxBackground.setColor(0x00ff00); // figure this out later
     } else {
@@ -296,90 +296,115 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let checkboxSize = 32;  // Specify the size of your checkbox here
     checkboxBackground.fillRect(x-checkboxSize/2, y-checkboxSize/2, checkboxSize, checkboxSize-4);  // Replace x and y with the coordinates where you want to draw the square
 
+    character.prevValue = character.endorsement;
+    character.value = character.endorsement;
     // Add ability to check the box by clicking on the character text too
+    // Set interactive for character icon
     characterText.setInteractive();
     characterText.on('pointerdown', chooseAction);
 
-   // let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
-    let checkboxUnchecked = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
-    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setVisible(false).setInteractive().setScale(.15);
+    // Create sprites
+    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
+    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
+    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
 
-    checkboxUnchecked.on('pointerdown', checkboxUncheckedAction);
-    checkboxChecked.on('pointerdown', checkboxCheckedAction);
+    // Initial visibility setup based on character endorsement and value
+    if (character.endorsement === 1) {
+        // If character is endorsed, start as checked or fully endorsed based on the value
+        checkboxUnchecked.setVisible(false);
+        checkboxChecked.setVisible(character.value !== 2); // Visible if not fully endorsed
+        checkboxEndorsed.setVisible(character.value === 2); // Visible if fully endorsed
+    } else {
+        // If not endorsed, only check normal checked state
+        checkboxUnchecked.setVisible(character.value !== 1);
+        checkboxChecked.setVisible(character.value === 1);
+        checkboxEndorsed.setVisible(false);
+    }
 
+    // Define actions for different checkbox states
+    checkboxUnchecked.on('pointerdown', () => toggleState('checked'));
+    checkboxChecked.on('pointerdown', () => handleCheckedState());
+    checkboxEndorsed.on('pointerdown', () => toggleState('checked'));
+
+    function handleCheckedState() {
+        if (character.endorsement === 1) {
+            toggleState('endorsed');
+        } else {
+            toggleState('unchecked');
+        }
+    }
+
+    function toggleState(nextState) {
+        let backing = 0;
+        switch (nextState) {
+            case 'unchecked':
+                checkboxUnchecked.setVisible(true);
+                checkboxChecked.setVisible(false);
+                checkboxEndorsed.setVisible(false);
+                character.value = 0;
+                break;
+            case 'checked':
+                checkboxUnchecked.setVisible(false);
+                checkboxChecked.setVisible(true);
+                checkboxEndorsed.setVisible(false);
+                character.value = 1;
+                if (character.endorsement === 1) {
+                    backing = 1;
+                }
+                break;
+            case 'endorsed':
+                checkboxUnchecked.setVisible(false);
+                checkboxChecked.setVisible(false);
+                checkboxEndorsed.setVisible(true);
+                character.value = 2;  // Assuming '2' is the value for 'fully endorsed'
+                backing = 1;
+                break;
+        }
+
+        // Update character and check for success
+        let updateSuccess = updateCharVal(scene, character, character.value, characterText);
+        if (!updateSuccess) {
+            callback(character, character.value);
+        }
+    }
     function chooseAction() {
-        if (character.value == 1) {
-            checkboxCheckedAction();
-        } else {
-            checkboxUncheckedAction();
-        }
-    }
-    function checkboxUncheckedAction() {
-        checkboxUnchecked.setVisible(false);
-        checkboxChecked.setVisible(true);
-        // Calculate and return the value
-        let value = 1;
+        console.log("chooseAction triggered w a value of "+ character.value+ " and endorsement of "+character.endorsement);
 
-        // Update the underlying character's value
-        character.value = value;
+        if (character.value === 0) {
+            toggleState('checked');
+            console.log("chooseAction triggered checked", character.name);
 
-        let undoCheck = updateCharVal(scene, character, value, characterText);
-        if (undoCheck === true) {
-            checkboxUnchecked.setVisible(true);
-            checkboxChecked.setVisible(false);
-            character.value = 0;
-        } else { // a roundabout way of setting character.backing to parameter value which is 1.
-            callback(character, 1);
-        }
-    }
-    function checkboxCheckedAction() {
-        checkboxChecked.setVisible(false);
-        checkboxUnchecked.setVisible(true);
-        // Calculate and return the value
-        let value = 0;
+        } else if (character.value === 1) {
+            if (character.endorsement === 1) {
+                toggleState('endorsed');
+                console.log("chooseAction triggered endorsed", character.name);
 
-        // Update the underlying character's value
-        character.value = value;
+            } else {
+                toggleState('unchecked');
+                console.log("chooseAction triggered unchecked", character.name);
 
-        let undoCheck = updateCharVal(scene, character, value, characterText);
-        if (undoCheck == true) {
-            checkboxChecked.setVisible(true);
-            checkboxUnchecked.setVisible(false);
-            character.value = 1;
-        } else { // a roundabout way of setting character.backing to parameter value which is 0.
-            callback(character, 0);
+            }
+        } else if (character.value === 2) { // Fully endorsed
+            // Ensure that from fully endorsed, it only goes back to checked if endorsed
+            toggleState('checked');
+            console.log("chooseAction triggered checked", character.name);
+
         }
     }
 
-    // Initial checkbox state
-    if(0){//initialValue) { // skip this fancy stuff for now
-        let undoCheck;
-
-        checkboxUnchecked.setVisible(false);
-        checkboxChecked.setVisible(true);
-        let value = 1;
-
-        // Update the underlying character's value
-        character.value = value;
-        if (character.endorsement + value > 2){
-            undoCheck = true;
-        } else {
-            // If we are out of political capital, undo the check
-            undoCheck = updateCharVal(scene, character, value, characterText);
-        }
-        if (undoCheck == true) {
-            checkboxUnchecked.setVisible(true);
-            checkboxChecked.setVisible(false);
-            character.value = 0;
-            character.backing = 0; // not sure this is necessary but can't hurt
-        } else { // a roundabout way of setting character.backing to parameter value of 1.
-            callback(character, 1);
-        }
-    }
+    // function chooseAction() {
+    //     if (character.value === 0) {
+    //         toggleState('checked');
+    //     } else if (character.value === 1 && character.endorsement === 1) {
+    //         toggleState('endorsed');
+    //     } else {
+    //         toggleState('unchecked');
+    //     }
+    // }
 
     createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
 
-    return { checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction };
+    return ;//{ checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction };
 }
 
 
