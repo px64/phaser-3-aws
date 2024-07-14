@@ -288,8 +288,101 @@ function updateCharVal(scene, character, value, characterText) {
     }
     return undoCheck;
 }
-
 function createCheckbox(scene, x, y, character, characterText, callback, initialValue) {
+    let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
+
+    let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
+    let checkboxSize = 32;  // Specify the size of your checkbox here
+    checkboxBackground.fillRect(x - checkboxSize / 2, y - checkboxSize / 2, checkboxSize, checkboxSize - 4);
+
+    // Create checkbox sprites
+    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
+    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
+    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
+
+    // Initialize state based on character endorsement
+    if (character.endorsement === 1) {
+        checkboxUnchecked.setVisible(false);
+        checkboxChecked.setVisible(true); // Show as checked (not fully endorsed)
+        checkboxEndorsed.setVisible(false);
+        character.value = 1; // Start as checked
+    } else {
+        checkboxUnchecked.setVisible(true);
+        checkboxChecked.setVisible(false);
+        checkboxEndorsed.setVisible(false);
+        character.value = 0; // Start as unchecked
+    }
+
+    character.prevValue = character.value; // Track previous value for updates
+
+    // Set interactive for character icon
+    characterText.setInteractive();
+    characterText.on('pointerdown', chooseAction);
+
+    // Define actions for different checkbox states
+    checkboxUnchecked.on('pointerdown', () => toggleState('checked'));
+    checkboxChecked.on('pointerdown', () => handleCheckedState());
+    checkboxEndorsed.on('pointerdown', () => toggleState('checked'));
+
+    function handleCheckedState() {
+        if (character.endorsement === 1) {
+            toggleState('fullyEndorsed');
+        } else {
+            toggleState('unchecked');
+        }
+    }
+
+    function toggleState(nextState) {
+        switch (nextState) {
+            case 'unchecked':
+                checkboxUnchecked.setVisible(true);
+                checkboxChecked.setVisible(false);
+                checkboxEndorsed.setVisible(false);
+                character.value = 0;
+                break;
+            case 'checked':
+                checkboxUnchecked.setVisible(false);
+                checkboxChecked.setVisible(true);
+                checkboxEndorsed.setVisible(false);
+                character.value = 1;
+                break;
+            case 'fullyEndorsed':
+                checkboxUnchecked.setVisible(false);
+                checkboxChecked.setVisible(false);
+                checkboxEndorsed.setVisible(true);
+                character.value = 2; // Fully endorsed
+                break;
+        }
+
+        // Update character and check for success
+        let updateSuccess = updateCharVal(scene, character, character.value, characterText);
+        if (!updateSuccess) {
+            callback(character, character.value);
+        }
+    }
+
+    function chooseAction() {
+        if (character.value === 0) {
+            toggleState('checked');
+        } else if (character.value === 1) {
+            if (character.endorsement === 1) {
+                toggleState('fullyEndorsed');
+            } else {
+                toggleState('unchecked');
+            }
+        } else if (character.value === 2) { // Fully endorsed
+            toggleState('checked');
+        }
+    }
+
+    return {
+        checkboxUnchecked,
+        checkboxChecked,
+        checkboxEndorsed
+    };
+}
+
+function createCheckbox1(scene, x, y, character, characterText, callback, initialValue) {
     let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
 
     let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
@@ -404,7 +497,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
 
     createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
 
-    return ;//{ checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction };
+    return { checkboxUnchecked, checkboxChecked, toggleState};//, checkboxUncheckedAction, checkboxCheckedAction };
 }
 
 

@@ -212,14 +212,14 @@ import { characters } from './BaseScene.js';
             {
                 // Assuming characters is an array of objects and startBlinkingCheckbox is defined
                 const character = characters.find(character => character.dne === false);
-
+                console.log(character.name);
+                console.log(character.checkbox);
                 if (character) {
                   startBlinkingCheckbox(
                     scene,
                     character.checkbox.checkboxUnchecked,
                     character.checkbox.checkboxChecked,
-                    character.checkbox.checkboxUncheckedAction,
-                    character.checkbox.checkboxCheckedAction
+                    character.checkbox.toggleState
                   );
                 } else {
                   console.log('No character with dne == false found.');
@@ -344,20 +344,20 @@ export function drawArrow(scene, startX, startY, endX, endY) {
     return graphics; // Ensure the graphics object is returned
 
 }
-function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, checkboxUncheckedAction, checkboxCheckedAction) {
+function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, toggleState) {
     let toggleCount = 0;
     const maxToggles = 6; // Blink 3 times (each blink consists of two toggles)
 
     const toggleCheckbox = () => {
         if (toggleCount < maxToggles) {
             if (checkboxUnchecked.visible) {
-                checkboxUncheckedAction();
+                toggleState('checked');
             } else {
-                checkboxCheckedAction();
+                toggleState('unchecked');
             }
             toggleCount++;
         } else {
-            checkboxCheckedAction();
+            toggleState('unchecked');
             toggleEvent.remove(); // Remove the event after the desired number of toggles
         }
     };
