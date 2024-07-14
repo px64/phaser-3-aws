@@ -378,7 +378,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     return {
         checkboxUnchecked,
         checkboxChecked,
-        checkboxEndorsed
+        toggleState
     };
 }
 

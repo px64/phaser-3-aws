@@ -350,14 +350,14 @@ function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, toggle
 
     const toggleCheckbox = () => {
         if (toggleCount < maxToggles) {
-            if (checkboxUnchecked.visible) {
-                toggleState('checked');
+            if (checkboxChecked.visible) {
+                toggleState('fullyEndorsed');
             } else {
-                toggleState('unchecked');
+                toggleState('checked');
             }
             toggleCount++;
         } else {
-            toggleState('unchecked');
+            toggleState('checked');
             toggleEvent.remove(); // Remove the event after the desired number of toggles
         }
     };
