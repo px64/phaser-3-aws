@@ -342,9 +342,9 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
         updateVisibility();
 
         // Update character and check for success
-        let updateSuccess = updateCharVal(scene, character, character.value, characterText);
+        let updateSuccess = updateCharVal(scene, character, character.checkboxState, characterText);
         if (!updateSuccess) {
-            callback(character, character.value);
+            callback(character, character.checkboxState);
         }
     }
 
