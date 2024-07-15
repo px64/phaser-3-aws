@@ -235,7 +235,7 @@ function updateCharVal(scene, character, value, characterText) {
     scene.updatePoliticalCapitalIcons(tmpMAG+tmpWok);
 
     // Save the previous value for next calculation
-    character.prevValue = value;
+    //character.prevValue = value;
 
     // Update MAGAness and Wokeness with new values.  Make sure they are integers
     scene.MAGAness = Math.floor(tmpMAG);
