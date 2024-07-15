@@ -420,7 +420,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
 
         character.value = nextStateValue;
 
-        character.checkboxState = character.endorsed + nextStateValue;
+        character.checkboxState = character.endorsement + nextStateValue;
         updateVisibility();
 
         // Update character and check for success
