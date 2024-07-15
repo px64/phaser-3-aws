@@ -175,6 +175,8 @@ function updateCharVal(scene, character, value, characterText) {
     // Update MAGAnessText and WokenessText here
     let tmpMAG = scene.MAGAness - MAGAupdate;
     let tmpWok = scene.Wokeness - WokeUpdate;
+    console.log('tmpMag is '+tmpMAG');
+    console.log('tmpWok is '+tmpWok');
 
     if (character.faction == 'maga' && tmpMAG < 0) {
         if (tmpWok >= -tmpMAG) {
@@ -232,6 +234,8 @@ function updateCharVal(scene, character, value, characterText) {
     scene.polCapText.setText('Political Capital');
     scene.polCapText.setColor('#00ff00'); // Change text color back to green
     scene.polCapText.setBackgroundColor('#000000'); // Change background color back to black
+    console.log('tmpMag before diamonds is '+tmpMAG');
+    console.log('tmpWok before diamonds is '+tmpWok');
     scene.updatePoliticalCapitalIcons(tmpMAG+tmpWok);
 
     // Save the previous value for next calculation
