@@ -400,27 +400,18 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     checkboxChecked.on('pointerdown', () => toggleState('unchecked'));
     checkboxEndorsed.on('pointerdown', () => toggleState('unchecked'));
 
-    function handleCheckedState() {
-        if (character.endorsement === 1 && character.initialState == 1) {
-            toggleState('fullyEndorsed');
-        } else if (character.endorsement === 1 && character.checkBoxState === 2) {
-            toggleState('checked');
-        } else if (character.initialState === 0 && character.checkboxState === 1) {
-            toggleState('unchecked');
-        } else if (character.checkboxState === 0) {
-            toggleState('checked');
-        } else if (character.checkboxState === 1) {
-            toggleState('fullyEndorsed');
-        }
-    }
-
     function toggleState(nextState) {
         const stateMapping = { 'unchecked': 0, 'checked': 1, 'fullyEndorsed': 2 };
         const nextStateValue = stateMapping[nextState];
 
-        character.value = nextStateValue;
+        if (character.value === 1) {
+            character.value = 0;
+            character.checkboxState = 0;
+        } else {
+            character.value = 1;
+            character.checkboxState = character.endorsement + 1;
+        }
 
-        character.checkboxState = character.endorsement + nextStateValue;
         updateVisibility();
 
         // Update character and check for success
