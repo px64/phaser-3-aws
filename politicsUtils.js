@@ -374,6 +374,8 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
             toggleState('checked');
         }
     }
+    
+    createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
 
     return {
         checkboxUnchecked,
