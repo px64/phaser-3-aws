@@ -306,6 +306,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
         checkboxChecked.setVisible(true); // Show as checked (not fully endorsed)
         checkboxEndorsed.setVisible(false);
         character.value = 1; // Start as checked
+        character.endorsement = 0; // starting endorsement has been transferred to value so checkbox starts checked
     } else {
         checkboxUnchecked.setVisible(true);
         checkboxChecked.setVisible(false);
@@ -374,6 +375,8 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
             toggleState('checked');
         }
     }
+
+    createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
 
     return {
         checkboxUnchecked,
