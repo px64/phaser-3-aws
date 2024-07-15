@@ -308,7 +308,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
 
     updateVisibility();
 
-    character.prevState = character.value; // Track previous state for updates
+    character.prevValue = character.checkBoxState; // Track previous state for updates
 
     // Set interactive for character icon
     characterText.setInteractive();
