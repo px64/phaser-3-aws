@@ -81,7 +81,7 @@ export class Politics extends BaseScene {
             littleHats: {},
             totalPoliticalCapital: 0
         };
-        // hack: decrease all character's endorsements by 3
+        // all character's endorsement starts at 0
         characters.forEach((character, index) => {
             character.endorsement = 0;
         });
@@ -483,7 +483,7 @@ export class Politics extends BaseScene {
                     let iconOffset = character.faction === 'maga' ? characterText.width+60: -60;
                     let characterIcon = scene.add.sprite(character.charText.x + iconOffset, character.charText.y, character.characterIcon).setScale(.09);
                     characterIcon.setVisible(false).setDepth(6);
-                    
+
                     // Tween to change color to green
                     setTimeout(() => {
                             characterText.setVisible(true);
@@ -500,7 +500,7 @@ export class Politics extends BaseScene {
                             duration: 3500, // Duration of the fade in milliseconds
                             onComplete: function () {
                                 characterText.destroy(); // Destroy the text object after the fade completes
-                                characterIcon.destroy(); 
+                                characterIcon.destroy();
                             }
                         });
                     }, 3000+(helpfulTokenIndex+1) * 400);
