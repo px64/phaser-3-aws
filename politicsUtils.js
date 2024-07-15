@@ -407,9 +407,9 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
             toggleState('checked');
         } else if (character.initialState === 0 && character.checkboxState === 1) {
             toggleState('unchecked');
-        } else if (character.checkboxState === 0)
+        } else if (character.checkboxState === 0) {
             toggleState('checked');
-        } else if (character.checkboxState === 1)
+        } else if (character.checkboxState === 1) {
             toggleState('fullyEndorsed');
         }
     }
