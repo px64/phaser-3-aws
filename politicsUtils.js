@@ -301,6 +301,94 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
 
     // Initialize state based on character endorsement
+    character.checkboxState = 0;  // Start as unchecked
+    if (character.endorsement === 1) {
+        character.checkboxState = 1;  // Start as checked if endorsed
+    }
+
+    updateVisibility();
+
+    character.prevState = character.value; // Track previous state for updates
+
+    // Set interactive for character icon
+    characterText.setInteractive();
+    characterText.on('pointerdown', chooseAction);
+
+    // Define actions for different checkbox states
+    checkboxUnchecked.on('pointerdown', () => toggleState('checked'));
+    checkboxChecked.on('pointerdown', () => handleCheckedState());
+    checkboxEndorsed.on('pointerdown', () => toggleState('checked'));
+
+    function handleCheckedState() {
+        if (character.endorsement === 1) {
+            toggleState('fullyEndorsed');
+        } else {
+            toggleState('unchecked');
+        }
+    }
+
+    function toggleState(nextState) {
+        const stateMapping = { 'unchecked': 0, 'checked': 1, 'fullyEndorsed': 2 };
+        const nextStateValue = stateMapping[nextState];
+        const prevStateValue = character.checkboxState;
+
+        if (character.value == 0) {
+            character.value = nextStateValue - prevStateValue; // Change in state only if current value is 0
+        } else {
+            character.value = 0; // Reset character.value to 0 otherwise
+        }
+
+        character.checkboxState = nextStateValue;
+        updateVisibility();
+
+        // Update character and check for success
+        let updateSuccess = updateCharVal(scene, character, character.value, characterText);
+        if (!updateSuccess) {
+            callback(character, character.value);
+        }
+    }
+
+    function updateVisibility() {
+        checkboxUnchecked.setVisible(character.checkboxState === 0);
+        checkboxChecked.setVisible(character.checkboxState === 1);
+        checkboxEndorsed.setVisible(character.checkboxState === 2);
+    }
+
+    function chooseAction() {
+        if (character.checkboxState === 0) {
+            toggleState('checked');
+        } else if (character.checkboxState === 1) {
+            if (character.endorsement === 1) {
+                toggleState('fullyEndorsed');
+            } else {
+                toggleState('unchecked');
+            }
+        } else if (character.checkboxState === 2) { // Fully endorsed
+            toggleState('checked');
+        }
+    }
+    createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
+
+    return {
+        checkboxUnchecked,
+        checkboxChecked,
+        toggleState
+    };
+}
+
+function createCheckbox3(scene, x, y, character, characterText, callback, initialValue) {
+    let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
+
+    let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
+    let checkboxSize = 32;  // Specify the size of your checkbox here
+    checkboxBackground.fillRect(x - checkboxSize / 2, y - checkboxSize / 2, checkboxSize, checkboxSize - 4);
+
+    // Create checkbox sprites
+    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
+    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
+    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
+
+    // Initialize state based on character endorsement
     if (character.endorsement === 1) {
         checkboxUnchecked.setVisible(false);
         checkboxChecked.setVisible(true);  // Show as checked (not fully endorsed)
