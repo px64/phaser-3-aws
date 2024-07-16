@@ -70,7 +70,7 @@ function renderCharacters(scene) {
         let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
 
         if (character.endorsement == 1) {
-            textColor = #108010;
+            textColor = '#108010';
         }
 
         if (character.faction == 'maga') {
