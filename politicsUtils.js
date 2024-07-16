@@ -378,6 +378,10 @@ function createCheckbox_bad(scene, x, y, character, characterText, callback, ini
 function createCheckbox(scene, x, y, character, characterText, callback, initialValue) {
     let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
 
+    if (character.endorsement === 1) {
+        textColor = 0x108010;
+    }
+
     let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
     let checkboxSize = 32;  // Specify the size of your checkbox here
     checkboxBackground.fillRect(x - checkboxSize / 2, y - checkboxSize / 2, checkboxSize, checkboxSize - 4);
