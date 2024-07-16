@@ -103,7 +103,7 @@ function renderCharacters(scene) {
     }
 
     // Add the pipeline to the renderer
-    const customPipeline = this.game.renderer.addPipeline('ColorBlend', new ColorBlendPipeline(this.game));
+    const customPipeline = scene.game.renderer.addPipeline('ColorBlend', new ColorBlendPipeline(scene.game));
 
     // Set initial values for shader uniforms
     customPipeline.set3f('color1', 1, 0, 0); // Red
@@ -111,7 +111,7 @@ function renderCharacters(scene) {
     customPipeline.set1f('mixFactor', 0.5);
     
     // Create a tween to oscillate the mixFactor uniform
-    this.tweens.add({
+    scene.tweens.add({
         targets: customPipeline,
         mixFactor: 1,
         yoyo: true,
@@ -119,7 +119,7 @@ function renderCharacters(scene) {
         ease: 'Sine.easeInOut',
         duration: 2000
     });
-    
+
     console.log('sanity test.  charFont is '+scene.sharedData.charFont);
 
     characters.forEach((character, index) => {
