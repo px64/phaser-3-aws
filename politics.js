@@ -383,7 +383,9 @@ export class Politics extends BaseScene {
 
         // Add the custom pipeline to the renderer's pipeline manager
         this.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
-
+        
+        // Set initial values for shader uniforms using the new pipeline instance
+        let customPipeline = this.renderer.pipelines.get('ColorBlend');
         // Set initial values for shader uniforms
         customPipeline.set3f('color1', 1, 0, 0); // Red
         customPipeline.set3f('color2', 0, 0, 1); // Blue
