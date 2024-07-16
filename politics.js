@@ -380,8 +380,9 @@ export class Politics extends BaseScene {
             }
         }
 
-        // Add the pipeline to the renderer
-        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new ColorBlendPipeline(this.game));
+
+        // Add the custom pipeline to the renderer's pipeline manager
+        this.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
 
         // Set initial values for shader uniforms
         customPipeline.set3f('color1', 1, 0, 0); // Red
@@ -397,7 +398,7 @@ export class Politics extends BaseScene {
             ease: 'Sine.easeInOut',
             duration: 2000
         });
-        
+
         // New Idea: It would be cool that the character associated with the helper token is we render the characters right away but make them invisible.  No, actually that won't work because the checkboxes will still be active.
         // Also the checkboxes might be in front of the discussion tokens, creating a problem.
         // how about some new funky graphic showing how the token eminates from the checkbox?
