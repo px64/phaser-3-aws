@@ -60,6 +60,48 @@ function renderCharacters(scene) {
         underline.strokePath();
     }
 
+    // Define your colors in RGB normalized format (0.0 to 1.0)
+    const color1 = new Phaser.Display.Color.ValueToColor(0xff0000).gl; // Red
+    const color2 = new Phaser.Display.Color.ValueToColor(0x0000ff).gl; // Blue
+
+    // Define the fragment shader source code
+    const fragShader = `
+    precision mediump float;
+
+    uniform vec3 color1;
+    uniform vec3 color2;
+    uniform float mixFactor;
+
+    void main() {
+        vec3 color = mix(color1, color2, mixFactor);
+        gl_FragColor = vec4(color, 1.0);
+    }
+    `;
+        // Create a custom pipeline with the shader
+        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline({
+        game: this.game,
+        renderer: this.game.renderer,
+        fragShader: fragShader
+    }));
+
+    // Set initial values for shader uniforms
+    customPipeline.setFloat3('color1', color1[0], color1[1], color1[2]);
+    customPipeline.setFloat3('color2', color2[0], color2[1], color2[2]);
+    customPipeline.setFloat1('mixFactor', 0.5);
+
+    // Create a tween to oscillate the mixFactor uniform
+    this.tweens.add({
+        targets: customPipeline,
+        props: {
+            mixFactor: {
+                value: 1,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            }
+        },
+        duration: 2000
+    });
     console.log('sanity test.  charFont is '+scene.sharedData.charFont);
 
     characters.forEach((character, index) => {
@@ -95,6 +137,11 @@ function renderCharacters(scene) {
 
         let charText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
                             { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
+
+        if (character.endorsement == 1) {
+            // apply pipeline to char text
+            charText.setPipeline('ColorBlend');
+        }
 
         // Measure the height of the text, including any line breaks
         let textHeight = charText.displayHeight;
