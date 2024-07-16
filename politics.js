@@ -391,10 +391,9 @@ export class Politics extends BaseScene {
         customPipeline.set3f('color2', 0, 0, 1); // Blue
         customPipeline.set1f('mixFactor', 0.5);
 
-        // Create a tween to oscillate the mixFactor uniform
         this.tweens.add({
             targets: customPipeline,
-            mixFactor: 1,
+            mixFactor: { from: 0, to: 1 },
             yoyo: true,
             repeat: -1,
             ease: 'Sine.easeInOut',
