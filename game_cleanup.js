@@ -634,7 +634,7 @@ class TutorialScene extends BaseScene {
 }
 
 let config = {
-    type: Phaser.AUTO,
+    type: Phaser.WEBGL, // Ensure WebGL is used
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
