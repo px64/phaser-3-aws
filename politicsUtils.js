@@ -169,7 +169,7 @@ function updateCharVal(scene, character, value, characterText) {
     }
     //characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
     let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
-    let healthText = healthTextRange[Phaser.Math.Clamp((character.value),0,2)];
+    let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
     characterText.setText(character.name + ',\nBacking: ' + healthText);
 
     // Update MAGAnessText and WokenessText here
@@ -220,7 +220,7 @@ function updateCharVal(scene, character, value, characterText) {
             //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
         }
     }
-    if (character.value === 2) {
+    if (character.endorsement + value === 2) {
         characterText.setColor('#00ff00');
         //checkboxBackground.setColor(0x00ff00); // figure this out later
     } else {
@@ -312,7 +312,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
         checkboxEndorsed.setVisible(false);
         character.checkboxState = 0;  // Start as unchecked
     }
-    
+
     character.value = 0;
     character.prevValue = character.checkboxState; // Track previous value for updates
 
