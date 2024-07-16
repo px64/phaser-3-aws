@@ -60,66 +60,6 @@ function renderCharacters(scene) {
         underline.strokePath();
     }
 
-    // Define your colors in RGB normalized format (0.0 to 1.0)
-    const color1 = [1, 0, 0]; // Red in RGB normalized format
-    const color2 = [0, 0, 1]; // Blue in RGB normalized format
-
-    // Define the fragment shader source code
-    const fragShader = `
-    precision mediump float;
-
-    uniform vec3 color1;
-    uniform vec3 color2;
-    uniform float mixFactor;
-
-    void main() {
-        vec3 color = mix(color1, color2, mixFactor);
-        gl_FragColor = vec4(color, 1.0);
-    }
-    `;
-    // Create a custom pipeline with the shader
-    class ColorBlendPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPipeline {
-        constructor(game) {
-            super({
-                game: game,
-                renderer: game.renderer,
-                fragShader: fragShader,
-                uniforms: [
-                    'uProjectionMatrix',
-                    'uViewMatrix',
-                    'uModelMatrix',
-                    'color1',
-                    'color2',
-                    'mixFactor'
-                ]
-            });
-        }
-
-        onBind() {
-            this.set3f('color1', 1, 0, 0); // Default to red
-            this.set3f('color2', 0, 0, 1); // Default to blue
-            this.set1f('mixFactor', 0.5);
-        }
-    }
-
-    // Add the pipeline to the renderer
-    const customPipeline = scene.game.renderer.addPipeline('ColorBlend', new ColorBlendPipeline(scene.game));
-
-    // Set initial values for shader uniforms
-    customPipeline.set3f('color1', 1, 0, 0); // Red
-    customPipeline.set3f('color2', 0, 0, 1); // Blue
-    customPipeline.set1f('mixFactor', 0.5);
-    
-    // Create a tween to oscillate the mixFactor uniform
-    scene.tweens.add({
-        targets: customPipeline,
-        mixFactor: 1,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut',
-        duration: 2000
-    });
-
     console.log('sanity test.  charFont is '+scene.sharedData.charFont);
 
     characters.forEach((character, index) => {
