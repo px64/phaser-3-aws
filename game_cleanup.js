@@ -95,7 +95,7 @@ class TitleScene extends Phaser.Scene {
             MAGAnessVelocity: 0,
             WokenessVelocity: 0,
             difficultyLevel: 'A Beginner',
-            totalPoliticalCapital: 200//10 // 10 // this initilization matters
+            totalPoliticalCapital: 10 // this initilization matters
         };
     }
     preload() {
