@@ -83,35 +83,43 @@ function renderCharacters(scene) {
             super({
                 game: game,
                 renderer: game.renderer,
-                fragShader: fragShader
+                fragShader: fragShader,
+                uniforms: [
+                    'uProjectionMatrix',
+                    'uViewMatrix',
+                    'uModelMatrix',
+                    'color1',
+                    'color2',
+                    'mixFactor'
+                ]
             });
-            scene.setFloat3('color1', 1, 0, 0); // Default to red
-            scene.setFloat3('color2', 0, 0, 1); // Default to blue
-            scene.setFloat1('mixFactor', 0.5);
+        }
+
+        onBind() {
+            this.set3f('color1', 1, 0, 0); // Default to red
+            this.set3f('color2', 0, 0, 1); // Default to blue
+            this.set1f('mixFactor', 0.5);
         }
     }
 
     // Add the pipeline to the renderer
-    const customPipeline = scene.game.renderer.addPipeline('ColorBlend', new ColorBlendPipeline(scene.game));
+    const customPipeline = this.game.renderer.addPipeline('ColorBlend', new ColorBlendPipeline(this.game));
 
     // Set initial values for shader uniforms
-    customPipeline.setFloat3('color1', color1[0], color1[1], color1[2]);
-    customPipeline.setFloat3('color2', color2[0], color2[1], color2[2]);
-    customPipeline.setFloat1('mixFactor', 0.5);
-
+    customPipeline.set3f('color1', 1, 0, 0); // Red
+    customPipeline.set3f('color2', 0, 0, 1); // Blue
+    customPipeline.set1f('mixFactor', 0.5);
+    
     // Create a tween to oscillate the mixFactor uniform
     this.tweens.add({
         targets: customPipeline,
-        props: {
-            mixFactor: {
-                value: 1,
-                yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
-            }
-        },
+        mixFactor: 1,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
         duration: 2000
     });
+    
     console.log('sanity test.  charFont is '+scene.sharedData.charFont);
 
     characters.forEach((character, index) => {
