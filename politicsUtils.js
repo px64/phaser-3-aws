@@ -85,9 +85,9 @@ function renderCharacters(scene) {
                 renderer: game.renderer,
                 fragShader: fragShader
             });
-            this.setFloat3('color1', 1, 0, 0); // Default to red
-            this.setFloat3('color2', 0, 0, 1); // Default to blue
-            this.setFloat1('mixFactor', 0.5);
+            scene.setFloat3('color1', 1, 0, 0); // Default to red
+            scene.setFloat3('color2', 0, 0, 1); // Default to blue
+            scene.setFloat1('mixFactor', 0.5);
         }
     }
 
