@@ -61,8 +61,8 @@ function renderCharacters(scene) {
     }
 
     // Define your colors in RGB normalized format (0.0 to 1.0)
-    const color1 = new Phaser.Display.Color.ValueToColor(0xff0000).gl; // Red
-    const color2 = new Phaser.Display.Color.ValueToColor(0x0000ff).gl; // Blue
+    const color1 = [1, 0, 0]; // Red in RGB normalized format
+    const color2 = [0, 0, 1]; // Blue in RGB normalized format
 
     // Define the fragment shader source code
     const fragShader = `
