@@ -223,6 +223,8 @@ function updateCharVal(scene, character, value, characterText) {
     if (character.endorsement + value === 2) {
         characterText.setColor('#00ff00');
         //checkboxBackground.setColor(0x00ff00); // figure this out later
+    } else if (character.endorsement + value === 1) {
+        characterText.setColor('#108010');
     } else {
         let textColor = character.faction === 'maga' ? '#ff8080' : '#8080ff';
         characterText.setColor(textColor);
