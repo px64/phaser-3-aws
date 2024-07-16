@@ -78,9 +78,9 @@ function renderCharacters(scene) {
     }
     `;
         // Create a custom pipeline with the shader
-        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline({
-        game: this.game,
-        renderer: this.game.renderer,
+        const customPipeline = scene.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline({
+        game: scene.game,
+        renderer: scene.game.renderer,
         fragShader: fragShader
     }));
 
