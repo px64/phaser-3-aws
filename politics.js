@@ -343,16 +343,21 @@ export class Politics extends BaseScene {
         */
         // Define the fragment shader source code
         const fragShader = `
-        precision mediump float;
+            precision mediump float;
+            uniform sampler2D uMainSampler;
+            uniform vec3 color1;
+            uniform vec3 color2;
+            uniform float mixFactor;
 
-        uniform vec3 color1;
-        uniform vec3 color2;
-        uniform float mixFactor;
-
-        void main() {
-            vec3 color = mix(color1, color2, mixFactor);
-            gl_FragColor = vec4(color, 1.0);
-        }
+            void main() {
+                vec4 texColor = texture2D(uMainSampler, gl_FragCoord.xy / resolution.xy);
+                if (texColor.a > 0.0) { // Only apply the mix to non-transparent parts
+                    vec3 color = mix(color1, color2, mixFactor);
+                    gl_FragColor = vec4(color, 1.0) * texColor.a;
+                } else {
+                    gl_FragColor = texColor; // Keep the original background unchanged
+                }
+            }
         `;
 
         // Create a custom pipeline
