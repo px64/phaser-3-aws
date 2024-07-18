@@ -348,9 +348,10 @@ export class Politics extends BaseScene {
             uniform vec3 color1;
             uniform vec3 color2;
             uniform float mixFactor;
+            uniform vec2 resolution;
 
             void main() {
-                vec4 texColor = texture2D(uMainSampler, gl_FragCoord.xy);
+                vec4 texColor = texture2D(uMainSampler, gl_FragCoord.xy/resolution);
                 if (texColor.a > 0.0) { // Only apply the mix to non-transparent parts
                     vec3 color = mix(color1, color2, mixFactor);
                     gl_FragColor = vec4(color, 1.0) * texColor.a;
@@ -373,7 +374,8 @@ export class Politics extends BaseScene {
                         'uModelMatrix',
                         'color1',
                         'color2',
-                        'mixFactor'
+                        'mixFactor',
+                        'resolution'
                     ]
                 });
             }
@@ -395,6 +397,7 @@ export class Politics extends BaseScene {
         customPipeline.set3f('color1', 1, 0, 0); // Red
         customPipeline.set3f('color2', 0, 0, 1); // Blue
         customPipeline.set1f('mixFactor', 0.5);
+        customPipeline.set2f('resolution', this.game.config.width, this.game.config.height);
 
         this.tweens.add({
             targets: customPipeline,
