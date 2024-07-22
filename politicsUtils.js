@@ -409,14 +409,14 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     // Apply shader to checkbox sprites
     //checkboxUnchecked.setPipeline('ColorBlend');
     //checkboxChecked.setPipeline('ColorBlend');
-    //checkboxBackground.setPipeline('ColorBlend');
+    checkboxBackground.setPipeline('ColorBlend');
 
     let colorBlendPipeline = scene.renderer.pipelines.get('ColorBlend');
     
     // Start tweening the pipeline
     scene.tweens.add({
         targets: colorBlendPipeline,
-        mixFactor: { from: 0, to: 1 },
+        mixFactor: 1,
         yoyo: true,
         repeat: -1,
         ease: 'Sine.easeInOut',

@@ -371,7 +371,7 @@ export class Politics extends BaseScene {
                 super.onBind();
                 this.set3f('color1', 1, 0, 0); // Default to red
                 this.set3f('color2', 0, 0, 1); // Default to blue
-                this.set1f('mixFactor', 0.5);  // Default mix factor
+                this.set1f('mixFactor', 0.2);  // Default mix factor
             }
         }
 
@@ -379,11 +379,11 @@ export class Politics extends BaseScene {
         const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
         
         // Set initial values for shader uniforms using the new pipeline instance
-        let customPipeline = this.renderer.pipelines.get('ColorBlend');
+        //let customPipeline = this.renderer.pipelines.get('ColorBlend');
         // Set initial values for shader uniforms
-        customPipeline.set3f('color1', 1, 0, 0); // Red
-        customPipeline.set3f('color2', 0, 0, 1); // Blue
-        customPipeline.set1f('mixFactor', 0.5);
+        //customPipeline.set3f('color1', 1, 0, 0); // Red
+        //customPipeline.set3f('color2', 0, 0, 1); // Blue
+        //customPipeline.set1f('mixFactor', 0.5);
 
         // New Idea: It would be cool that the character associated with the helper token is we render the characters right away but make them invisible.  No, actually that won't work because the checkboxes will still be active.
         // Also the checkboxes might be in front of the discussion tokens, creating a problem.
