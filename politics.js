@@ -376,7 +376,7 @@ export class Politics extends BaseScene {
         }
 
         // Initialize shader
-        const colorBlendPipeline = scene.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(scene.game));
+        const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
         
         // Set initial values for shader uniforms using the new pipeline instance
         let customPipeline = this.renderer.pipelines.get('ColorBlend');
@@ -386,7 +386,7 @@ export class Politics extends BaseScene {
         customPipeline.set1f('mixFactor', 0.5);
 
         this.tweens.add({
-            targets: customPipeline,
+            targets: colorBlendPipeline,
             mixFactor: { from: 0, to: 1 },
             yoyo: true,
             repeat: -1,

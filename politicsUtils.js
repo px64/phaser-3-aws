@@ -408,8 +408,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     // Apply shader to checkbox
     checkboxUnchecked.setPipeline('ColorBlend');
     checkboxChecked.setPipeline('ColorBlend');
-    checkboxEndorsed.setPipeline('ColorBlend');
-    
+
     // Initialize all states to unchecked visually, but store potential state
     character.checkboxState = 0;  // Start as unchecked visually
     character.initialState = character.endorsement === 1 ? 1 : 0;  // Store if character is initially endorsed
