@@ -415,7 +415,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     
     // Start tweening the pipeline
     // Create a tween to oscillate the mixFactor uniform
-    this.tweens.add({
+    scene.tweens.add({
         targets: colorBlendPipeline,
         props: {
             'mixFactor': {
