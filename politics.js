@@ -375,8 +375,26 @@ export class Politics extends BaseScene {
             }
         }
 
+        // Create a custom pipeline with the shader
+        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline({
+            game: this.game,
+            renderer: this.game.renderer,
+            fragShader: `
+                    precision mediump float;
+        
+                    uniform vec3 color1;
+                    uniform vec3 color2;
+                    uniform float mixFactor;
+        
+                    void main() {
+                        vec3 color = mix(color1, color2, mixFactor);
+                        gl_FragColor = vec4(color, .33);
+                    }
+                    `
+        }));
+
         // Initialize shader
-        const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
+        //const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
         
         // Set initial values for shader uniforms using the new pipeline instance
         //let customPipeline = this.renderer.pipelines.get('ColorBlend');
