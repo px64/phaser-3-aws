@@ -97,8 +97,8 @@ function renderCharacters(scene) {
                             { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
         if (character.endorsement == 1) {
-            // apply pipeline to char text
-            charText.setPipeline('ColorBlend');
+            // don't apply pipeline to text since it doesn't work
+            //charText.setPipeline('ColorBlend');
         }
 
         // Measure the height of the text, including any line breaks
@@ -405,6 +405,11 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
     let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
 
+    // Apply shader to checkbox
+    checkboxUnchecked.setPipeline('ColorBlend');
+    checkboxChecked.setPipeline('ColorBlend');
+    checkboxEndorsed.setPipeline('ColorBlend');
+    
     // Initialize all states to unchecked visually, but store potential state
     character.checkboxState = 0;  // Start as unchecked visually
     character.initialState = character.endorsement === 1 ? 1 : 0;  // Store if character is initially endorsed
