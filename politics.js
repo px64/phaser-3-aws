@@ -342,54 +342,41 @@ export class Politics extends BaseScene {
         });
         */
         // Define the fragment shader source code
-        const fragShader = `
-            precision mediump float;
-            uniform sampler2D uMainSampler;
-            uniform vec3 color1;
-            uniform vec3 color2;
-            uniform float mixFactor;
-            uniform vec2 resolution;
-
-            void main() {
-                vec4 texColor = texture2D(uMainSampler, gl_FragCoord.xy/resolution);
-                if (texColor.a > 0.0) { // Only apply the mix to non-transparent parts
-                    vec3 color = mix(color1, color2, mixFactor);
-                    gl_FragColor = vec4(color, 1.0) * texColor.a;
-                } else {
-                    gl_FragColor = texColor; // Keep the original background unchanged
-                }
-            }
-        `;
-
-        // Create a custom pipeline
-        class ColorBlendPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPipeline {
+        class ColorBlendPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeline {
             constructor(game) {
                 super({
                     game: game,
                     renderer: game.renderer,
-                    fragShader: fragShader,
+                    fragShader: `
+                    precision mediump float;
+        
+                    uniform vec3 color1;
+                    uniform vec3 color2;
+                    uniform float mixFactor;
+        
+                    void main() {
+                        vec3 color = mix(color1, color2, mixFactor);
+                        gl_FragColor = vec4(color, 1.0);
+                    }
+                    `,
                     uniforms: [
-                        'uProjectionMatrix',
-                        'uViewMatrix',
-                        'uModelMatrix',
                         'color1',
                         'color2',
-                        'mixFactor',
-                        'resolution'
+                        'mixFactor'
                     ]
                 });
             }
-
+        
             onBind() {
                 super.onBind();
-                this.set1f('mixFactor', this.mixFactor);
-                return this;
+                this.set3f('color1', 1, 0, 0); // Default to red
+                this.set3f('color2', 0, 0, 1); // Default to blue
+                this.set1f('mixFactor', 0.5);  // Default mix factor
             }
         }
 
-
-        // Add the custom pipeline to the renderer's pipeline manager
-        this.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
+        // Initialize shader
+        const colorBlendPipeline = scene.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(scene.game));
         
         // Set initial values for shader uniforms using the new pipeline instance
         let customPipeline = this.renderer.pipelines.get('ColorBlend');
@@ -397,7 +384,6 @@ export class Politics extends BaseScene {
         customPipeline.set3f('color1', 1, 0, 0); // Red
         customPipeline.set3f('color2', 0, 0, 1); // Blue
         customPipeline.set1f('mixFactor', 0.5);
-        customPipeline.set2f('resolution', this.game.config.width, this.game.config.height);
 
         this.tweens.add({
             targets: customPipeline,

@@ -312,6 +312,14 @@ function createCheckbox_bad(scene, x, y, character, characterText, callback, ini
     let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
     let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
 
+    // Initialize shader
+    //const colorBlendPipeline = scene.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(scene.game));
+
+    // Apply shader to checkbox
+    checkboxUnchecked.setPipeline('ColorBlend');
+    checkboxChecked.setPipeline('ColorBlend');
+    checkboxEndorsed.setPipeline('ColorBlend');
+
     // Initialize state based on character endorsement
     character.checkboxState = character.endorsement === 1 ? 1 : 0;  // Maintain internal logic
 
