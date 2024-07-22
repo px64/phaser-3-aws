@@ -376,7 +376,8 @@ export class Politics extends BaseScene {
         }
 
         // Create a custom pipeline with the shader
-        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline({
+        /*
+        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.MultiPipeline ({
             game: this.game,
             renderer: this.game.renderer,
             fragShader: `
@@ -392,6 +393,7 @@ export class Politics extends BaseScene {
                     }
                     `
         }));
+        */
 
         // Initialize shader
         //const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));

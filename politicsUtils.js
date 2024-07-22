@@ -414,15 +414,19 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let colorBlendPipeline = scene.renderer.pipelines.get('ColorBlend');
     
     // Start tweening the pipeline
-    scene.tweens.add({
+    // Create a tween to oscillate the mixFactor uniform
+    this.tweens.add({
         targets: colorBlendPipeline,
-        mixFactor: 1,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Sine.easeInOut',
+        props: {
+            'mixFactor': {
+                value: 1,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            }
+        },
         duration: 2000
     });
-
     // Initialize all states to unchecked visually, but store potential state
     character.checkboxState = 0;  // Start as unchecked visually
     character.initialState = character.endorsement === 1 ? 1 : 0;  // Store if character is initially endorsed
