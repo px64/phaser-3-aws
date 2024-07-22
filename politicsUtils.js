@@ -404,41 +404,14 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
     let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
     let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
-    class ColorBlendPipeline2 extends Phaser.Renderer.WebGL.Pipelines.SinglePipeline {
-        constructor(game) {
-            super({
-                game: game,
-                renderer: game.renderer,
-                fragShader: `
-                precision mediump float;
 
-                uniform vec3 color1;
-                uniform vec3 color2;
-                uniform float mixFactor;
 
-                void main() {
-                    vec3 color = mix(color1, color2, mixFactor);
-                    gl_FragColor = vec4(color, 1.0);
-                }
-                `,
-                uniforms: [
-                    'color1',
-                    'color2',
-                    'mixFactor'
-                ]
-            });
-        }
+    // Apply shader to checkbox sprites
+    checkboxUnchecked.setPipeline('ColorBlend');
+    checkboxChecked.setPipeline('ColorBlend');
 
-        onBind() {
-            super.onBind();
-            this.set3f('color1', 1, 0, 0);
-            this.set3f('color2', 0, 0, 1);
-            this.set1f('mixFactor', 0.5);
-        }
-    }
-
-    const colorBlendPipeline = scene.game.renderer.pipelines.add('ColorBlend2', new ColorBlendPipeline2(scene.game));
-
+    let colorBlendPipeline = scene.renderer.pipelines.get('ColorBlend');
+    
     // Start tweening the pipeline
     scene.tweens.add({
         targets: colorBlendPipeline,
@@ -448,10 +421,6 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
         ease: 'Sine.easeInOut',
         duration: 2000
     });
-
-    // Apply shader to checkbox sprites
-    checkboxUnchecked.setPipeline('ColorBlend2');
-    checkboxChecked.setPipeline('ColorBlend2');
 
     // Initialize all states to unchecked visually, but store potential state
     character.checkboxState = 0;  // Start as unchecked visually
