@@ -371,7 +371,7 @@ export class Politics extends BaseScene {
                 super.onBind();
                 this.set3f('color1', 1, 0, 0); // Default to red
                 this.set3f('color2', 0, 0, 1); // Default to blue
-                this.set1f('mixFactor', 0.4);  // Default mix factor
+                this.set1f('mixFactor', 0.33);  // Default mix factor
             }
         }
 
@@ -396,7 +396,7 @@ export class Politics extends BaseScene {
         */
 
         // Initialize shader
-        //const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
+        const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
         
         // Set initial values for shader uniforms using the new pipeline instance
         //let customPipeline = this.renderer.pipelines.get('ColorBlend');
