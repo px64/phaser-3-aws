@@ -423,7 +423,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
             // Update the mixFactor value
             mixFactor = tween.getValue();
             // Update the shader uniform
-            colorBlendPipeline.set1f('mixFactor', mixFactor);
+            //colorBlendPipeline.set1f('mixFactor', mixFactor);
             // Debugging
             console.log('Mix Factor:', mixFactor);
         }
