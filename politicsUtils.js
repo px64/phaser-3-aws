@@ -424,7 +424,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
             // Debug: Print the current mixFactor value
             console.log('Mix Factor:', tween.getValue());
             colorBlendPipeline.set1f('mixFactor', tween.getValue());
-        }
+        },
         duration: 2000
     });
     
