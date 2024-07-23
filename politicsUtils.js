@@ -429,7 +429,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     //checkboxUnchecked.setPipeline('ColorBlend');
     checkboxUnchecked.setPipeline('ColorBlend');
     colorBlendPipeline.set3f('color1', ...factionNormalized);
-    colorBlendPipeline.set3f('color2', .5, 0, .5);
+    colorBlendPipeline.set3f('color2', .75, .375, .625);
     //checkboxBackground.setPipeline('ColorBlend');
 
     // Initialize all states to unchecked visually, but store potential state
