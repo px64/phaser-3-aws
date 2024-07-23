@@ -393,8 +393,15 @@ function createCheckbox_bad(scene, x, y, character, characterText, callback, ini
     };
 }
 
+function hexToRgbNormalized(hex) {
+    let r = ((hex >> 16) & 0xFF) / 255.0;
+    let g = ((hex >> 8) & 0xFF) / 255.0;
+    let b = (hex & 0xFF) / 255.0;
+    return [r, g, b];
+}
 function createCheckbox(scene, x, y, character, characterText, callback, initialValue) {
     let factionColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
+    let factionNormalized = hexToRgbNormalized(factionColor);
 
     let checkboxBackground = scene.add.graphics({ fillStyle: { color: factionColor } });
     let checkboxSize = 32;  // Specify the size of your checkbox here
@@ -421,6 +428,8 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     // Apply shader to checkbox sprites
     //checkboxUnchecked.setPipeline('ColorBlend');
     checkboxUnchecked.setPipeline('ColorBlend');
+    checkboxUnchecked.set3f('color1', ...factionNormalized);
+    checkboxUnchecked.set3f('color2', .5, 0, .5);
     checkboxBackground.setPipeline('ColorBlend');
 
     // Initialize all states to unchecked visually, but store potential state
