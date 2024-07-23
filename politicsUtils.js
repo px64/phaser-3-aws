@@ -420,6 +420,11 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
                 ease: 'Sine.easeInOut'
             }
         },
+        onUpdate: function (tween) {
+            // Debug: Print the current mixFactor value
+            console.log('Mix Factor:', tween.getValue());
+            colorBlendPipeline.set1f('mixFactor', tween.getValue());
+        }
         duration: 2000
     });
     
