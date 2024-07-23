@@ -434,6 +434,8 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     checkboxUnchecked.setPipeline('ColorBlend');
     checkboxBackground.setPipeline('ColorBlend');
 
+    colorBlendPipeline.set1f('mixFactor', 1); // make it blue
+
     // Initialize all states to unchecked visually, but store potential state
     character.checkboxState = 0;  // Start as unchecked visually
     character.initialState = character.endorsement === 1 ? 1 : 0;  // Store if character is initially endorsed
