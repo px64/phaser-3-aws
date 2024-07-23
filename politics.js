@@ -371,8 +371,8 @@ export class Politics extends BaseScene {
                 super.onBind();
                 this.set3f('color1', 1, 0, 0); // Default to red
                 this.set3f('color2', 0, 0, 1); // Default to blue
-                this.set1f('mixFactor', this.mixFactor); // dynamic update
-
+                this.set1f('mixFactor', .67); // dynamic update
+                return this;
             }
         }
 
