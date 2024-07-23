@@ -431,7 +431,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     
     // Apply shader to checkbox sprites
     //checkboxUnchecked.setPipeline('ColorBlend');
-    checkboxChecked.setPipeline('ColorBlend');
+    checkboxUnchecked.setPipeline('ColorBlend');
     checkboxBackground.setPipeline('ColorBlend');
 
     // Initialize all states to unchecked visually, but store potential state
