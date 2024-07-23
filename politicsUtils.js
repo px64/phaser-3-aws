@@ -406,11 +406,6 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
 
 
-    // Apply shader to checkbox sprites
-    //checkboxUnchecked.setPipeline('ColorBlend');
-    checkboxChecked.setPipeline('ColorBlend');
-    checkboxBackground.setPipeline('ColorBlend');
-
     let colorBlendPipeline = scene.renderer.pipelines.get('ColorBlend');
     
     // Start tweening the pipeline
@@ -427,6 +422,12 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
         },
         duration: 2000
     });
+    
+    // Apply shader to checkbox sprites
+    //checkboxUnchecked.setPipeline('ColorBlend');
+    checkboxChecked.setPipeline('ColorBlend');
+    checkboxBackground.setPipeline('ColorBlend');
+
     // Initialize all states to unchecked visually, but store potential state
     character.checkboxState = 0;  // Start as unchecked visually
     character.initialState = character.endorsement === 1 ? 1 : 0;  // Store if character is initially endorsed
