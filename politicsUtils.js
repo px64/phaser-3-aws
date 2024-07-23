@@ -408,7 +408,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
 
     let colorBlendPipeline = scene.renderer.pipelines.get('ColorBlend');
     
-    this.tweens.add({
+    scene.tweens.add({
         targets: colorBlendPipeline,
         mixFactor: { from: 0, to: 1 }, // Tweening from 0 to 1
         yoyo: true,
