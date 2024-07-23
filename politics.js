@@ -348,16 +348,15 @@ export class Politics extends BaseScene {
                     game: game,
                     renderer: game.renderer,
                     fragShader: `
-                    precision mediump float;
+                        precision mediump float;
+                        uniform vec3 color1;
+                        uniform vec3 color2;
+                        uniform float mixFactor;
         
-                    uniform vec3 color1;
-                    uniform vec3 color2;
-                    uniform float mixFactor;
-        
-                    void main() {
-                        vec3 color = mix(color1, color2, mixFactor);
-                        gl_FragColor = vec4(color, .33);
-                    }
+                        void main() {
+                            vec3 color = mix(color1, color2, mixFactor);
+                            gl_FragColor = vec4(color, 1.0);
+                        }
                     `,
                     uniforms: [
                         'color1',
@@ -365,16 +364,21 @@ export class Politics extends BaseScene {
                         'mixFactor'
                     ]
                 });
+        
+                // Default values for colors
+                this.color1 = [1, 0, 0]; // red
+                this.color2 = [0, 0, 1]; // blue
+                this.mixFactor = 0.5; // initial mixFactor
             }
         
             onBind() {
                 super.onBind();
-                this.set3f('color1', 1, 0, 0); // Default to red
-                this.set3f('color2', 0, 0, 1); // Default to blue
-                this.set1f('mixFactor', .67); // dynamic update
+                this.set3f('color1', ...this.color1);
+                this.set3f('color2', ...this.color2);
+                this.set1f('mixFactor', this.mixFactor);
                 return this;
             }
-        }
+        }        
 
         // Create a custom pipeline with the shader
         /*
