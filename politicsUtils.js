@@ -408,24 +408,25 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
 
     let colorBlendPipeline = scene.renderer.pipelines.get('ColorBlend');
     
-    // Start tweening the pipeline
-    // Create a tween to oscillate the mixFactor uniform
+    // Variable to hold the mixFactor value
+    let mixFactor = 0.5;
+
+    // Create a tween to oscillate mixFactor
     scene.tweens.add({
-        targets: colorBlendPipeline,
-        props: {
-            'mixFactor': {
-                value: 1,
-                yoyo: true,
-                repeat: -1,
-                ease: 'Sine.easeInOut'
-            }
-        },
+        targets: { mixFactor: mixFactor },
+        mixFactor: 1,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+        duration: 2000,
         onUpdate: function (tween) {
-            // Debug: Print the current mixFactor value
-            console.log('Mix Factor:', tween.getValue());
-            colorBlendPipeline.set1f('mixFactor', tween.getValue());
-        },
-        duration: 2000
+            // Update the mixFactor value
+            mixFactor = tween.getValue();
+            // Update the shader uniform
+            colorBlendPipeline.set1f('mixFactor', mixFactor);
+            // Debugging
+            console.log('Mix Factor:', mixFactor);
+        }
     });
     
     // Apply shader to checkbox sprites
