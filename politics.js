@@ -348,17 +348,26 @@ export class Politics extends BaseScene {
                     game: game,
                     renderer: game.renderer,
                     fragShader: `
-                        precision mediump float;
-                        uniform vec3 color1;
-                        uniform vec3 color2;
-                        uniform float mixFactor;
+                    precision mediump float;
         
-                        void main() {
-                            vec3 color = mix(color1, color2, mixFactor);
-                            gl_FragColor = vec4(color, 1.0);
-                        }
+                    uniform sampler2D uMainSampler;
+                    uniform vec3 color1;
+                    uniform vec3 color2;
+                    uniform float mixFactor;
+        
+                    varying vec2 outTexCoord;
+        
+                    void main() {
+                        vec4 texColor = texture2D(uMainSampler, outTexCoord);
+                        vec3 color = mix(texColor.rgb, color1, mixFactor);
+                        gl_FragColor = vec4(color, texColor.a);
+                    }
                     `,
                     uniforms: [
+                        'uProjectionMatrix',
+                        'uViewMatrix',
+                        'uModelMatrix',
+                        'uMainSampler',
                         'color1',
                         'color2',
                         'mixFactor'
