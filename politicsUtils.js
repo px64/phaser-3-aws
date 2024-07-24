@@ -406,11 +406,12 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let checkboxBackground = scene.add.graphics({ fillStyle: { color: factionColor } });
     let checkboxSize = 32;  // Specify the size of your checkbox here
     checkboxBackground.fillRect(x - checkboxSize / 2, y - checkboxSize / 2, checkboxSize, checkboxSize - 4);
+    checkboxBackground.setDepth(1);
 
     // Create checkbox sprites
-    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
-    let checkboxChecked = scene.add.sprite(x, y, 'checkboxUnChecked').setInteractive().setScale(.15);
-    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
+    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15).setDepth(2);
+    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15).setDepth(2);
+    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05).setDepth(2);
 
 
     let colorBlendPipeline;
