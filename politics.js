@@ -382,37 +382,36 @@ export class Politics extends BaseScene {
         
             onBind() {
                 super.onBind();
-                this.set3f('color1', ...this.color1);
-                this.set3f('color2', ...this.color2);
                 this.set1f('mixFactor', this.mixFactor);
                 return this;
             }
         }        
 
-        // Create a custom pipeline with the shader
-        /*
-        const customPipeline = this.game.renderer.addPipeline('ColorBlend', new Phaser.Renderer.WebGL.Pipelines.MultiPipeline ({
-            game: this.game,
-            renderer: this.game.renderer,
-            fragShader: `
-                    precision mediump float;
-        
-                    uniform vec3 color1;
-                    uniform vec3 color2;
-                    uniform float mixFactor;
-        
-                    void main() {
-                        vec3 color = mix(color1, color2, mixFactor);
-                        gl_FragColor = vec4(color, .33);
-                    }
-                    `
-        }));
-        */
+        // Initialize shaders
+        const colorBlendPipelineMaga = this.game.renderer.pipelines.add('ColorBlendMaga', new ColorBlendPipeline(this.game));
+        const colorBlendPipelineWoke = this.game.renderer.pipelines.add('ColorBlendWoke', new ColorBlendPipeline(this.game));
 
-        // Initialize shader
-        const colorBlendPipeline = this.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(this.game));
-        
-        colorBlendPipeline.set1f('mixFactor', 1); // make it blue
+        colorBlendPipelineMaga.set3f('color1', 1, 0, 0);
+
+        scene.tweens.add({
+            targets: colorBlendPipelineMaga,
+            mixFactor: { from: 0, to: .5 }, // Tweening from 0 to 1
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+            duration: 2000
+        });
+    
+        colorBlendPipelineWoke.setf3('color1', 0, 0, 1);
+
+        scene.tweens.add({
+            targets: colorBlendPipelineWoke,
+            mixFactor: { from: 0, to: .5 }, // Tweening from 0 to 1
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+            duration: 2000
+        });
 
         // Set initial values for shader uniforms using the new pipeline instance
         //let customPipeline = this.renderer.pipelines.get('ColorBlend');
