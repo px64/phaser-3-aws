@@ -402,7 +402,7 @@ export class Politics extends BaseScene {
             duration: 2000
         });
     
-        colorBlendPipelineWoke.setf3('color1', 0, 0, 1);
+        colorBlendPipelineWoke.set3f('color1', 0, 0, 1);
 
         scene.tweens.add({
             targets: colorBlendPipelineWoke,
