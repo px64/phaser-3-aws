@@ -409,7 +409,7 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
 
     // Create checkbox sprites
     let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
-    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
+    let checkboxChecked = scene.add.sprite(x, y, 'checkboxUnChecked').setInteractive().setScale(.15);
     let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
 
 
