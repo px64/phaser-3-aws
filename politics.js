@@ -360,7 +360,7 @@ export class Politics extends BaseScene {
                     void main() {
                         vec4 texColor = texture2D(uMainSampler, outTexCoord);
                         vec3 color = mix(texColor.rgb, color1, mixFactor);
-                        gl_FragColor = vec4(color, texColor.a);
+                        gl_FragColor = vec4(color, min(texColor.a,.3));
                     }
                     `,
                     uniforms: [
