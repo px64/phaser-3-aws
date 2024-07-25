@@ -417,10 +417,10 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     let colorBlendPipeline;
     
     if (character.faction === 'maga') {
-        colorBlendPipeline = scene.renderer.pipelines.get('ColorBlendMaga');
+        colorBlendPipeline = scene.colorBlendPipelineMaga;
         checkboxUnchecked.setPipeline('ColorBlendMaga');
     } else {
-        colorBlendPipeline = scene.renderer.pipelines.get('ColorBlendWoke');
+        colorBlendPipeline = scene.colorBlendPipelineWoke;
         checkboxUnchecked.setPipeline('ColorBlendWoke');
     }
 
