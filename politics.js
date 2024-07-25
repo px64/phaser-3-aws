@@ -391,7 +391,7 @@ export class Politics extends BaseScene {
             // Initialize shaders
             const colorBlendPipelineMaga = this.game.renderer.pipelines.add('ColorBlendMaga', new ColorBlendPipeline(this.game));
             const colorBlendPipelineWoke = this.game.renderer.pipelines.add('ColorBlendWoke', new ColorBlendPipeline(this.game));
-
+        }
             colorBlendPipelineMaga.set3f('color1', 1, 0, 0);
                 
             scene.tweens.add({
@@ -413,7 +413,7 @@ export class Politics extends BaseScene {
                 ease: 'Sine.easeInOut',
                 duration: 2000
             });
-        }
+
         // Set initial values for shader uniforms using the new pipeline instance
         //let customPipeline = this.renderer.pipelines.get('ColorBlend');
         // Set initial values for shader uniforms
