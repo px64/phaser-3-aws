@@ -418,15 +418,15 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     
     if (character.faction === 'maga') {
         colorBlendPipeline = scene.colorBlendPipelineMaga;
-        checkboxUnchecked.setPipeline('ColorBlendMaga');
+        //checkboxUnchecked.setPipeline('ColorBlendMaga');
     } else {
         colorBlendPipeline = scene.colorBlendPipelineWoke;
-        checkboxUnchecked.setPipeline('ColorBlendWoke');
+        //checkboxUnchecked.setPipeline('ColorBlendWoke');
     }
 
     // Apply shader to checkbox sprites
     //checkboxUnchecked.setPipeline('ColorBlend');
-    colorBlendPipeline.set3f('color1', ...factionNormalized);
+    //JCS here colorBlendPipeline.set3f('color1', ...factionNormalized);
     //checkboxBackground.setPipeline('ColorBlend');
 
     // Initialize all states to unchecked visually, but store potential state
@@ -468,10 +468,15 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     function updateVisibility() {
         // Always show unchecked initially, unless interacted with
         checkboxUnchecked.setVisible(character.checkboxState === 0);
+        if (character.checkboxState === 0 && character.initialState === 1) {
+            if (character.faction === 'maga') {checkboxUnchecked.setPipeline('ColorBlendMaga');}
+            else {checkboxUnchecked.setPipeline('ColorBlendWoke');}
+        }
         checkboxChecked.setVisible(character.checkboxState === 1);
         checkboxEndorsed.setVisible(character.checkboxState === 2);
     }
 
+    // We have 4 states: unchecked and unendorsed, unchecked and endorsed, checked, and fully endorsed
     function chooseAction() {
         // Use initialState to decide the first interaction outcome
         if (character.checkboxState === 0) {
@@ -482,6 +487,8 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
             }
         } else if (character.checkboxState === 1) {
             toggleState('unchecked');
+            //if (character.faction === 'maga') {checkboxUnchecked.setPipeline('ColorBlendMaga');}
+            //else {checkboxUnchecked.setPipeline('ColorBlendWoke');}
         } else if (character.checkboxState === 2) { // Fully endorsed
             toggleState('checked');
         }

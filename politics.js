@@ -392,27 +392,23 @@ export class Politics extends BaseScene {
             this.colorBlendPipelineMaga = this.game.renderer.pipelines.add('ColorBlendMaga', new ColorBlendPipeline(this.game));
             this.colorBlendPipelineWoke = this.game.renderer.pipelines.add('ColorBlendWoke', new ColorBlendPipeline(this.game));
         }
-        this.colorBlendPipelineMaga.set3f('color1', 1, 0, 0);
-            
-        scene.tweens.add({
-            targets: this.colorBlendPipelineMaga,
-            mixFactor: { from: 0, to: .5 }, // Tweening from 0 to 1
-            yoyo: true,
-            repeat: -1,
-            ease: 'Sine.easeInOut',
-            duration: 2000
-        });
-    
-        this.colorBlendPipelineWoke.set3f('color1', 0, 0, 1);
+        
+        // Setup tweens for both pipelines
+        const setupTween = (pipeline) => {
+            scene.tweens.add({
+                targets: pipeline,
+                mixFactor: { from: 0, to: 0.5 },
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut',
+                duration: 2000
+            });
+        };
 
-        scene.tweens.add({
-            targets: this.colorBlendPipelineWoke,
-            mixFactor: { from: 0, to: .5 }, // Tweening from 0 to 1
-            yoyo: true,
-            repeat: -1,
-            ease: 'Sine.easeInOut',
-            duration: 2000
-        });
+        this.colorBlendPipelineMaga.set3f('color1', 1, 0, 0);
+        setupTween(this.colorBlendPipelineMaga);
+        this.colorBlendPipelineWoke.set3f('color1', 0, 0, 1);
+        setupTween(this.colorBlendPipelineWoke);
 
         // Set initial values for shader uniforms using the new pipeline instance
         //let customPipeline = this.renderer.pipelines.get('ColorBlend');
