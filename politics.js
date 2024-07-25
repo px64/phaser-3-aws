@@ -392,7 +392,7 @@ export class Politics extends BaseScene {
             this.colorBlendPipelineMaga = this.game.renderer.pipelines.add('ColorBlendMaga', new ColorBlendPipeline(this.game));
             this.colorBlendPipelineWoke = this.game.renderer.pipelines.add('ColorBlendWoke', new ColorBlendPipeline(this.game));
         }
-        colorBlendPipelineMaga.set3f('color1', 1, 0, 0);
+        this.colorBlendPipelineMaga.set3f('color1', 1, 0, 0);
             
         scene.tweens.add({
             targets: this.colorBlendPipelineMaga,
@@ -403,7 +403,7 @@ export class Politics extends BaseScene {
             duration: 2000
         });
     
-        colorBlendPipelineWoke.set3f('color1', 0, 0, 1);
+        this.colorBlendPipelineWoke.set3f('color1', 0, 0, 1);
 
         scene.tweens.add({
             targets: this.colorBlendPipelineWoke,
