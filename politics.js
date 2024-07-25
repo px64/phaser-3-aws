@@ -397,7 +397,7 @@ export class Politics extends BaseScene {
         const setupTween = (pipeline) => {
             scene.tweens.add({
                 targets: pipeline,
-                mixFactor: { from: 0, to: 0.5 },
+                mixFactor: { from: 0, to: 1 },
                 yoyo: true,
                 repeat: -1,
                 ease: 'Sine.easeInOut',
