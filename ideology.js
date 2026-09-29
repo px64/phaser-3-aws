@@ -50,8 +50,7 @@
 //                 - fix gauge color so it stays the color of the greatest of maga or woke
 
 import BaseScene from './BaseScene.js';
-import {Politics} from './politics.js';
-import {Insurrection} from './insurrection.js';
+import { insertLineBreaks } from './politicsUtils.js';
 import { territories } from './BaseScene.js'
 import { characters } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
@@ -59,17 +58,6 @@ import { difficultyList } from './BaseScene.js';
 import {AliensAttack} from './aliens_attack.js';
 import { introduceCharacters } from './characterUtils.js';
 
-var healthBar;
-var healthBox;
-var healthGauge;
-var thereBeThreats;
-let MAGAslider;
-let Wokeslider;
-var foo;
-var MAGAnessText;
-var WokenessText;
-var polCapText;
-var yearText;
 
 export class ChooseYourIdeologyScene extends BaseScene {
 
@@ -182,6 +170,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
     }
 
     selectDifficulty(difficultyKey) {
+        if (this.difficultyChosen) {
+            return;
+        }
+        this.difficultyChosen = true;
         this.sharedData.difficultyLevel = difficultyKey;
 
         console.log(`You chose ${difficultyKey}`);
@@ -228,6 +220,10 @@ export class ChooseYourIdeologyScene extends BaseScene {
     }
 
     selectIdeology(ideology) {
+        if (this.ideologyChosen) {
+            return; // choosing twice would hand out the starting endorsements and capital twice
+        }
+        this.ideologyChosen = true;
         // Here you would set the player's ideology and move on to the next scene
         console.log(`You chose ${ideology.name}`);
         let textColor = ideology.color;
@@ -289,7 +285,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
             .setInteractive();
 
         // When the button is clicked, start the next scene
-        nextButton.on('pointerdown', () => {
+        nextButton.once('pointerdown', () => {
             this.cameras.main.fadeOut(800, 0, 0, 0);
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
                 let sanity_check = Math.random();
@@ -371,27 +367,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
             this.input.on('pointermove', onPointerMove);
 
-            setTimeout(hideElements, 20000); // Hide elements after 20 seconds if not already hidden
-        }
-        //====================================================================================
-        //    function insertLineBreaks(str, charsPerLine) {
-        //====================================================================================
-        function insertLineBreaks(str, charsPerLine) {
-            let words = str.split(' ');
-            let lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            lines.push(currentLine);
-
-            return lines.join('\n');
+            this.time.delayedCall(20000, hideElements); // Hide elements after 20 seconds if not already hidden
         }
     }
 }

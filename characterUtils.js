@@ -1,7 +1,6 @@
 // characterUtils.js
 import BaseScene from './BaseScene.js';
 import { characters } from './BaseScene.js';
-import { territories } from './BaseScene.js';
 
 export class CharacterIntroductionScene extends Phaser.Scene {
     constructor() {
@@ -25,7 +24,7 @@ export class CharacterIntroductionScene extends Phaser.Scene {
                 .setOrigin(0.5)
                 .setInteractive();
 
-            proceedButton.on('pointerdown', () => {
+            proceedButton.once('pointerdown', () => {
                 if (this.callback) {
                     this.cameras.main.fadeOut(400, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
@@ -40,6 +39,34 @@ export class CharacterIntroductionScene extends Phaser.Scene {
             }
         }
     }
+}
+
+// Experience level grows with the total political capital earned over the game
+export function experienceLevel(sharedData) {
+    return Math.floor(sharedData.totalPoliticalCapital/30) + 1;
+}
+
+// The level at which a character joins depends on the player's ideology
+function characterLevel(character, faction) {
+    if (faction == 'maga') {
+        return character.magaLevel;
+    } else if (faction == 'woke') {
+        return character.wokeLevel;
+    }
+    return character.fogLevel;
+}
+
+// True when the experience level has risen far enough that at least one new advocate joins
+export function hasNewAdvocates(scene) {
+    let oldLevel = scene.oldExperienceLevel || 0;
+    let newLevel = experienceLevel(scene.sharedData);
+    if (newLevel <= oldLevel) {
+        return false;
+    }
+    return characters.some(character => {
+        let level = characterLevel(character, scene.sharedData.ideology.faction);
+        return level > oldLevel && level <= newLevel;
+    });
 }
 
 export function introduceCharacters(scene, characters, sharedData) {
@@ -275,7 +302,7 @@ export function introduceCharacters(scene, characters, sharedData) {
         helpsIcon.setVisible(false);
         helpsIcon.setDepth(3);
 
-        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 110, 'Activists Protest:\n' + character.hurts, {
+        let hurtsLabel = scene.add.text(helpsX, helpshurtsY + 110, 'Activists Protest:\n' + (character.hurts || 'nothing'), {
             fontSize: '28px',
             fontFamily: 'Roboto',
             color: textColor,
@@ -285,9 +312,10 @@ export function introduceCharacters(scene, characters, sharedData) {
         hurtsLabel.setVisible(false);
         hurtsLabel.setDepth(4);
         
-        let backstoryHurtIcon = scene.add.image(helpsX, helpshurtsY + 50, character.hurts);
-        backstoryHurtIcon.setScale(scaleFactor.hurts);
-        backstoryHurtIcon.setOrigin(0.5, 0.5);
+        // Negotiators don't stir up protests, so they have no 'hurts' icon; use an empty placeholder
+        let backstoryHurtIcon = character.hurts
+            ? scene.add.image(helpsX, helpshurtsY + 50, character.hurts).setScale(scaleFactor.hurts).setOrigin(0.5, 0.5)
+            : scene.add.container(helpsX, helpshurtsY + 50);
         backstoryHurtIcon.setVisible(false);
         backstoryHurtIcon.setDepth(3);
                 
@@ -328,38 +356,6 @@ export function introduceCharacters(scene, characters, sharedData) {
         characterText.on('pointerout', mouseOff);
     }
 
-    //====================================================================================
-    //    insertLinezBreaks(str, charsPerLine) {
-    //====================================================================================
-    function insertLinezBreaks(str, charsPerLine) {
-        // First split the string into sections based on the special token
-        let sections = str.split('||');
-        let lines = [];
-
-        // Now process each section independently
-        for (let section of sections) {
-            // Split the section into words
-            let words = section.split(' ');
-
-            // Process the words in this section as before
-            let currentLine = words[0];
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            // Push the last line of this section
-            lines.push(currentLine);
-
-            // Now add an extra line break after each section
-            lines.push('');
-        }
-
-        return lines.join('\n');
-    }
 }
 
 function enterButtonHoverState(button) {

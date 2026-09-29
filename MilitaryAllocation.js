@@ -16,7 +16,7 @@
 //=========================================================================================================================
 
 import BaseScene from './BaseScene.js';
-import { characters } from './BaseScene.js';
+import { insertLineBreaks } from './politicsUtils.js';
 import { territories } from './BaseScene.js';
 import { militaryAssets} from './BaseScene.js';
 
@@ -86,7 +86,7 @@ export class MilitaryAllocation extends BaseScene {
         let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
         // When the button is clicked, start the next scene
-        nextButton.on('pointerdown', () => {
+        nextButton.once('pointerdown', () => {
             // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
             // question: does this scene's sharedData ever even get used?
             militaryAssets.forEach((asset, index) => {
@@ -109,32 +109,6 @@ export class MilitaryAllocation extends BaseScene {
         this.roundThreats = 0;
 
 
-        //====================================================================================
-        //
-        // environmentalImpact
-        //
-        //====================================================================================
-        let environmentalImpact = () => {
-            let env = this.icons['environment'];
-
-            env.health += 5 - Math.abs(env.maga - env.woke);
-            if (env.health < 0) {
-                this.scene.start('TutorialScene', { message: 'Environment is Destroyed.  You LOSE!' });
-                this.scene.pause();
-                return;
-            }
-
-            env.iconText.setText(env.textBody + env.health);
-
-            //this.drawHealthBar(1, 100, 100, 'maga', this.envHealthBarMaga);
-            //this.drawHealthBar(0.7, 110, 100, 'woke', this.envHealthBarWoke);
-
-            drawGauges(env.icon.x, env.icon.y, env.maga, env.woke, env.health, env.healthScale, env.gaugeMaga, env.gaugeWoke, env.gaugeHealth);
-
-            if (0) {//Math.random() < 0.3) {
-                this.scene.start('AliensAttack');
-            }
-        }
  /*
 
         function createCurvedText(text, radius, scene) {
@@ -171,37 +145,6 @@ export class MilitaryAllocation extends BaseScene {
  */
 
 
-        //====================================================================================
-        //
-        // function governmentGrowth()
-        //
-        //====================================================================================
-        function governmentGrowth() {
-            this.icons['government'].health += this.icons['government'].woke - this.icons['government'].maga +3;
-            let gov = this.icons['government'];
-            let governmentSize = gov.health;
-
-            if (1) {//governmentSize < 1200) {
-                this.icons['government'].textBody = 'Government\nStrength: ';
-                this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
-            }
-/*
-            else {
-                this.icons['government'].textBody = 'Living on the Dole: ' + (governmentSize-1000)/50 + '%\nCrony Capitalism: ' + ((governmentSize-800)/66).toFixed(2) +'%\nGovernment Stability: ';
-
-                this.icons['government'].iconText.setText(this.icons['government'].textBody + governmentSize);
-            }
- */
-            drawGauges(gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth);
-
-            if ((governmentSize < 300) || (Wokeness + MAGAness > 50)) {
-                MAGAness = Math.max(0, MAGAness-2);
-                MAGAnessText.setText('MAGA Power: ' + MAGAness);
-                Wokeness = Math.max(0, Wokeness-2);
-                WokenessText.setText('Wokeness: ' + Wokeness);
-                this.scene.start('TutorialScene', { message: 'Insurrection!  Government collapses!' });
-            }
-        }
         //====================================================================================
         //
         // The main body of create()
@@ -445,26 +388,6 @@ export class MilitaryAllocation extends BaseScene {
 
             return {track: track, slider: slider};
 
-            //====================================================================================
-            //    function insertLineBreaks(str, charsPerLine) {
-            //====================================================================================
-            function insertLineBreaks(str, charsPerLine) {
-                let words = str.split(' ');
-                let lines = [];
-                let currentLine = words[0];
-
-                for (let i = 1; i < words.length; i++) {
-                    if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                        lines.push(currentLine);
-                        currentLine = words[i];
-                    } else {
-                        currentLine += ' ' + words[i];
-                    }
-                }
-                lines.push(currentLine);
-
-                return lines.join('\n');
-            }
             //====================================================================================
             //  function mouseOver()
             //====================================================================================

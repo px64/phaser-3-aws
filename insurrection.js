@@ -15,34 +15,21 @@
 
 
 import BaseScene from './BaseScene.js';
+import { insertLineBreaks } from './politicsUtils.js';
+import { drawIcons } from './BaseScene.js';
 import { territories } from './BaseScene.js';
 //import { difficulty } from './Basescene.js';
 
 //var MAGAness = 0;
-var MAGAupdate = 0;
 var MAGAnessText;
 //var Wokeness = 0;
-var WokeUpdate = 0;
 var WokenessText;
 var polCapText;
 var year = 2023; // the starting year
 var yearText;
-var enviromentalHealth = 11; // the starting health of the environment
-var enviromentText;
-var governmentSize = 1200; // the starting size of the government
-var governmentText;
-var economyMaga = 20;
-var economyWoke = 20;
-var economyStrength = 32000;
-var justiceMaga = 20;
-var justiceWoke = 20;
-var justiceStrength = 5;
-var charVal = {};
 
 const ICON_MARGIN = 10;
-const GAUGE_HEIGHT = 50;
 const ICON_SPACING = 10;
-const ICON_SCALE = 0.03;
 
 export class Insurrection extends BaseScene {
     constructor() {
@@ -137,6 +124,7 @@ export class Insurrection extends BaseScene {
         this.haventLaunchedYet = true;
         this.switchScene = false;
         this.aliensInvade = false;
+        this.endOfWaveImpactDone = false;
         console.log('reset switchScene to false');
         this.alreadyCreated = {};
         this.changedBackgroundOnce = false;
@@ -198,7 +186,7 @@ export class Insurrection extends BaseScene {
 
                 const createExplosion = (x, y) => {
                     for (let i = 0; i < numExplosions; i++) {
-                        setTimeout(() => {
+                        scene.time.delayedCall(i * delay, () => {
                             let emitter = scene.add.particles(400, 250, 'flares', {
                                 frame: ['red', 'yellow', 'green'],
                                 lifespan: lifeSpan,
@@ -214,7 +202,7 @@ export class Insurrection extends BaseScene {
                             emitter.setPosition(x + Phaser.Math.Between(-volume, volume),
                                                 y + Phaser.Math.Between(-volume, volume));
                             emitter.explode(16);
-                        }, i * delay); // Delay in milliseconds
+                        }); // Delay in milliseconds
                     }
                 };
 
@@ -245,22 +233,22 @@ export class Insurrection extends BaseScene {
                 const checkAndProceed = () => {
                     if (tweenCompleted && scene.putieCompleted && scene.aliensInvade == false) {
                         scene.switchScene = true;
-                        setTimeout(() => {
+                        scene.time.delayedCall(1000, () => {
                             // Show the collapse screen
                             scene.collapseScreenShown = true;
                             scene.scene.get('TutorialScene').setup(scene.sharedData);
                             if (scene.sharedData.putieTerritories + scene.sharedData.alienTerritories < territories.length) {
                                 scene.scene.start('TutorialScene', { message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n Putie uses his political influence\nto create instability in America' });
                             } else {
-                                scene.scene.start('TutorialScene', { nextScene: 'youLose', message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
+                                scene.scene.start('TutorialScene', { nextScene: 'youLose', gameOver: true, message: capitalizeFirstLetter(key) + ' Collapses!  Need to rebuild...\n I have some bad news:\n Putin has taken over America\n It looks like you lose.' });
                             }
-                        }, 1000);
+                        });
                     } else {
-                        setTimeout(checkAndProceed, 100); // Check again after a short delay
+                        scene.time.delayedCall(100, checkAndProceed); // Check again after a short delay
                     }
                 };
 
-                setTimeout(checkAndProceed, 1005); // Start checking after 1005ms
+                scene.time.delayedCall(1005, checkAndProceed); // Start checking after 1005ms
             }
 
             // Original collapse condition and we haven't had something collapse already
@@ -355,10 +343,12 @@ export class Insurrection extends BaseScene {
             thisRoundHealthChange += this.sharedData.WokenessVelocity/5;
             //console.log(this.sharedData.WokenessVelocity + ' ' + thisRoundHealthChange);
 
-            this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
-            this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
+            // Capital never drops below zero from these changes, but debt from a dilemma choice is kept until repaid
+            this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, Math.min(0, this.sharedData.MAGAness), 100);
+            this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, Math.min(0, this.sharedData.Wokeness), 100);
             //console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
-            this.sharedData.totalPoliticalCapital = Phaser.Math.Clamp(this.sharedData.totalPoliticalCapital  + thisRoundHealthChange, 0, 100);
+            // Total capital earned drives the experience level, so it is not capped
+            this.sharedData.totalPoliticalCapital = Math.max(0, this.sharedData.totalPoliticalCapital + thisRoundHealthChange);
 
             console.log('total political capital is now '+ this.sharedData.totalPoliticalCapital);
             polCapText.setText('Political Capital');
@@ -444,29 +434,6 @@ export class Insurrection extends BaseScene {
             });
         }
 
-        //====================================================================================
-        //
-        // function governmentGrowth()
-        //  Special function that changes the health of the government depending on maga and wokes
-        //
-        //====================================================================================
-        function governmentGrowth() {
-            if (this.sharedData.icons['government'])
-            {
-                this.sharedData.icons['government'].health += this.sharedData.icons['government'].woke - this.sharedData.icons['government'].maga +3;
-                let gov = this.sharedData.icons['government'];
-                let governmentSize = gov.health;
-
-                if (1) {//governmentSize < 1200) {
-                    let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
-                    let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(gov.health/gov.healthScale/20),0,4)];
-                    this.sharedData.icons['government'].textBody = 'Government\nStrength: ';
-                    this.sharedData.icons['government'].iconText.setText(gov.textBody + healthText);
-                }
-
-                this.drawGauges(this, gov.icon.x, gov.icon.y, gov.maga, gov.woke, gov.health, gov.healthScale, gov.gaugeMaga, gov.gaugeWoke, gov.gaugeHealth, gov.scaleSprite, gov.littleHats);
-            }
-        }
         //====================================================================================
         //
         // The main body of create()
@@ -633,26 +600,6 @@ export class Insurrection extends BaseScene {
                 box: backstoryBox
             };
         }
-        //====================================================================================
-        //    function insertLineBreaks(str, charsPerLine) {
-        //====================================================================================
-        function insertLineBreaks(str, charsPerLine) {
-            let words = str.split(' ');
-            let lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            lines.push(currentLine);
-
-            return lines.join('\n');
-        }
         function wokeThreatMagaShield(object,threat, shieldStrength, isItPutie)
         {
             // If the object does not have an id, give it one.
@@ -740,170 +687,8 @@ export class Insurrection extends BaseScene {
         // Maybe that's a good thing so time still passes?  Need to test.  I actually don't like it!
         //
         //====================================================================================
-        this.physics.add.overlap(this.magaDefenses, this.wokeThreats, function(defense, threat) {
-                    if (threat.icon.maga > threat.icon.woke) {
-                        console.log("don't destroy threat: it's going to help!");
-                        return;
-                    }
-                    threat.destroy();
-                    this.roundThreats--;
-                    //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-                    let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
-                    let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
-                    let totalHats = magaHats + wokeHats;
-                    if (totalHats >  15) {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
-                        }
-                        let territory = territories[2]; // arbitrarily picked this territory to return to
-                        scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
-                        territory = territories[4]; // arbitrarily picked this territory to return to
-                        scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
-                        // discussion forum should slowly fade away
-                        scene.tweens.add({
-                            targets: defense.container,
-                            alpha: 0,
-                            scaleX: 0,
-                            scaleY: 0,
-                            duration: 2000,
-                            onComplete: function () {
-                                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                                defense.container.destroy();
-                            },
-                            callbackScope: scene
-                        });
-                    } else {
-                        // Initialize defense.littleHats if it doesn't exist yet
-                        if (!defense.littleHats) {
-                            if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
-                                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
-                            }
-                            defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
-                            console.log(defense.container.list);
-                            replaceTokenIcon(scene, defense.container, 'peace');
-                            defense.container.disableInteractive();
-                            //defense.sprite.setImmovable(true);
-                        }
-                        //console.log(scene.sharedData.misinformation[defense.container.misinformationIndex].
-                        let iconY = defense.container.y + ICON_MARGIN;
-                        defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
-                        scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
-                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
-                    }
-                }, null, this);
+        this.addDiscussionTokenOverlaps();
 
-                // Function to replace the tokenIcon in the container
-                function replaceTokenIcon(scene, container, newIcon) {
-                    // Find the existing tokenIcon
-                    let oldTokenIconIndex = -1;
-                    for (let i = 0; i < container.list.length; i++) {
-                        let item = container.list[i];
-                        scene.tweens.killTweensOf(item);
-                        if (item && item.texture && item.texture.key === 'negotiation') {  // Assuming 'negotiation' is the key for the old icon
-                            console.log('found Old at '+i);
-                            oldTokenIconIndex = i;
-                            break;
-                        }
-                    }
-                    let newTokenIconIndex = -1;
-                    for (let i = 0; i < container.list.length; i++) {
-                        let item = container.list[i];
-                        if (item && item.texture && item.texture.key === newIcon) {
-                            console.log('found New at '+i);
-                            newTokenIconIndex = i;
-                            break;
-                        }
-                    }
-                    let oldTokenIcon;
-                    // If the old tokenIcon is found, replace it with the new one
-                    if (oldTokenIconIndex !== -1) {
-                        oldTokenIcon = container.list[oldTokenIconIndex];
-                        //oldTokenIcon.destroy(); // This calls destroy directly on the object
-                        console.log('turn off old');
-                        //oldTokenIcon.setVisible(false);
-                    }
-                    let newTokenIcon;
-                    // If the old tokenIcon is found, replace it with the new one
-                    if (newTokenIconIndex !== -1) {
-                        newTokenIcon = container.list[newTokenIconIndex];
-                        //newTokenIcon.destroy(); // This calls destroy directly on the object
-                        console.log('turn on new');
-                        newTokenIcon.setVisible(true);
-                    }
-                    // Ensure the new token icon starts invisible
-                    newTokenIcon.setAlpha(0);
-                    // Start fading in the new token icon
-                    container.scene.tweens.add({
-                        targets: newTokenIcon,
-                        alpha: 1,
-                        duration: 1000,
-                        ease: 'Sine.easeInOut'
-                    });
-                    // Create a tween to fade out the old token icon
-                    container.scene.tweens.add({
-                      targets: oldTokenIcon,
-                      alpha: 0,
-                      duration: 1000,
-                      ease: 'Sine.easeInOut'
-                    });
-
-                }
-
-                this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
-                    if (threat.icon.woke > threat.icon.maga) {
-                        console.log("don't destroy threat: it's going to help!");
-                        return;
-                    }
-                    threat.destroy();
-                    this.roundThreats--;
-                    let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
-                    let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
-                    let totalHats = magaHats + wokeHats;
-                    if (totalHats >  15) {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
-                        }
-
-                        let territory = territories[2]; // arbitrarily picked this territory to return to
-                        scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
-                        territory = territories[4]; // arbitrarily picked this territory to return to
-                        scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
-                        // discussion forum should slowly fade away
-                        scene.tweens.add({
-                            targets: defense.container,
-                            alpha: 0,
-                            scaleX: 0,
-                            scaleY: 0,
-                            duration: 2000,
-                            onComplete: function () {
-                                delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                                defense.container.destroy();
-                            },
-                            callbackScope: scene
-                        });
-                    } else {
-                        // Initialize defense.littleHats if it doesn't exist yet
-                        if (!defense.littleHats) {
-                            if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
-                                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
-                            }
-                            defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
-                            console.log(defense.container.list);
-                            replaceTokenIcon(scene, defense.container, 'peace');
-                            defense.container.disableInteractive();
-                            //defense.sprite.setImmovable(true);
-                        }
-                        let iconY = defense.container.y + ICON_MARGIN;
-                        defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
-                        scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
-                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
-                    }
-                }, null, this);
 
         //
         // Helper function to handle common overlap logic between insurrectionist and icon
@@ -957,10 +742,14 @@ export class Insurrection extends BaseScene {
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
                 scene.roundThreats--;
-                if (scene.roundThreats < 2) {
+                // Once the wave is nearly over, apply the end-of-wave impact one time only
+                if (scene.roundThreats < 2 && !scene.endOfWaveImpactDone) {
+                    scene.endOfWaveImpactDone = true;
                     environmentalImpact();
                     scene.time.delayedCall(2000, function() {
-                        scene.victoryText.destroy();
+                        if (scene.victoryText) {
+                            scene.victoryText.destroy();
+                        }
                     });
                 }
                 console.log('stay here until 10 seconds elapse so more capital can be rewarded');
@@ -1166,7 +955,7 @@ export class Insurrection extends BaseScene {
                     let nextButton = this.add.sprite(this.game.config.width-50, this.game.config.height-50, 'environment').setInteractive().setScale(0.16);
 
                     // When the button is clicked, start the next scene
-                    nextButton.on('pointerdown', () => {
+                    nextButton.once('pointerdown', () => {
                         // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
                         // question: does this scene's sharedData ever even get used?
                         //this.sharedData.icons = this.icons;
@@ -1183,77 +972,13 @@ export class Insurrection extends BaseScene {
 }
 
 // Draw little hats
-function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-    for (let i = startIndex; i < startIndex + count; i++) {
-        let xOffset = (i % 5) * ICON_SPACING;
-        let yOffset = Math.floor(i / 5) * ICON_SPACING;
-        // Each icon will be positioned slightly to the right of the previous one
-        let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-
-        // Adjust the size of the icons if necessary
-        icon.setScale(ICON_SCALE);
-
-        const jumpHeight = 20; // Adjust the height of the jump
-        const durationUp = 150; // Duration for the upward movement
-        const durationDown = 300; // Duration for the downward movement with bounce
-        // Store the original position
-        const originalY = icon.y;
-
-        // Create an infinite loop of jumping
-        const jump = () => {
-            // Add the upward movement tween
-            scene.tweens.add({
-                targets: icon,
-                y: originalY - jumpHeight,
-                ease: 'Power1', // Fast upward movement
-                duration: durationUp,
-                onComplete: () => {
-                    // Add the downward movement tween with bounce effect
-                    scene.tweens.add({
-                        targets: icon,
-                        y: originalY,
-                        ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                        duration: durationDown,
-                        onComplete: jump // Chain the jump to repeat
-                    });
-                }
-            });
-        };
-        const murmur = () => {
-            // Define the horizontal movement range and duration
-            const murmurWidth = 20; // Move 10 pixels to each side
-            const durationSide = 500; // Half a second to each side
-
-            // Start the movement to the right
-            scene.tweens.add({
-                targets: icon,
-                x: icon.x + murmurWidth, // Move to the right
-                ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                duration: durationSide,
-                yoyo: true, // Automatically reverse the tween
-                repeat: -1, // Loop the tween indefinitely
-            });
-        };
-
-        if (angerLevel == 1) {
-            // Start the jumping animation with a random delay
-            scene.time.delayedCall(Math.random() * 500, murmur);
-        } else {
-            // Start the jumping animation with a random delay
-            scene.time.delayedCall(Math.random() * 500, jump);
-        }
-
-        littleHats.push(icon);
-    }
-    return littleHats;
-}
 
 function incrementYear() {
     this.sharedData.year++;
     yearText.setText('Year: ' + this.sharedData.year);
 
-    this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + this.sharedData.MAGAnessVelocity, 0, 100);
-    this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + this.sharedData.WokenessVelocity, 0, 100);
+    this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + this.sharedData.MAGAnessVelocity, Math.min(0, this.sharedData.MAGAness), 100);
+    this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + this.sharedData.WokenessVelocity, Math.min(0, this.sharedData.Wokeness), 100);
     console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
     this.sharedData.totalPoliticalCapital += this.sharedData.MAGAnessVelocity + this.sharedData.WokenessVelocity;
     polCapText.setText('Political Capital');

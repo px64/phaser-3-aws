@@ -61,19 +61,7 @@ import {CharacterIntroductionScene} from './characterUtils.js';
 
 import { territories } from './BaseScene.js'
 import { characters } from './BaseScene.js';
-import { difficultyList } from './BaseScene.js';
 
-var healthBar;
-var healthBox;
-var healthGauge;
-var thereBeThreats;
-let MAGAslider;
-let Wokeslider;
-var foo;
-var MAGAnessText;
-var WokenessText;
-var polCapText;
-var yearText;
 
 
 // This constructor leads them all!  MAGAness: 0
@@ -514,8 +502,14 @@ class VictoryScene extends BaseScene {
         // Bring the text to the top
         victoryText.setDepth(1);
 
+        // Winning the game ends it: offer a new game instead of going back to politics
+        if (data.gameOver) {
+            this.showPlayAgain();
+            return;
+        }
+
         // Input event listener
-        this.input.on('pointerdown', function (pointer) {
+        this.input.once('pointerdown', function (pointer) {
             // Switch to the next scene
             this.scene.get('politics').setup(this.sharedData);
             this.scene.start('politics');
@@ -596,39 +590,28 @@ class TutorialScene extends BaseScene {
             }
         };
 
-        // Input event listener
-        this.input.on('pointerdown', function (pointer) {
-            clearTimeout(this.sceneSwitchTimeout);
-            if (data.nextScene != 'youLose') {
-                // Switch to the next scene
-                if (data.nextScene != 'dilemmaOrInsurrection') {
-                    console.log('sanity check: not dilemma');
-                    this.scene.get('politics').setup(this.sharedData);
-                    this.scene.start('politics');
-                } else {
-                    console.log('sanity check: we hit handle dilemma or insurrection');
-                    handleDilemmaOrInsurrection();
-                }
+        // Losing ends the game: offer a new game instead of continuing
+        if (data.gameOver) {
+            this.showPlayAgain();
+            return;
+        }
+
+        // Move on after a click, or automatically after 10 seconds, whichever comes first
+        let leaving = false;
+        const leave = () => {
+            if (leaving) {
+                return;
             }
-        }, this);
-        // Define the switchScene function
-        const switchScene = (sceneName) => {
-            const scene = this.scene.get(sceneName);
-            if (scene) {
-                scene.setup(this.sharedData);
-                this.scene.start(sceneName);
+            leaving = true;
+            if (data.nextScene == 'dilemmaOrInsurrection') {
+                handleDilemmaOrInsurrection();
             } else {
-                console.error(`Error: ${sceneName} scene not found`);
+                this.scene.get('politics').setup(this.sharedData);
+                this.scene.start('politics');
             }
         };
-        // Setup a timeout to automatically switch scenes if there is no interaction
-        this.sceneSwitchTimeout = setTimeout(() => {
-            if (data.nextScene !== 'youLose' && data.nextScene !== 'dilemmaOrInsurrection') {
-                switchScene.call(this, 'politics');
-            } else if (data.nextScene === 'dilemmaOrInsurrection') {
-                handleDilemmaOrInsurrection.call(this);
-            }
-        }, 10000);  // Time in milliseconds, e.g., 10000ms for 10 seconds
+        this.input.on('pointerdown', leave);
+        this.time.delayedCall(10000, leave);
 
     }
 }

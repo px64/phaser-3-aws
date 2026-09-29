@@ -3,25 +3,6 @@ import { territories } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
 
 // Cleanup function to clear current tutorial item
-const clearCurrentTutorial = () => {
-    clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
-    backstoryText.setVisible(false);
-    backstoryBox.setVisible(false);
-    this.tweens.killTweensOf([backstoryText, backstoryBox]);
-    backdrop.off('pointerdown');
-    this.input.keyboard.off('keydown-ENTER');
-
-    // Clear all pending timers for drawing arrows
-    arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
-    arrowTimerIDs = []; // Clear the timer IDs array after cancellation
-
-    // Destroy all arrow graphics
-    arrowGraphicsArray.forEach(arrow => arrow.destroy());
-    arrowGraphicsArray = []; // Clear the array after destruction
-
-    this.currentTutorialIndex++;
-    displayTutorial(); // Display next item
-};
 
 function renderCharacters(scene) {
     let Wokeindex = 0;
@@ -121,6 +102,11 @@ function renderCharacters(scene) {
 }
 
 function startNextScene(scene) {
+    // Only leave once, even if the Earth button is clicked again or capital runs out at the same time
+    if (scene.leavingScene) {
+        return;
+    }
+    scene.leavingScene = true;
     // pass this scene's this.sharedData to insurrection's setup, (where it is assigned to insurrection's this.sharedData)
     // question: does this scene's sharedData ever even get used?
     scene.sharedData.icons = scene.icons;
@@ -300,98 +286,6 @@ function updateCharVal(scene, character, value, characterText) {
     }
     return undoCheck;
 }
-function createCheckbox_bad(scene, x, y, character, characterText, callback, initialValue) {
-    let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
-
-    let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
-    let checkboxSize = 32;  // Specify the size of your checkbox here
-    checkboxBackground.fillRect(x - checkboxSize / 2, y - checkboxSize / 2, checkboxSize, checkboxSize - 4);
-
-    // Create checkbox sprites
-    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
-    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
-    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
-
-    // Initialize shader
-    //const colorBlendPipeline = scene.game.renderer.pipelines.add('ColorBlend', new ColorBlendPipeline(scene.game));
-
-    // Apply shader to checkbox
-    checkboxUnchecked.setPipeline('ColorBlend');
-    checkboxChecked.setPipeline('ColorBlend');
-    checkboxEndorsed.setPipeline('ColorBlend');
-
-    // Initialize state based on character endorsement
-    character.checkboxState = character.endorsement === 1 ? 1 : 0;  // Maintain internal logic
-
-    // Visual start as unchecked
-    checkboxUnchecked.setVisible(true);
-    checkboxChecked.setVisible(false);
-    checkboxEndorsed.setVisible(false);
-
-    // Set interactive for character icon
-    characterText.setInteractive();
-    characterText.on('pointerdown', chooseAction);
-
-    // Define actions for different checkbox states
-    checkboxUnchecked.on('pointerdown', () => toggleState('checked'));
-    checkboxChecked.on('pointerdown', () => handleCheckedState());
-    checkboxEndorsed.on('pointerdown', () => toggleState('checked'));
-
-    function handleCheckedState() {
-        if (character.endorsement === 1) {
-            toggleState('fullyEndorsed');
-        } else {
-            toggleState('unchecked');
-        }
-    }
-
-    function toggleState(nextState) {
-        const stateMapping = { 'unchecked': 0, 'checked': 1, 'fullyEndorsed': 2 };
-        const nextStateValue = stateMapping[nextState];
-
-        // Update internal state logic
-        character.checkboxState = nextStateValue;
-
-        // Update visual representation based on actual logic
-        updateVisibility();
-
-        // Update character and check for success
-        let updateSuccess = updateCharVal(scene, character, character.checkboxState, characterText);
-        if (!updateSuccess) {
-            callback(character, character.checkboxState);
-        }
-    }
-
-    function updateVisibility() {
-        // Only change the visual state
-        checkboxUnchecked.setVisible(character.checkboxState === 0);
-        checkboxChecked.setVisible(character.checkboxState === 1);
-        checkboxEndorsed.setVisible(character.checkboxState === 2);
-    }
-
-    function chooseAction() {
-        // Visual feedback only, does not affect internal state
-        if (character.checkboxState === 0) {
-            toggleState('checked');
-        } else if (character.checkboxState === 1) {
-            if (character.endorsement === 1) {
-                toggleState('fullyEndorsed');
-            } else {
-                toggleState('unchecked');
-            }
-        } else if (character.checkboxState === 2) { // Fully endorsed
-            toggleState('checked');
-        }
-    }
-
-    createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
-
-    return {
-        checkboxUnchecked,
-        checkboxChecked,
-        toggleState
-    };
-}
 
 function hexToRgbNormalized(hex) {
     let r = ((hex >> 16) & 0xFF) / 255.0;
@@ -503,93 +397,6 @@ function createCheckbox(scene, x, y, character, characterText, callback, initial
     };
 }
 
-function createCheckbox1(scene, x, y, character, characterText, callback, initialValue) {
-    let textColor = character.faction === 'maga' ? 0xff4040 : 0x8080ff;
-
-    let checkboxBackground = scene.add.graphics({ fillStyle: { color: textColor } });
-    let checkboxSize = 32;  // Specify the size of your checkbox here
-    checkboxBackground.fillRect(x - checkboxSize / 2, y - checkboxSize / 2, checkboxSize, checkboxSize - 4);
-
-    // Create checkbox sprites
-    let checkboxUnchecked = scene.add.sprite(x, y, 'checkboxUnchecked').setInteractive().setScale(.15);
-    let checkboxChecked = scene.add.sprite(x, y, 'checkboxChecked').setInteractive().setScale(.15);
-    let checkboxEndorsed = scene.add.sprite(x, y, character.characterIcon).setInteractive().setScale(.05);
-
-    // Initialize state based on character endorsement
-    character.checkboxState = 0;  // Start as unchecked
-    if (character.endorsement === 1) {
-        character.checkboxState = 1;  // Start as checked if endorsed
-    }
-
-    updateVisibility();
-
-    character.prevValue = character.checkboxState; // Track previous state for updates
-
-    // Set interactive for character icon
-    characterText.setInteractive();
-    characterText.on('pointerdown', chooseAction);
-
-    // Define actions for different checkbox states
-    checkboxUnchecked.on('pointerdown', () => toggleState('checked'));
-    checkboxChecked.on('pointerdown', () => handleCheckedState());
-    checkboxEndorsed.on('pointerdown', () => toggleState('checked'));
-
-    function handleCheckedState() {
-        if (character.endorsement === 1) {
-            toggleState('fullyEndorsed');
-        } else {
-            toggleState('unchecked');
-        }
-    }
-
-    function toggleState(nextState) {
-        const stateMapping = { 'unchecked': 0, 'checked': 1, 'fullyEndorsed': 2 };
-        const nextStateValue = stateMapping[nextState];
-        const prevStateValue = character.checkboxState;
-
-        if (character.value == 0) {
-            character.value = nextStateValue - prevStateValue; // Change in state only if current value is 0
-        } else {
-            character.value = 0; // Reset character.value to 0 otherwise
-        }
-
-        character.checkboxState = nextStateValue;
-        updateVisibility();
-
-        // Update character and check for success
-        let updateSuccess = updateCharVal(scene, character, character.checkboxState, characterText);
-        if (!updateSuccess) {
-            callback(character, character.checkboxState);
-        }
-    }
-
-    function updateVisibility() {
-        checkboxUnchecked.setVisible(character.checkboxState === 0);
-        checkboxChecked.setVisible(character.checkboxState === 1);
-        checkboxEndorsed.setVisible(character.checkboxState === 2);
-    }
-
-    function chooseAction() {
-        if (character.checkboxState === 0) {
-            toggleState('checked');
-        } else if (character.checkboxState === 1) {
-            if (character.endorsement === 1) {
-                toggleState('fullyEndorsed');
-            } else {
-                toggleState('unchecked');
-            }
-        } else if (character.checkboxState === 2) { // Fully endorsed
-            toggleState('checked');
-        }
-    }
-    createCharacterTooltip(scene, character, x, y, checkboxUnchecked, characterText);
-
-    return {
-        checkboxUnchecked,
-        checkboxChecked,
-        toggleState
-    };
-}
 
 //====================================================================================
 //    function createCharacterTooltip(scene, character, x, y, slider, characterText)
@@ -602,31 +409,24 @@ function createCharacterTooltip(scene, character, x, y, slider, characterText) {
     //let xOffset = character.faction === 'maga' ? scene.game.config.width * .4 : scene.game.config.width * -.24;
     let xOffset = character.faction === 'maga' ? 400 : -300;
 
-    // Add an icon or graphic
-    let helpedIcon;
+    // Add an icon or graphic (without changing the shared icon data)
     let tmpHelp = character.helps; // don't want to change character.helps permanently
+    let iconScale;
     if (character.helps){
-        helpedIcon = scene.sharedData.icons[character.helps];
-        //console.log(character);
+        iconScale = scene.sharedData.icons[character.helps].scaleFactor;
+    } else if (character.powerTokenType == 'type_3') {
+        tmpHelp = 'hacker';
+        iconScale = 0.19;
     } else {
-        helpedIcon = scene.sharedData.icons['environment']; // placeholder for now for undefined helps
-        if (character.powerTokenType == 'type_3') {
-            tmpHelp = 'hacker';
-            helpedIcon.scaleFactor = 0.19;
-            //console.log('hacker');
-        } else {
-            tmpHelp = 'negotiation';
-            helpedIcon.scaleFactor = 0.13;
-            //console.log('negotiation');
-        }
+        tmpHelp = 'negotiation';
+        iconScale = 0.13;
     }
-    //console.log(helpedIcon);
     let graphicObject = tmpHelp;
     //console.log(graphicObject);
 
     // Add an icon or graphic and scale it
     let backstoryIcon = scene.add.image(x+xOffset, Math.min(scene.sys.game.config.height*.7,y), graphicObject);  // Position the icon at the original y position
-    backstoryIcon.setScale(helpedIcon.scaleFactor);  // scale the icon
+    backstoryIcon.setScale(iconScale);  // scale the icon
     backstoryIcon.setOrigin(0.5, 1);  // change origin to bottom center
     backstoryIcon.setVisible(false);
     backstoryIcon.setDepth(2);  // set depth below the text and above the bounding box
@@ -661,13 +461,13 @@ function createCharacterTooltip(scene, character, x, y, slider, characterText) {
         backstoryIcon.setVisible(false);
         let helpedIcon = scene.icons[character.helps];
         if (helpedIcon) {
-            helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.25:0);
-            helpedIcon.icon.shieldMaga.setAlpha(helpedIcon.icon.shieldStrength > 0 ? 0.25:0);
+            helpedIcon.icon.shieldWoke.setAlpha(helpedIcon.shieldStrength > 0 ? 0.25:0);
+            helpedIcon.icon.shieldMaga.setAlpha(helpedIcon.shieldStrength > 0 ? 0.25:0);
         }
         let hurtIcon = scene.icons[character.hurts];
         if (hurtIcon){
-            hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.icon.shieldStrength*0.1).setTint(0xffffff);
-            hurtIcon.icon.shieldWoke.setAlpha(hurtIcon.icon.shieldStrength*0.1).setTint(0xffffff);
+            hurtIcon.icon.shieldMaga.setAlpha(hurtIcon.shieldStrength*0.1).setTint(0xffffff);
+            hurtIcon.icon.shieldWoke.setAlpha(hurtIcon.shieldStrength*0.1).setTint(0xffffff);
         }
         if (scene.isTweening && scene.myTween) {
             scene.myTween.complete();
@@ -769,4 +569,4 @@ function insertLineBreaks(str, charsPerLine) {
         }
 
 // Export the functions
-export { clearCurrentTutorial, renderCharacters, insertLineBreaks, startNextScene };
+export { renderCharacters, insertLineBreaks, startNextScene };

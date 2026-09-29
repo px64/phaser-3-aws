@@ -210,19 +210,14 @@ import { characters } from './BaseScene.js';
             }
             if (tutorial.reference == "characterTexts")
             {
-                // Assuming characters is an array of objects and startBlinkingCheckbox is defined
-                const character = characters.find(character => character.dne === false);
-                console.log(character.name);
-                console.log(character.checkbox);
+                // Characters are drawn a couple of seconds after the screen opens, so the checkbox may not exist yet
+                const character = characters.find(character => character.dne === false && character.checkbox);
                 if (character) {
                   startBlinkingCheckbox(
                     scene,
                     character.checkbox.checkboxUnchecked,
-                    character.checkbox.checkboxChecked,
-                    character.checkbox.toggleState
+                    character.checkbox.checkboxChecked
                   );
-                } else {
-                  console.log('No character with dne == false found.');
                 }
             }
 
@@ -231,7 +226,7 @@ import { characters } from './BaseScene.js';
             //console.log(referenceObject);
             //let referenceObject = scene[tutorial.reference];
 
-            let backstoryText = scene.add.text(window.innerWidth/5*2, window.innerHeight/5*2+scene.currentTutorialIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            let backstoryText = scene.add.text(scene.cameras.main.width/5*2, scene.cameras.main.height/5*2+scene.currentTutorialIndex*20, formattedBackstory, { fontSize: '24px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
 
             backstoryText.setOrigin(0.5);
             backstoryText.setVisible(true);
@@ -248,10 +243,10 @@ import { characters } from './BaseScene.js';
             // Check if snog is an array or a single object
             if (Array.isArray(snog)) {
                 snog.forEach((element, index) => {
-                    const timerID = setTimeout(() => {
+                    const timerID = scene.time.delayedCall((index+1) * 400, () => {
                         let arrow = drawArrow(scene, element.x, element.y, backstoryBox.x, backstoryBox.y);
                         arrowGraphicsArray.push(arrow); // Store the arrow graphic in the array
-                    }, (index+1) * 400 ); // Delay each arrow by index * 400 milliseconds
+                    }); // Delay each arrow by index * 400 milliseconds
                     arrowTimerIDs.push(timerID); // Store the timer ID
                 });
 
@@ -276,15 +271,15 @@ import { characters } from './BaseScene.js';
 
             // Cleanup function to clear current tutorial item
             const clearCurrentTutorial = () => {
-                clearTimeout(timeoutHandle);  // Clear the timeout to avoid it firing after manual advance
+                if (timeoutHandle) { timeoutHandle.remove(false); }  // Clear the timeout to avoid it firing after manual advance
                 backstoryText.setVisible(false);
                 backstoryBox.setVisible(false);
                 scene.tweens.killTweensOf([backstoryText, backstoryBox]);
                 backdrop.off('pointerdown');
-                scene.input.keyboard.off('keydown-ENTER');
+                scene.input.keyboard.off('keydown-ENTER', clearCurrentTutorial);
 
                 // Clear all pending timers for drawing arrows
-                arrowTimerIDs.forEach(timerID => clearTimeout(timerID));
+                arrowTimerIDs.forEach(timerID => timerID.remove(false));
                 arrowTimerIDs = []; // Clear the timer IDs array after cancellation
 
                 // Destroy all arrow graphics
@@ -304,7 +299,7 @@ import { characters } from './BaseScene.js';
             });
 
             // Set a timeout to automatically advance
-            timeoutHandle = setTimeout(clearCurrentTutorial, 10000);
+            timeoutHandle = scene.time.delayedCall(10000, clearCurrentTutorial);
         }
     };
 
@@ -344,27 +339,31 @@ export function drawArrow(scene, startX, startY, endX, endY) {
     return graphics; // Ensure the graphics object is returned
 
 }
-function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked, toggleState) {
+// Blink a checkbox to show where to click.  This only changes what is visible;
+// it does not endorse the character or spend any political capital.
+function startBlinkingCheckbox(scene, checkboxUnchecked, checkboxChecked) {
+    const uncheckedWasVisible = checkboxUnchecked.visible;
+    const checkedWasVisible = checkboxChecked.visible;
     let toggleCount = 0;
     const maxToggles = 6; // Blink 3 times (each blink consists of two toggles)
 
-    const toggleCheckbox = () => {
-        if (toggleCount < maxToggles) {
-            if (checkboxChecked.visible) {
-                toggleState('fullyEndorsed');
-            } else {
-                toggleState('checked');
+    scene.time.addEvent({
+        delay: 1000, // Delay in milliseconds
+        repeat: maxToggles,
+        callback: () => {
+            if (!checkboxUnchecked.scene || !checkboxChecked.scene) {
+                return; // checkbox was destroyed
             }
             toggleCount++;
-        } else {
-            toggleState('checked');
-            toggleEvent.remove(); // Remove the event after the desired number of toggles
+            if (toggleCount > maxToggles) {
+                // Put the checkbox back the way it was
+                checkboxUnchecked.setVisible(uncheckedWasVisible);
+                checkboxChecked.setVisible(checkedWasVisible);
+                return;
+            }
+            let showChecked = toggleCount % 2 == 1;
+            checkboxUnchecked.setVisible(!showChecked);
+            checkboxChecked.setVisible(showChecked);
         }
-    };
-
-    const toggleEvent = scene.time.addEvent({
-        delay: 1000, // Delay in milliseconds
-        callback: toggleCheckbox,
-        loop: true
     });
 }

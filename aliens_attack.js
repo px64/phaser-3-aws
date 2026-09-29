@@ -50,24 +50,13 @@
 //                 - fix gauge color so it stays the color of the greatest of maga or woke
 
 import BaseScene from './BaseScene.js';
-import {Politics} from './politics.js';
-import {DilemmaScene} from './dilemma.js';
-import {Insurrection} from './insurrection.js';
 import {MilitaryAllocation} from './MilitaryAllocation.js';
 import { territories } from './BaseScene.js'
 import { characters } from './BaseScene.js';
 import { militaryAssets } from './BaseScene.js';
-import { difficultyList } from './BaseScene.js';
 //foo
-var healthBar;
-var healthBox;
-var healthGauge;
 var thereBeThreats;
-let MAGAslider;
-let Wokeslider;
 var foo;
-var MAGAnessText;
-var WokenessText;
 var polCapText;
 var yearText;
 
@@ -574,7 +563,7 @@ export class Scene2 extends BaseScene {
               break;
       }
       for (let i = 0; i < numExplosions; i++) {
-          setTimeout(() => {
+          this.time.delayedCall(i * delay, () => {
               let emitter = this.add.particles(400, 250, 'flares', {
                   frame: [ 'red', 'yellow', 'green' ],
                   lifespan: lifeSpan,
@@ -590,7 +579,7 @@ export class Scene2 extends BaseScene {
               emitter.setPosition(object.x + Phaser.Math.Between(-volume, volume),
                                   object.y + Phaser.Math.Between(-volume,volume));
               emitter.explode(16);
-          }, i * delay); // Delay in milliseconds
+          }); // Delay in milliseconds
       }
     }
 
@@ -656,7 +645,7 @@ export class Scene2 extends BaseScene {
                 if (this.sharedData.alienTerritories + this.sharedData.putieTerritories >= territories.length) {
                     console.log('you lose!');
                     this.scene.get('TutorialScene').setup(this.sharedData);
-                    this.scene.start('TutorialScene', { nextScene: 'aliensWin', message: 'I have some bad news:\n the Aliens have taken over America\n It looks like you lose.' });
+                    this.scene.start('TutorialScene', { nextScene: 'aliensWin', gameOver: true, message: 'I have some bad news:\n the Aliens have taken over America\n It looks like you lose.' });
                     return;
                 }
                 // Convert the object keys into an array
@@ -674,8 +663,8 @@ export class Scene2 extends BaseScene {
                 if (this.sharedData.icons['environment']) {
                     this.sharedData.icons[randomKey].health = Math.max(0, this.sharedData.icons[randomKey].health - 50);
                     // What happens when an alien reaches the base.  Ignore on first round
-                    this.MAGAness = Math.max(0, this.MAGAness-10);
-                    this.Wokeness = Math.max(0, this.Wokeness-10);
+                    this.MAGAness = Math.max(Math.min(0, this.MAGAness), this.MAGAness-10); // don't erase existing debt
+                    this.Wokeness = Math.max(Math.min(0, this.Wokeness), this.Wokeness-10); // don't erase existing debt
                 }
 
                 let messageString = 'Aliens have taken over The '+ this.attackedTerritory.name;

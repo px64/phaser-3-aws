@@ -9,34 +9,17 @@
 //=========================================================================================================================
 
 import BaseScene from './BaseScene.js';
-import { characters } from './BaseScene.js';
+import { insertLineBreaks } from './politicsUtils.js';
 import { territories } from './BaseScene.js'
 
 //var MAGAness = 0;
-var MAGAupdate = 0;
 var MAGAnessText;
 //var Wokeness = 0;
-var WokeUpdate = 0;
 var WokenessText;
 var polCapText;
 var year = 2023; // the starting year
 var yearText;
-var enviromentalHealth = 11; // the starting health of the environment
-var enviromentText;
-var governmentSize = 1200; // the starting size of the government
-var governmentText;
-var economyMaga = 20;
-var economyWoke = 20;
-var economyStrength = 32000;
-var justiceMaga = 20;
-var justiceWoke = 20;
-var justiceStrength = 5;
-var charVal = {};
 
-const ICON_MARGIN = 10;
-const GAUGE_HEIGHT = 50;
-const ICON_SPACING = 10;
-const ICON_SCALE = 0.03;
 
 //====================================================================================
 //
@@ -654,8 +637,15 @@ export class DilemmaScene extends BaseScene {
         this.decisionGroup.push(makeAChoiceText); // Add decision Title to the group
 
         this.isTweening = false;
+        // Describe what each choice costs in political capital
+        let costText = (choice) => {
+            let costs = [];
+            if (choice.MAGACapRequired > 0) { costs.push(choice.MAGACapRequired + ' MAGA'); }
+            if (choice.WokeCapRequired > 0) { costs.push(choice.WokeCapRequired + ' Woke'); }
+            return costs.length ? ' [costs ' + costs.join(' + ') + ' capital]' : ' [free]';
+        };
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')' + costText(choice), { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
@@ -670,9 +660,21 @@ export class DilemmaScene extends BaseScene {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
+        let choiceMade = false;
         let chooseOption = (choice) => {
-            let healthChange;
-            let threats;
+            // Only one choice per dilemma: ignore further clicks while the buttons fade out
+            if (choiceMade) {
+                return;
+            }
+            choiceMade = true;
+            this.decisionGroup.forEach(decision => decision.disableInteractive());
+
+            // Pay for the choice.  Capital can go into debt, which is repaid from future income.
+            this.sharedData.MAGAness -= choice.MAGACapRequired;
+            this.sharedData.Wokeness -= choice.WokeCapRequired;
+            this.MAGAness = this.sharedData.MAGAness;
+            this.Wokeness = this.sharedData.Wokeness;
+            this.updatePoliticalCapitalIcons(this.sharedData.MAGAness + this.sharedData.Wokeness);
 
             let objectsToFade = [titleText, scenarioText, ...this.decisionGroup];
             // Total number of objects to fade and destroy
@@ -767,6 +769,14 @@ export class DilemmaScene extends BaseScene {
             } else {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
                 fruit += '\n\nBad news!  Political Capital will suffer by '+choice.helpBenefit/40+'/year for many years to come!';
+            }
+
+            let capitalSpent = choice.MAGACapRequired + choice.WokeCapRequired;
+            if (capitalSpent > 0) {
+                fruit += '\nThis choice cost ' + capitalSpent + ' Political Capital.';
+                if (this.sharedData.MAGAness + this.sharedData.Wokeness < 0) {
+                    fruit += '\nYou are now in political debt!';
+                }
             }
 
             let resultsText = this.add.text(this.sys.game.config.width /4, this.sys.game.config.height/5*2 , fruit, { font: '24px Arial', fill: '#ffffff' });
@@ -880,27 +890,6 @@ export class DilemmaScene extends BaseScene {
             }; // Return the adjusted font size
         }
 
-        function chooseOptionOld(faction) {
-            if (faction === 'maga') {
-                // Increase economy strength, maybe decrease environmental health?
-                this.sharedData.icons['economy'].health += 20;
-                this.sharedData.icons['environment'].health -= 10;
-
-                // Increase MAGAness
-                this.sharedData.MAGAness += 20;
-            } else if (faction === 'woke') {
-                // Decrease economy strength, increase environmental health
-                this.sharedData.icons['economy'].health -= 10;
-                this.sharedData.icons['environment'].health += 20;
-
-                // Increase Wokeness
-                this.sharedData.Wokeness += 20;
-            }
-
-            // Then return to the previous scene or update the game state in some other way
-                this.scene.get('politics').setup(this.sharedData);
-                this.scene.start('politics');
-        }
 
         let scene = this;
 
@@ -916,376 +905,7 @@ export class DilemmaScene extends BaseScene {
         // Add overlaps for bouncing or slowdowns between threats and defences
         //
         //====================================================================================
-        /*
-        this.physics.add.overlap(this.magaDefenses, this.wokeThreats, function(defense, threat) {
-            threat.destroy();
-            this.roundThreats--;
-            //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-
-            if (Math.random() < .1) {
-                this.tweens.add({
-                    targets: defense,
-                    alpha: 0,
-                    scaleX: 0,
-                    scaleY: 0,
-                    duration: 200,
-                    onComplete: function () {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-                        console.log(defense);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
-                        }
-                        defense.container.destroy();
-                    },
-                    callbackScope: scene
-                });
-            }  else {
-                // Initialize defense.littleHats if it doesn't exist yet
-                if (!defense.littleHats) {
-                    defense.littleHats = [];
-                }
-                let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats);
-                scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
-            }
-        }, null, this);
-*/
-/*
-        this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
-            threat.destroy();
-            this.roundThreats--;
-            console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-            if (Math.random() < .1) {
-                this.tweens.add({
-                    targets: defense,
-                    alpha: 0,
-                    scaleX: 0,
-                    scaleY: 0,
-                    duration: 200,
-                    onComplete: function () {
-                        console.log('delete index ' + defense.container.misinformationIndex);
-                        console.log(defense);
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        // Check if defense.littleHats exists before trying to iterate over it
-                        if (defense.littleHats) {
-                            defense.littleHats.forEach(hat => hat.destroy());
-                        }
-                        defense.container.destroy();
-                    },
-                    callbackScope: scene
-                });
-            }   else {
-                // Initialize defense.littleHats if it doesn't exist yet
-                if (!defense.littleHats) {
-                    defense.littleHats = [];
-                }
-                let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(scene, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
-                scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
-            }
-        }, null, this);
-*/
-        this.physics.add.overlap(this.magaDefenses, this.wokeThreats, function(defense, threat) {
-            if (threat.icon.maga > threat.icon.woke) {
-                console.log("don't destroy threat: it's going to help!");
-                return;
-            }
-            threat.destroy();
-            this.roundThreats--;
-            //console.log('defense destroyed threat.  Down to ' + this.roundThreats);
-            let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
-            let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
-            let totalHats = magaHats + wokeHats;
-            if (totalHats >  15) {
-                console.log('delete index ' + defense.container.misinformationIndex);
-                // Check if defense.littleHats exists before trying to iterate over it
-                if (defense.littleHats) {
-                    defense.littleHats.forEach(hat => hat.destroy());
-                }
-                let territory = territories[2]; // arbitrarily picked this territory to return to
-                scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
-                territory = territories[4]; // arbitrarily picked this territory to return to
-                scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
-                // discussion forum should slowly fade away
-                scene.tweens.add({
-                    targets: defense.container,
-                    alpha: 0,
-                    scaleX: 0,
-                    scaleY: 0,
-                    duration: 2000,
-                    onComplete: function () {
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        defense.container.destroy();
-                    },
-                    callbackScope: scene
-                });
-            } else {
-                // Initialize defense.littleHats if it doesn't exist yet
-                if (!defense.littleHats) {
-                    if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
-                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
-                    }
-                    defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
-                    console.log(defense.container.list);
-                    replaceTokenIcon(scene, defense.container, 'peace');
-                    defense.container.disableInteractive();
-                    //defense.sprite.setImmovable(true);
-                }
-                //console.log(scene.sharedData.misinformation[defense.container.misinformationIndex].
-                let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(this, defense.container.x-20 + ICON_SPACING*3, iconY, 'wokeBase', defense.littleHats.length, 1, defense.littleHats,1);
-                scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats++; // update the hats in the shared data structure
-                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
-            }
-        }, null, this);
-
-        // Function to replace the tokenIcon in the container
-        function replaceTokenIcon(scene, container, newIcon) {
-            // Find the existing tokenIcon
-            let oldTokenIconIndex = -1;
-            for (let i = 0; i < container.list.length; i++) {
-                let item = container.list[i];
-                scene.tweens.killTweensOf(item);
-                if (item && item.texture && item.texture.key === 'negotiation') {  // Assuming 'negotiation' is the key for the old icon
-                    console.log('found Old at '+i);
-                    oldTokenIconIndex = i;
-                    break;
-                }
-            }
-            let newTokenIconIndex = -1;
-            for (let i = 0; i < container.list.length; i++) {
-                let item = container.list[i];
-                if (item && item.texture && item.texture.key === newIcon) {
-                    console.log('found New at '+i);
-                    newTokenIconIndex = i;
-                    break;
-                }
-            }
-
-            let oldTokenIcon;
-            // If the old tokenIcon is found, replace it with the new one
-            if (oldTokenIconIndex !== -1) {
-                oldTokenIcon = container.list[oldTokenIconIndex];
-                //oldTokenIcon.destroy(); // This calls destroy directly on the object
-                console.log('turn off old');
-                //oldTokenIcon.setVisible(false);
-            }
-
-            let newTokenIcon;
-            // If the old tokenIcon is found, replace it with the new one
-            if (newTokenIconIndex !== -1) {
-                newTokenIcon = container.list[newTokenIconIndex];
-                //newTokenIcon.destroy(); // This calls destroy directly on the object
-                console.log('turn on new');
-                newTokenIcon.setVisible(true);
-            }
-
-            // Ensure the new token icon starts invisible
-            newTokenIcon.setAlpha(0);
-            // Start fading in the new token icon
-            container.scene.tweens.add({
-                targets: newTokenIcon,
-                alpha: 1,
-                duration: 1000,
-                ease: 'Sine.easeInOut'
-            });
-            // Create a tween to fade out the old token icon
-            container.scene.tweens.add({
-              targets: oldTokenIcon,
-              alpha: 0,
-              duration: 1000,
-              ease: 'Sine.easeInOut'
-            });
-        }
-
-        // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-            for (let i = startIndex; i < startIndex + count; i++) {
-                let xOffset = (i % 5) * ICON_SPACING;
-                let yOffset = Math.floor(i / 5) * ICON_SPACING;
-                // Each icon will be positioned slightly to the right of the previous one
-                let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-
-                // Adjust the size of the icons if necessary
-                icon.setScale(ICON_SCALE);
-
-                const jumpHeight = 20; // Adjust the height of the jump
-                const durationUp = 150; // Duration for the upward movement
-                const durationDown = 300; // Duration for the downward movement with bounce
-                // Store the original position
-                const originalY = icon.y;
-
-                // Create an infinite loop of jumping
-                const jump = () => {
-                    // Add the upward movement tween
-                    scene.tweens.add({
-                        targets: icon,
-                        y: originalY - jumpHeight,
-                        ease: 'Power1', // Fast upward movement
-                        duration: durationUp,
-                        onComplete: () => {
-                            // Add the downward movement tween with bounce effect
-                            scene.tweens.add({
-                                targets: icon,
-                                y: originalY,
-                                ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                                duration: durationDown,
-                                onComplete: jump // Chain the jump to repeat
-                            });
-                        }
-                    });
-                };
-                const murmur = () => {
-                    // Define the horizontal movement range and duration
-                    const murmurWidth = 20; // Move 10 pixels to each side
-                    const durationSide = 500; // Half a second to each side
-
-                    // Start the movement to the right
-                    scene.tweens.add({
-                        targets: icon,
-                        x: icon.x + murmurWidth, // Move to the right
-                        ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                        duration: durationSide,
-                        yoyo: true, // Automatically reverse the tween
-                        repeat: -1, // Loop the tween indefinitely
-                    });
-                };
-
-                if (angerLevel == 1) {
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, murmur);
-                } else {
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, jump);
-                }
-
-                littleHats.push(icon);
-            }
-            return littleHats;
-        }
-
-        this.physics.add.overlap(this.wokeDefenses, this.magaThreats, function(defense, threat) {
-            if (threat.icon.woke > threat.icon.maga) {
-                console.log("don't destroy threat: it's going to help!");
-                return;
-            }
-            threat.destroy();
-            this.roundThreats--;
-            let magaHats = scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats;
-            let wokeHats = scene.sharedData.misinformation[defense.container.misinformationIndex].wokeHats;
-            let totalHats = magaHats + wokeHats;
-            if (totalHats >  15) {
-                console.log('delete index ' + defense.container.misinformationIndex);
-
-                // Check if defense.littleHats exists before trying to iterate over it
-                if (defense.littleHats) {
-                    defense.littleHats.forEach(hat => hat.destroy());
-                }
-
-                let territory = territories[2]; // arbitrarily picked this territory to return to
-                scene.returnThreat(territory, 'maga', null, magaHats, defense.container);
-                territory = territories[4]; // arbitrarily picked this territory to return to
-                scene.returnThreat(territory, 'woke', null, wokeHats, defense.container);
-                // discussion forum should slowly fade away
-                scene.tweens.add({
-                    targets: defense.container,
-                    alpha: 0,
-                    scaleX: 0,
-                    scaleY: 0,
-                    duration: 2000,
-                    onComplete: function () {
-                        delete scene.sharedData.misinformation[defense.container.misinformationIndex];
-                        defense.container.destroy();
-                    },
-                    callbackScope: scene
-                });
-            } else {
-                // Initialize defense.littleHats if it doesn't exist yet
-                if (!defense.littleHats) {
-                    if (!scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats) {
-                        scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = [];
-                    }
-                    defense.littleHats = scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats;
-                    console.log(defense.container.list);
-                    replaceTokenIcon(scene, defense.container, 'peace');
-                    defense.container.disableInteractive();
-                    //defense.sprite.setImmovable(true);
-                }
-                let iconY = defense.container.y + ICON_MARGIN;
-                defense.littleHats = drawIcons(this, defense.container.x-20 - ICON_SPACING*3, iconY, 'magaBase', defense.littleHats.length, 1, defense.littleHats,1);
-                scene.sharedData.misinformation[defense.container.misinformationIndex].magaHats++; // update the hats in the shared data structure
-                scene.sharedData.misinformation[defense.container.misinformationIndex].littleHats = defense.littleHats;
-            }
-        }, null, this);
-/*
-        // Draw little hats
-        function drawIcons(scene, x, y, texture, startIndex, count, littleHats, angerLevel) {
-            for (let i = startIndex; i < startIndex + count; i++) {
-                let xOffset = (i % 5) * ICON_SPACING;
-                let yOffset = Math.floor(i / 5) * ICON_SPACING;
-                // Each icon will be positioned slightly to the right of the previous one
-                let icon = scene.add.image(x + xOffset, y + yOffset, texture);
-
-                // Adjust the size of the icons if necessary
-                icon.setScale(ICON_SCALE);
-
-                const jumpHeight = 20; // Adjust the height of the jump
-                const durationUp = 150; // Duration for the upward movement
-                const durationDown = 300; // Duration for the downward movement with bounce
-                // Store the original position
-                const originalY = icon.y;
-
-                // Create an infinite loop of jumping
-                const jump = () => {
-                    // Add the upward movement tween
-                    scene.tweens.add({
-                        targets: icon,
-                        y: originalY - jumpHeight,
-                        ease: 'Power1', // Fast upward movement
-                        duration: durationUp,
-                        onComplete: () => {
-                            // Add the downward movement tween with bounce effect
-                            scene.tweens.add({
-                                targets: icon,
-                                y: originalY,
-                                ease: 'Bounce.easeOut', // Bounce effect on downward movement
-                                duration: durationDown,
-                                onComplete: jump // Chain the jump to repeat
-                            });
-                        }
-                    });
-                };
-                const murmur = () => {
-                    // Define the horizontal movement range and duration
-                    const murmurWidth = 20; // Move 10 pixels to each side
-                    const durationSide = 500; // Half a second to each side
-
-                    // Start the movement to the right
-                    scene.tweens.add({
-                        targets: icon,
-                        x: icon.x + murmurWidth, // Move to the right
-                        ease: 'Sine.easeInOut', // Smooth transition for a gentle sway
-                        duration: durationSide,
-                        yoyo: true, // Automatically reverse the tween
-                        repeat: -1, // Loop the tween indefinitely
-                    });
-                };
-
-                if (angerLevel == 1) {
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, murmur);
-                } else {
-                    // Start the jumping animation with a random delay
-                    scene.time.delayedCall(Math.random() * 500, jump);
-                }
-
-                littleHats.push(icon);
-            }
-            return littleHats;
-        }
-*/
+        this.addDiscussionTokenOverlaps();
         //
         // Helper function to handle common overlap logic between insurrectionist and icon
         //
@@ -1365,26 +985,6 @@ export class DilemmaScene extends BaseScene {
         };
 
 
-        //====================================================================================
-        //    function insertLineBreaks(str, charsPerLine) {
-        //====================================================================================
-        function insertLineBreaks(str, charsPerLine) {
-            let words = str.split(' ');
-            let lines = [];
-            let currentLine = words[0];
-
-            for (let i = 1; i < words.length; i++) {
-                if (currentLine.length + words[i].length + 1 > charsPerLine) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine += ' ' + words[i];
-                }
-            }
-            lines.push(currentLine);
-
-            return lines.join('\n');
-        }
     }
 
     enterButtonHoverState(button, choice) {
