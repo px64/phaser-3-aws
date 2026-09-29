@@ -20,8 +20,9 @@ Then open <http://localhost:8000/>.
 1. **Politics** – spend political capital to endorse advocates. Fully endorsed advocates create
    tokens that you drag onto the matching aspect of society. Place community-forum tokens to
    absorb protesters. Click the Earth icon to continue.
-2. **Legislative reform** (sometimes) – choose how to handle a dilemma. Choices cost capital
-   (you can go into debt) and change your capital income for years to come.
+2. **Legislative reform** (sometimes) – choose how to handle a dilemma. Choices are free and
+   change your capital income for years to come, so this is a way to earn capital when times
+   are tough.
 3. **Insurrection** – activists from each faction march on unbalanced aspects of society. An
    aspect that becomes too unbalanced collapses and Putin claims a territory.
 4. **Alien attack** (sometimes) – click to fire missiles from your bases. Holding off the attack

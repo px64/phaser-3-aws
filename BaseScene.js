@@ -536,15 +536,6 @@ export default class BaseScene extends Phaser.Scene {
         this.politicalCapitalIcons.forEach(icon => icon.destroy());
         this.politicalCapitalIcons = [];
 
-        // Show political debt (from dilemma choices) as a number instead of icons
-        if (this.capitalDebtText && this.capitalDebtText.scene) {
-            this.capitalDebtText.destroy();
-        }
-        this.capitalDebtText = null;
-        if (totalCapital < 0) {
-            this.capitalDebtText = this.add.text(370, 25, 'In debt: ' + Math.ceil(totalCapital), { fontSize: '20px', fill: '#ff4040' }).setOrigin(0, 0.5);
-        }
-
         // Calculate number of icons needed
         let numIcons = Math.floor(totalCapital / 4);
 

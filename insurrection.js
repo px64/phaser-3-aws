@@ -343,9 +343,8 @@ export class Insurrection extends BaseScene {
             thisRoundHealthChange += this.sharedData.WokenessVelocity/5;
             //console.log(this.sharedData.WokenessVelocity + ' ' + thisRoundHealthChange);
 
-            // Capital never drops below zero from these changes, but debt from a dilemma choice is kept until repaid
-            this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, Math.min(0, this.sharedData.MAGAness), 100);
-            this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, Math.min(0, this.sharedData.Wokeness), 100);
+            this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + thisRoundHealthChange, 0, 100);
+            this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + thisRoundHealthChange, 0, 100);
             //console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
             // Total capital earned drives the experience level, so it is not capped
             this.sharedData.totalPoliticalCapital = Math.max(0, this.sharedData.totalPoliticalCapital + thisRoundHealthChange);
@@ -977,8 +976,8 @@ function incrementYear() {
     this.sharedData.year++;
     yearText.setText('Year: ' + this.sharedData.year);
 
-    this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + this.sharedData.MAGAnessVelocity, Math.min(0, this.sharedData.MAGAness), 100);
-    this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + this.sharedData.WokenessVelocity, Math.min(0, this.sharedData.Wokeness), 100);
+    this.sharedData.MAGAness = Phaser.Math.Clamp(this.sharedData.MAGAness + this.sharedData.MAGAnessVelocity, 0, 100);
+    this.sharedData.Wokeness = Phaser.Math.Clamp(this.sharedData.Wokeness + this.sharedData.WokenessVelocity, 0, 100);
     console.log('MAGAness = ' + this.sharedData.MAGAness + ' Wokeness = ' + this.sharedData.Wokeness);
     this.sharedData.totalPoliticalCapital += this.sharedData.MAGAnessVelocity + this.sharedData.WokenessVelocity;
     polCapText.setText('Political Capital');

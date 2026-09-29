@@ -637,15 +637,8 @@ export class DilemmaScene extends BaseScene {
         this.decisionGroup.push(makeAChoiceText); // Add decision Title to the group
 
         this.isTweening = false;
-        // Describe what each choice costs in political capital
-        let costText = (choice) => {
-            let costs = [];
-            if (choice.MAGACapRequired > 0) { costs.push(choice.MAGACapRequired + ' MAGA'); }
-            if (choice.WokeCapRequired > 0) { costs.push(choice.WokeCapRequired + ' Woke'); }
-            return costs.length ? ' [costs ' + costs.join(' + ') + ' capital]' : ' [free]';
-        };
         scenarios[this.scenarioNumber].choices.forEach((choice, index) => {
-            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')' + costText(choice), { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
+            let decision = this.add.text(this.sys.game.config.width/2 - 240, startingHeight + index * 20, choice.name + ' (' + choice.hurtFaction + ' activists protest ' + choice.hurts + ')', { color: '#ffffff', fontSize: '20px',fontFamily: 'Roboto' })
                 .setInteractive()
                 .on('pointerdown', () => chooseOption(choice))
                 .on('pointerover', () => this.enterButtonHoverState(decision, choice))
@@ -668,13 +661,6 @@ export class DilemmaScene extends BaseScene {
             }
             choiceMade = true;
             this.decisionGroup.forEach(decision => decision.disableInteractive());
-
-            // Pay for the choice.  Capital can go into debt, which is repaid from future income.
-            this.sharedData.MAGAness -= choice.MAGACapRequired;
-            this.sharedData.Wokeness -= choice.WokeCapRequired;
-            this.MAGAness = this.sharedData.MAGAness;
-            this.Wokeness = this.sharedData.Wokeness;
-            this.updatePoliticalCapitalIcons(this.sharedData.MAGAness + this.sharedData.Wokeness);
 
             let objectsToFade = [titleText, scenarioText, ...this.decisionGroup];
             // Total number of objects to fade and destroy
@@ -769,14 +755,6 @@ export class DilemmaScene extends BaseScene {
             } else {
                 fruit = 'You chose to ' + choice.name + '\n      ' + capitalizeFirstLetter(choice.hurtFaction) + ' causes ' + choice.hurtCost + ' activists to put pressure on '+ capitalizeFirstLetter(choice.hurts);
                 fruit += '\n\nBad news!  Political Capital will suffer by '+choice.helpBenefit/40+'/year for many years to come!';
-            }
-
-            let capitalSpent = choice.MAGACapRequired + choice.WokeCapRequired;
-            if (capitalSpent > 0) {
-                fruit += '\nThis choice cost ' + capitalSpent + ' Political Capital.';
-                if (this.sharedData.MAGAness + this.sharedData.Wokeness < 0) {
-                    fruit += '\nYou are now in political debt!';
-                }
             }
 
             let resultsText = this.add.text(this.sys.game.config.width /4, this.sys.game.config.height/5*2 , fruit, { font: '24px Arial', fill: '#ffffff' });

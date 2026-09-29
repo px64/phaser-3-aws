@@ -663,8 +663,8 @@ export class Scene2 extends BaseScene {
                 if (this.sharedData.icons['environment']) {
                     this.sharedData.icons[randomKey].health = Math.max(0, this.sharedData.icons[randomKey].health - 50);
                     // What happens when an alien reaches the base.  Ignore on first round
-                    this.MAGAness = Math.max(Math.min(0, this.MAGAness), this.MAGAness-10); // don't erase existing debt
-                    this.Wokeness = Math.max(Math.min(0, this.Wokeness), this.Wokeness-10); // don't erase existing debt
+                    this.MAGAness = Math.max(0, this.MAGAness-10);
+                    this.Wokeness = Math.max(0, this.Wokeness-10);
                 }
 
                 let messageString = 'Aliens have taken over The '+ this.attackedTerritory.name;
