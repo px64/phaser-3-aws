@@ -83,7 +83,7 @@ class TitleScene extends Phaser.Scene {
             MAGAnessVelocity: 0,
             WokenessVelocity: 0,
             difficultyLevel: 'A Beginner',
-            totalPoliticalCapital: 200 // this initilization matters
+            totalPoliticalCapital: 10 // starting experience level 1: more advocates join as capital is earned
         };
     }
     preload() {
