@@ -198,6 +198,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         this.radioButtonGroup = []; // reset the radio button group
 
         // remove choice text
+        this.difficultyText = ideologyText;
         this.time.delayedCall(3000, () => {
             ideologyText.destroy();
         });
@@ -277,6 +278,9 @@ export class ChooseYourIdeologyScene extends BaseScene {
 
         this.backgroundImage.destroy();
         this.ideologyTitleText.destroy();
+        if (this.difficultyText) {
+            this.difficultyText.destroy(); // make room for the advocates screen
+        }
         ideologyText.destroy();
         icon.destroy();
         icon2.destroy();
@@ -330,7 +334,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
                     "in another aspect.  Two characters have special defensive powers: The Hacker creates",
                     " a cyber-shield around a societal aspect to defend against attacks",
                     "and the Negotiator creates information sessions.",
-                    "When finished, click on the Earth Icon to move to the next screen"
+                    "When finished, click Proceed."
                 ]
             },
             {
@@ -344,7 +348,7 @@ export class ChooseYourIdeologyScene extends BaseScene {
         if (!this.hasBeenCreatedBefore) {
             // Format the text to be centered and with the color based on the affiliation
             let formattedBackstory = insertLineBreaks(nextScreenTutorial[0].story.join(' '), 80);
-            let backstoryText = this.add.text(nextButton.x-360, nextButton.y-75, formattedBackstory, { fontSize: '20px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
+            let backstoryText = this.add.text(nextButton.x-360, nextButton.y-80, formattedBackstory, { fontSize: '20px', fontFamily: 'Roboto', color: '#fff', align: 'center' });
             backstoryText.setOrigin(0.5);
             backstoryText.setVisible(true);
             backstoryText.setDepth(2);

@@ -107,6 +107,31 @@ export function introduceCharacters(scene, characters, sharedData) {
 
   scene.characterTitleText = scene.add.text(scene.sys.game.config.width/2 - 20, 180, 'These Advocates Join Your Cause', { fontSize: '52px', fontFamily: 'Roboto', color: '#ffffff', fill: '#fff' }).setOrigin(0.5);
 
+  // Explain why these advocates are joining and what happens next
+  let faction = sharedData.ideology.faction;
+  let moreToCome = characters.some(character => characterLevel(character, faction) > newExperienceLevel);
+  let nextThreshold = newExperienceLevel * 30;
+  let explanation;
+  if (!oldExperienceLevelUponEntry) {
+      explanation = (faction == 'none' ? 'These advocates are ready to work with you.' : 'These advocates share your views and are ready to work with you.') +
+          ' Hover over each one to see what they help, and where their policies will stir up protesters.';
+  } else {
+      explanation = 'Your influence is growing: you have earned ' + Math.floor(sharedData.totalPoliticalCapital) +
+          ' political capital, and new advocates want to work with you, some of them from across the aisle. Hover over each one to see what they help, and where their policies will stir up protesters.';
+  }
+  if (moreToCome) {
+      explanation += ' Earn ' + nextThreshold + ' political capital and even more advocates will join your cause.';
+  } else {
+      explanation += ' Every advocate has now joined your cause.';
+  }
+  scene.characterExplanationText = scene.add.text(scene.sys.game.config.width/2, 140, explanation, {
+      fontSize: '20px',
+      fontFamily: 'Roboto',
+      color: '#c0ffc0',
+      align: 'center',
+      wordWrap: { width: scene.sys.game.config.width * 0.8 }
+  }).setOrigin(0.5, 1);
+
   let endorseMaga = scene.add.text(40, 200, 'MAGA',
                       { fontSize: '24px', fontFamily: 'Roboto', color: '#ff4040', align: 'left' });
   let underline = scene.add.graphics();
@@ -336,6 +361,7 @@ export function introduceCharacters(scene, characters, sharedData) {
             helpsBox.setVisible(true);
             characterIcon.setVisible(true);
             scene.characterTitleText.setVisible(false);
+            scene.characterExplanationText.setVisible(false);
         };
 
         const mouseOff = () => {
@@ -347,6 +373,8 @@ export function introduceCharacters(scene, characters, sharedData) {
             hurtsLabel.setVisible(false);
             helpsBox.setVisible(false);
             characterIcon.setVisible(false);
+            scene.characterTitleText.setVisible(true);
+            scene.characterExplanationText.setVisible(true);
         };
 
         slider.on('pointerover', mouseOver);
