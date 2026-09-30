@@ -17,9 +17,10 @@ Then open <http://localhost:8000/>.
 
 ## How a round works
 
-1. **Politics** – spend political capital to endorse advocates. Fully endorsed advocates create
-   tokens that you drag onto the matching aspect of society. Place community-forum tokens to
-   absorb protesters. Click the Earth icon to continue.
+1. **Politics** – spend all your political capital (the diamonds) endorsing advocates. An
+   advocate needs two endorsements (●●), at most one per round. Next round they create a token
+   that you drag onto the matching aspect of society, then they are busy helping for two rounds.
+   Place community-forum tokens to absorb protesters. Click the Earth icon to continue.
 2. **Legislative reform** (sometimes) – choose how to handle a dilemma. Choices are free and
    change your capital income for years to come, so this is a way to earn capital when times
    are tough.
@@ -28,7 +29,9 @@ Then open <http://localhost:8000/>.
 4. **Alien attack** (sometimes) – click to fire missiles from your bases. Holding off the attack
    earns political capital.
 
-You win when every aspect of society is excellent. You lose if Putin and/or the aliens take over
+The ring around each aspect of society shows its score: its health, reduced when MAGA and Woke
+pressure on it are unbalanced. At 90% the aspect is complete and its ring turns gold, though enough
+protesting can pull it back down. You win when all six rings are gold. You lose if Putin and/or the aliens take over
 every territory.
 
 ## Code layout

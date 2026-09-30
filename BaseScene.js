@@ -15,6 +15,20 @@ const GAUGE_HEIGHT = 30;
 const ICON_SPACING = 10;
 const ICON_SCALE = 0.03;
 
+// An aspect of society is complete when its score reaches this percentage.  Winning needs all six complete.
+export const ASPECT_GOAL = 90;
+
+// Score shown on the ring around each aspect of society: its health, reduced by how unbalanced
+// MAGA and Woke pressure on it are.  Enough protesting can pull a complete aspect back below the goal.
+export function aspectPercent(maga, woke, health, healthScale) {
+    let balance = Math.abs(Math.min(100, maga) - Math.min(100, woke)) / 100; // 0 (balanced) to 1
+    return health / healthScale * (1 - balance);
+}
+
+export function aspectComplete(iconData) {
+    return aspectPercent(iconData.maga, iconData.woke, iconData.health, iconData.healthScale) >= ASPECT_GOAL;
+}
+
 export default class BaseScene extends Phaser.Scene {
 
     preload() {
@@ -179,21 +193,8 @@ export default class BaseScene extends Phaser.Scene {
         // 'track' is the scale object (could be a sprite or any game object)
 
         let littleHatsCreate = this.drawHealthGauge(scene, 0,x,y, 'Woke', gaugeWoke, maga, woke, scaleSprite, littleHatsRemove);
-        let stability = health/healthScale;
-        let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
-        let balance;
 
-        maga = Math.min(100, maga); // don't let these go beyond 100
-        woke = Math.min(100, woke);
-        if (totalValue == 0) {
-            balance = 0
-        } else {
-            balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
-        }
-        stability = stability * (1-balance);
-
-        this.drawHealthGauge(scene, stability/100,x,y, 'Health', gaugeHealth);
-        gaugeHealth.setAlpha(.7);
+        this.drawHealthGauge(scene, aspectPercent(maga, woke, health, healthScale)/100, x, y, 'Health', gaugeHealth);
 
         return littleHatsCreate;
     }
@@ -202,40 +203,7 @@ export default class BaseScene extends Phaser.Scene {
     // you're icon may be strong, but not very stable
 
     drawNewHealthGauge(icon) {
-        //const ICON_MARGIN = 10;
-        //const GAUGE_HEIGHT = 50;
-        //const ICON_SPACING = 10;
-        //const ICON_SCALE = 0.03;
-        let posX = icon.icon.x;
-        let posY = icon.icon.y;
-        let healthGauge = icon.gaugeHealth;
-
-        let stability = icon.health/icon.healthScale;
-        let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
-        let balance;
-        let maga = Math.min(100, icon.maga); // don't let these go beyond 100
-        let woke = Math.min(100, icon.woke);
-        if (totalValue == 0) {
-            balance = 0
-        } else {
-            balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
-        }
-        stability = stability * (1-balance);
-        let percentage = stability/ 100;
-
-        let color = 0xffffff; let ringNum = 1;
-        healthGauge.clear();
-        // Draw full gray gauge (background)
-        healthGauge.lineStyle(7, 0x404040);
-        healthGauge.beginPath();
-        healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), false);
-        healthGauge.strokePath();
-
-        // Draw the health gauge with an arc, with the angle proportional to the health
-        healthGauge.lineStyle(7, color);
-        healthGauge.beginPath();
-        healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
-        healthGauge.strokePath();
+        this.drawHealthGauge(this, aspectPercent(icon.maga, icon.woke, icon.health, icon.healthScale)/100, icon.icon.x, icon.icon.y, 'Health', icon.gaugeHealth);
     }
 
     // // TODO: Add little hat icons for every 10 magas or wokes accumulated
@@ -243,39 +211,52 @@ export default class BaseScene extends Phaser.Scene {
     drawHealthGauge(scene, percentage, posX, posY, style, healthGauge, maga, woke, scaleSprite, littleHats) {
         // 'track' is the scale object (could be a sprite or any game object)
         if (style == 'Health') {
-            let color = 0xffffff; let ringNum = 1;
+            // percentage is the aspect score / 100 (see aspectPercent).  Reaching the goal completes the aspect.
+            let radius = 45;
+            let complete = percentage * 100 >= ASPECT_GOAL;
+            let shown = Phaser.Math.Clamp(percentage, 0, 1);
             // Stop any pulse from a previous draw so pulses don't pile up
-            this.tweens.killTweensOf(healthGauge);
-            healthGauge.setAlpha(1);
+            if (healthGauge.pulseTween) {
+                healthGauge.pulseTween.stop();
+                healthGauge.pulseTween = null;
+            }
+            healthGauge.setAlpha(complete ? 1 : 0.7);
             healthGauge.clear();
             // Draw full gray gauge (background)
             healthGauge.lineStyle(7, 0x404040);
             healthGauge.beginPath();
-            healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(0), Phaser.Math.DegToRad(360), false);
+            healthGauge.arc(posX, posY, radius, 0, Math.PI * 2, false);
             healthGauge.strokePath();
 
-            // // Draw the health gauge with an arc, with the angle proportional to the health
-            // healthGauge.lineStyle(7, color);
-            // healthGauge.beginPath();
-            // healthGauge.arc(posX, posY, 45+(ringNum-1)*10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
-            // healthGauge.strokePath();
+            // Draw the gauge with an arc proportional to the score: gold when complete, red when very low
+            let color = complete ? 0xffd700 : (percentage > .25 ? 0xffffff : 0xff0000);
+            healthGauge.lineStyle(complete ? 9 : 7, color);
+            healthGauge.beginPath();
+            healthGauge.arc(posX, posY, radius, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + 360 * shown), false);
+            healthGauge.strokePath();
 
-            if (percentage > .25) {
-                // Draw the normal health gauge (static)
-                //healthGauge.clear();
-                healthGauge.lineStyle(7, 0xffffff);
+            // Mark the goal on the ring with a small notch
+            if (!complete) {
+                let goalAngle = Phaser.Math.DegToRad(270 + 360 * ASPECT_GOAL / 100);
+                healthGauge.lineStyle(3, 0xffd700);
                 healthGauge.beginPath();
-                healthGauge.arc(posX, posY, 45 + (ringNum - 1) * 10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
+                healthGauge.moveTo(posX + Math.cos(goalAngle) * (radius - 7), posY + Math.sin(goalAngle) * (radius - 7));
+                healthGauge.lineTo(posX + Math.cos(goalAngle) * (radius + 7), posY + Math.sin(goalAngle) * (radius + 7));
                 healthGauge.strokePath();
-            } else {
-                // Draw the red gauge (will be pulsing)
-                //healthGauge.clear();
-                healthGauge.lineStyle(7, 0xff0000);
-                healthGauge.beginPath();
-                healthGauge.arc(posX, posY, 45 + (ringNum - 1) * 10, Phaser.Math.DegToRad(270), Phaser.Math.DegToRad(270 + (360 * (percentage))), false);
-                healthGauge.strokePath();
+            }
 
-                let shimmerTween = this.tweens.add({
+            // Show the score as a number next to the ring
+            if (!healthGauge.percentText || !healthGauge.percentText.scene) {
+                healthGauge.percentText = scene.add.text(posX + 34, posY - 34, '', { font: 'bold 16px Arial' }).setOrigin(0, 1).setDepth(2);
+            }
+            let percentText = healthGauge.percentText;
+            percentText.setPosition(posX + 34, posY - 34);
+            percentText.setText((complete ? '\u2713 ' : '') + Math.max(0, Math.round(percentage * 100)) + '%');
+            percentText.setColor(complete ? '#ffd700' : (percentage > .25 ? '#ffffff' : '#ff4040'));
+
+            if (percentage <= .25) {
+                // Very low: pulse the ring
+                healthGauge.pulseTween = this.tweens.add({
                     delay: Phaser.Math.Between(0, 500),
                     targets: healthGauge,
                     duration: Math.max(200, percentage * 10000), // Duration of one shimmer
@@ -283,8 +264,8 @@ export default class BaseScene extends Phaser.Scene {
                     yoyo: true, // Yoyo makes the tween animate back to its original value after reaching its target.
                     ease: 'Sine.easeInOut',
                     alpha: {
-                        start: .33, // Fully transparent
-                        to: 1    // Fully visible
+                        start: .33,
+                        to: 1
                     }
                 });
             }

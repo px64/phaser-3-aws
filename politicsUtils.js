@@ -4,6 +4,27 @@ import { militaryAssets } from './BaseScene.js';
 
 // Cleanup function to clear current tutorial item
 
+// Endorsement shown as two pips: an advocate needs two endorsements (one per round) before they help
+function endorsementPips(total) {
+    total = Phaser.Math.Clamp(total, 0, 2);
+    return '\u25CF'.repeat(total) + '\u25CB'.repeat(2 - total);
+}
+
+function backingLabel(character, total) {
+    let status = ['Not endorsed', 'Endorsed', 'Ready to help!'][Phaser.Math.Clamp(total, 0, 2)];
+    return character.name + '  ' + endorsementPips(total) + '\n' + status;
+}
+
+// First line of the hover tooltip: what the next endorsement will do
+function endorsementStatus(character, total) {
+    if (total >= 2) {
+        return 'Ready to help ' + endorsementPips(2) + '  Next round ' + character.name + '\nwill create a token you can use.';
+    } else if (total == 1) {
+        return 'Endorsed ' + endorsementPips(1) + '  One more endorsement\nand ' + character.name + ' will help!';
+    }
+    return 'Not endorsed ' + endorsementPips(0) + '  Needs two endorsements\n(one per round) before helping.';
+}
+
 function renderCharacters(scene) {
     let Wokeindex = 0;
     let MAGAindex = 0;
@@ -43,8 +64,14 @@ function renderCharacters(scene) {
 
     console.log('sanity test.  charFont is '+scene.sharedData.charFont);
 
+    let helpingCharacters = [];
     characters.forEach((character, index) => {
         if (character.dne) { return; }
+        // Advocates who are busy helping leave the list for a couple of rounds
+        if (character.helpingRounds > 0) {
+            helpingCharacters.push(character);
+            return;
+        }
         // Keep separate track of the MAGA and Woke character placement row offsets
         let rowIndex = (character.faction === 'maga' ? MAGAindex : Wokeindex);
         // Set text color based on affiliation
@@ -71,10 +98,7 @@ function renderCharacters(scene) {
             //character.backing = character.value;
             //character.value = 0;
         }
-        let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
-        let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement, 0, 2)];
-
-        let charText = scene.add.text(50 + xOffset, 0, character.name + '\nBacking: ' + healthText,
+        let charText = scene.add.text(50 + xOffset, 0, backingLabel(character, character.endorsement),
                             { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: textColor, align: 'left' }).setInteractive();
 
         if (character.endorsement == 1) {
@@ -99,6 +123,33 @@ function renderCharacters(scene) {
 
         scene.characterTexts.push(charText); // Push characterTexts just so we can reference location w pointers later
     });
+
+    // List the advocates who are currently helping at the bottom of their column, greyed out
+    helpingCharacters.forEach(character => {
+        let rowIndex;
+        let xOffset;
+        if (character.faction == 'maga') {
+            rowIndex = MAGAindex++;
+            xOffset = 0;
+        } else {
+            rowIndex = Wokeindex++;
+            xOffset = scene.sys.game.config.width * .74;
+        }
+        let rounds = character.helpingRounds;
+        let helpingText = scene.add.text(50 + xOffset, 0, character.name + '\nHelping: back in ' + rounds + ' round' + (rounds == 1 ? '' : 's'),
+                            { fontSize: scene.sharedData.charFont, fontFamily: 'Roboto', color: '#808080', align: 'left' });
+        helpingText.setY(250 + rowIndex * (helpingText.displayHeight + 10));
+    });
+
+    // Beginner: explain why everyone already has one endorsement
+    if (scene.isFirstPoliticsRound && characters.some(character => !character.dne && character.endorsement == 1)) {
+        scene.add.text(scene.cameras.main.centerX, scene.sys.game.config.height - 128,
+            'Advocates start with one endorsement ' + endorsementPips(1) + '. One click makes them ready to help ' + endorsementPips(2), {
+            font: '16px Arial',
+            fill: '#c0ffc0',
+            align: 'center'
+        }).setOrigin(0.5).setDepth(3);
+    }
 }
 
 function startNextScene(scene) {
@@ -164,9 +215,7 @@ function updateCharVal(scene, character, value, characterText) {
         MAGAupdate = 0;
     }
     //characterText.setText(character.name + '\nEndorsed: ' + (value ? 'yes': 'no') + ',\nBacking: ' + (character.endorsement + value).toString());
-    let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
-    let healthText = healthTextRange[Phaser.Math.Clamp(character.endorsement + value,0,2)];
-    characterText.setText(character.name + ',\nBacking: ' + healthText);
+    characterText.setText(backingLabel(character, character.endorsement + value));
 
     // Update MAGAnessText and WokenessText here
     let tmpMAG = scene.MAGAness - MAGAupdate;
@@ -188,9 +237,7 @@ function updateCharVal(scene, character, value, characterText) {
                 value = character.prevValue;
             }
             console.log('MAGAupdate = ' + MAGAupdate + ' character value = ' + value);
-            let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
-            let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
-            characterText.setText(character.name + ',\nBacking: ' + healthText);
+            characterText.setText(backingLabel(character, character.endorsement + value));
             //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
         }
     }
@@ -210,9 +257,7 @@ function updateCharVal(scene, character, value, characterText) {
             } else {
                 value = character.prevValue;
             }
-            let healthTextRange = ['None', 'Endorsed', 'Ready to Help'];
-            let healthText = healthTextRange[Phaser.Math.Clamp((character.endorsement + value),0,2)];
-            characterText.setText(character.name + '\nBacking: ' + healthText);
+            characterText.setText(backingLabel(character, character.endorsement + value));
             //this.x = (this.track.x - this.track.width / 2) + (value * stepSize)+12;
         }
     }
@@ -449,6 +494,9 @@ function createCharacterTooltip(scene, character, x, y, slider, characterText) {
     scene.isTweening = false;
 
     const mouseOver = () => {
+        // Put the current endorsement status above the description and resize the box to fit
+        backstoryText.setText(endorsementStatus(character, character.endorsement + character.value) + '\n\n' + formattedBackstory);
+        backstoryBox.setSize(backstoryText.width, backstoryText.height + backstoryIcon.displayHeight);
         backstoryText.setVisible(true);
         backstoryBox.setVisible(true);
         backstoryIcon.setVisible(true);

@@ -28,7 +28,7 @@
 //=========================================================================================================================
 
 import BaseScene from './BaseScene.js';
-import { drawIcons } from './BaseScene.js';
+import { drawIcons, aspectPercent, aspectComplete } from './BaseScene.js';
 import { createPowerToken } from './BaseScene.js';
 import { characters } from './BaseScene.js';
 import { territories } from './BaseScene.js';
@@ -132,16 +132,16 @@ export class Politics extends BaseScene {
 
     //====================================================================================
     //
-    // checkForWin(): if every aspect of society is excellent, go to the final victory screen
+    // checkForWin(): if every aspect of society is complete, go to the final victory screen
     //
     //====================================================================================
     checkForWin() {
         if (this.gameWon) {
             return true;
         }
+        // Win when every aspect of society is complete (gold ring)
         for (let key in this.sharedData.icons) {
-            let iconData = this.sharedData.icons[key];
-            if (iconData.health/iconData.healthScale < 90) {
+            if (!aspectComplete(this.sharedData.icons[key])) {
                 return false;
             }
         }
@@ -150,9 +150,77 @@ export class Politics extends BaseScene {
         this.cameras.main.fadeOut(1000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
             this.scene.get('VictoryScene').setup(this.sharedData);
-            this.scene.start('VictoryScene', { showScore: true, gameOver: true, message: 'You Win!\nIn the year ' + this.sharedData.year + '\nAll Aspects of society are Excellent\nand at 100%!'});
+            this.scene.start('VictoryScene', { showScore: true, gameOver: true, message: 'You Win!\nIn the year ' + this.sharedData.year + '\nAll six aspects of society are complete!'});
         });
         return true;
+    }
+
+    //====================================================================================
+    //
+    // Political capital display: the diamonds pulse while there is capital left to spend,
+    // and a hint at the bottom of the screen says what to do next.
+    //
+    //====================================================================================
+    updatePoliticalCapitalIcons(totalCapital) {
+        super.updatePoliticalCapitalIcons(totalCapital);
+        this.politicalCapitalIcons.forEach((diamond, index) => {
+            this.tweens.add({
+                targets: diamond,
+                scale: diamond.scale * 1.3,
+                alpha: 0.6,
+                duration: 600,
+                delay: index * 80,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+        });
+        this.updateSpendHint(this.politicalCapitalIcons.length);
+    }
+
+    updateSpendHint(diamonds) {
+        if (!this.spendHint || !this.spendHint.scene) {
+            this.spendHint = this.add.text(this.cameras.main.centerX, this.sys.game.config.height - 100, '', {
+                font: 'bold 18px Arial',
+                align: 'center'
+            }).setOrigin(0.5).setDepth(3);
+        }
+        if (diamonds > 0) {
+            this.spendHint.setText('Spend all ' + diamonds + ' diamond' + (diamonds == 1 ? '' : 's') + ' of political capital, then click the Earth');
+            this.spendHint.setColor('#ffff80');
+        } else {
+            this.spendHint.setText('All political capital spent: click the Earth to continue');
+            this.spendHint.setColor('#80ff80');
+        }
+    }
+
+    // The Earth button moves on to the next screen.  If there is still capital to spend on
+    // advocates, remind the player once; a second click continues anyway.
+    onEarthClicked() {
+        let diamonds = this.politicalCapitalIcons.length;
+        let canEndorse = this.characterTexts.length > 0
+            && characters.some(character => !character.dne && !(character.helpingRounds > 0) && character.value == 0);
+        if (diamonds > 0 && canEndorse && !this.unspentWarningShown) {
+            this.unspentWarningShown = true;
+            let reminder = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY,
+                'You still have ' + diamonds + ' diamond' + (diamonds == 1 ? '' : 's') + ' of political capital.\n' +
+                'Endorse more advocates, or click the Earth again to continue anyway.', {
+                font: 'bold 28px Arial',
+                fill: '#ffff80',
+                backgroundColor: '#000000',
+                align: 'center',
+                padding: { x: 16, y: 12 }
+            }).setOrigin(0.5).setDepth(20);
+            this.tweens.add({
+                targets: reminder,
+                alpha: 0,
+                delay: 3500,
+                duration: 800,
+                onComplete: () => reminder.destroy()
+            });
+            return;
+        }
+        startNextScene(this);
     }
 
     //====================================================================================
@@ -212,6 +280,8 @@ export class Politics extends BaseScene {
 
         // Check if you won as soon as you enter politics because we don't check during insurrection or dilemma
         this.gameWon = false;
+        this.unspentWarningShown = false;
+        this.isFirstPoliticsRound = !this.hasBeenCreatedBefore;
         if (this.checkForWin()) {
             return;
         }
@@ -220,7 +290,7 @@ export class Politics extends BaseScene {
 
 
         // When the button is clicked, start the next scene
-        this.nextButton.on('pointerdown', () => startNextScene(this));
+        this.nextButton.on('pointerdown', () => this.onEarthClicked());
 
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
@@ -511,6 +581,10 @@ export class Politics extends BaseScene {
             // Go through each character, recreate the slider and track, and check if any new helpful tokens need to be generated
             characters.forEach((character, index) => {
                 if (character.dne == true) {return;}
+                // Advocates who are helping come back to the list after a couple of rounds
+                if (character.helpingRounds > 0) {
+                    character.helpingRounds--;
+                }
                 character.endorsement += character.value;
                 character.prevValue = 0;
                 //character.backing = character.value;
@@ -560,6 +634,7 @@ export class Politics extends BaseScene {
                     helpfulTokenIndex++;
                     if (character.powerTokenType == 'type_5') {enableTokenTutorial = true;}
                     character.endorsement -= 2;
+                    character.helpingRounds = 2; // off the endorsement list while they help
 
                     // Recreate text here
                     /* Check if this is being done when characters are rendered: this section makes previously rendered characters green if they are fully endorsed or
@@ -1335,7 +1410,7 @@ export class Politics extends BaseScene {
                     iconColor = 'purple';
                 }
                 icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon['maga'], icon['woke'], icon.scaleSprite, icon.littleHats);
-                scene.drawHealthGauge(scene, icon.health/ icon.healthScale/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+                scene.drawHealthGauge(scene, aspectPercent(icon.maga, icon.woke, icon.health, icon.healthScale)/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;

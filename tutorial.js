@@ -32,8 +32,10 @@ import { characters } from './BaseScene.js';
             {
                 story: [
                     "These are the six societal aspects you",
-                    "aim to improve. When all six are",
-                    "in excellent health, you win!"
+                    "aim to improve. The ring and number show how each is doing.",
+                    "At 90% an aspect is complete and its ring turns gold.",
+                    "Too many protesters can pull it back down.",
+                    "Get all six rings gold to win!"
                 ],
                 reference: "iconArray",
                 offset: { x: 140, y: 120 } // Offset from characterTexts

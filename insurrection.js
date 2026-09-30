@@ -16,7 +16,7 @@
 
 import BaseScene from './BaseScene.js';
 import { insertLineBreaks } from './politicsUtils.js';
-import { drawIcons } from './BaseScene.js';
+import { drawIcons, aspectPercent } from './BaseScene.js';
 import { territories } from './BaseScene.js';
 //import { difficulty } from './Basescene.js';
 
@@ -318,20 +318,7 @@ export class Insurrection extends BaseScene {
                 }
 
                 let healthTextRange = ['terrible', 'poor', 'so-so', 'good', 'excellent'];
-                // Need a fancy formula that incorporates maga and wokeness into health.  Need a new benchmark.  There should be current situation
-                // and another that is overall robustness.  This would represent monetary policy of printing a lot of money, that boosts the economy.
-                // stability?
-                let stability = iconData.health/iconData.healthScale;
-                let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
-                let balance;
-                let maga = Math.min(100, iconData.maga); // don't let these go beyond 100
-                let woke = Math.min(100, iconData.woke);
-                if (totalValue == 0) {
-                    balance = 0
-                } else {
-                    balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
-                }
-                stability = stability * (1-balance);
+                let stability = aspectPercent(iconData.maga, iconData.woke, iconData.health, iconData.healthScale);
                 let healthText = healthTextRange[Phaser.Math.Clamp(Math.round(stability/20),0,4)];
                 iconData.iconText.setText(iconData.textBody + healthText);
 
@@ -724,19 +711,7 @@ export class Insurrection extends BaseScene {
                 icon.littleHats = scene.drawHealthGauge(scene, icon[type]/ 100,defense.x,defense.y, type, gauge, icon.maga, icon.woke, icon.scaleSprite, icon.littleHats);
                 //console.log(icon.littleHats);
 
-                let stability = icon.health/icon.healthScale;
-                let totalValue = 100;//maga + woke; // totalValue is the sum of MAGA and WOKE values
-                let balance;
-                let maga = Math.min(100, icon.maga); // don't let these go beyond 100
-                let woke = Math.min(100, icon.woke);
-                if (totalValue == 0) {
-                    balance = 0
-                } else {
-                    balance = Math.abs((maga - woke) / totalValue); // This will be a value between 0 and 1
-                }
-                stability = stability * (1-balance);
-
-                scene.drawHealthGauge(scene, stability/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
+                scene.drawHealthGauge(scene, aspectPercent(icon.maga, icon.woke, icon.health, icon.healthScale)/ 100, defense.x, defense.y, 'Health', icon.gaugeHealth);
                 icon.iconText.setText(icon.textBody + message);
                 hitIcon(icon.iconText, iconColor);
                 threat.isDestroyed = true;
