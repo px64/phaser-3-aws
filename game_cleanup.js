@@ -1,6 +1,6 @@
 //===============================
 //
-// MAGA vs. Woke Game
+// Divided We Fall
 //
 // Things to do list:
 //    1. During 'politics', you can move barriers around, but not during 'insurrection'?
@@ -97,7 +97,7 @@ class TitleScene extends Phaser.Scene {
 
         // The story text
         let storyLines = [
-            "MAGA vs. Woke",
+            "Divided We Fall",
             " ",
             "In the year 2023, America stood divided. A philosophical war had taken",
             "hold, a conflict of ideas and ideals that divided the nation into two",
@@ -392,10 +392,14 @@ class TitleScene extends Phaser.Scene {
                                                     alpha: 1,
                                                     duration: 500,
                                                     onComplete: () => {
-                                                        // Proceed to the next scene or whatever action you want
-                                                        this.time.delayedCall(2000, () => {
-                                                            this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
-                                                            this.scene.start('ChooseYourIdeologyScene');
+                                                        // Clear the stage and reveal the title
+                                                        this.time.delayedCall(1500, () => {
+                                                            this.tweens.add({
+                                                                targets: [wokeImage, wokeText, vsText],
+                                                                alpha: 0,
+                                                                duration: 500,
+                                                                onComplete: () => this.showTitleCard()
+                                                            });
                                                         });
                                                     }
                                                 });
@@ -411,6 +415,36 @@ class TitleScene extends Phaser.Scene {
         });
     }
 }
+
+TitleScene.prototype.showTitleCard = function () {
+    const centerX = this.cameras.main.centerX;
+    const centerY = this.cameras.main.centerY;
+    const size = Math.round(Math.min(128, this.sys.game.config.width / 8)) + 'px';
+
+    // "DIVIDED" slides in from the left in red, "WE FALL" from the right in blue
+    let divided = this.add.text(-400, centerY - 70, 'DIVIDED', { font: 'bold ' + size + ' Arial', fill: '#ff3030' }).setOrigin(0.5);
+    let weFall = this.add.text(this.sys.game.config.width + 400, centerY + 70, 'WE FALL', { font: 'bold ' + size + ' Arial', fill: '#4060ff' }).setOrigin(0.5);
+    let tagline = this.add.text(centerX, centerY + 190, 'An alien invasion is coming.  Can America come together in time?', {
+        font: this.sharedData.medFont + ' Arial',
+        fill: '#ffffff',
+        align: 'center'
+    }).setOrigin(0.5).setAlpha(0);
+
+    this.tweens.add({ targets: divided, x: centerX, duration: 900, ease: 'Back.easeOut' });
+    this.tweens.add({ targets: weFall, x: centerX, duration: 900, delay: 300, ease: 'Back.easeOut' });
+    this.tweens.add({
+        targets: tagline,
+        alpha: 1,
+        delay: 1400,
+        duration: 800,
+        onComplete: () => {
+            this.time.delayedCall(2500, () => {
+                this.scene.get('ChooseYourIdeologyScene').setup(this.sharedData);
+                this.scene.start('ChooseYourIdeologyScene');
+            });
+        }
+    });
+};
 
 //====================================================================================
 //

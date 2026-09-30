@@ -1,4 +1,4 @@
-# MAGA vs. Woke
+# Divided We Fall
 
 A strategy game built with [Phaser 3](https://phaser.io/) (loaded from a CDN in `index.html`).
 America is split between the MAGA and Woke factions while an alien invasion looms. Keep six
