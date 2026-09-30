@@ -718,6 +718,72 @@ export default class BaseScene extends Phaser.Scene {
         }
     }
 
+    //====================================================================================
+    // How to play: a one-screen rules reference, opened from the difficulty screen
+    // and from the "?" button during play.  Click anywhere (or press Escape) to close.
+    //====================================================================================
+    showHowToPlay() {
+        if (this.howToPlay && this.howToPlay.text.scene) {
+            return; // already open
+        }
+        let width = this.sys.game.config.width;
+        let height = this.sys.game.config.height;
+        let fontSize = Math.max(12, Math.min(20, Math.floor(height / 40)));
+        let rules = [
+            'HOW TO PLAY',
+            '',
+            'GOAL: Get all six aspects of society to 90%, when their rings turn gold.',
+            'The score drops when MAGA and Woke pressure on an aspect is unbalanced,',
+            'so protesters can pull a gold ring back down.',
+            '',
+            'EACH ROUND, IN POLITICS:',
+            '\u2022 Spend all your diamonds (political capital) endorsing advocates.',
+            '\u2022 Two endorsements (\u25CF\u25CF), one per round, and next round the advocate creates a token.',
+            '   Drag it onto the aspect they help. Every advocate also stirs up protesters somewhere else.',
+            '\u2022 Hackers shield an aspect for a round. Negotiators create extra community forums.',
+            '\u2022 Drag community forums into the protesters\' path: they absorb them.',
+            '\u2022 Click the Earth to continue.',
+            '',
+            'ALONG THE WAY:',
+            '\u2022 Legislative reform: pick a policy. Good choices raise your capital income for years.',
+            '\u2022 Insurrection: protesters march on unbalanced aspects. Push one too far and it',
+            '   collapses, and Putin takes a territory.',
+            '\u2022 Alien attack: click to fire missiles. Holding them off earns capital.',
+            '\u2022 Earn capital and new advocates join your cause, some from across the aisle.',
+            '',
+            'You lose if Putin and the aliens take over every territory.',
+            '',
+            'Click anywhere to close'
+        ];
+        let backdrop = this.add.rectangle(0, 0, width, height, 0x000000, 0.96).setOrigin(0).setDepth(1000).setInteractive();
+        let text = this.add.text(width / 2, height / 2, rules.join('\n'), {
+            font: fontSize + 'px Arial',
+            fill: '#ffffff',
+            align: 'left',
+            lineSpacing: 4,
+            wordWrap: { width: width * 0.85 }
+        }).setOrigin(0.5).setDepth(1001);
+        let close = () => {
+            backdrop.destroy();
+            text.destroy();
+            this.input.keyboard.off('keydown-ESC', close);
+            this.howToPlay = null;
+        };
+        this.howToPlay = { backdrop, text };
+        backdrop.once('pointerdown', close);
+        this.input.keyboard.on('keydown-ESC', close);
+    }
+
+    // Small round "?" button that opens the rules
+    addHelpButton(x, y) {
+        let circle = this.add.circle(x, y, 16, 0x000000).setStrokeStyle(2, 0xffffff).setDepth(50).setInteractive({ useHandCursor: true });
+        let mark = this.add.text(x, y, '?', { font: 'bold 22px Arial', fill: '#ffffff' }).setOrigin(0.5).setDepth(51);
+        circle.on('pointerdown', () => this.showHowToPlay());
+        circle.on('pointerover', () => mark.setColor('#ffff00'));
+        circle.on('pointerout', () => mark.setColor('#ffffff'));
+        return circle;
+    }
+
     // Game over: the game keeps its state in module-level data (characters, territories, military
     // assets) and in each scene, so a new game starts from a fresh page load.
     showPlayAgain() {

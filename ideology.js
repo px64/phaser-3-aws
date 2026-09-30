@@ -150,6 +150,13 @@ export class ChooseYourIdeologyScene extends BaseScene {
             }
         }
 
+        // Optional rules for players who want them; everything is also taught in context during play
+        let howToPlay = this.add.text(this.sys.game.config.width/2 - 20, 300 + (yOffset * 50) + 30, 'How to play', { fontSize: '22px', fill: '#80c0ff' }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        howToPlay.on('pointerdown', () => this.showHowToPlay());
+        howToPlay.on('pointerover', () => this.enterButtonHoverState(howToPlay));
+        howToPlay.on('pointerout', () => this.enterButtonRestState(howToPlay, '#80c0ff'));
+        this.radioButtonGroup.push(howToPlay); // removed along with the difficulty buttons
+
         let sanity_check = this.difficultyLevel().alienAttackForCapital;
         let putieThreats = this.difficultyLevel().putieThreat;
 

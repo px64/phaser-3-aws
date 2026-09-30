@@ -291,6 +291,8 @@ export class Politics extends BaseScene {
 
         // When the button is clicked, start the next scene
         this.nextButton.on('pointerdown', () => this.onEarthClicked());
+        // Rules reference in the top-right corner
+        this.addHelpButton(this.sys.game.config.width - 24, 22);
 
         this.cameras.main.fadeIn(2000, 0, 0, 0);
 
